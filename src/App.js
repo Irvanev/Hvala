@@ -1,23 +1,26 @@
-import logo from './logo.svg';
-import './App.css';
+import Navbar from "./components/Navbar/Navbar";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { Authorization } from "./pages/Auth/Authorization";
+import { Registration } from './pages/Register/Registration';
+import { Advertisement } from "./pages/Advertisment/Adevertisment";
+import { CardItem } from './pages/AdvertismentCard/CardItem';
+import { Profile } from "./pages/Profile/Profile";
+import 'bootstrap/dist/js/bootstrap.bundle.min';
+
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+        <Router>
+          <Switch>
+            <Route path={"/advertisment/:id"} component={CardItem}/>
+            <Route exact path={"/advertisment"} component={Advertisement}/>
+            <Route exact path={"/sign_up"} component={Registration}/>
+            <Route exact path={"/sign_in"} component={Authorization}/>
+            <Route path={"/profile"} component={Profile}/>
+        </Switch>
+        </Router>
     </div>
   );
 }
