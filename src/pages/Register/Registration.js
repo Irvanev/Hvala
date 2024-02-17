@@ -14,6 +14,10 @@ export const Registration = () => {
     const [username, setUsername] = useState('');
     const [confPassword, setConfPassword] = useState('');
 
+    const goBack = () => {
+        history.goBack();
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (password !== confPassword) {
@@ -47,7 +51,7 @@ export const Registration = () => {
                 <div className="container">
                     <ul className="navbar-nav me-auto mb-md-0">
                         <li className="nav-item">
-                            <a className="nav-link active" aria-current="page" onClick="goBack()">
+                            <a className="nav-link active" aria-current="page" onClick={goBack}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
                                      className="bi bi-arrow-left" viewBox="0 0 16 16">
                                     <path fill-rule="evenodd"
@@ -66,7 +70,7 @@ export const Registration = () => {
             </div>
 
             <div class="container mt-3" id="conAuth">
-                <form onSubmit={handleSubmit}>
+                <form className="auth" onSubmit={handleSubmit}>
                     <div class="mb-3">
                         <label for="email" class="form-label">Email address</label>
                         <input type="email" class="form-control" id="email" aria-describedby="emailHelp"

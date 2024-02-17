@@ -11,6 +11,10 @@ export const Authorization = () => {
     const [password, setPassword] = useState('');
     const history = useHistory();
 
+    const goBack = () => {
+        history.goBack();
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -27,7 +31,7 @@ export const Authorization = () => {
                 <div className="container">
                     <ul className="navbar-nav me-auto mb-md-0">
                         <li className="nav-item">
-                            <a className="nav-link active" aria-current="page" onClick="goBack()">
+                            <a className="nav-link active" aria-current="page" onClick={goBack}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
                                      className="bi bi-arrow-left" viewBox="0 0 16 16">
                                     <path fill-rule="evenodd"
@@ -45,7 +49,7 @@ export const Authorization = () => {
                 <img src={Logotype} alt="logo" id="logo"/>
             </div>
             <div className="container" id="conAuth">
-                <form onSubmit={handleSubmit}>
+                <form className="auth" onSubmit={handleSubmit}>
                     <div className="mb-3">
                         <label htmlFor="sign_in_email" className="form-label">Email address</label>
                         <input type="email" className="form-control" id="sign_in_email" aria-describedby="emailHelp"

@@ -6,11 +6,16 @@ import {Link} from 'react-router-dom';
 import LogoSearch from "../../assets/hvala.png"
 import Navbar from '../../components/Navbar/Navbar';
 import "./advert.css"
+import AutoCard from "../../assets/auto.png"
+import ClothesCard from "../../assets/clothes.png"
+import ElectronicsCard from "../../assets/phone.png"
+import HomeCard from "../../assets/house.png"
 
 
 export const Advertisement = () => {
     const [ads, setAds] = useState([]);
     const [lastDoc, setLastDoc] = useState(null);
+
 
     const aStyle = {
         textDecoration: 'none',
@@ -35,9 +40,9 @@ export const Advertisement = () => {
 
 
     const fetchAds = async (afterDoc) => {
-        let adsQuery = query(collection(db, 'advertisment'), orderBy('timeCreation', 'desc'), limit(20));
+        let adsQuery = query(collection(db, 'advertisment'), orderBy('time_creation', 'desc'), limit(20));
         if (afterDoc) {
-            adsQuery = query(collection(db, 'advertisment'), orderBy('timeCreation', 'desc'), startAfter(afterDoc), limit(20));
+            adsQuery = query(collection(db, 'advertisment'), orderBy('time_creation', 'desc'), startAfter(afterDoc), limit(20));
         }
         const adsSnapshot = await getDocs(adsQuery);
         const adsList = adsSnapshot.docs
@@ -53,36 +58,85 @@ export const Advertisement = () => {
 
     return (
         <div>
-            <Navbar />
-        <div className="container" id="advertMedia">
-            <form class="d-flex py-4">
-                <a href="/home">
-                    <img src={LogoSearch} alt="Logo" style={logoSearch}/>
-                </a>
-                <button class="btn btn me-2 d-none d-lg-block" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" style={collapse}>Категории</button>
+            <Navbar/>
+            <div className="container" id="advertMedia">
+                <form className="d-flex py-4">
+                    <a href="/advertisment">
+                        <img src={LogoSearch} alt="Logo" style={logoSearch}/>
+                    </a>
+                    <button className="btn btn me-2 d-none d-lg-block" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapseExample" style={collapse}>Категории
+                    </button>
 
-                <div class="collapse" id="collapseExample"  style={drop}>
-                    <ul id="categories" class="list-group">
-                        <li class="list-group-item"><a href="adsCategory.html?category=estate">Недвижимость</a></li>
-                        <li class="list-group-item"><a href="adsCategory.html?category=transport">Транспорт</a></li>
-                        <li class="list-group-item"><a href="adsCategory.html?category=clothes">Одежда</a></li>
-                        <li class="list-group-item"><a href="adsCategory.html?category=electronics">Электроника</a></li>
-                        <li class="list-group-item"><a href="adsCategory.html?category=house_goods">Товары для дома</a></li>
-                        <li class="list-group-item"><a href="adsCategory.html?category=building_materials_and_tools">Стройматериалы и инструменты</a></li>
-                        <li class="list-group-item"><a href="adsCategory.html?category=transport_goods">Товары для транспорта</a></li>
-                        <li class="list-group-item"><a href="adsCategory.html?category=home_appliance">Бытовая техника</a></li>
-                        <li class="list-group-item"><a href="adsCategory.html?category=service">Услуги</a></li>
-                        <li class="list-group-item"><a href="adsCategory.html?category=child_goods">Товары для детей</a></li>
-                        <li class="list-group-item"><a href="adsCategory.html?category=health_and_beauty">Товары для красоты и здоровья</a></li>
-                        <li class="list-group-item"><a href="adsCategory.html?category=sport">Спорт</a></li>
-                        <li class="list-group-item"><a href="adsCategory.html?category=hobby_n_Relax">Хобби и отдых</a></li>
-                        <li class="list-group-item"><a href="adsCategory.html?category=subcat14">Товары для животных</a></li>
-                        <li class="list-group-item"><a href="adsCategory.html?category=rest">Прочее</a></li>
-                    </ul>
+                    <div className="collapse" id="collapseExample" style={drop}>
+                        <ul id="categories" className="list-group">
+                            <li className="list-group-item"><a href="/advertisment/category/estate">Недвижимость</a>
+                            </li>
+                            <li className="list-group-item"><a href="/advertisment/category/transport">Транспорт</a>
+                            </li>
+                            <li className="list-group-item"><a href="/advertisment/category/clothes">Одежда</a></li>
+                            <li className="list-group-item"><a href="/advertisment/category/electronics">Электроника</a>
+                            </li>
+                            <li className="list-group-item"><a href="/advertisment/category/house_goods">Товары для
+                                дома</a></li>
+                            <li className="list-group-item"><a
+                                href="/advertisment/category/building_materials_and_tools">Стройматериалы и
+                                инструменты</a></li>
+                            <li className="list-group-item"><a href="/advertisment/category/transport_goods">Товары для
+                                транспорта</a></li>
+                            <li className="list-group-item"><a href="/advertisment/category/home_appliance">Бытовая
+                                техника</a></li>
+                            <li className="list-group-item"><a href="/advertisment/category/service">Услуги</a></li>
+                            <li className="list-group-item"><a href="/advertisment/category/child_goods">Товары для
+                                детей</a></li>
+                            <li className="list-group-item"><a href="/advertisment/category/health_and_beauty">Товары
+                                для красоты и здоровья</a></li>
+                            <li className="list-group-item"><a href="/advertisment/category/sport">Спорт</a></li>
+                            <li className="list-group-item"><a href="/advertisment/category/hobby_n_Relax">Хобби и
+                                отдых</a></li>
+                            <li className="list-group-item"><a href="/advertisment/category/subcat14">Товары для
+                                животных</a></li>
+                            <li className="list-group-item"><a href="/advertisment/category/rest">Прочее</a></li>
+                        </ul>
+                    </div>
+                    <input className="form-control" type="search" placeholder="Search" aria-label="Search"/>
+                </form>
+            </div>
+
+            <div className="container">
+                <div className="row row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-6 g-3">
+                    <div className="col">
+                        <a href="/advertisment/category/transport">
+                            <img src={AutoCard} className="img-fluid lenta" alt="..."/>
+                        </a>
+                    </div>
+                    <div className="col">
+                        <a href="/advertisment/category/estate">
+                            <img src={HomeCard} className="img-fluid lenta" alt="..."/>
+                        </a>
+                    </div>
+                    <div className="col">
+                        <a href="/advertisment/category/clothes">
+                            <img src={ClothesCard} className="img-fluid lenta" alt="..."/>
+                        </a>
+                    </div>
+                    <div className="col">
+                        <a href="/advertisment/category/electronics">
+                            <img src={ElectronicsCard} className="img-fluid lenta" alt="..."/>
+                        </a>
+                    </div>
+                    <div className="col">
+                        <a href="/advertisment/category/transport">
+                            <img src={AutoCard} className="img-fluid lenta" alt="..."/>
+                        </a>
+                    </div>
+                    <div className="col">
+                        <a href="/advertisment/category/transport">
+                            <img src={AutoCard} className="img-fluid lenta" alt="..."/>
+                        </a>
+                    </div>
                 </div>
-                <input class="form-control" type="search" placeholder="Search" aria-label="Search" />
-            </form>
-        </div>
+            </div>
 
             <div className="album bg-light mt-3">
                 <div className="container">
@@ -92,11 +146,11 @@ export const Advertisement = () => {
                                 <Link key={ad.id} to={`/advertisment/${ad.id}`} style={aStyle}>
                                     <div className="card shadow-sm">
                                         <img className="bd-placeholder-img card-img-top"
-                                             src={(ad.photoUrls && ad.photoUrls[0]) || Logo} width="100%" height="225"
+                                             src={(ad.photoUrls && ad.photoUrls[0]) || Logo} width="100%" height="200"
                                              alt="imageAd"/>
                                         <div className="card-body">
                                             <p className="card-text">{ad.title}</p>
-                                            <h6 className="card-text">{ad.price}</h6>
+                                            <h6 className="card-text">{ad.price + '€'}</h6>
                                             <p className="card-text">{ad.location}</p>
                                             <p className="card-text"></p>
                                         </div>
@@ -110,7 +164,8 @@ export const Advertisement = () => {
 
 
             <div className="container mt-3">
-                <button className='btn btn-primary' type="button" onClick={() => fetchAds(lastDoc)}>Показать еще</button>
+                <button className='btn btn-primary' type="button" onClick={() => fetchAds(lastDoc)}>Показать еще
+                </button>
             </div>
 
         </div>

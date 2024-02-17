@@ -1,4 +1,5 @@
 import Logo from '../../assets/logo.png';
+import Navbar from "../../components/Navbar/Navbar";
 
 export const Profile = () => {
     const AdsCard = {
@@ -18,6 +19,9 @@ export const Profile = () => {
     }
     return (
         <div>
+
+            <Navbar />
+
             <div class="container" id="info" style={cont}>
                 <div class="row">
                     <div class="col-3 profile">
@@ -52,6 +56,9 @@ export const Profile = () => {
                     </div>
                 </div>
             </div>
+
+
+
         </div>
     );
 }
