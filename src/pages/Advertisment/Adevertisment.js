@@ -1,20 +1,20 @@
+import { Container, Row, Col, Image, Card } from 'react-bootstrap';
 import {useEffect, useState} from 'react';
 import {collection, getDocs, limit, orderBy, query, startAfter} from 'firebase/firestore';
 import {db} from "../../config/firebase";
 import Logo from '../../assets/logo.png';
 import {Link} from 'react-router-dom';
 import LogoSearch from "../../assets/hvala.png"
-import Navbar from '../../components/Navbar/Navbar';
-import "./advert.css"
+import {MyNavbar} from '../../components/Navbar/Navbar';
 import AutoCard from "../../assets/auto.png"
 import ClothesCard from "../../assets/clothes.png"
 import ElectronicsCard from "../../assets/phone.png"
 import HomeCard from "../../assets/house.png"
 
-
 export const Advertisement = () => {
     const [ads, setAds] = useState([]);
     const [lastDoc, setLastDoc] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
 
 
     const aStyle = {
@@ -40,6 +40,7 @@ export const Advertisement = () => {
 
 
     const fetchAds = async (afterDoc) => {
+        setIsLoading(true);
         let adsQuery = query(collection(db, 'advertisment'), orderBy('time_creation', 'desc'), limit(20));
         if (afterDoc) {
             adsQuery = query(collection(db, 'advertisment'), orderBy('time_creation', 'desc'), startAfter(afterDoc), limit(20));
@@ -50,6 +51,7 @@ export const Advertisement = () => {
             .filter(ad => Object.keys(ad).length > 1); // фильтруем пустые документы
         setLastDoc(adsSnapshot.docs[adsSnapshot.docs.length - 1]);
         setAds(prevAds => [...prevAds, ...adsList]);
+        setIsLoading(false);
     };
 
     useEffect(() => {
@@ -58,7 +60,61 @@ export const Advertisement = () => {
 
     return (
         <div>
-            <Navbar/>
+
+            <style type="text/css">
+                {`
+                @media (max-width: 1000px) {
+                  .imageAd {
+                    width: 100%;
+                    height: 150px;
+                    object-fit: cover;
+                  }
+                  .card {
+                    height: 320px;
+                    }
+                    body {
+                        padding-bottom: 6.0rem;
+                    }
+                }
+                @media (min-width: 1000px) {
+                  .imageAd {
+                      width: 100%;
+                      height: 220px;
+                      object-fit: cover;
+                  }
+                  .card {
+                    height: 400px;
+                    }
+                    body {
+                        padding-top: 3.5rem;
+                    }
+                }
+                .location-text {
+                    display: -webkit-box;
+                    -webkit-line-clamp: 2;
+                    -webkit-box-orient: vertical;  
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+                .date-text {
+                    display: -webkit-box;
+                    -webkit-line-clamp: 1;
+                    -webkit-box-orient: vertical;  
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+                .date-text {
+                    color: #888888; /* Замените на цвет, который вы хотите использовать */
+                }
+                .col .img-fluid {
+                    border: 1px solid rgb(200, 200, 200);
+                    border-radius: 10px;
+                }
+                
+                `}
+            </style>
+
+            <MyNavbar/>
             <div className="container" id="advertMedia">
                 <form className="d-flex py-4">
                     <a href="/advertisment">
@@ -103,69 +159,80 @@ export const Advertisement = () => {
                 </form>
             </div>
 
-            <div className="container">
-                <div className="row row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-6 g-3">
-                    <div className="col">
+            <Container>
+                <Row xs={2} sm={2} md={3} lg={6}>
+                    <Col>
                         <a href="/advertisment/category/transport">
-                            <img src={AutoCard} className="img-fluid lenta" alt="..."/>
+                            <Image src={AutoCard} fluid className="lenta mt-3" alt="..."/>
                         </a>
-                    </div>
-                    <div className="col">
+                    </Col>
+                    <Col>
                         <a href="/advertisment/category/estate">
-                            <img src={HomeCard} className="img-fluid lenta" alt="..."/>
+                            <Image src={HomeCard} fluid className="lenta mt-3" alt="..."/>
                         </a>
-                    </div>
-                    <div className="col">
+                    </Col>
+                    <Col>
                         <a href="/advertisment/category/clothes">
-                            <img src={ClothesCard} className="img-fluid lenta" alt="..."/>
+                            <Image src={ClothesCard} fluid className="lenta mt-3" alt="..."/>
                         </a>
-                    </div>
-                    <div className="col">
+                    </Col>
+                    <Col>
                         <a href="/advertisment/category/electronics">
-                            <img src={ElectronicsCard} className="img-fluid lenta" alt="..."/>
+                            <Image src={ElectronicsCard} fluid className="lenta mt-3" alt="..."/>
                         </a>
-                    </div>
-                    <div className="col">
+                    </Col>
+                    <Col>
                         <a href="/advertisment/category/transport">
-                            <img src={AutoCard} className="img-fluid lenta" alt="..."/>
+                            <Image src={AutoCard} fluid className="lenta mt-3" alt="..."/>
                         </a>
-                    </div>
-                    <div className="col">
+                    </Col>
+                    <Col>
                         <a href="/advertisment/category/transport">
-                            <img src={AutoCard} className="img-fluid lenta" alt="..."/>
+                            <Image src={AutoCard} fluid className="lenta mt-3" alt="..."/>
                         </a>
+                    </Col>
+                </Row>
+            </Container>
+
+            <Container className="album mt-3">
+                <Row xs={2} sm={2} md={3} lg={4} className="g-3" id="cardAds">
+                    {ads.map((ad, index) => (
+                        <Col key={index}>
+                            <Link key={ad.id} to={`/advertisment/${ad.id}`} style={aStyle}>
+                                <Card className="shadow-sm">
+                                    <Card.Img variant="top" src={(ad.photoUrls && ad.photoUrls[0]) || Logo}
+                                              alt="imageAd" className="imageAd"/>
+                                    <Card.Body>
+                                        <Card.Text>
+                                            <span className="location-text">{ad.title}</span>
+                                            <strong>{ad.price + '€'}<br/></strong>
+                                            <span className="location-text">{ad.location}</span>
+                                            <span className="date-text">
+                                              {new Date(ad.time_creation.seconds * 1000).toLocaleString('ru', {
+                                                  day: 'numeric',
+                                                  month: 'long',
+                                                  hour: '2-digit',
+                                                  minute: '2-digit'
+                                              })}
+                                            </span>
+                                        </Card.Text>
+                                    </Card.Body>
+                                </Card>
+                            </Link>
+                        </Col>
+                    ))}
+                </Row>
+            </Container>
+
+
+            <div className="container mt-3 d-flex justify-content-center">
+                {isLoading ? (
+                    <div className="spinner-border text-primary" role="status">
+                        <span className="visually-hidden">Loading...</span>
                     </div>
-                </div>
-            </div>
-
-            <div className="album bg-light mt-3">
-                <div className="container">
-                    <div id="cardAds" className="row row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
-                        {ads.map((ad, index) => (
-                            <div className="col" key={index}>
-                                <Link key={ad.id} to={`/advertisment/${ad.id}`} style={aStyle}>
-                                    <div className="card shadow-sm">
-                                        <img className="bd-placeholder-img card-img-top"
-                                             src={(ad.photoUrls && ad.photoUrls[0]) || Logo} width="100%" height="200"
-                                             alt="imageAd"/>
-                                        <div className="card-body">
-                                            <p className="card-text">{ad.title}</p>
-                                            <h6 className="card-text">{ad.price + '€'}</h6>
-                                            <p className="card-text">{ad.location}</p>
-                                            <p className="card-text"></p>
-                                        </div>
-                                    </div>
-                                </Link>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </div>
-
-
-            <div className="container mt-3">
-                <button className='btn btn-primary' type="button" onClick={() => fetchAds(lastDoc)}>Показать еще
-                </button>
+                ) : (
+                    <button className='btn' style={collapse} type="button" onClick={() => fetchAds(lastDoc)}>Показать еще</button>
+                )}
             </div>
 
         </div>

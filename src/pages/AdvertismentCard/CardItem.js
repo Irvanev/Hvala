@@ -3,29 +3,23 @@ import {doc, getDoc} from 'firebase/firestore';
 import {db} from "../../config/firebase";
 import Logo from '../../assets/logo.png';
 import React, {useEffect, useState} from 'react';
-import Navbar from "../../components/Navbar/Navbar";
-import { Carousel } from 'react-responsive-carousel';
-import Modal from 'react-modal';
-import { MdClose } from 'react-icons/md';
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import './cardItem.css';
+import {MyNavbar} from '../../components/Navbar/Navbar';
+import { Carousel, Row, Col, Image } from 'react-bootstrap';
+import {useTranslation} from "react-i18next";
 export const CardItem = () => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [currentImage, setCurrentImage] = useState(null);
     const {id} = useParams();
     const [adData, setAdData] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const history = useHistory();
+    const [index, setIndex] = useState(0);
+    const { t } = useTranslation();
 
-
-    const openModal = (url) => {
-        setCurrentImage(url);
-        setIsModalOpen(true);
+    const handleSelect = (selectedIndex, e) => {
+        setIndex(selectedIndex);
     };
 
-    const closeModal = () => {
-        setIsModalOpen(false);
-    };
 
     const goBack = () => {
         history.goBack();
@@ -61,7 +55,7 @@ export const CardItem = () => {
     const productImage = {
         width: '600px',
         height: '500px',
-        objectFit: 'contain',
+        objectFit: 'cover',
         backgroundColor: '#f8f9fa',
     }
 
@@ -88,6 +82,27 @@ export const CardItem = () => {
     return (
         <div>
 
+            <style type="text/css">
+                {`
+                .carousel-item img {
+                    width: 100%;
+                    height: 400px;
+                    object-fit: contain;
+                }
+                @media (max-width: 1000px) {
+                    body {
+                        padding-bottom: 3.5rem;
+                    }
+                }
+                @media (min-width: 1000px) {
+                  body {
+                        padding-top: 3.5rem;
+                    }
+                }
+                
+                `}
+            </style>
+
             <nav className="navbar navbar-expand-md navbar-light fixed-top bg-light d-lg-none">
                 <div className="container">
                     <ul className="navbar-nav me-auto mb-md-0">
@@ -104,7 +119,7 @@ export const CardItem = () => {
                 </div>
             </nav>
 
-            <Navbar/>
+            <MyNavbar/>
 
             {isLoading ? (
                 <div>
@@ -163,42 +178,53 @@ export const CardItem = () => {
                                 <nav aria-label="breadcrumb">
                                     <ol className="breadcrumb">
                                         <li className="breadcrumb-item"><a href="/advertisment">Главная</a></li>
-                                        <li className="breadcrumb-item"><a href="/advertisment/:category">Catgory</a></li>
-                                        <li className="breadcrumb-item active" aria-current="page">SubCategory</li>
+                                        <li className="breadcrumb-item"><a href="/advertisment/:category">{t(adData?.category)}</a>
+                                        </li>
+                                        <li className="breadcrumb-item active" aria-current="page">{t(adData?.subcategory)}</li>
                                     </ol>
                                 </nav>
                                 <h2 id="product-title">{adData?.title}</h2>
-                                {!isModalOpen && (
-                                    <Carousel showStatus={false}>
-                                        {adData?.photoUrls.map((url, index) => (
-                                            <div key={index} onClick={() => openModal(url)}>
-                                                <img src={url} alt="" />
-                                            </div>
-                                        ))}
-                                    </Carousel>
-                                )}
-                                {/* ... */}
-                                <Modal
-                                    isOpen={isModalOpen}
-                                    onRequestClose={closeModal}
-                                    contentLabel="Image Modal"
-                                >
-                                    <img src={currentImage} alt="" />
-                                    <button onClick={closeModal}>Close</button>
-                                </Modal>
+                                <Carousel activeIndex={index} onSelect={handleSelect}>
+                                    {adData?.photoUrls.map((url, index) => (
+                                        <Carousel.Item key={index}>
+                                            <img
+                                                className="d-block w-100"
+                                                src={url}
+                                                alt={`Slide ${index + 1}`}
+                                            />
+                                        </Carousel.Item>
+                                    ))}
+                                </Carousel>
+                                <Row className="mt-3">
+                                    {adData?.photoUrls.map((url, index) => (
+                                        <Col xs={4} md={2} key={index}>
+                                            <Image
+                                                style={{objectFit: "cover", height: "100px"}}
+                                                src={url}
+                                                alt={`Slide ${index + 1}`}
+                                                onClick={() => handleSelect(index)}
+                                                thumbnail
+                                            />
+                                        </Col>
+                                    ))}
+                                </Row>
                                 <div className="mt-2">
-                                    <h5></h5>
-                                    <p id="product-description">{adData?.description}</p>
-                                    <h5></h5>
-                                    <p id="product-category">{adData?.category}</p>
-                                    <h5></h5>
-                                    <p id="product-condition"></p>
-                                    <h5></h5>
-                                    <p id="product-subcategory"></p>
+                                    {adData?.description && (
+                                        <>
+                                            <h5>Описание</h5>
+                                            <p id="product-description">{adData.description}</p>
+                                        </>
+                                    )}
+                                    {adData?.condition && (
+                                        <>
+                                            <h5>Состояние</h5>
+                                            <p id="product-description">{t(adData.condition)}</p>
+                                        </>
+                                    )}
                                 </div>
                             </div>
                             <div className="col">
-                                <h2 id="product-price">{adData?.price + '€'}</h2>
+                            <h2 id="product-price">{adData?.price + '€'}</h2>
                                 <a id="product-phone" href="" className="btn d-block mb-3"
                                    style={productPhone}>Позвонить</a>
                                 <a id="product-phone" href="" className="btn d-block mb-3"
@@ -212,55 +238,72 @@ export const CardItem = () => {
             )}
 
             {isLoading ? (
-            <div className="container d-lg-none" style={productCard}>
-                <div className="product-card">
-                    <img src={adData?.photoUrls[0] || Logo} style={prodImage} alt="Product Image"
-                         className="product-image"/>
-                    <h3 className="product-title mt-3">
-                        <span className="placeholder col-3"></span>
-                    </h3>
-                    <h5 className="product-title">
-                        <span className="placeholder col-12"></span>
-                    </h5>
-                    <h5 className="product-title">
-                        <span className="placeholder col-12"></span>
-                        <span className="placeholder col-12"></span>
-                        <span className="placeholder col-12"></span>
-                        <span className="placeholder col-12"></span>
-                    </h5>
-                    <div className="d-flex justify-content-between">
-                        <button className="btn btn-primary flex-grow-1 me-2">Написать</button>
-                        <button className="btn btn-secondary flex-grow-1">Позвонить</button>
-                    </div>
-                    <div className="d-flex justify-content-between mt-3">
-                        <div>
-                            <h5 className="mb-0">Vitaly</h5>
-                            <div className="d-flex align-items-center">
-                                <div>
-                                    <span className="bi bi-star-fill text-warning"></span>
-                                    <span className="bi bi-star-fill text-warning"></span>
-                                    <span className="bi bi-star-fill text-warning"></span>
-                                    <span className="bi bi-star-fill text-warning"></span>
-                                    <span className="bi bi-star text-secondary"></span>
-                                </div>
-                                <a href="reviews.html" className="text-decoration-none ms-3">5 отзывов</a>
-                            </div>
+                <div className="container d-lg-none" style={productCard}>
+                    <div className="product-card">
+                        <img src={adData?.photoUrls[0] || Logo} style={prodImage} alt="Product Image"
+                             className="product-image"/>
+                        <h3 className="product-title mt-3">
+                            <span className="placeholder col-3"></span>
+                        </h3>
+                        <h5 className="product-title">
+                            <span className="placeholder col-12"></span>
+                        </h5>
+                        <h5 className="product-title">
+                            <span className="placeholder col-12"></span>
+                            <span className="placeholder col-12"></span>
+                            <span className="placeholder col-12"></span>
+                            <span className="placeholder col-12"></span>
+                        </h5>
+                        <div className="d-flex justify-content-between">
+                            <button className="btn btn-primary flex-grow-1 me-2">Написать</button>
+                            <button className="btn btn-secondary flex-grow-1">Позвонить</button>
                         </div>
-                        <img src={Logo} alt="Seller Image" className="rounded-circle"
-                             style={profileImage}/>
+                        <div className="d-flex justify-content-between mt-3">
+                            <div>
+                                <h5 className="mb-0">Vitaly</h5>
+                                <div className="d-flex align-items-center">
+                                    <div>
+                                        <span className="bi bi-star-fill text-warning"></span>
+                                        <span className="bi bi-star-fill text-warning"></span>
+                                        <span className="bi bi-star-fill text-warning"></span>
+                                        <span className="bi bi-star-fill text-warning"></span>
+                                        <span className="bi bi-star text-secondary"></span>
+                                    </div>
+                                    <a href="reviews.html" className="text-decoration-none ms-3">5 отзывов</a>
+                                </div>
+                            </div>
+                            <img src={Logo} alt="Seller Image" className="rounded-circle"
+                                 style={profileImage}/>
+                        </div>
                     </div>
                 </div>
-            </div>
             ) : (
                 <div className="container d-lg-none" style={productCard}>
                     <div className="product-card">
-                        <Carousel showStatus={false}>
+                        <Carousel activeIndex={index} onSelect={handleSelect}>
                             {adData?.photoUrls.map((url, index) => (
-                                <div key={index}>
-                                    <img src={url} alt="" />
-                                </div>
+                                <Carousel.Item key={index}>
+                                    <img
+                                        className="d-block w-100"
+                                        src={url}
+                                        alt={`Slide ${index + 1}`}
+                                    />
+                                </Carousel.Item>
                             ))}
                         </Carousel>
+                        <Row className="mt-3">
+                            {adData?.photoUrls.map((url, index) => (
+                                <Col xs={3} md={2} key={index} className="mt-3">
+                                    <Image
+                                        style={{objectFit: "contain", height: "50px"}}
+                                        src={url}
+                                        alt={`Slide ${index + 1}`}
+                                        onClick={() => handleSelect(index)}
+                                        thumbnail
+                                    />
+                                </Col>
+                            ))}
+                        </Row>
                         <h3 className="product-title mt-3">${adData?.price + '€'}</h3>
                         <h5 className="product-title">${adData?.title}</h5>
                         <p className="product-description">${adData?.description}</p>
