@@ -1,0 +1,28 @@
+{
+  "home_navbar": "Home",
+  "contact_navbar": "Contact information",
+  "help_navbar": "Help",
+  "addItem_navbar": "Add advertisement",
+  "auth": "Sign in and Sign up",
+  "profile_navbar": "Profile",
+  "exit": "Exit",
+
+  "estate": "Real estate",
+  "electronics": "Electronics",
+  "clothes": "Clothes",
+  "rest" : "Other",
+  "transport": "Transport",
+  "house_goods": "Household goods",
+  "building_materials_and_tools": "Building materials and tools",
+  "transport_goods": "Transport goods",
+  "home_appliance": "Home appliances",
+  "service": "Services",
+  "child_goods": "Children's goods",
+  "health_and_beauty": "Health and beauty goods",
+  "sport": "Sport",
+  "hobby_n_Relax": "Hobbies and relaxation",
+
+  "condition": "Condition",
+  "new_cond": "New",
+  "used_cond": "Used"
+}
