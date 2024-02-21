@@ -12,6 +12,7 @@ import {useState} from "react";
 import LanguageModal from './LanguageModal';
 import PrivateRoute from "./components/PrivateRoute";
 import {CategoryAdvertisments} from "./pages/CategoryAdvertisment/CategoryAdvertisments";
+import Help from './pages/Help';
 
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
         <LanguageModal show={showModal} handleClose={handleClose} />
         <Router>
             <Switch>
+              <Route exact path={"/help"} component={Help}/>
               <Route path={"/advertisment/:id"} component={CardItem}/>
               <Route exact path={"/advertisment"} component={Advertisement}/>
               <Route exact path={"/sign_up"} component={Registration}/>

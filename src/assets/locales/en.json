@@ -25,5 +25,38 @@
 
   "condition": "Condition",
   "new_cond": "New",
-  "bu_cond": "Used"
+  "bu_cond": "Used",
+
+  "send_advert_question": "How to publish an advertisement?",
+  "send_advert": "To use this service, you need to log in to your account. In case of absence of authorization, please register. After successful login to your account, the option to place advertisements will be available. On the main page with advertisements, you will find the button \"Create Advertisement\" in the form of a \"plus\" sign, which will redirect you to the advertisement creation page. Follow the instructions, and your advertisement will be successfully published.",
+
+  "delete_advert_question": "How to delete an advertisement?",
+  "delete_advert": "To use this service, please go to the \"personal cabinet\" located at the bottom of the navigation menu. Here you will find all your advertisements, next to each of them there will be a \"three dots\" icon. By clicking on this icon, you will have the option to either delete the advertisement or make changes.",
+
+  "change_password_question": "What to do if you forgot your password?",
+  "forgot_pass": "If you forgot the password for your account, don't worry. Go to the authorization section, where you will see the option \"Forgot Password?\". By clicking on it, you will be redirected to the password recovery page. Enter the email address associated with your account. An instruction for further password recovery will be sent to this email address.",
+
+  "change_email_question": "How to change the application language?",
+  "change_language": "To change the application language, you have three options: \n1) On the main page \n2) On the authorization page \n3) On the profile page",
+
+  "share_advert_question": "How to share an advertisement?",
+  "share_advert": "To share an advertisement, you need to find the advertisement of interest and click on the \"share\" icon in the form of an arrow, located in the upper right corner of the advertisement. After that, you can share the advertisement on social networks or send the advertisement link in a message.",
+
+  "send_seller_question": "How to contact the seller?",
+  "send_seller": "To contact the seller, you should find the advertisement of interest and select the option \"Write\". After that, you will be automatically redirected to the chat page, where you can send a message to the seller.",
+
+  "chat_helper_question": "What is ChatHelper for on the chat page?",
+  "chat_helper": "ChatHelper is a support service that helps you solve any issues that may arise. If you have questions related to the application's functionality, you can turn to ChatHelper, which will assist you in resolving the issue.",
+
+  "do_filter_question": "How to use filters to search for advertisements?",
+  "do_filter": "To use filters, click on the \"filter\" icon located below the search bar. After that, you can select the necessary parameters for searching advertisements. After choosing the parameters, click the \"Apply\" button, and advertisements matching your criteria will be displayed.",
+
+  "edit_data_question": "How to change data in the profile?",
+  "edit_data": "To change data in the profile, you need to go to the \"personal cabinet\", located at the bottom of the navigation menu. Here you will find all your data that you can modify. After making changes, don't forget to click the \"Save\" button.",
+
+  "rating_seller_question": "How to view the seller's rating?",
+  "rating_seller": "To view the seller's rating, find the advertisement of interest and click on the seller's name. After that, you will be redirected to the seller's profile page, where you can see their rating and reviews.",
+
+  "security_data_question": "Are my data securely protected?",
+  "security_data": "Yes, your data is securely protected. We use the most advanced technologies to safeguard your information. All data you provide is stored in encrypted form and is inaccessible to third parties. We guarantee the complete security of your data."
 }
