@@ -5,6 +5,7 @@
   "addItem_navbar": "Add advertisement",
   "auth": "Sign in and Sign up",
   "profile_navbar": "Profile",
+  "message_navbar": "Messages",
   "exit": "Exit",
 
   "estate": "Real estate",
@@ -24,5 +25,5 @@
 
   "condition": "Condition",
   "new_cond": "New",
-  "used_cond": "Used"
+  "bu_cond": "Used"
 }

@@ -5,6 +5,7 @@
   "addItem_navbar": "Разместить объявление",
   "auth": "Вход и регистрация",
   "profile_navbar": "Профиль",
+  "message_navbar": "Сообщения",
   "exit": "Выход",
 
   "estate": "Недвижимость",
@@ -134,6 +135,6 @@
   "computer_games": "Игры для ПК и консолей",
 
   "condition": "Состояние",
-    "new_cond": "Новое",
-    "used_cond": "Б/у"
+  "new_cond": "Новое",
+  "bu_cond": "Б/у"
 }
