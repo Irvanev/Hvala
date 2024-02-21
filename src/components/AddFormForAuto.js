@@ -13,10 +13,10 @@ export const AddFormForAuto = () => {
             <Form.Group className="mb-3">
                 <Form.Label>Выберите марку автомобиля</Form.Label>
                 <Form.Select aria-label="Default select example">
-                    <option>Open this select menu</option>
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
+                    <option>Brand</option>
+                    <option value="1">Audi</option>
+                    <option value="2">BMW</option>
+                    <option value="3">Mersedes</option>
                 </Form.Select>
             </Form.Group>
             <Form.Group className="mb-3">
@@ -34,10 +34,17 @@ export const AddFormForAuto = () => {
             <Form.Group className="mb-3">
                 <Form.Label>Выберите тип кузова</Form.Label>
                 <Form.Select aria-label="Default select example">
-                    <option>Open this select menu</option>
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
+                    <option>Кузов</option>
+                    <option value="1">Седан</option>
+                    <option value="2">Хэтчбек</option>
+                    <option value="3">Универсал</option>
+                    <option value="4">Купе</option>
+                    <option value="5">Кабоиолет</option>
+                    <option value="6">Кроссовер</option>
+                    <option value="7">Внедорожник</option>
+                    <option value="8">Пикап</option>
+                    <option value="9">Минивен</option>
+                    <option value="10">Лимузин</option>
                 </Form.Select>
             </Form.Group>
             <Form.Group className="mb-3">
@@ -47,16 +54,18 @@ export const AddFormForAuto = () => {
             <Form.Group className="mb-3">
                 <Form.Label>Выберите трансмиссию</Form.Label>
                 <Form.Select aria-label="Default select example">
-                    <option>Open this select menu</option>
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
+                    <option>Трансмиссия</option>
+                    <option value="1">Механическая</option>
+                    <option value="2">Автоматическая</option>
+                    <option value="3">Варитор</option>
+                    <option value="4">Двухсцепная</option>
+                    <option value="5">Полуавтоматичская</option>
                 </Form.Select>
             </Form.Group>
             <Form.Group className="mb-3">
                 <Form.Label>Выберите привод</Form.Label>
                 <Form.Select aria-label="Default select example">
-                    <option>Open this select menu</option>
+                    <option>Привод</option>
                     <option value="1">Полный</option>
                     <option value="2">Передний</option>
                     <option value="3">Задний</option>
@@ -65,7 +74,7 @@ export const AddFormForAuto = () => {
             <Form.Group className="mb-3">
                 <Form.Label>Выберите расположение руля</Form.Label>
                 <Form.Select aria-label="Default select example">
-                    <option>Open this select menu</option>
+                    <option>Руль</option>
                     <option value="1">Левое</option>
                     <option value="2">Правое</option>
                 </Form.Select>
@@ -73,7 +82,7 @@ export const AddFormForAuto = () => {
             <Form.Group className="mb-3">
                 <Form.Label>Выберите состояние</Form.Label>
                 <Form.Select aria-label="Default select example">
-                    <option>Open this select menu</option>
+                    <option>Состояние</option>
                     <option value="1">Новое</option>
                     <option value="2">Б/У</option>
                 </Form.Select>
