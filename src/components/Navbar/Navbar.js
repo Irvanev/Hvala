@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {auth} from '../../config/firebase';
 import {signOut} from 'firebase/auth';
-import {Container, Nav, Navbar} from 'react-bootstrap';
+import {Badge, Button, Container, Nav, Navbar} from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import {MdLanguage} from "react-icons/md";
 import LanguageModal from '../../LanguageModal';
@@ -70,6 +70,12 @@ export const MyNavbar = () => {
                         </Nav.Item>
                     </Nav>
                     <Nav className="d-flex">
+                        <Nav.Item>
+                            <Button variant="light" href="/message">
+                                {t('message_navbar')} <Badge bg="secondary">9</Badge>
+                                <span className="visually-hidden">unread messages</span>
+                            </Button>
+                        </Nav.Item>
                         <Nav.Item>
                             {isUserLoggedIn ? (
                                 <Nav.Link active href="/profile">{t('profile_navbar')}</Nav.Link>

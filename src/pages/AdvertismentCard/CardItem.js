@@ -6,15 +6,18 @@ import React, {useEffect, useState} from 'react';
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import './cardItem.css';
 import {MyNavbar} from '../../components/Navbar/Navbar';
-import { Carousel, Row, Col, Image } from 'react-bootstrap';
+import {Carousel, Row, Col, Image, Button, Modal} from 'react-bootstrap';
 import {useTranslation} from "react-i18next";
+
 export const CardItem = () => {
     const {id} = useParams();
     const [adData, setAdData] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const history = useHistory();
     const [index, setIndex] = useState(0);
-    const { t } = useTranslation();
+    const {t} = useTranslation();
+    const [isUserLoggedIn, setIsUserLoggedIn] = useState(false); // предположим, что это состояние отслеживает, вошел ли пользователь в систему
+    const [showModal, setShowModal] = useState(false);
 
     const handleSelect = (selectedIndex, e) => {
         setIndex(selectedIndex);
@@ -24,6 +27,16 @@ export const CardItem = () => {
     const goBack = () => {
         history.goBack();
     }
+
+    const handleCallClick = () => {
+        if (isUserLoggedIn) {
+            setShowModal(true);
+        } else {
+            setShowModal(true);
+            //history.push('/login');
+        }
+    };
+    const handleCloseModal = () => setShowModal(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -74,7 +87,7 @@ export const CardItem = () => {
         paddingTop: "60px",
     }
 
-    const prodImage  = {
+    const prodImage = {
         width: "100%",
         height: "auto"
     }
@@ -91,12 +104,12 @@ export const CardItem = () => {
                 }
                 @media (max-width: 1000px) {
                     body {
-                        padding-bottom: 3.5rem;
+                        padding-bottom: 6rem;
                     }
                 }
                 @media (min-width: 1000px) {
                   body {
-                        padding-top: 3.5rem;
+                        padding-bottom: 3.5rem;
                     }
                 }
                 
@@ -172,15 +185,17 @@ export const CardItem = () => {
                 </div>
             ) : (
                 <div>
-                    <div className="container mt-2 d-none d-lg-block" style={forCon}>
+                    <div className="container d-none d-lg-block" style={forCon}>
                         <div className="row">
                             <div className="col">
                                 <nav aria-label="breadcrumb">
                                     <ol className="breadcrumb">
                                         <li className="breadcrumb-item"><a href="/advertisment">Главная</a></li>
-                                        <li className="breadcrumb-item"><a href="/advertisment/:category">{t(adData?.category)}</a>
+                                        <li className="breadcrumb-item"><a
+                                            href="/advertisment/:category">{t(adData?.category)}</a>
                                         </li>
-                                        <li className="breadcrumb-item active" aria-current="page">{t(adData?.subcategory)}</li>
+                                        <li className="breadcrumb-item active"
+                                            aria-current="page">{t(adData?.subcategory)}</li>
                                     </ol>
                                 </nav>
                                 <h2 id="product-title">{adData?.title}</h2>
@@ -208,30 +223,75 @@ export const CardItem = () => {
                                         </Col>
                                     ))}
                                 </Row>
-                                <div className="mt-2">
+                                <h3>Описание</h3>
+                                <div>
                                     {adData?.description && (
-                                        <>
-                                            <h5>Описание</h5>
+                                        <div className="mt-3">
                                             <p id="product-description">{adData.description}</p>
-                                        </>
+                                        </div>
                                     )}
+                                    <h3>Характеристики</h3>
                                     {adData?.condition && (
-                                        <>
-                                            <h5>Состояние</h5>
-                                            <p id="product-description">{t(adData.condition)}</p>
-                                        </>
+                                        <div>
+                                            <span
+                                                id="product-description">Состояние: <strong>{t(adData.condition)}</strong></span>
+                                        </div>
+                                    )}
+                                    {adData?.brand && (
+                                        <div>
+                                            <span
+                                                id="product-description">Бренд: <strong>{t(adData.brand)}</strong></span>
+                                        </div>
+                                    )}
+                                    {adData?.model && (
+                                        <div>
+                                            <span
+                                                id="product-description">Модель: <strong>{t(adData.model)}</strong></span>
+                                        </div>
+                                    )}
+                                    {adData?.memory && (
+                                        <div>
+                                            <span id="product-description">Память: <strong>{t(adData.memory)}Gb</strong></span>
+                                        </div>
+                                    )}
+                                    {adData?.screen_size && (
+                                        <div>
+                                            <span id="product-description">Размер
+                                                экрана<strong>{t(adData.screen_size)}</strong>
+                                            </span>
+                                        </div>
+                                    )}
+                                    {adData?.location && (
+                                        <div className="mt-3">
+                                            <h5>Расположение</h5>
+                                            <span id="product-description">{t(adData.location)}</span>
+                                            <a href={`https://www.google.com/maps/search/?api=1&query=${adData.location}`}
+                                               target="_blank" rel="noopener noreferrer" style={{marginLeft: '10px'}}>Показать
+                                                на карте</a>
+                                        </div>
                                     )}
                                 </div>
                             </div>
                             <div className="col">
-                            <h2 id="product-price">{adData?.price + '€'}</h2>
-                                <a id="product-phone" href="" className="btn d-block mb-3"
+                                <h2 id="product-price">{adData?.price + '€'}</h2>
+                                <a id="product-phone" onClick={handleCallClick} className="btn d-block mb-3"
                                    style={productPhone}>Позвонить</a>
                                 <a id="product-phone" href="" className="btn d-block mb-3"
                                    style={productPhone}>Написать</a>
                                 <div className="d-flex justify-content-between mt-3" id="seller-info">
                                 </div>
                             </div>
+                            <Modal show={showModal} onHide={handleCloseModal}>
+                                <Modal.Header closeButton>
+                                    <Modal.Title>Номер телефона</Modal.Title>
+                                </Modal.Header>
+                                <Modal.Body>{adData?.phone}</Modal.Body>
+                                <Modal.Footer>
+                                    <Button variant="secondary" onClick={handleCloseModal}>
+                                        Закрыть
+                                    </Button>
+                                </Modal.Footer>
+                            </Modal>
                         </div>
                     </div>
                 </div>

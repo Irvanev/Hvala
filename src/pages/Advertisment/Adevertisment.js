@@ -48,7 +48,7 @@ export const Advertisement = () => {
         const adsSnapshot = await getDocs(adsQuery);
         const adsList = adsSnapshot.docs
             .map(doc => ({id: doc.id, ...doc.data()}))
-            .filter(ad => Object.keys(ad).length > 1); // фильтруем пустые документы
+            .filter(advertisment => Object.keys(advertisment).length > 1); // фильтруем пустые документы
         setLastDoc(adsSnapshot.docs[adsSnapshot.docs.length - 1]);
         setAds(prevAds => [...prevAds, ...adsList]);
         setIsLoading(false);
@@ -64,7 +64,7 @@ export const Advertisement = () => {
             <style type="text/css">
                 {`
                 @media (max-width: 1000px) {
-                  .imageAd {
+                  .imageAdvertisment {
                     width: 100%;
                     height: 150px;
                     object-fit: cover;
@@ -77,7 +77,7 @@ export const Advertisement = () => {
                     }
                 }
                 @media (min-width: 1000px) {
-                  .imageAd {
+                  .imageAdvertisment {
                       width: 100%;
                       height: 220px;
                       object-fit: cover;
@@ -87,6 +87,7 @@ export const Advertisement = () => {
                     }
                     body {
                         padding-top: 3.5rem;
+                        padding-bottom: 3.5em;
                     }
                 }
                 .location-text {
@@ -109,6 +110,13 @@ export const Advertisement = () => {
                 .col .img-fluid {
                     border: 1px solid rgb(200, 200, 200);
                     border-radius: 10px;
+                }
+                .list-group a {
+                    text-decoration: none;
+                    color: black;
+                }
+                .list-group a:hover {
+                    color: #ffa600;
                 }
                 
                 `}
@@ -196,19 +204,19 @@ export const Advertisement = () => {
 
             <Container className="album mt-3">
                 <Row xs={2} sm={2} md={3} lg={4} className="g-3" id="cardAds">
-                    {ads.map((ad, index) => (
+                    {ads.map((advertisment, index) => (
                         <Col key={index}>
-                            <Link key={ad.id} to={`/advertisment/${ad.id}`} style={aStyle}>
+                            <Link key={advertisment.id} to={`/advertisment/${advertisment.id}`} style={aStyle}>
                                 <Card className="shadow-sm">
-                                    <Card.Img variant="top" src={(ad.photoUrls && ad.photoUrls[0]) || Logo}
-                                              alt="imageAd" className="imageAd"/>
+                                    <Card.Img variant="top" src={(advertisment.photoUrls && advertisment.photoUrls[0]) || Logo}
+                                              alt="imageAdvertisment" className="imageAdvertisment"/>
                                     <Card.Body>
                                         <Card.Text>
-                                            <span className="location-text">{ad.title}</span>
-                                            <strong>{ad.price + '€'}<br/></strong>
-                                            <span className="location-text">{ad.location}</span>
+                                            <span className="location-text">{advertisment.title}</span>
+                                            <strong>{advertisment.price + '€'}<br/></strong>
+                                            <span className="location-text">{advertisment.location}</span>
                                             <span className="date-text">
-                                              {new Date(ad.time_creation.seconds * 1000).toLocaleString('ru', {
+                                              {new Date(advertisment.time_creation.seconds * 1000).toLocaleString('ru', {
                                                   day: 'numeric',
                                                   month: 'long',
                                                   hour: '2-digit',

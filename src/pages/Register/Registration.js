@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import Logotype from "../../assets/logo.png"
 import {auth, db} from "../../config/firebase"
 import {createUserWithEmailAndPassword} from "firebase/auth";
-import {doc, setDoc, serverTimestamp} from "firebase/firestore";
+import {doc, setDoc, serverTimestamp, collection, query, where, getDocs} from "firebase/firestore";
 import {useHistory} from 'react-router-dom';
 import {MyNavbar} from '../../components/Navbar/Navbar';
 import {Button, Container, Form} from "react-bootstrap";
@@ -13,6 +13,13 @@ export const Registration = () => {
     const [password, setPassword] = useState('');
     const [username, setUsername] = useState('');
     const [confPassword, setConfPassword] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
+
+    const checkUsername = async (username) => {
+        const q = query(collection(db, "users"), where("name", "==", username));
+        const querySnapshot = await getDocs(q);
+        return !querySnapshot.empty;
+    }
 
     const goBack = () => {
         history.goBack();
@@ -21,7 +28,12 @@ export const Registration = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (password !== confPassword) {
-            alert('Пароли не совпадают');
+            setErrorMessage('Пароли не совпадают');
+            return;
+        }
+        const isUsernameTaken = await checkUsername(username);
+        if (isUsernameTaken) {
+            alert('Username уже занят');
             return;
         }
         try {
@@ -108,6 +120,7 @@ export const Registration = () => {
                         <Form.Label>Confirm Password</Form.Label>
                         <Form.Control type="password" value={confPassword} autoComplete="new-password"
                                       onChange={e => setConfPassword(e.target.value)}/>
+                        <span style={{color: 'red'}}>{errorMessage}</span>
                     </Form.Group>
                     <Form.Group className="mb-3">
                         <p>Уже зарегистрированы? <a href="/sign_in">Войти</a></p>
