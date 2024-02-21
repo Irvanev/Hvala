@@ -117,32 +117,32 @@ export const Advertisement = () => {
             <Container>
                 <Row xs={2} sm={2} md={3} lg={6}>
                     <Col>
-                        <a href="/advertisment/transport">
+                        <a href="/advertisments/transport">
                             <Image src={AutoCard} fluid className="lenta mt-3" alt="..."/>
                         </a>
                     </Col>
                     <Col>
-                        <a href="/advertisment/estate">
+                        <a href="/advertisments/estate">
                             <Image src={HomeCard} fluid className="lenta mt-3" alt="..."/>
                         </a>
                     </Col>
                     <Col>
-                        <a href="/advertisment/clothes">
+                        <a href="/advertisments/clothes">
                             <Image src={ClothesCard} fluid className="lenta mt-3" alt="..."/>
                         </a>
                     </Col>
                     <Col>
-                        <a href="/advertisment/electronics">
+                        <a href="/advertisments/electronics">
                             <Image src={ElectronicsCard} fluid className="lenta mt-3" alt="..."/>
                         </a>
                     </Col>
                     <Col>
-                        <a href="/advertisment/transport">
+                        <a href="/advertisments/transport">
                             <Image src={AutoCard} fluid className="lenta mt-3" alt="..."/>
                         </a>
                     </Col>
                     <Col>
-                        <a href="/advertisment/transport">
+                        <a href="/advertisments/transport">
                             <Image src={AutoCard} fluid className="lenta mt-3" alt="..."/>
                         </a>
                     </Col>

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {MyNavbar} from '../../components/Navbar/Navbar';
 import { collection, onSnapshot, query, where } from 'firebase/firestore';
 import Categories from '../../components/category';
-import {useHistory, useParams} from 'react-router-dom';
+import {useHistory, useParams, Link} from 'react-router-dom';
 import {Card, Container, Form, Row, Col} from 'react-bootstrap';
 import Logo from '../../assets/logo.png'
 import {db} from "../../config/firebase";
@@ -54,6 +54,13 @@ export const CategoryAdvertisments = () => {
                     .list-group a:hover {
                         color: #ffa600;
                     }
+                    .advertisment-description {
+                        display: -webkit-box;
+                        -webkit-line-clamp: 3;
+                        -webkit-box-orient: vertical;  
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                    }
                     `}
             </style>
 
@@ -79,7 +86,7 @@ export const CategoryAdvertisments = () => {
 
             <Categories/>
 
-            <Container>
+            <Container className='d-none d-lg-block'>
                 <Row>
                     <Col md={3}>
                         <Form.Select aria-label="Default select example">
@@ -99,20 +106,22 @@ export const CategoryAdvertisments = () => {
                     </Col>
                     <Col md={9}>
                         {advertisments.map((ad) => (
+                            <Link key={ad.id} to={`/advertisment/${ad.id}`} style={{textDecoration: 'none'}}>
                         <Card style={{ height: '200px' }} className='mt-3'>
                             <Row>
                                 <Col md={4}>
-                                    <Card.Img style={{ height: '200px', width: '250px' }} src={Logo} alt="Ad Image" />
+                                    <Card.Img style={{ height: '200px', width: '300px', objectFit: 'cover'}} src={ad.photoUrls[0] || Logo}  alt="Ad Image" />
                                 </Col>
                                 <Col md={8}>
                                     <Card.Body>
                                         <Card.Title>{ad.title}</Card.Title>
-                                        <Card.Text>{ad.description}</Card.Text>
-                                        <Card.Text>Price: {ad.price}</Card.Text>
+                                        <Card.Text><strong>{ad.price + '€'}</strong></Card.Text>
+                                        <Card.Text className='advertisment-description'>{ad.description}</Card.Text>
                                     </Card.Body>
                                 </Col>
                             </Row>
                         </Card>
+                        </Link>
                         ))}
                     </Col>
                 </Row>

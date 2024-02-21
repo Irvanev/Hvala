@@ -6,7 +6,7 @@ import React, {useEffect, useState} from 'react';
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import './cardItem.css';
 import {MyNavbar} from '../../components/Navbar/Navbar';
-import {Carousel, Row, Col, Image, Button, Modal} from 'react-bootstrap';
+import {Carousel, Row, Col, Image, Button, Modal, Container, Placeholder, Breadcrumb} from 'react-bootstrap';
 import {useTranslation} from "react-i18next";
 
 export const CardItem = () => {
@@ -75,6 +75,7 @@ export const CardItem = () => {
     const productPhone = {
         backgroundColor: 'orange',
         color: 'white',
+        border: 'none',
     }
 
     const forCon = {
@@ -135,54 +136,47 @@ export const CardItem = () => {
             <MyNavbar/>
 
             {isLoading ? (
-                <div>
-                    <div className="container mt-2 d-none d-lg-block" aria-hidden="true" style={forCon}>
-                        <div className="row">
-                            <div className="col">
-                                <nav aria-label="breadcrumb">
-                                    <ol className="breadcrumb">
-                                        <li className="breadcrumb-item"><a href="/index.html">Главная</a></li>
-                                        <li className="breadcrumb-item"><a href="#">Catgory</a></li>
-                                        <li className="breadcrumb-item active" aria-current="page">SubCategory</li>
-                                    </ol>
-                                </nav>
-                                <h2 id="product-title placeholder col-3">
-                                    <span className="placeholder col-6"></span>
-                                </h2>
-                                <img id="product-image" src={Logo} alt="" className="img-fluid"
-                                     style={productImage}/>
-                                <div className="mt-2">
-                                    <h5>
-                                        <span className="placeholder col-7"></span>
-                                    </h5>
-                                    <h5>
-                                        <span className="placeholder col-7"></span>
-                                    </h5>
-
-                                    <h5>
-                                        <span className="placeholder col-7"></span>
-                                    </h5>
-
-                                    <h5>
-                                        <span className="placeholder col-12"></span>
-                                    </h5>
-
-                                </div>
+                <Container className="mt-2 d-none d-lg-block" aria-hidden="true" style={forCon}>
+                    <Row>
+                        <Col>
+                            <Breadcrumb>
+                                <Breadcrumb.Item href="/index.html">Главная</Breadcrumb.Item>
+                                <Breadcrumb.Item href="#">Catgory</Breadcrumb.Item>
+                                <Breadcrumb.Item active>SubCategory</Breadcrumb.Item>
+                            </Breadcrumb>
+                            <h2 id="product-title placeholder col-3">
+                            <Placeholder animation="glow">
+                                    <Placeholder xs={6} />
+                                </Placeholder>
+                            </h2>
+                            <Image id="product-image" src={Logo} alt="" className="img-fluid" style={productImage}/>
+                            <div className="mt-2">
+                                <h5>
+                                <Placeholder animation="glow">
+                                    <Placeholder xs={6} />
+                                </Placeholder>
+                                </h5>
+                                <h5>
+                                <Placeholder animation="glow">
+                                    <Placeholder xs={7} /> <Placeholder xs={4} /> <Placeholder xs={4} />{' '}
+                                    <Placeholder xs={6} /> <Placeholder xs={8} />
+                                </Placeholder>
+                                </h5>
                             </div>
-                            <div className="col">
-                                <h2 id="product-price placeholder-glow">
-                                    <span className="placeholder col-2"></span>
-                                </h2>
-                                <a id="product-phone" href="" className="btn d-block mb-3 disabled placeholder"
-                                   style={productPhone}></a>
-                                <a id="product-phone" href="" className="btn d-block mb-3 disabled placeholder"
-                                   style={productPhone}></a>
-                                <div className="d-flex justify-content-between mt-3" id="seller-info">
-                                </div>
+                        </Col>
+                        <Col>
+                            <h2 id="product-price placeholder-glow">
+                            <Placeholder animation="glow">
+                                    <Placeholder xs={3} />
+                                </Placeholder>
+                            </h2>
+                            <Placeholder.Button style={productPhone} className=" d-block mb-3" xs={12} />
+                            <Placeholder.Button className=" d-block mb-3" style={productPhone} xs={12} />
+                            <div className="d-flex justify-content-between mt-3" id="seller-info">
                             </div>
-                        </div>
-                    </div>
-                </div>
+                        </Col>
+                    </Row>
+                </Container>
             ) : (
                 <div>
                     <div className="container d-none d-lg-block" style={forCon}>
@@ -202,11 +196,14 @@ export const CardItem = () => {
                                 <Carousel activeIndex={index} onSelect={handleSelect}>
                                     {adData?.photoUrls.map((url, index) => (
                                         <Carousel.Item key={index}>
-                                            <img
-                                                className="d-block w-100"
-                                                src={url}
-                                                alt={`Slide ${index + 1}`}
-                                            />
+                                            <div style={{backgroundColor: '#dcdcdc', display: 'flex', justifyContent: 'center'}}>
+                                                <img
+                                                    className="d-block"
+                                                    src={url}
+                                                    alt={`Slide ${index + 1}`}
+                                                    style={{maxWidth: '100%'}}
+                                                />
+                                            </div>
                                         </Carousel.Item>
                                     ))}
                                 </Carousel>
@@ -298,10 +295,10 @@ export const CardItem = () => {
             )}
 
             {isLoading ? (
-                <div className="container d-lg-none" style={productCard}>
-                    <div className="product-card">
-                        <img src={adData?.photoUrls[0] || Logo} style={prodImage} alt="Product Image"
-                             className="product-image"/>
+                <Container className="d-lg-none" style={productCard}>
+                <Row className="product-card">
+                    <Image src={adData?.photoUrls[0] || Logo} style={prodImage} alt="Product Image" className="product-image"/>
+                    <Col xs={12}>
                         <h3 className="product-title mt-3">
                             <span className="placeholder col-3"></span>
                         </h3>
@@ -314,29 +311,29 @@ export const CardItem = () => {
                             <span className="placeholder col-12"></span>
                             <span className="placeholder col-12"></span>
                         </h5>
-                        <div className="d-flex justify-content-between">
-                            <button className="btn btn-primary flex-grow-1 me-2">Написать</button>
-                            <button className="btn btn-secondary flex-grow-1">Позвонить</button>
-                        </div>
-                        <div className="d-flex justify-content-between mt-3">
-                            <div>
+                        <Row className="d-flex justify-content-between">
+                            <Button variant="primary" className="flex-grow-1 me-2">Написать</Button>
+                            <Button variant="secondary" className="flex-grow-1">Позвонить</Button>
+                        </Row>
+                        <Row className="d-flex justify-content-between mt-3">
+                            <Col>
                                 <h5 className="mb-0">Vitaly</h5>
-                                <div className="d-flex align-items-center">
-                                    <div>
+                                <Row className="d-flex align-items-center">
+                                    <Col>
                                         <span className="bi bi-star-fill text-warning"></span>
                                         <span className="bi bi-star-fill text-warning"></span>
                                         <span className="bi bi-star-fill text-warning"></span>
                                         <span className="bi bi-star-fill text-warning"></span>
                                         <span className="bi bi-star text-secondary"></span>
-                                    </div>
+                                    </Col>
                                     <a href="reviews.html" className="text-decoration-none ms-3">5 отзывов</a>
-                                </div>
-                            </div>
-                            <img src={Logo} alt="Seller Image" className="rounded-circle"
-                                 style={profileImage}/>
-                        </div>
-                    </div>
-                </div>
+                                </Row>
+                            </Col>
+                            <Image src={Logo} alt="Seller Image" roundedCircle style={profileImage}/>
+                        </Row>
+                    </Col>
+                </Row>
+            </Container>
             ) : (
                 <div className="container d-lg-none" style={productCard}>
                     <div className="product-card">
