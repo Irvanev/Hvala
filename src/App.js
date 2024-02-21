@@ -11,6 +11,7 @@ import 'bootstrap/dist/js/bootstrap.bundle.min';
 import {useState} from "react";
 import LanguageModal from './LanguageModal';
 import PrivateRoute from "./components/PrivateRoute";
+import {CategoryAdvertisments} from "./pages/CategoryAdvertisment/CategoryAdvertisments";
 
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
               <Route exact path={"/advertisment"} component={Advertisement}/>
               <Route exact path={"/sign_up"} component={Registration}/>
               <Route exact path={"/sign_in"} component={Authorization}/>
+              <Route exact path={"/advertisments/:category"} component={CategoryAdvertisments}/>
                 <PrivateRoute exact path={"/message"} component={Message}/>
                 <PrivateRoute exact path={"/addItem"} component={AddItem}/>
                 <PrivateRoute path={"/profile"} component={Profile}/>

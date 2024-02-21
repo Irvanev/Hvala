@@ -4,12 +4,12 @@ import {collection, getDocs, limit, orderBy, query, startAfter} from 'firebase/f
 import {db} from "../../config/firebase";
 import Logo from '../../assets/logo.png';
 import {Link} from 'react-router-dom';
-import LogoSearch from "../../assets/hvala.png"
 import {MyNavbar} from '../../components/Navbar/Navbar';
 import AutoCard from "../../assets/auto.png"
 import ClothesCard from "../../assets/clothes.png"
 import ElectronicsCard from "../../assets/phone.png"
 import HomeCard from "../../assets/house.png"
+import Categories from '../../components/category';
 
 export const Advertisement = () => {
     const [ads, setAds] = useState([]);
@@ -21,20 +21,9 @@ export const Advertisement = () => {
         textDecoration: 'none',
     }
 
-    const logoSearch = {
-        marginRight: "10px",
-        width: "140px"
-    }
     const collapse = {
         backgroundColor: "#ffa600",
         color: "azure"
-    }
-
-    const drop = {
-        position: "absolute",
-        zIndex: 1,
-        top: "16%",
-        boxShadow: "0px 8px 16px 0px rgba(0,0,0,0.5)"
     }
 
 
@@ -123,79 +112,37 @@ export const Advertisement = () => {
             </style>
 
             <MyNavbar/>
-            <div className="container" id="advertMedia">
-                <form className="d-flex py-4">
-                    <a href="/advertisment">
-                        <img src={LogoSearch} alt="Logo" style={logoSearch}/>
-                    </a>
-                    <button className="btn btn me-2 d-none d-lg-block" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#collapseExample" style={collapse}>Категории
-                    </button>
-
-                    <div className="collapse" id="collapseExample" style={drop}>
-                        <ul id="categories" className="list-group">
-                            <li className="list-group-item"><a href="/advertisment/category/estate">Недвижимость</a>
-                            </li>
-                            <li className="list-group-item"><a href="/advertisment/category/transport">Транспорт</a>
-                            </li>
-                            <li className="list-group-item"><a href="/advertisment/category/clothes">Одежда</a></li>
-                            <li className="list-group-item"><a href="/advertisment/category/electronics">Электроника</a>
-                            </li>
-                            <li className="list-group-item"><a href="/advertisment/category/house_goods">Товары для
-                                дома</a></li>
-                            <li className="list-group-item"><a
-                                href="/advertisment/category/building_materials_and_tools">Стройматериалы и
-                                инструменты</a></li>
-                            <li className="list-group-item"><a href="/advertisment/category/transport_goods">Товары для
-                                транспорта</a></li>
-                            <li className="list-group-item"><a href="/advertisment/category/home_appliance">Бытовая
-                                техника</a></li>
-                            <li className="list-group-item"><a href="/advertisment/category/service">Услуги</a></li>
-                            <li className="list-group-item"><a href="/advertisment/category/child_goods">Товары для
-                                детей</a></li>
-                            <li className="list-group-item"><a href="/advertisment/category/health_and_beauty">Товары
-                                для красоты и здоровья</a></li>
-                            <li className="list-group-item"><a href="/advertisment/category/sport">Спорт</a></li>
-                            <li className="list-group-item"><a href="/advertisment/category/hobby_n_Relax">Хобби и
-                                отдых</a></li>
-                            <li className="list-group-item"><a href="/advertisment/category/subcat14">Товары для
-                                животных</a></li>
-                            <li className="list-group-item"><a href="/advertisment/category/rest">Прочее</a></li>
-                        </ul>
-                    </div>
-                    <input className="form-control" type="search" placeholder="Search" aria-label="Search"/>
-                </form>
-            </div>
+            <Categories/>
 
             <Container>
                 <Row xs={2} sm={2} md={3} lg={6}>
                     <Col>
-                        <a href="/advertisment/category/transport">
+                        <a href="/advertisment/transport">
                             <Image src={AutoCard} fluid className="lenta mt-3" alt="..."/>
                         </a>
                     </Col>
                     <Col>
-                        <a href="/advertisment/category/estate">
+                        <a href="/advertisment/estate">
                             <Image src={HomeCard} fluid className="lenta mt-3" alt="..."/>
                         </a>
                     </Col>
                     <Col>
-                        <a href="/advertisment/category/clothes">
+                        <a href="/advertisment/clothes">
                             <Image src={ClothesCard} fluid className="lenta mt-3" alt="..."/>
                         </a>
                     </Col>
                     <Col>
-                        <a href="/advertisment/category/electronics">
+                        <a href="/advertisment/electronics">
                             <Image src={ElectronicsCard} fluid className="lenta mt-3" alt="..."/>
                         </a>
                     </Col>
                     <Col>
-                        <a href="/advertisment/category/transport">
+                        <a href="/advertisment/transport">
                             <Image src={AutoCard} fluid className="lenta mt-3" alt="..."/>
                         </a>
                     </Col>
                     <Col>
-                        <a href="/advertisment/category/transport">
+                        <a href="/advertisment/transport">
                             <Image src={AutoCard} fluid className="lenta mt-3" alt="..."/>
                         </a>
                     </Col>
