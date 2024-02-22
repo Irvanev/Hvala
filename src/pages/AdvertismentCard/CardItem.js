@@ -1,5 +1,6 @@
 import { useHistory, useParams } from "react-router-dom";
 import { doc, getDoc } from "firebase/firestore";
+import { Link } from 'react-router-dom';
 import { db } from "../../config/firebase";
 import Logo from "../../assets/logo.png";
 import React, { useEffect, useState } from "react";
@@ -359,6 +360,7 @@ export const CardItem = () => {
                   className="d-flex justify-content-between mt-3"
                   id="seller-info"
                 ></div>
+                <Link to={`/seller/${userData?.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                 <div className="d-flex justify-content-between mt-3">
                   <div>
                     <h5 className="mb-0">{userData?.name}</h5>
@@ -375,6 +377,7 @@ export const CardItem = () => {
                     style={profileImage}
                   />
                 </div>
+                </Link>
               </div>
               <Modal show={showModal} onHide={handleCloseModal}>
                 <Modal.Header closeButton>
