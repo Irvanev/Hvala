@@ -1,4 +1,4 @@
-import { Container, Row, Col, Image, Card } from 'react-bootstrap';
+import { Container, Row, Col, Image, Card,  } from 'react-bootstrap';
 import {useEffect, useState} from 'react';
 import {collection, getDocs, limit, orderBy, query, startAfter} from 'firebase/firestore';
 import {db} from "../../config/firebase";

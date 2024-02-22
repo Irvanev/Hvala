@@ -22,6 +22,17 @@ const StarRating = ({ rating }) => {
                 .star-empty {
                     color: gray;
                 }
+                @media (max-width: 1000px) {
+                      body {
+                          padding-bottom: 6.0rem;
+                      }
+                  }
+                  @media (min-width: 1000px) {
+                      body {
+                          padding-top: 4.5rem;
+                          padding-bottom: 3.5em;
+                      }
+                  }
                 `}
             </style>
 

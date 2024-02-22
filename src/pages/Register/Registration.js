@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import Logotype from "../../assets/logo.png"
 import {auth, db} from "../../config/firebase"
-import {createUserWithEmailAndPassword} from "firebase/auth";
+import {createUserWithEmailAndPassword, sendEmailVerification, onAuthStateChanged, signOut} from "firebase/auth";
 import {doc, setDoc, serverTimestamp, collection, query, where, getDocs} from "firebase/firestore";
 import {useHistory} from 'react-router-dom';
 import {MyNavbar} from '../../components/Navbar/Navbar';
@@ -39,19 +39,32 @@ export const Registration = () => {
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
-
-            await setDoc(doc(db, 'users', user.uid), {
-                addtime: serverTimestamp(), // текущее время
-                role: "user",
-                fcmtoken: "",
-                location: "",
-                photoUrl: "",
-                rating: 0,
-                name: username,
-                email: email,
-                id: user.uid
+        
+            // Отправить письмо для подтверждения
+            await sendEmailVerification(user);
+            alert('Письмо для подтверждения отправлено на вашу почту');
+        
+            // Выйти из системы
+            await signOut(auth);
+        
+            // Подписаться на изменения состояния аутентификации
+            onAuthStateChanged(auth, async (user) => {
+                if (user?.emailVerified) {
+                    // Пользователь подтвердил свою электронную почту, сохранить его данные в базу данных
+                    await setDoc(doc(db, 'users', user.uid), {
+                        addtime: serverTimestamp(), // текущее время
+                        role: "user",
+                        fcmtoken: "",
+                        location: "",
+                        photoUrl: "",
+                        rating: 0,
+                        name: username,
+                        email: email,
+                        id: user.uid
+                    });
+                    history.push('/advertisment');
+                }
             });
-            history.push('/advertisment');
         } catch (error) {
             alert(error.message);
         }
