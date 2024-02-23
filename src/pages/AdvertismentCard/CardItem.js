@@ -233,16 +233,18 @@ export const CardItem = () => {
                 <nav aria-label="breadcrumb">
                   <ol className="breadcrumb">
                     <li className="breadcrumb-item">
-                      <a href="/advertisment">Главная</a>
+                      <a style={{ textDecoration: "none", color: "grey" }} href="/advertisment">Главная</a>
                     </li>
                     <li className="breadcrumb-item">
-                      <a href="/advertisment/:category">
+                      <a style={{ textDecoration: "none", color: "grey" }} href={`/advertisments/${adData?.category}`}>
                         {t(adData?.category)}
                       </a>
                     </li>
-                    <li className="breadcrumb-item active" aria-current="page">
-                      {t(adData?.subcategory)}
-                    </li>
+                    {adData?.subcategory ? (
+                      <li className="breadcrumb-item active" aria-current="page">
+                        {t(adData?.subcategory)}
+                      </li>
+                    ) : null}
                   </ol>
                 </nav>
                 <h2 id="product-title">{adData?.title}</h2>
@@ -363,7 +365,7 @@ export const CardItem = () => {
                 <Link to={`/seller/${userData?.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                   <div className="d-flex justify-content-between mt-3">
                     <div>
-                      <h5 className="mb-0">{userData?.name}</h5>
+                      <h5 className="mb-0">{userData?.name || 'User'}</h5>
                       <div className="d-flex align-items-center">
                         <a href="reviews.html" className="text-decoration-none">
                           {userData?.rating} отзывов
@@ -456,6 +458,23 @@ export const CardItem = () => {
         </Container>
       ) : (
         <div className="container d-lg-none" style={productCard}>
+          <nav aria-label="breadcrumb" className="mt-3">
+            <ol className="breadcrumb">
+              <li className="breadcrumb-item">
+                <a style={{ textDecoration: "none", color: "grey" }} href="/advertisment">Главная</a>
+              </li>
+              <li className="breadcrumb-item">
+                <a style={{ textDecoration: "none", color: "grey" }} href={`/advertisments/${adData?.category}`}>
+                  {t(adData?.category)}
+                </a>
+              </li>
+              {adData?.subcategory ? (
+                <li className="breadcrumb-item active" aria-current="page">
+                  {t(adData?.subcategory)}
+                </li>
+              ) : null}
+            </ol>
+          </nav>
           <div className="product-card">
             <Carousel activeIndex={index} onSelect={handleSelect}>
               {adData?.photoUrls.map((url, index) => (
@@ -552,7 +571,7 @@ export const CardItem = () => {
             <Link to={`/seller/${userData?.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
               <div className="d-flex justify-content-between mt-3">
                 <div>
-                  <h5 className="mb-0">{userData?.name}</h5>
+                  <h5 className="mb-0">{userData?.name || "User"}</h5>
                   <div className="d-flex align-items-center">
                     <a href="reviews.html" className="text-decoration-none">
                       {userData?.rating} отзывов
