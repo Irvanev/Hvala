@@ -1,13 +1,13 @@
 import Logo from '../../assets/logo.png';
-import {Container, Row, Col, Card, Image} from 'react-bootstrap';
-import {auth, db} from "../../config/firebase";
+import { Container, Row, Col, Card, Image } from 'react-bootstrap';
+import { auth, db } from "../../config/firebase";
 import { collection, getDocs, query, where } from 'firebase/firestore';
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faStar as fasStar } from '@fortawesome/free-solid-svg-icons'
-import {MyNavbar} from '../../components/Navbar/Navbar';
-import {useHistory} from "react-router-dom";
-import {signOut} from "firebase/auth";
+import { MyNavbar } from '../../components/Navbar/Navbar';
+import { useHistory } from "react-router-dom";
+import { signOut } from "firebase/auth";
 
 const StarRating = ({ rating }) => {
     return (
@@ -113,22 +113,22 @@ export const Profile = () => {
                 `}
             </style>
 
-            <MyNavbar/>
+            <MyNavbar />
 
             <Container id="info" className="d-none d-lg-block">
                 <Row>
                     <Col xs={3} className="profile">
                         <div className="profile-picture">
-                            <Image src={user?.photoURL || Logo} alt="photoProfile" id="userPhoto"/>
+                            <Image src={user?.photoURL || Logo} alt="photoProfile" id="userPhoto" />
                         </div>
                         <h2 className="profile-name" id="userName">{user?.name || 'Name'}</h2>
                         <div className="profile-reviews">
                             <span>{user?.rating.toFixed(1) || '0.0'}</span>
-                            <StarRating rating={user?.rating || 0}/>
+                            <StarRating rating={user?.rating || 0} />
                             <p id="kolRating">{user?.reviewCount || '17'} Отзывов</p>
                         </div>
                         <div className="profile-sections">
-                            <a href="#">Настройки</a>
+                            <a href="/settings">Настройки</a>
                             <a href="/message">Сообщения</a>
                         </div>
                     </Col>
@@ -137,7 +137,7 @@ export const Profile = () => {
                         <Card className="mb-3">
                             <Row className="g-0">
                                 <Col md={3}>
-                                    <Image className="img-fluid rounded-start" alt="" id="adPhoto"/>
+                                    <Image className="img-fluid rounded-start" alt="" id="adPhoto" />
                                 </Col>
                                 <Col md={8}>
                                     <Card.Body>
@@ -157,9 +157,9 @@ export const Profile = () => {
                         <li className="nav-item">
                             <a className="nav-link active" aria-current="page" onClick={goBack}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
-                                     className="bi bi-arrow-left" viewBox="0 0 16 16">
+                                    className="bi bi-arrow-left" viewBox="0 0 16 16">
                                     <path fillRule="evenodd"
-                                          d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+                                        d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z" />
                                 </svg>
                             </a>
                         </li>
@@ -168,9 +168,9 @@ export const Profile = () => {
                         <li className="nav-item">
                             <a className="nav-link active" aria-current="page" onClick={handleLogout}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
-                                     className="bi bi-box-arrow-right" viewBox="0 0 16 16">
+                                    className="bi bi-box-arrow-right" viewBox="0 0 16 16">
                                     <path fillRule="evenodd"
-                                          d="M10 12.5a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h8zm-1.5-.5h-7v-8h7v8zm1.5 0a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 10 0h-8A1.5 1.5 0 0 0 0 1.5v9A1.5 1.5 0 0 0 1.5 12h8a.5.5 0 0 1 .5.5zM14.354 5.646a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L13.293 6H6.5a.5.5 0 0 1 0-1h6.793l-1.647-1.646a.5.5 0 0 1 .708-.708l3 3z"/>
+                                        d="M10 12.5a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h8zm-1.5-.5h-7v-8h7v8zm1.5 0a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 10 0h-8A1.5 1.5 0 0 0 0 1.5v9A1.5 1.5 0 0 0 1.5 12h8a.5.5 0 0 1 .5.5zM14.354 5.646a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L13.293 6H6.5a.5.5 0 0 1 0-1h6.793l-1.647-1.646a.5.5 0 0 1 .708-.708l3 3z" />
                                 </svg>
                             </a>
                         </li>
@@ -182,16 +182,16 @@ export const Profile = () => {
                 <Row>
                     <Col>
                         <div className="profile-picture my-3">
-                            <Image src={user?.photoURL || Logo} alt="photoProfile" id="userPhoto" className="mx-auto"/>
+                            <Image src={user?.photoURL || Logo} alt="photoProfile" id="userPhoto" className="mx-auto" />
                         </div>
                         <h2 className="profile-name" id="userName">{user?.name || 'Name'}</h2>
                         <div className="profile-reviews">
                             <span>{user?.rating.toFixed(1) || '0.0'}</span>
-                            <StarRating rating={user?.rating || 0}/>
+                            <StarRating rating={user?.rating || 0} />
                             <p id="kolRating">{user?.reviewCount || '17'} Отзывов</p>
                         </div>
                         <div className="profile-sections">
-                            <a href="#">Настройки</a>
+                            <a href="/settings">Настройки</a>
                             <a href="/message">Сообщения</a>
                         </div>
                     </Col>
@@ -202,7 +202,7 @@ export const Profile = () => {
                         <Card className="mb-3">
                             <Row className="g-0">
                                 <Col md={3}>
-                                    <Image className="img-fluid rounded-start" alt="" id="adPhoto"/>
+                                    <Image className="img-fluid rounded-start" alt="" id="adPhoto" />
                                 </Col>
                                 <Col md={8}>
                                     <Card.Body>

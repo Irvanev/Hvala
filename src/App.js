@@ -14,6 +14,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import {CategoryAdvertisments} from "./pages/CategoryAdvertisment/CategoryAdvertisments";
 import Help from './pages/Help';
 import SellerProfile from './pages/Profile/SellerProfile';
+import ProfileSettings from './pages/Profile/Settings';
 
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
         <Router>
             <Switch>
               <Route exact path={"/help"} component={Help}/>
+              <Route exact path={"/settings"} component={ProfileSettings}/>
               <Route exact path={"/seller/:id"} component={SellerProfile}/>
               <Route path={"/advertisment/:id"} component={CardItem}/>
               <Route exact path={"/advertisment"} component={Advertisement}/>
