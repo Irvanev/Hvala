@@ -125,22 +125,22 @@ const Categories = () => {
 
       <Container className="mt-3 d-lg-none">
 
-      <Row>
-        <Col className="d-flex justify-content-center">
+        <Row>
+          <Col className="d-flex justify-content-center">
             <Button className="me-3" variant="light" onClick={handleShow}>
-                <List />
+              <List />
             </Button>
-        </Col>
-        <Col className="d-flex justify-content-center">
+          </Col>
+          <Col className="d-flex justify-content-center">
             <Image src={LogoSearch} alt="Logo" style={{ marginRight: "10px", width: "140px" }} />
-        </Col>
-        <Col className="d-flex justify-content-center">
+          </Col>
+          <Col className="d-flex justify-content-center">
             <Button variant="light" onClick={() => setIsSearchClicked(prevState => !prevState)}>
-                <Search />
+              <Search />
             </Button>
-        </Col>
-    </Row>
-    {isSearchClicked && (
+          </Col>
+        </Row>
+        {isSearchClicked && (
           <Form className="mt-3">
             <FormControl
               type="search"
@@ -150,63 +150,59 @@ const Categories = () => {
           </Form>
         )}
 
-        <Offcanvas
-          show={show}
-          onHide={handleClose}
-          className="custom-offcanvas"
-        >
+        <Offcanvas show={show} onHide={handleClose}>
           <Offcanvas.Header closeButton></Offcanvas.Header>
           <Offcanvas.Body>
             <ListGroup id="categories">
-              <ListGroup.Item>
+              <ListGroup.Item action onClick={handleClose}>
                 <Link to="/advertisments/estate">Недвижимость</Link>
               </ListGroup.Item>
-              <ListGroup.Item>
+              <ListGroup.Item action onClick={handleClose}>
                 <Link to="/advertisments/transport">Транспорт</Link>
               </ListGroup.Item>
-              <ListGroup.Item>
+              <ListGroup.Item action onClick={handleClose}>
                 <Link to="/advertisments/clothes">Одежда</Link>
               </ListGroup.Item>
-              <ListGroup.Item>
+              <ListGroup.Item action onClick={handleClose}>
                 <Link to="/advertisments/electronics">Электроника</Link>
               </ListGroup.Item>
-              <ListGroup.Item>
+              <ListGroup.Item action onClick={handleClose}>
                 <Link to="/advertisments/house_goods">Товары для дома</Link>
               </ListGroup.Item>
-              <ListGroup.Item>
+              <ListGroup.Item action onClick={handleClose}>
                 <Link to="/advertisments/building_materials_and_tools">
                   Стройматериалы и инструменты
                 </Link>
               </ListGroup.Item>
-              <ListGroup.Item>
+              <ListGroup.Item action onClick={handleClose}>
                 <Link to="/advertisments/transport_goods">
                   Товары для транспорта
                 </Link>
               </ListGroup.Item>
-              <ListGroup.Item>
+              <ListGroup.Item action onClick={handleClose}>
                 <Link to="/advertisments/home_appliance">Бытовая техника</Link>
               </ListGroup.Item>
-              <ListGroup.Item>
+              <ListGroup.Item action onClick={handleClose}>
                 <Link to="/advertisments/service">Услуги</Link>
               </ListGroup.Item>
-              <ListGroup.Item>
+              <ListGroup.Item action onClick={handleClose}>
                 <Link to="/advertisments/child_goods">Товары для детей</Link>
               </ListGroup.Item>
-              <ListGroup.Item>
+              <ListGroup.Item action onClick={handleClose}>
                 <Link to="/advertisments/health_and_beauty">
                   Товары для красоты и здоровья
                 </Link>
               </ListGroup.Item>
-              <ListGroup.Item>
+              <ListGroup.Item action onClick={handleClose}>
                 <Link to="/advertisments/sport">Спорт</Link>
               </ListGroup.Item>
-              <ListGroup.Item>
+              <ListGroup.Item action onClick={handleClose}>
                 <Link to="/advertisments/hobby_n_Relax">Хобби и отдых</Link>
               </ListGroup.Item>
-              <ListGroup.Item>
+              <ListGroup.Item action onClick={handleClose}>
                 <Link to="/advertisments/subcat14">Товары для животных</Link>
               </ListGroup.Item>
-              <ListGroup.Item>
+              <ListGroup.Item action onClick={handleClose}>
                 <Link to="/advertisments/rest">Прочее</Link>
               </ListGroup.Item>
             </ListGroup>
