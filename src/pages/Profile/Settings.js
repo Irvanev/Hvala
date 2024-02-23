@@ -48,24 +48,24 @@ const ProfileSettings = () => {
         const file = event.target.files[0];
         const storageRef = ref(storage, 'profilePictures/' + file.name);
         const uploadTask = uploadBytesResumable(storageRef, file);
-    
-        uploadTask.on('state_changed', 
+
+        uploadTask.on('state_changed',
             () => {
                 getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
                     const q = query(collection(db, "users"), where("id", "==", user.id));
-                
+
                     const querySnapshot = await getDocs(q);
                     querySnapshot.forEach((doc) => {
                         console.log(doc.id, " => ", doc.data());
                     });
-                
+
                     const updatedUser = { ...user, photoUrl: downloadURL };
                     localStorage.removeItem('user');
                     localStorage.setItem('user', JSON.stringify(updatedUser));
                     setUser(updatedUser);
                     setShowModal(true);
                     window.location.reload();
-                
+
                     alert('Фотография профиля успешно изменена!');
                 });
             }
@@ -200,8 +200,8 @@ const ProfileSettings = () => {
                 <Container id="info" className="d-none d-lg-block">
                     <Row>
                         <Col xs={3} className="profile">
-                            <div className="profile-picture">
-                                <Image src={user?.photoUrl || Logo} alt="photoProfile" id="userPhoto" />
+                            <div className="profile-picture my-3" onClick={handleImageClick}>
+                                <Image src={user?.photoUrl || Logo} alt="photoProfile" id="userPhoto" className="mx-auto" />
                             </div>
                             <h2 className="profile-name" id="userName">{user?.name || 'Name'}</h2>
                             <div className="profile-reviews">
