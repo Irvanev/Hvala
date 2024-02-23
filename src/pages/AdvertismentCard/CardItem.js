@@ -54,17 +54,17 @@ export const CardItem = () => {
     const fetchData = async () => {
       const docRef = doc(db, "advertisment", id);
       const docSnap = await getDoc(docRef);
-  
+
       if (docSnap.exists()) {
         setAdData(docSnap.data());
-  
+
         const fromUid = docSnap.data().from_uid;
-  
+
         const userQuery = query(collection(db, "users"), where("id", "==", fromUid));
         const userQuerySnapshot = await getDocs(userQuery);
-  
+
         userQuerySnapshot.forEach((doc) => {
-            setUserData(doc.data());
+          setUserData(doc.data());
           console.log(doc.data());
         });
       } else {
@@ -72,7 +72,7 @@ export const CardItem = () => {
       }
       setIsLoading(false);
     };
-  
+
     fetchData();
   }, [id]);
 
@@ -361,22 +361,22 @@ export const CardItem = () => {
                   id="seller-info"
                 ></div>
                 <Link to={`/seller/${userData?.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                <div className="d-flex justify-content-between mt-3">
-                  <div>
-                    <h5 className="mb-0">{userData?.name}</h5>
-                    <div className="d-flex align-items-center">
-                      <a href="reviews.html" className="text-decoration-none">
-                        {userData?.rating} отзывов
-                      </a>
+                  <div className="d-flex justify-content-between mt-3">
+                    <div>
+                      <h5 className="mb-0">{userData?.name}</h5>
+                      <div className="d-flex align-items-center">
+                        <a href="reviews.html" className="text-decoration-none">
+                          {userData?.rating} отзывов
+                        </a>
+                      </div>
                     </div>
+                    <img
+                      src={userData?.photoUrl || Logo}
+                      alt="Seller Image"
+                      className="rounded-circle"
+                      style={profileImage}
+                    />
                   </div>
-                  <img
-                    src={userData?.photoUrl || Logo}
-                    alt="Seller Image"
-                    className="rounded-circle"
-                    style={profileImage}
-                  />
-                </div>
                 </Link>
               </div>
               <Modal show={showModal} onHide={handleCloseModal}>
@@ -481,44 +481,92 @@ export const CardItem = () => {
                 </Col>
               ))}
             </Row>
-            <h3 className="product-title mt-3">${adData?.price + "€"}</h3>
-            <h5 className="product-title">${adData?.title}</h5>
-            <p className="product-description">${adData?.description}</p>
-            <ul className="product-features">
-              <li>Характеристика 1</li>
-              <li>Характеристика 2</li>
-            </ul>
-            <div className="d-flex justify-content-between">
+            <h2 className="product-title mt-3"><strong>{adData?.price + "€"}</strong></h2>
+            <h5 className="product-title" style={{ color: "grey" }}>{adData?.title}</h5>
+            <div className="d-flex justify-content-between mt-3">
               <button className="btn btn-primary flex-grow-1 me-2">
                 Написать
               </button>
-              <button className="btn btn-secondary flex-grow-1">
+              <button className="btn btn-secondary flex-grow-1" onClick={handleCallClick}>
                 Позвонить
               </button>
             </div>
-            <div className="d-flex justify-content-between mt-3">
-              <div>
-                <h5 className="mb-0">Vitaly</h5>
-                <div className="d-flex align-items-center">
-                  <div>
-                    <span className="bi bi-star-fill text-warning"></span>
-                    <span className="bi bi-star-fill text-warning"></span>
-                    <span className="bi bi-star-fill text-warning"></span>
-                    <span className="bi bi-star-fill text-warning"></span>
-                    <span className="bi bi-star text-secondary"></span>
-                  </div>
-                  <a href="reviews.html" className="text-decoration-none ms-3">
-                    5 отзывов
+            <h3 className="mt-3">Описание</h3>
+            <div>
+              {adData?.description && (
+                <div className="mt-3">
+                  <p id="product-description">{adData.description}</p>
+                </div>
+              )}
+              <h3>Характеристики</h3>
+              {adData?.condition && (
+                <div>
+                  <span id="product-description">
+                    Состояние: <strong>{t(adData.condition)}</strong>
+                  </span>
+                </div>
+              )}
+              {adData?.brand && (
+                <div>
+                  <span id="product-description">
+                    Бренд: <strong>{t(adData.brand)}</strong>
+                  </span>
+                </div>
+              )}
+              {adData?.model && (
+                <div>
+                  <span id="product-description">
+                    Модель: <strong>{t(adData.model)}</strong>
+                  </span>
+                </div>
+              )}
+              {adData?.memory && (
+                <div>
+                  <span id="product-description">
+                    Память: <strong>{t(adData.memory)}Gb</strong>
+                  </span>
+                </div>
+              )}
+              {adData?.screen_size && (
+                <div>
+                  <span id="product-description">
+                    Размер экрана<strong>{t(adData.screen_size)}</strong>
+                  </span>
+                </div>
+              )}
+              {adData?.location && (
+                <div className="mt-3">
+                  <h5>Расположение</h5>
+                  <span id="product-description">{t(adData.location)}</span>
+                  <a
+                    href={`https://www.google.com/maps/search/?api=1&query=${adData.location}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ marginLeft: "10px" }}
+                  >
+                    Показать на карте
                   </a>
                 </div>
-              </div>
-              <img
-                src={Logo}
-                alt="Seller Image"
-                className="rounded-circle"
-                style={profileImage}
-              />
+              )}
             </div>
+            <Link to={`/seller/${userData?.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+              <div className="d-flex justify-content-between mt-3">
+                <div>
+                  <h5 className="mb-0">{userData?.name}</h5>
+                  <div className="d-flex align-items-center">
+                    <a href="reviews.html" className="text-decoration-none">
+                      {userData?.rating} отзывов
+                    </a>
+                  </div>
+                </div>
+                <img
+                  src={userData?.photoUrl || Logo}
+                  alt="Seller Image"
+                  className="rounded-circle"
+                  style={profileImage}
+                />
+              </div>
+            </Link>
           </div>
         </div>
       )}
