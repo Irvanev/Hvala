@@ -119,7 +119,7 @@ export const Profile = () => {
                 <Row>
                     <Col xs={3} className="profile">
                         <div className="profile-picture">
-                            <Image src={user?.photoURL || Logo} alt="photoProfile" id="userPhoto" />
+                            <Image src={user?.photoUrl || Logo} alt="photoProfile" id="userPhoto" />
                         </div>
                         <h2 className="profile-name" id="userName">{user?.name || 'Name'}</h2>
                         <div className="profile-reviews">
@@ -182,7 +182,7 @@ export const Profile = () => {
                 <Row>
                     <Col>
                         <div className="profile-picture my-3">
-                            <Image src={user?.photoURL || Logo} alt="photoProfile" id="userPhoto" className="mx-auto" />
+                            <Image src={user?.photoUrl || Logo} alt="photoProfile" id="userPhoto" className="mx-auto" />
                         </div>
                         <h2 className="profile-name" id="userName">{user?.name || 'Name'}</h2>
                         <div className="profile-reviews">

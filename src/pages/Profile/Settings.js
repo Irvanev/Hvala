@@ -1,14 +1,15 @@
 import { MyNavbar } from "../../components/Navbar/Navbar";
 import { useHistory } from "react-router-dom";
 import { signOut } from "firebase/auth";
-import { useState, useEffect } from "react";
-import { db, auth } from "../../config/firebase";
+import { useState, useEffect, useRef } from "react";
+import { db, auth, storage } from "../../config/firebase";
 import { collection, getDocs, query, where, updateDoc, doc } from "firebase/firestore";
 import { Image, Container, Row, Col, Card, Form, Button, Modal } from "react-bootstrap";
 import Logo from "../../assets/logo.png";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faStar as fasStar } from '@fortawesome/free-solid-svg-icons'
 import { Pencil } from 'react-bootstrap-icons';
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 const ProfileSettings = () => {
     const [user, setUser] = useState(null);
@@ -17,6 +18,7 @@ const ProfileSettings = () => {
     const [isEditingName, setIsEditingName] = useState(false);
     const [name, setName] = useState("");
     const [showModal, setShowModal] = useState(false);
+    const fileInput = useRef(null);
     useEffect(() => {
         const fetchUser = async () => {
             const userId = localStorage.getItem('userId');
@@ -39,6 +41,37 @@ const ProfileSettings = () => {
     const handleNameChange = (e) => {
         setName(e.target.value);
     };
+    const handleImageClick = () => {
+        fileInput.current.click();
+    };
+    const handleFileChange = (event) => {
+        const file = event.target.files[0];
+        const storageRef = ref(storage, 'profilePictures/' + file.name);
+        const uploadTask = uploadBytesResumable(storageRef, file);
+    
+        uploadTask.on('state_changed', 
+            () => {
+                getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
+                    const q = query(collection(db, "users"), where("id", "==", user.id));
+                
+                    const querySnapshot = await getDocs(q);
+                    querySnapshot.forEach((doc) => {
+                        console.log(doc.id, " => ", doc.data());
+                    });
+                
+                    const updatedUser = { ...user, photoUrl: downloadURL };
+                    localStorage.removeItem('user');
+                    localStorage.setItem('user', JSON.stringify(updatedUser));
+                    setUser(updatedUser);
+                    setShowModal(true);
+                    window.location.reload();
+                
+                    alert('Фотография профиля успешно изменена!');
+                });
+            }
+        );
+    };
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -168,17 +201,13 @@ const ProfileSettings = () => {
                     <Row>
                         <Col xs={3} className="profile">
                             <div className="profile-picture">
-                                <Image src={user?.photoURL || Logo} alt="photoProfile" id="userPhoto" />
+                                <Image src={user?.photoUrl || Logo} alt="photoProfile" id="userPhoto" />
                             </div>
                             <h2 className="profile-name" id="userName">{user?.name || 'Name'}</h2>
                             <div className="profile-reviews">
                                 <span>{user?.rating.toFixed(1) || '0.0'}</span>
                                 <StarRating rating={user?.rating || 0} />
                                 <p id="kolRating">{user?.reviewCount || '17'} Отзывов</p>
-                            </div>
-                            <div className="profile-sections">
-                                <a href="/settings">Настройки</a>
-                                <a href="/message">Сообщения</a>
                             </div>
                         </Col>
                         <Col xs={9}>
@@ -207,8 +236,8 @@ const ProfileSettings = () => {
                                         disabled={!isEditingName}
                                         readOnly={!isEditingName}
                                         placeholder={user?.name}
-                                        value={name} // Установите значение контрола
-                                        onChange={handleNameChange} // Добавьте обработчик изменения
+                                        value={name}
+                                        onChange={handleNameChange}
                                     />
                                 </Col>
                                 <Col xs="auto">
@@ -256,18 +285,15 @@ const ProfileSettings = () => {
                 <Container className="d-lg-none">
                     <Row className="text-center">
                         <Col>
-                            <div className="profile-picture my-3">
-                                <Image src={user?.photoURL || Logo} alt="photoProfile" id="userPhoto" className="mx-auto" />
+                            <div className="profile-picture my-3" onClick={handleImageClick}>
+                                <Image src={user?.photoUrl || Logo} alt="photoProfile" id="userPhoto" className="mx-auto" />
                             </div>
+                            <input type="file" ref={fileInput} onChange={handleFileChange} style={{ display: 'none' }} accept="image/*" />
                             <h2 className="profile-name" id="userName">{user?.name || 'Name'}</h2>
                             <div className="profile-reviews">
                                 <span>{user?.rating.toFixed(1) || '0.0'}</span>
                                 <StarRating rating={user?.rating || 0} />
                                 <p id="kolRating">{user?.reviewCount || '17'} Отзывов</p>
-                            </div>
-                            <div className="profile-sections">
-                                <a href="/settings">Настройки</a>
-                                <a href="/message">Сообщения</a>
                             </div>
                         </Col>
                     </Row>
@@ -298,8 +324,8 @@ const ProfileSettings = () => {
                                         disabled={!isEditingName}
                                         readOnly={!isEditingName}
                                         placeholder={user?.name}
-                                        value={name} // Установите значение контрола
-                                        onChange={handleNameChange} // Добавьте обработчик изменения
+                                        value={name}
+                                        onChange={handleNameChange}
                                     />
                                 </Col>
                                 <Col xs="auto">
