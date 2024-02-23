@@ -60,6 +60,7 @@ export const Advertisement = () => {
                   }
                   .card {
                     height: 320px;
+                    border: none;
                     }
                     body {
                         padding-bottom: 6.0rem;
