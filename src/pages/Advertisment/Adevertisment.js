@@ -73,7 +73,8 @@ export const Advertisement = () => {
                   }
                   .card {
                     height: 400px;
-                    }
+                    border: none;
+                  }
                     body {
                         padding-top: 3.5rem;
                         padding-bottom: 3.5em;
@@ -94,11 +95,16 @@ export const Advertisement = () => {
                     text-overflow: ellipsis;
                 }
                 .date-text {
-                    color: #888888; /* Замените на цвет, который вы хотите использовать */
+                    color: #888888;
                 }
                 .col .img-fluid {
-                    border: 1px solid rgb(200, 200, 200);
+                    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
                     border-radius: 10px;
+                    transition: transform 0.3s ease-in-out;
+                }
+                .col .img-fluid:hover {
+                    transform: scale(1.05) rotateY(10deg);
+                    box-shadow: 0px 10px 20px rgba(0,0,0,0.25);
                 }
                 .list-group a {
                     text-decoration: none;
@@ -189,7 +195,6 @@ export const Advertisement = () => {
                     <button className='btn' style={collapse} type="button" onClick={() => fetchAds(lastDoc)}>Показать еще</button>
                 )}
             </div>
-
         </div>
     );
 }

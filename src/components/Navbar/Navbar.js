@@ -2,13 +2,13 @@ import React, {useState, useEffect} from 'react';
 import {auth} from '../../config/firebase';
 import {signOut} from 'firebase/auth';
 import {Badge, Button, Container, Nav, Navbar} from 'react-bootstrap';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 import {MdLanguage} from "react-icons/md";
 import LanguageModal from '../../LanguageModal';
-import { useLocation } from 'react-router-dom';
+import {useLocation} from 'react-router-dom';
 
 export const MyNavbar = () => {
-    const { t } = useTranslation();
+    const {t} = useTranslation();
     const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
@@ -51,12 +51,20 @@ export const MyNavbar = () => {
     return (
         <div>
 
+            <style>
+                {`
+                    #navPc {
+                        box-shadow: 0px 10px 20px rgba(0,0,0,0.1);
+                    }
+                `}
+            </style>
+
             <Navbar expand="md" bg="light" fixed="top" className="d-none d-lg-block" id="navPc">
                 <Container>
                     <Nav className="me-auto mb-2 mb-md-0">
                         <Nav.Item>
                             <Nav.Link active href="#" onClick={() => setShowModal(true)}>
-                                <MdLanguage size={24} />
+                                <MdLanguage size={24}/>
                             </Nav.Link>
                         </Nav.Item>
                         <Nav.Item>
@@ -94,17 +102,22 @@ export const MyNavbar = () => {
                 </Container>
             </Navbar>
 
-            <Navbar expand="md" bg="light" fixed="bottom" className="d-lg-none" id="navMob" style={{height: "80px",  display: "flex", alignItems: "flex-start"}}>
+            <Navbar expand="md" bg="light" fixed="bottom" className="d-lg-none" id="navMob"
+                    style={{height: "80px", display: "flex", alignItems: "flex-start"}}>
                 <Container className="d-flex justify-content-around">
                     <Nav.Link href="/advertisment">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill={getFillColor("/advertisment")}
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30"
+                             fill={getFillColor("/advertisment")}
                              className="bi bi-house"
                              viewBox="0 0 16 16">
                             <path
                                 d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.707 1.5ZM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5 5 5Z"/>
                         </svg>
                     </Nav.Link>
-                    <Nav.Link href="" onClick={(e) => {e.preventDefault(); setShowModal(true);}}>
+                    <Nav.Link href="" onClick={(e) => {
+                        e.preventDefault();
+                        setShowModal(true);
+                    }}>
                         <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill={getFillColor("/settings")}
                              className="bi bi-gear"
                              viewBox="0 0 16 16">
@@ -145,7 +158,7 @@ export const MyNavbar = () => {
                 </Container>
             </Navbar>
 
-            <LanguageModal show={showModal} handleClose={() => setShowModal(false)} />
+            <LanguageModal show={showModal} handleClose={() => setShowModal(false)}/>
 
         </div>
     );

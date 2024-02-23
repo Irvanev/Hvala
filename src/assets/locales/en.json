@@ -23,9 +23,21 @@
   "sport": "Sport",
   "hobby_n_Relax": "Hobbies and relaxation",
 
+  "size": "Size",
+  "type": "Type",
   "condition": "Condition",
   "new_cond": "New",
   "bu_cond": "Used",
+  "brand": "Brand",
+  "model": "Model",
+  "location": "Location",
+  "showOnMap": "Show on the map",
+  "description": "Description",
+  "characteristics": "Characteristics",
+  "size_screen": "Screen size",
+
+  "call": "Call",
+  "to_write": "To write",
 
   "send_advert_question": "How to publish an advertisement?",
   "send_advert": "To use this service, you need to log in to your account. In case of absence of authorization, please register. After successful login to your account, the option to place advertisements will be available. On the main page with advertisements, you will find the button \"Create Advertisement\" in the form of a \"plus\" sign, which will redirect you to the advertisement creation page. Follow the instructions, and your advertisement will be successfully published.",

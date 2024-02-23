@@ -281,52 +281,59 @@ export const CardItem = () => {
                     </Col>
                   ))}
                 </Row>
-                <h3>Описание</h3>
+                <h3>{t('description')}</h3>
                 <div>
                   {adData?.description && (
                     <div className="mt-3">
                       <p id="product-description">{adData.description}</p>
                     </div>
                   )}
-                  <h3>Характеристики</h3>
+                  <h3>{t('characteristics')}</h3>
                   {adData?.condition && (
                     <div>
                       <span id="product-description">
-                        Состояние: <strong>{t(adData.condition)}</strong>
+                        {t('condition')}: <strong>{t(adData.condition)}</strong>
                       </span>
                     </div>
                   )}
                   {adData?.brand && (
                     <div>
                       <span id="product-description">
-                        Бренд: <strong>{t(adData.brand)}</strong>
+                        {t('brand')}: <strong>{t(adData.brand)}</strong>
                       </span>
                     </div>
                   )}
                   {adData?.model && (
                     <div>
                       <span id="product-description">
-                        Модель: <strong>{t(adData.model)}</strong>
+                        {t('model')}: <strong>{t(adData.model)}</strong>
                       </span>
                     </div>
                   )}
                   {adData?.memory && (
                     <div>
                       <span id="product-description">
-                        Память: <strong>{t(adData.memory)}Gb</strong>
+                        {t('memory')}: <strong>{t(adData.memory)}Gb</strong>
                       </span>
                     </div>
                   )}
                   {adData?.screen_size && (
                     <div>
                       <span id="product-description">
-                        Размер экрана<strong>{t(adData.screen_size)}</strong>
+                        {t('size_screen')}:<strong>{t(adData.screen_size)}</strong>
                       </span>
                     </div>
                   )}
+                  {adData?.size && (
+                      <div>
+                      <span id="product-description">
+                        {t('size')}: <strong>{t(adData.size)}</strong>
+                      </span>
+                      </div>
+                  )}
                   {adData?.location && (
                     <div className="mt-3">
-                      <h5>Расположение</h5>
+                      <h5>{t('location')}</h5>
                       <span id="product-description">{t(adData.location)}</span>
                       <a
                         href={`https://www.google.com/maps/search/?api=1&query=${adData.location}`}
@@ -334,7 +341,7 @@ export const CardItem = () => {
                         rel="noopener noreferrer"
                         style={{ marginLeft: "10px" }}
                       >
-                        Показать на карте
+                        {t('showOnMap')}
                       </a>
                     </div>
                   )}
@@ -348,7 +355,7 @@ export const CardItem = () => {
                   className="btn d-block mb-3"
                   style={productPhone}
                 >
-                  Позвонить
+                  {t('call')}
                 </a>
                 <a
                   id="product-phone"
@@ -356,7 +363,7 @@ export const CardItem = () => {
                   className="btn d-block mb-3"
                   style={productPhone}
                 >
-                  Написать
+                  {t('to_write')}
                 </a>
                 <div
                   className="d-flex justify-content-between mt-3"

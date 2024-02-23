@@ -4,6 +4,7 @@ import {Container, Form} from "react-bootstrap";
 import {useState} from 'react';
 import {MyNavbar} from "../../components/Navbar/Navbar";
 import {AddFormForAuto} from "../../components/AddFormForAuto";
+import {AddFormForClothes} from "../../components/AddFormForClothes";
 export const AddItem = () => {
     const {t} = useTranslation();
     const history = useHistory();
@@ -250,6 +251,15 @@ export const AddItem = () => {
 
                     {selectedSubcategory === 'auto' && (
                         <AddFormForAuto />
+                    )}
+                    {selectedSubcategory === 'mens_clothing' && (
+                        <AddFormForClothes />
+                    )}
+                    {selectedSubcategory === 'womens_clothing' && (
+                        <AddFormForClothes />
+                    )}
+                    {selectedSubcategory === 'childrens_clothing' && (
+                        <AddFormForClothes />
                     )}
 
                 </Form>

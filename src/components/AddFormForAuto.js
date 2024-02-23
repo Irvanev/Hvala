@@ -1,4 +1,4 @@
-import {Button, Form} from "react-bootstrap";
+import {Button, Form, FormGroup} from "react-bootstrap";
 import {useState} from 'react';
 
 export const AddFormForAuto = () => {
@@ -10,6 +10,12 @@ export const AddFormForAuto = () => {
 
     return (
         <div>
+            <FormGroup className="mb-3">
+                <Form.Label>Название</Form.Label>
+                <Form.Control
+                    type="text"
+                />
+            </FormGroup>
             <Form.Group className="mb-3">
                 <Form.Label>Выберите марку автомобиля</Form.Label>
                 <Form.Select aria-label="Default select example">
