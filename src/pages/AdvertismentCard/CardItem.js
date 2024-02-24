@@ -44,8 +44,8 @@ export const CardItem = () => {
   };
 
   const stars = Array(5).fill(null).map((_, index) => {
-    if (userData?.rating > index) {
-      if (userData?.rating > index + 0.5) {
+    if (userData?.raiting > index) {
+      if (userData?.raiting > index + 0.5) {
         return <img src={star} alt="star" width="20" height="20" />;
       } else {
         return <img src={halfStar} alt="half star" width="20" height="20" />;
@@ -423,7 +423,7 @@ export const CardItem = () => {
                       <h5 className="mb-0">{userData?.name || 'User'}</h5>
                       </Link>
                       <div className="d-flex align-items-center">
-                        <h5>{userData?.rating}{stars}</h5>
+                        <h5>{userData?.raiting}{stars}</h5>
                       </div>
                     </div>
                     <Link to={`/seller/${userData?.id}`} style={{ textDecoration: 'none' }}>
@@ -644,7 +644,7 @@ export const CardItem = () => {
                 <div>
                   <h5 className="mb-0">{userData?.name || "User"}</h5>
                   <div className="d-flex align-items-center">
-                    <h5>{userData?.rating}{stars}</h5>
+                    <h5>{userData?.raiting}{stars}</h5>
                   </div>
                 </div>
                 <img
