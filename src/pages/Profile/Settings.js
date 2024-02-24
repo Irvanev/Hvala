@@ -205,8 +205,8 @@ const ProfileSettings = () => {
                             </div>
                             <h2 className="profile-name" id="userName">{user?.name || 'Name'}</h2>
                             <div className="profile-reviews">
-                                <span>{user?.rating.toFixed(1) || '0.0'}</span>
-                                <StarRating rating={user?.rating || 0} />
+                                <span>{user?.raiting.toFixed(1) || '0.0'}</span>
+                                <StarRating rating={user?.raiting || 0} />
                                 <p id="kolRating">{user?.reviewCount || '17'} Отзывов</p>
                             </div>
                         </Col>
@@ -291,8 +291,8 @@ const ProfileSettings = () => {
                             <input type="file" ref={fileInput} onChange={handleFileChange} style={{ display: 'none' }} accept="image/*" />
                             <h2 className="profile-name" id="userName">{user?.name || 'Name'}</h2>
                             <div className="profile-reviews">
-                                <span>{user?.rating.toFixed(1) || '0.0'}</span>
-                                <StarRating rating={user?.rating || 0} />
+                                <span>{user?.raiting.toFixed(1) || '0.0'}</span>
+                                <StarRating rating={user?.raiting || 0} />
                                 <p id="kolRating">{user?.reviewCount || '17'} Отзывов</p>
                             </div>
                         </Col>
