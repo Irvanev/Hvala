@@ -3,6 +3,9 @@ import { doc, getDoc } from "firebase/firestore";
 import { Link } from 'react-router-dom';
 import { db } from "../../config/firebase";
 import Logo from "../../assets/logo.png";
+import star from '../../assets/star.png';
+import halfStar from '../../assets/rating2.png';
+import emptyStar from '../../assets/star2.png';
 import React, { useEffect, useState } from "react";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import "./cardItem.css";
@@ -39,6 +42,18 @@ export const CardItem = () => {
   const goBack = () => {
     history.goBack();
   };
+
+  const stars = Array(5).fill(null).map((_, index) => {
+    if (userData?.rating > index) {
+      if (userData?.rating > index + 0.5) {
+        return <img src={star} alt="star" width="20" height="20" />;
+      } else {
+        return <img src={halfStar} alt="half star" width="20" height="20" />;
+      }
+    } else {
+      return <img src={emptyStar} alt="empty star" width="20" height="20" />;
+    }
+  });
 
   const handleShare = () => {
     if (navigator.share) {
@@ -88,7 +103,7 @@ export const CardItem = () => {
 
         userQuerySnapshot.forEach((doc) => {
           setUserData(doc.data());
-          console.log(doc.data());
+
         });
       } else {
         console.log("No such document!");
@@ -204,7 +219,7 @@ export const CardItem = () => {
           <Row>
             <Col>
               <Breadcrumb>
-                <Breadcrumb.Item href="/index.html">Главная</Breadcrumb.Item>
+                <Breadcrumb.Item href="/advertisment">Главная</Breadcrumb.Item>
                 <Breadcrumb.Item href="#">Catgory</Breadcrumb.Item>
                 <Breadcrumb.Item active>SubCategory</Breadcrumb.Item>
               </Breadcrumb>
@@ -262,7 +277,7 @@ export const CardItem = () => {
         <div>
           <div className="container d-none d-lg-block" style={forCon}>
             <div className="row">
-              <div className="col">
+              <div className="col-6">
                 <nav aria-label="breadcrumb">
                   <ol className="breadcrumb">
                     <li className="breadcrumb-item">
@@ -305,7 +320,7 @@ export const CardItem = () => {
                   {adData?.photoUrls.map((url, index) => (
                     <Col xs={4} md={2} key={index}>
                       <Image
-                        style={{ objectFit: "cover", height: "100px" }}
+                        style={{ objectFit: "contain", height: "100px", width:"100px" }}
                         src={url}
                         alt={`Slide ${index + 1}`}
                         onClick={() => handleSelect(index)}
@@ -380,7 +395,7 @@ export const CardItem = () => {
                   )}
                 </div>
               </div>
-              <div className="col">
+              <div className="col-3" style={{paddingTop: "40px"}}>
                 <h2 id="product-price">{adData?.price + "€"}</h2>
                 <a
                   id="product-phone"
@@ -402,24 +417,24 @@ export const CardItem = () => {
                   className="d-flex justify-content-between mt-3"
                   id="seller-info"
                 ></div>
-                <Link to={`/seller/${userData?.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                   <div className="d-flex justify-content-between mt-3">
                     <div>
+                      <Link to={`/seller/${userData?.id}`} style={{ textDecoration: 'none' }}>
                       <h5 className="mb-0">{userData?.name || 'User'}</h5>
+                      </Link>
                       <div className="d-flex align-items-center">
-                        <a href="reviews.html" className="text-decoration-none">
-                          {userData?.rating} отзывов
-                        </a>
+                        <h5>{userData?.rating}{stars}</h5>
                       </div>
                     </div>
+                    <Link to={`/seller/${userData?.id}`} style={{ textDecoration: 'none' }}>
                     <img
                       src={userData?.photoUrl || Logo}
                       alt="Seller Image"
                       className="rounded-circle"
                       style={profileImage}
                     />
+                    </Link>
                   </div>
-                </Link>
               </div>
               <Modal show={showModal} onHide={handleCloseModal}>
                 <Modal.Header closeButton>
@@ -501,7 +516,7 @@ export const CardItem = () => {
           <nav aria-label="breadcrumb" className="mt-3">
             <ol className="breadcrumb">
               <li className="breadcrumb-item">
-                <a style={{ textDecoration: "none", color: "grey" }} href="/advertisment">Главная</a>
+                <a style={{ textDecoration: "none", color: "grey" }} href="/advertisment">{t("home_navbar")}</a>
               </li>
               <li className="breadcrumb-item">
                 <a style={{ textDecoration: "none", color: "grey" }} href={`/advertisments/${adData?.category}`}>
@@ -518,26 +533,35 @@ export const CardItem = () => {
           <div className="product-card">
             <Carousel activeIndex={index} onSelect={handleSelect}>
               {adData?.photoUrls.map((url, index) => (
-                <Carousel.Item key={index}>
-                  <img
-                    className="d-block w-100"
-                    src={url}
-                    alt={`Slide ${index + 1}`}
-                  />
-                </Carousel.Item>
+                  <Carousel.Item key={index}>
+                    <div
+                        style={{
+                          backgroundColor: "#dcdcdc",
+                          display: "flex",
+                          justifyContent: "center",
+                        }}
+                    >
+                      <img
+                          className="d-block"
+                          src={url}
+                          alt={`Slide ${index + 1}`}
+                          style={{maxWidth: "100%"}}
+                      />
+                    </div>
+                  </Carousel.Item>
               ))}
             </Carousel>
             <Row className="mt-3">
               {adData?.photoUrls.map((url, index) => (
-                <Col xs={3} md={2} key={index} className="mt-3">
-                  <Image
-                    style={{ objectFit: "contain", height: "50px" }}
-                    src={url}
-                    alt={`Slide ${index + 1}`}
-                    onClick={() => handleSelect(index)}
-                    thumbnail
-                  />
-                </Col>
+                  <Col xs={3} md={2} key={index} className="mt-3">
+                    <Image
+                        style={{objectFit: "contain", height: "70px", width: "70px"}}
+                        src={url}
+                        alt={`Slide ${index + 1}`}
+                        onClick={() => handleSelect(index)}
+                        thumbnail
+                    />
+                  </Col>
               ))}
             </Row>
             <h2 className="product-title mt-3"><strong>{adData?.price + "€"}</strong></h2>
@@ -550,62 +574,69 @@ export const CardItem = () => {
                 Позвонить
               </button>
             </div>
-            <h3 className="mt-3">Описание</h3>
+            <h3 className="mt-3">{t("description")}</h3>
             <div>
               {adData?.description && (
-                <div className="mt-3">
-                  <p id="product-description">{adData.description}</p>
-                </div>
+                  <div className="mt-3">
+                    <p id="product-description">{adData.description}</p>
+                  </div>
               )}
-              <h3>Характеристики</h3>
+              <h3>{t('characteristics')}</h3>
               {adData?.condition && (
-                <div>
-                  <span id="product-description">
-                    Состояние: <strong>{t(adData.condition)}</strong>
-                  </span>
-                </div>
+                  <div>
+                      <span id="product-description">
+                        {t('condition')}: <strong>{t(adData.condition)}</strong>
+                      </span>
+                  </div>
               )}
               {adData?.brand && (
-                <div>
-                  <span id="product-description">
-                    Бренд: <strong>{t(adData.brand)}</strong>
-                  </span>
-                </div>
+                  <div>
+                      <span id="product-description">
+                        {t('brand')}: <strong>{t(adData.brand)}</strong>
+                      </span>
+                  </div>
               )}
               {adData?.model && (
-                <div>
-                  <span id="product-description">
-                    Модель: <strong>{t(adData.model)}</strong>
-                  </span>
-                </div>
+                  <div>
+                      <span id="product-description">
+                        {t('model')}: <strong>{t(adData.model)}</strong>
+                      </span>
+                  </div>
               )}
               {adData?.memory && (
-                <div>
-                  <span id="product-description">
-                    Память: <strong>{t(adData.memory)}Gb</strong>
-                  </span>
-                </div>
+                  <div>
+                      <span id="product-description">
+                        {t('memory')}: <strong>{t(adData.memory)}Gb</strong>
+                      </span>
+                  </div>
               )}
               {adData?.screen_size && (
-                <div>
-                  <span id="product-description">
-                    Размер экрана<strong>{t(adData.screen_size)}</strong>
-                  </span>
-                </div>
+                  <div>
+                      <span id="product-description">
+                        {t('size_screen')}:<strong>{t(adData.screen_size)}</strong>
+                      </span>
+                  </div>
+              )}
+              {adData?.size && (
+                  <div>
+                      <span id="product-description">
+                        {t('size')}: <strong>{t(adData.size)}</strong>
+                      </span>
+                  </div>
               )}
               {adData?.location && (
-                <div className="mt-3">
-                  <h5>Расположение</h5>
-                  <span id="product-description">{t(adData.location)}</span>
-                  <a
-                    href={`https://www.google.com/maps/search/?api=1&query=${adData.location}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{ marginLeft: "10px" }}
-                  >
-                    Показать на карте
-                  </a>
-                </div>
+                  <div className="mt-3">
+                    <h5>{t('location')}</h5>
+                    <span id="product-description">{t(adData.location)}</span>
+                    <a
+                        href={`https://www.google.com/maps/search/?api=1&query=${adData.location}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ marginLeft: "10px" }}
+                    >
+                      {t('showOnMap')}
+                    </a>
+                  </div>
               )}
             </div>
             <Link to={`/seller/${userData?.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
@@ -613,9 +644,7 @@ export const CardItem = () => {
                 <div>
                   <h5 className="mb-0">{userData?.name || "User"}</h5>
                   <div className="d-flex align-items-center">
-                    <a href="reviews.html" className="text-decoration-none">
-                      {userData?.rating} отзывов
-                    </a>
+                    <h5>{userData?.rating}{stars}</h5>
                   </div>
                 </div>
                 <img

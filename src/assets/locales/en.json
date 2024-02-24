@@ -35,6 +35,7 @@
   "description": "Description",
   "characteristics": "Characteristics",
   "size_screen": "Screen size",
+  "memory": "Memory",
 
   "call": "Call",
   "to_write": "To write",
