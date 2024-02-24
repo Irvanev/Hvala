@@ -69,8 +69,8 @@ export const Profile = () => {
     }
 
     const stars = Array(5).fill(null).map((_, index) => {
-        if (user?.rating > index) {
-            if (user?.rating > index + 0.5) {
+        if (user?.raiting > index) {
+            if (user?.raiting > index + 0.5) {
                 return <img src={star} alt="star" width="20" height="20" />;
             } else {
                 return <img src={halfStar} alt="half star" width="20" height="20" />;
@@ -165,7 +165,7 @@ export const Profile = () => {
                         </div>
                         <h2 className="profile-name" id="userName">{user?.name || 'Name'}</h2>
                         <div className="profile-reviews d-flex align-items-center">
-                            <span className="me-2">{user?.rating.toFixed(1) || '0.0'}</span>
+                            <span className="me-2">{user?.raiting.toFixed(1) || '0.0'}</span>
                             {stars}
                         </div>
                         <a onClick={handleShow} style={{ cursor: 'pointer' }}>
@@ -277,7 +277,7 @@ export const Profile = () => {
                         </div>
                         <h2 className="profile-name" id="userName">{user?.name || 'Name'}</h2>
                         <div className="profile-reviews">
-                            <span>{user?.rating.toFixed(1) || '0.0'}</span>
+                            <span>{user?.raiting.toFixed(1) || '0.0'}</span>
                             {stars}
                             <p id="kolRating">{user?.reviewCount || '17'} Отзывов</p>
                         </div>

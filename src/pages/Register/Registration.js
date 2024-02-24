@@ -1,11 +1,11 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import Logotype from "../../assets/logo.png"
-import {auth, db} from "../../config/firebase"
-import {createUserWithEmailAndPassword, sendEmailVerification, onAuthStateChanged, signOut} from "firebase/auth";
-import {doc, setDoc, serverTimestamp, collection, query, where, getDocs} from "firebase/firestore";
-import {useHistory} from 'react-router-dom';
-import {MyNavbar} from '../../components/Navbar/Navbar';
-import {Button, Container, Form} from "react-bootstrap";
+import { auth, db } from "../../config/firebase"
+import { createUserWithEmailAndPassword, sendEmailVerification, onAuthStateChanged, signOut } from "firebase/auth";
+import { doc, setDoc, serverTimestamp, collection, query, where, getDocs } from "firebase/firestore";
+import { useHistory } from 'react-router-dom';
+import { MyNavbar } from '../../components/Navbar/Navbar';
+import { Button, Container, Form } from "react-bootstrap";
 
 export const Registration = () => {
     const history = useHistory();
@@ -39,32 +39,24 @@ export const Registration = () => {
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
-        
-            // Отправить письмо для подтверждения
+
             await sendEmailVerification(user);
-            alert('Письмо для подтверждения отправлено на вашу почту');
-        
-            // Выйти из системы
-            await signOut(auth);
-        
-            // Подписаться на изменения состояния аутентификации
-            onAuthStateChanged(auth, async (user) => {
-                if (user?.emailVerified) {
-                    // Пользователь подтвердил свою электронную почту, сохранить его данные в базу данных
-                    await setDoc(doc(db, 'users', user.uid), {
-                        addtime: serverTimestamp(), // текущее время
-                        role: "user",
-                        fcmtoken: "",
-                        location: "",
-                        photoUrl: "",
-                        rating: 0,
-                        name: username,
-                        email: email,
-                        id: user.uid
-                    });
-                    history.push('/advertisment');
-                }
+            alert('Пожалуйста, подтвердите свой адрес электронной почты перед входом.');
+
+            await setDoc(doc(db, 'users', user.uid), {
+                addtime: serverTimestamp(),
+                role: "user",
+                fcmtoken: "",
+                location: "",
+                photoUrl: "",
+                raiting: 0,
+                name: username,
+                email: email,
+                id: user.uid
             });
+            history.push('/sign_in');
+            await signOut(auth);
+            localStorage.clear();
         } catch (error) {
             alert(error.message);
         }
@@ -96,9 +88,9 @@ export const Registration = () => {
                         <li className="nav-item">
                             <a className="nav-link active" aria-current="page" onClick={goBack}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
-                                     className="bi bi-arrow-left" viewBox="0 0 16 16">
+                                    className="bi bi-arrow-left" viewBox="0 0 16 16">
                                     <path fillRule="evenodd"
-                                          d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+                                        d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z" />
                                 </svg>
                             </a>
                         </li>
@@ -106,34 +98,34 @@ export const Registration = () => {
                 </div>
             </nav>
 
-            <MyNavbar/>
+            <MyNavbar />
 
-            <div style={{paddingTop: '4.5rem'}}>
+            <div style={{ paddingTop: '4.5rem' }}>
                 <img src={Logotype} alt="logo"
-                     style={{width: "200px", height: "200px", borderRadius: "50%", display: "block", margin: "auto"}}/>
+                    style={{ width: "200px", height: "200px", borderRadius: "50%", display: "block", margin: "auto" }} />
             </div>
-            <Container style={{display: 'flex', alignItems: 'center', justifyContent: "center"}}>
-                <Form onSubmit={handleSubmit} style={{width: "400px"}}>
+            <Container style={{ display: 'flex', alignItems: 'center', justifyContent: "center" }}>
+                <Form onSubmit={handleSubmit} style={{ width: "400px" }}>
                     <Form.Group className="mb-3">
                         <Form.Label>Email address</Form.Label>
                         <Form.Control type="email" placeholder="name@example.com" value={email}
-                                      onChange={e => setEmail(e.target.value)}/>
+                            onChange={e => setEmail(e.target.value)} />
                     </Form.Group>
                     <Form.Group className="mb-3">
                         <Form.Label>Username</Form.Label>
                         <Form.Control type="text" value={username} autoComplete="username"
-                                      onChange={e => setUsername(e.target.value)}/>
+                            onChange={e => setUsername(e.target.value)} />
                     </Form.Group>
                     <Form.Group className="mb-3">
                         <Form.Label>Password</Form.Label>
                         <Form.Control type="password" value={password} autoComplete="new-password"
-                                      onChange={e => setPassword(e.target.value)}/>
+                            onChange={e => setPassword(e.target.value)} />
                     </Form.Group>
                     <Form.Group className="mb-3">
                         <Form.Label>Confirm Password</Form.Label>
                         <Form.Control type="password" value={confPassword} autoComplete="new-password"
-                                      onChange={e => setConfPassword(e.target.value)}/>
-                        <span style={{color: 'red'}}>{errorMessage}</span>
+                            onChange={e => setConfPassword(e.target.value)} />
+                        <span style={{ color: 'red' }}>{errorMessage}</span>
                     </Form.Group>
                     <Form.Group className="mb-3">
                         <p>Уже зарегистрированы? <a href="/sign_in">Войти</a></p>

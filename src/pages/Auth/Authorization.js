@@ -19,11 +19,15 @@ export const Authorization = () => {
         e.preventDefault();
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
-            // Получаем id пользователя
-            const userId = userCredential.user.uid;
-            // Сохраняем id пользователя в localStorage
-            localStorage.setItem('userId', userId);
-            history.push('/advertisment');
+            const user = userCredential.user;
+    
+            if (user.emailVerified) {
+                const userId = user.uid;
+                localStorage.setItem('userId', userId);
+                history.push('/advertisment');
+            } else {
+                alert('Пожалуйста, подтвердите свой адрес электронной почты перед входом.');
+            }
         } catch (error) {
             alert(error.message);
         }
@@ -71,15 +75,15 @@ export const Authorization = () => {
                 <img src={Logotype} alt="logo" style={{width: "200px", height: "200px", borderRadius: "50%", display: "block", margin: "auto"}}/>
             </div>
             <Container style={{ display: 'flex', alignItems: 'center', justifyContent: "center"}}>
-                <Form onSubmit={handleSubmit} style={{width: "400px"}}>
+                <Form onSubmit={handleSubmit} style={{width: "400px"}} autocomplete="on">
                     <Form.Group className="mb-3">
                         <Form.Label>Email address</Form.Label>
-                        <Form.Control type="email" id="sign_in_email" placeholder="name@example.com" value={email}
+                        <Form.Control type="email" id="email" name='email' placeholder="name@example.com" value={email}
                                       onChange={e => setEmail(e.target.value)}/>
                     </Form.Group>
                     <Form.Group className="mb-3">
                         <Form.Label>Password</Form.Label>
-                        <Form.Control type="password" id="sign_in_password" value={password}
+                        <Form.Control type="password" id="password" name='password' value={password}
                                       onChange={e => setPassword(e.target.value)}/>
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="saveSession">

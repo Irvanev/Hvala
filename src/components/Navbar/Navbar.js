@@ -43,6 +43,7 @@ export const MyNavbar = () => {
     const handleLogout = async () => {
         try {
             await signOut(auth);
+            localStorage.clear();
         } catch (error) {
             alert(error.message);
         }
