@@ -6,6 +6,9 @@ import { useParams, useHistory } from "react-router-dom";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "../../config/firebase";
 import { Link } from "react-router-dom";
+import star from "../../assets/star.png";
+import halfStar from "../../assets/rating2.png";
+import emptyStar from "../../assets/star2.png";
 
 const SellerProfile = () => {
   const { id } = useParams();
@@ -37,6 +40,18 @@ const SellerProfile = () => {
 
     fetchUserAndAds();
   }, [id]);
+
+  const stars = Array(5).fill(null).map((_, index) => {
+    if (user?.rating > index) {
+      if (user?.rating > index + 0.5) {
+        return <img src={star} alt="star" width="20" height="20" />;
+      } else {
+        return <img src={halfStar} alt="half star" width="20" height="20" />;
+      }
+    } else {
+      return <img src={emptyStar} alt="empty star" width="20" height="20" />;
+    }
+  });
 
   const aStyle = {
     textDecoration: "none",
@@ -134,11 +149,7 @@ const SellerProfile = () => {
             )}
             {user && (
               <div className="profile-reviews">
-                <p id="kolRating">
-                  {Array.from({ length: 5 }).map((_, index) => (
-                    <span key={index}>{index < user.raiting ? "⭐" : "☆"}</span>
-                  ))}
-                </p>
+                {stars}
               </div>
             )}
           </Col>
@@ -236,11 +247,7 @@ const SellerProfile = () => {
             <h2 className="profile-name" id="userName">{user?.name}</h2>
             {user && (
               <div className="profile-reviews">
-                <p id="kolRating">
-                  {Array.from({ length: 5 }).map((_, index) => (
-                    <span key={index}>{index < user.raiting ? "⭐" : "☆"}</span>
-                  ))}
-                </p>
+                {stars}
               </div>
             )}
             <div className="profile-sections">
