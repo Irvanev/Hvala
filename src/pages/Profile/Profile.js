@@ -177,7 +177,6 @@ export const Profile = () => {
                         </div>
                     </Col>
                     <Col xs={9}>
-                        <h2>Мои объявления</h2>
                         <Container className="album mt-3">
                             <Row xs={2} sm={2} md={3} lg={4} className="g-3" id="cardAds">
                                 {advertisment.length > 0 ? (
@@ -225,12 +224,8 @@ export const Profile = () => {
                                     ))
                                 ) : (
                                     <div>
-                                        <h2>Мои объявления</h2>
                                         <Card className="mb-3">
                                             <Row className="g-0">
-                                                <Col md={3}>
-                                                    <Image className="img-fluid rounded-start" alt="" id="adPhoto" />
-                                                </Col>
                                                 <Col md={8}>
                                                     <Card.Body>
                                                         <Card.Title id="title">Здесь будут ваши объявления</Card.Title>
@@ -340,7 +335,6 @@ export const Profile = () => {
                                 ))
                             ) : (
                                 <div>
-                                    <h2>Мои объявления</h2>
                                     <Card className="mb-3">
                                         <Row className="g-0">
                                             <Col md={3}>
