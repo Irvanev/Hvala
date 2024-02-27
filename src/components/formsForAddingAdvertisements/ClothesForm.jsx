@@ -7,7 +7,7 @@ const ClothesForm = ({ title, setTitle,
     brand, setBrand, 
     condition, setCondition, 
     description, setDescription, 
-    handleFileChange, photoUrls 
+    handleFileChange, photoUrls, handleSubmit
 }) => {
     return (
         <div>
@@ -66,7 +66,7 @@ const ClothesForm = ({ title, setTitle,
                 ))}
             </div>
             <div className="d-grid gap-2">
-                <Button variant="primary" size="lg">
+                <Button onClick={handleSubmit} variant="primary" size="lg">
                     Добавить
                 </Button>
             </div>

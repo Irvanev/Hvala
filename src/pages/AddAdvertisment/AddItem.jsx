@@ -509,7 +509,9 @@ export const AddItem = () => {
                          brand={brand} setBrand={setBrand} 
                          condition={condition} setCondition={setCondition} 
                          description={description} setDescription={setDescription} 
-                         handleFileChange={handleFileChange} photoUrls={photoUrls}/>
+                         handleFileChange={handleFileChange} photoUrls={photoUrls}
+                         handleSubmit={handleSubmit}
+                         />
                     )}
                     
                     {selectedSubcategory === 'phones_and_tablets' && (
@@ -521,7 +523,9 @@ export const AddItem = () => {
                             brand={brand} setBrand={setBrand} 
                             condition={condition} setCondition={setCondition} 
                             description={description} setDescription={setDescription} 
-                            handleFileChange={handleFileChange} photoUrls={photoUrls}/>
+                            handleFileChange={handleFileChange} photoUrls={photoUrls}
+                            handleSubmit={handleSubmit}
+                            />
                     )}
 
                 </Form>

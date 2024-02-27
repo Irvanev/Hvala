@@ -1,3 +1,6 @@
+import React from "react";
+import {Form, Button, FormGroup} from "react-bootstrap"
+
 const PhoneAndTabletsForm = ({ title, setTitle,
     price, setPrice,
     brand, setBrand,
@@ -6,7 +9,7 @@ const PhoneAndTabletsForm = ({ title, setTitle,
     memory, setMemory,
     condition, setCondition,
     description, setDescription,
-    handleFileChange, photoUrls
+    handleFileChange, photoUrls, handleSubmit
 
 }) => {
     return (
