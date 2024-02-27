@@ -7,7 +7,7 @@ const LanguageModal = ({ show, handleClose }) => {
 
     const changeLanguage = (lng) => {
         i18n.changeLanguage(lng);
-        localStorage.setItem('i18nextLng', lng); // Сохраняем выбранный язык в localStorage
+        localStorage.setItem('i18nextLng', lng);
         handleClose();
     };
 

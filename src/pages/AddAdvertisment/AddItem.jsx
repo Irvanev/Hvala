@@ -7,6 +7,9 @@ import { useState } from 'react';
 import { MyNavbar } from "../../components/Navbar/Navbar";
 import { Button, FormGroup } from "react-bootstrap";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import NavbarForMobileRouting from "../../components/Navbar/NavbarForMobileRouting"
+import ClothesForm from "../../components/formsForAddingAdvertisements/ClothesForm";
+import PhoneAndTabletsForm from "../../components/formsForAddingAdvertisements/PhoneAndTabletsForm";
 
 export const AddItem = () => {
     const { t } = useTranslation();
@@ -40,10 +43,6 @@ export const AddItem = () => {
     const [memory, setMemory] = useState('');
 
     // Для недвежимости
-
-    const goBack = () => {
-        history.goBack();
-    }
 
     const handleFileChange = (event) => {
         setSelectedFiles([...event.target.files]);
@@ -100,6 +99,10 @@ export const AddItem = () => {
                     photoUrls: fileUrls,
                     time_creation: serverTimestamp(),
                     from_uid: auth.currentUser ? auth.currentUser.uid : null,
+                    region: "",
+                    location: "",
+                    country: "",
+                    availability: "available" // !TODO
                 };
                 break;
             case 'auto' || 'moto' || 'water_transport':
@@ -123,6 +126,10 @@ export const AddItem = () => {
                     photoUrls: fileUrls,
                     time_creation: serverTimestamp(),
                     from_uid: auth.currentUser ? auth.currentUser.uid : null,
+                    region: "",
+                    location: "",
+                    country: "",
+                    availability: "available" // !TODO
                 };
                 break;
 
@@ -145,6 +152,10 @@ export const AddItem = () => {
                     photoUrls: fileUrls,
                     time_creation: serverTimestamp(),
                     from_uid: auth.currentUser ? auth.currentUser.uid : null,
+                    region: "",
+                    location: "",
+                    country: "",
+                    availability: "available" //!TODO
                 };
             default:
                 break;
@@ -185,21 +196,7 @@ export const AddItem = () => {
 
             <MyNavbar />
 
-            <nav className="navbar navbar-expand-md navbar-light fixed-top bg-light d-lg-none">
-                <div className="container">
-                    <ul className="navbar-nav me-auto mb-md-0">
-                        <li className="nav-item">
-                            <a className="nav-link active" aria-current="page" onClick={goBack}>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
-                                    className="bi bi-arrow-left" viewBox="0 0 16 16">
-                                    <path fillRule="evenodd"
-                                        d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z" />
-                                </svg>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
+            <NavbarForMobileRouting />
 
             <Container className="mt-3">
                 <h3>Создание объявления</h3>
@@ -506,141 +503,25 @@ export const AddItem = () => {
                     )}
 
                     { (selectedSubcategory === 'mens_clothing' || selectedSubcategory === 'womens_clothing' || selectedSubcategory === 'childrens_clothing') && (
-                        <div>
-                            <FormGroup className="mb-3">
-                                <Form.Label>Название</Form.Label>
-                                <Form.Control type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
-                            </FormGroup>
-                            <Form.Group className="mb-3">
-                                <Form.Label>Цена</Form.Label>
-                                <Form.Control type="text" value={price} onChange={(e) => setPrice(e.target.value)} />
-                            </Form.Group>
-                            <Form.Group className="mb-3">
-                                <Form.Label>Выберите размер</Form.Label>
-                                <Form.Select aria-label="Default select example" value={size} onChange={(e) => setSize(e.target.value)}>
-                                    <option>Размер</option>
-                                    <option value="XXS">XXS</option>
-                                    <option value="XS">XS</option>
-                                    <option value="S">S</option>
-                                    <option value="M">M</option>
-                                    <option value="L">L</option>
-                                    <option value="XL">XL</option>
-                                    <option value="XXL">XXL</option>
-                                    <option value="XXXL">XXXL</option>
-                                    <option value="4XL">4XL</option>
-                                    <option value="5XL">5XL</option>
-                                </Form.Select>
-                            </Form.Group>
-                            <Form.Group className="mb-3">
-                                <Form.Label>Введите бренд одежды</Form.Label>
-                                <Form.Control type="text" value={brand} onChange={(e) => setBrand(e.target.value)} />
-                            </Form.Group>
-                            <Form.Group className="mb-3">
-                                <Form.Label>Выберите состояние</Form.Label>
-                                <Form.Select aria-label="Default select example" value={condition} onChange={(e) => setCondition(e.target.value)}>
-                                    <option>Состояние</option>
-                                    <option value="new_cond">Новое</option>
-                                    <option value="bu_cond">Б/У</option>
-                                </Form.Select>
-                            </Form.Group>
-                            <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
-                                <Form.Label>Описание</Form.Label>
-                                <Form.Control as="textarea" rows={3} value={description} onChange={(e) => setDescription(e.target.value)} />
-                            </Form.Group>
-                            <Form.Group controlId="formFileMultiple" className="mb-3">
-                                <Form.Label>Фото</Form.Label>
-                                <Form.Control type="file" accept="image/*" multiple onChange={handleFileChange} />
-                            </Form.Group>
-                            <div className="mb-3">
-                                {photoUrls.map((file, index) => (
-                                    <img
-                                        key={index}
-                                        src={URL.createObjectURL(file)}
-                                        alt={`preview ${index}`}
-                                        style={{ width: '100px', height: '100px', marginRight: '10px', marginBottom: '10px' }}
-                                    />
-                                ))}
-                            </div>
-                            <div className="d-grid gap-2">
-                                <Button variant="primary" size="lg">
-                                    Добавить
-                                </Button>
-                            </div>
-                        </div>
+                        <ClothesForm title={title} setTitle={setTitle}
+                         price={price} setPrice={setPrice} 
+                         size={size} setSize={setSize} 
+                         brand={brand} setBrand={setBrand} 
+                         condition={condition} setCondition={setCondition} 
+                         description={description} setDescription={setDescription} 
+                         handleFileChange={handleFileChange} photoUrls={photoUrls}/>
                     )}
                     
                     {selectedSubcategory === 'phones_and_tablets' && (
-                        <div>
-                            <FormGroup className="mb-3">
-                                <Form.Label>Название</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    value={title}
-                                    onChange={(e) => setTitle(e.target.value)}
-                                />
-                            </FormGroup>
-                            <Form.Group className="mb-3">
-                                <Form.Label>Выберите бренд</Form.Label>
-                                <Form.Select aria-label="Default select example" value={brand} onChange={(e) => setBrand(e.target.value)}>
-                                    <option>Brand</option>
-                                    <option value="Samsung">Samsung</option>
-                                    <option value="Apple">Apple</option>
-                                    <option value="Xiaomi">Xiaomi</option>
-                                    <option value="Huawei">Huawei</option>
-                                    <option value="Honor">Honor</option>
-                                    <option value="HTC">HTC</option>
-                                    <option value="Oppo">Oppo</option>
-                                    <option value="Realme">Realme</option>
-                                </Form.Select>
-                            </Form.Group>
-                            <Form.Group className="mb-3">
-                                <Form.Label>Введите модель</Form.Label>
-                                <Form.Control type="text" value={model} onChange={(e) => setModel(e.target.value)} />
-                            </Form.Group>
-                            <Form.Group className="mb-3">
-                                <Form.Label>Цена</Form.Label>
-                                <Form.Control type="text" value={price} onChange={(e) => setPrice(e.target.value)} />
-                            </Form.Group>
-                            <Form.Group className="mb-3">
-                                <Form.Label>Введите размер экрана</Form.Label>
-                                <Form.Control type="number" placeholder="6.7" value={screen_size} onChange={(e) => setScreenSize(e.target.value)} />
-                            </Form.Group>
-                            <Form.Group className="mb-3">
-                                <Form.Label>Введите память</Form.Label>
-                                <Form.Control type="number" value={memory} onChange={(e) => setMemory(e.target.value)} />
-                            </Form.Group>
-                            <Form.Group className="mb-3">
-                                <Form.Label>Выберите состояние</Form.Label>
-                                <Form.Select aria-label="Default select example" value={condition} onChange={(e) => setCondition(e.target.value)}>
-                                    <option>Состояние</option>
-                                    <option value="new_cond">Новое</option>
-                                    <option value="bu_cond">Б/У</option>
-                                </Form.Select>
-                            </Form.Group>
-                            <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1" value={description} onChange={(e) => setDescription(e.target.value)}>
-                                <Form.Label>Описание</Form.Label>
-                                <Form.Control as="textarea" rows={3} />
-                            </Form.Group>
-                            <Form.Group controlId="formFileMultiple" className="mb-3">
-                                <Form.Label>Фото</Form.Label>
-                                <Form.Control type="file" accept="image/*" multiple onChange={handleFileChange} />
-                            </Form.Group>
-                            <div className="mb-3">
-                                {photoUrls.map((file, index) => (
-                                    <img
-                                        key={index}
-                                        src={URL.createObjectURL(file)}
-                                        alt={`preview ${index}`}
-                                        style={{ width: '100px', height: '100px', marginRight: '10px', marginBottom: '10px' }}
-                                    />
-                                ))}
-                            </div>
-                            <div className="d-grid gap-2">
-                                <Button onClick={handleSubmit} variant="primary" size="lg">
-                                    Добавить
-                                </Button>
-                            </div>
-                        </div>
+                            <PhoneAndTabletsForm title={title} setTitle={setTitle} 
+                            price={price} setPrice={setPrice} 
+                            model={model} setModel={setModel} 
+                            screen_size={screen_size} setScreenSize={setScreenSize} 
+                            memory={memory} setMemory={setMemory} 
+                            brand={brand} setBrand={setBrand} 
+                            condition={condition} setCondition={setCondition} 
+                            description={description} setDescription={setDescription} 
+                            handleFileChange={handleFileChange} photoUrls={photoUrls}/>
                     )}
 
                 </Form>

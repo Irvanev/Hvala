@@ -51,7 +51,7 @@ const Categories = () => {
               boxShadow: "0px 8px 16px 0px rgba(0,0,0,0.5)",
             }}
           >
-            <ListGroup id="categories">
+            <ListGroup id="categories"y>
               <ListGroup.Item>
                 <Link to="/advertisments/estate">Недвижимость</Link>
               </ListGroup.Item>
