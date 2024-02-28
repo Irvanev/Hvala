@@ -1,28 +1,31 @@
 import { FormGroup, Form, Button } from "react-bootstrap";
+import { useTranslation } from "react-i18next";
 import React from "react";
 
-const ClothesForm = ({ title, setTitle, 
+const ClothesForm = ({ 
+    title, setTitle, 
     price, setPrice, 
     size, setSize, 
     brand, setBrand, 
     condition, setCondition, 
+    phoneNumber, setPhoneNumber,
     description, setDescription, 
     handleFileChange, photoUrls, handleSubmit
 }) => {
+    const { t } = useTranslation();
     return (
         <div>
             <FormGroup className="mb-3">
-                <Form.Label>Название</Form.Label>
+                <Form.Label>{t('title')}</Form.Label>
                 <Form.Control type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
             </FormGroup>
             <Form.Group className="mb-3">
-                <Form.Label>Цена</Form.Label>
-                <Form.Control type="text" value={price} onChange={(e) => setPrice(e.target.value)} />
+                <Form.Label>{t('price')}</Form.Label>
+                <Form.Control type="text" value={price} onChange={(e) => setPrice(parseInt(e.target.value, 10))} />
             </Form.Group>
             <Form.Group className="mb-3">
-                <Form.Label>Выберите размер</Form.Label>
+                <Form.Label>{t('size')}</Form.Label>
                 <Form.Select aria-label="Default select example" value={size} onChange={(e) => setSize(e.target.value)}>
-                    <option>Размер</option>
                     <option value="XXS">XXS</option>
                     <option value="XS">XS</option>
                     <option value="S">S</option>
@@ -36,23 +39,26 @@ const ClothesForm = ({ title, setTitle,
                 </Form.Select>
             </Form.Group>
             <Form.Group className="mb-3">
-                <Form.Label>Введите бренд одежды</Form.Label>
+                <Form.Label>{t('brand')}</Form.Label>
                 <Form.Control type="text" value={brand} onChange={(e) => setBrand(e.target.value)} />
             </Form.Group>
             <Form.Group className="mb-3">
-                <Form.Label>Выберите состояние</Form.Label>
+                <Form.Label>{t('condition')}</Form.Label>
                 <Form.Select aria-label="Default select example" value={condition} onChange={(e) => setCondition(e.target.value)}>
-                    <option>Состояние</option>
                     <option value="new_cond">Новое</option>
                     <option value="bu_cond">Б/У</option>
                 </Form.Select>
             </Form.Group>
+            <Form.Group className="mb-3">
+                <Form.Label>{t('phone_number')}</Form.Label>
+                <Form.Control type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
+            </Form.Group>
             <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
-                <Form.Label>Описание</Form.Label>
+                <Form.Label>{t('description')}</Form.Label>
                 <Form.Control as="textarea" rows={3} value={description} onChange={(e) => setDescription(e.target.value)} />
             </Form.Group>
             <Form.Group controlId="formFileMultiple" className="mb-3">
-                <Form.Label>Фото</Form.Label>
+                <Form.Label>{t('photo')}</Form.Label>
                 <Form.Control type="file" accept="image/*" multiple onChange={handleFileChange} />
             </Form.Group>
             <div className="mb-3">
@@ -67,7 +73,7 @@ const ClothesForm = ({ title, setTitle,
             </div>
             <div className="d-grid gap-2">
                 <Button onClick={handleSubmit} variant="primary" size="lg">
-                    Добавить
+                    {t('add')}
                 </Button>
             </div>
         </div>

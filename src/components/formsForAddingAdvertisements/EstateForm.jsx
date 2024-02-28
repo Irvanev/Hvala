@@ -1,17 +1,16 @@
 import React from "react";
-import { Form, Button, FormGroup } from "react-bootstrap"
+import {Form, Button, FormGroup} from "react-bootstrap"
 import { useTranslation } from "react-i18next";
 
-const PhoneAndTabletsForm = ({ title, setTitle,
+const EstateForm = ({title, setTitle,
     price, setPrice,
-    brand, setBrand,
-    model, setModel,
-    screen_size, setScreenSize,
-    memory, setMemory,
-    condition, setCondition,
+    type, setType,
+    roomsAmout, setRoomsAmount,
+    area, setArea,
+    owner, setOwner,
     phoneNumber, setPhoneNumber,
     description, setDescription,
-    handleFileChange, photoUrls, handleSubmit
+    handleFileChange, handleSubmit, photoUrls
 
 }) => {
     const { t } = useTranslation();
@@ -26,39 +25,32 @@ const PhoneAndTabletsForm = ({ title, setTitle,
                 />
             </FormGroup>
             <Form.Group className="mb-3">
-                <Form.Label>{t('brand')}</Form.Label>
-                <Form.Select aria-label="Default select example" value={brand} onChange={(e) => setBrand(e.target.value)}>
-                    <option value="Samsung">Samsung</option>
-                    <option value="Apple">Apple</option>
-                    <option value="Xiaomi">Xiaomi</option>
-                    <option value="Huawei">Huawei</option>
-                    <option value="Honor">Honor</option>
-                    <option value="HTC">HTC</option>
-                    <option value="Oppo">Oppo</option>
-                    <option value="Realme">Realme</option>
+                <Form.Label>{t('type')}</Form.Label>
+                <Form.Select aria-label="Default select example" value={type} onChange={(e) => setType(e.target.value)}>
+                    <option value="house">{t('house')}</option>
+                    <option value="garage">{t('garage')}</option>
+                    <option value="aparment">{t('aparment')}</option>
+                    <option value="commercial_real_estate">{t('commercial_real_estate')}</option>
+                    <option value="room">{t('room')}</option>
                 </Form.Select>
             </Form.Group>
             <Form.Group className="mb-3">
-                <Form.Label>{t('model')}</Form.Label>
-                <Form.Control type="text" value={model} onChange={(e) => setModel(e.target.value)} />
+                <Form.Label>{t('rooms_amount')}</Form.Label>
+                <Form.Control type="number" value={roomsAmout} onChange={(e) => setRoomsAmount(e.target.value)} />
             </Form.Group>
             <Form.Group className="mb-3">
                 <Form.Label>{t('price')}</Form.Label>
                 <Form.Control type="text" value={price} onChange={(e) => setPrice(parseInt(e.target.value, 10))} />
             </Form.Group>
             <Form.Group className="mb-3">
-                <Form.Label>{t("size_screen")}</Form.Label>
-                <Form.Control type="number" placeholder="6.7" value={screen_size} onChange={(e) => setScreenSize(e.target.value)} />
+                <Form.Label>{t('area')}</Form.Label>
+                <Form.Control type="number" value={area} onChange={(e) => setArea(e.target.value)} />
             </Form.Group>
             <Form.Group className="mb-3">
-                <Form.Label>{t('memory')}</Form.Label>
-                <Form.Control type="number" value={memory} onChange={(e) => setMemory(e.target.value)} />
-            </Form.Group>
-            <Form.Group className="mb-3">
-                <Form.Label>{t('condition')}</Form.Label>
-                <Form.Select aria-label="Default select example" value={condition} onChange={(e) => setCondition(e.target.value)}>
-                    <option value="new_cond">Новое</option>
-                    <option value="bu_cond">Б/У</option>
+                <Form.Label>{t('owner_rent')}</Form.Label>
+                <Form.Select aria-label="Default select example" value={owner} onChange={(e) => setOwner(e.target.value)}>
+                    <option value="new_cond">Владелец</option>
+                    <option value="bu_cond">Риелтор</option>
                 </Form.Select>
             </Form.Group>
             <Form.Group className="mb-3">
@@ -92,4 +84,4 @@ const PhoneAndTabletsForm = ({ title, setTitle,
     );
 }
 
-export default PhoneAndTabletsForm;
+export default EstateForm;
