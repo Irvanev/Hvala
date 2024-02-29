@@ -1,8 +1,8 @@
 import React from "react";
-import {Form, Button, FormGroup} from "react-bootstrap"
+import { Form, Button, FormGroup } from "react-bootstrap"
 import { useTranslation } from "react-i18next";
 
-const EstateForm = ({title, setTitle,
+const EstateForm = ({ title, setTitle,
     price, setPrice,
     type, setType,
     roomsAmout, setRoomsAmount,
@@ -25,8 +25,8 @@ const EstateForm = ({title, setTitle,
                 />
             </FormGroup>
             <Form.Group className="mb-3">
-                <Form.Label>{t('type')}</Form.Label>
                 <Form.Select aria-label="Default select example" value={type} onChange={(e) => setType(e.target.value)}>
+                    <option>{t('type')}</option>
                     <option value="house">{t('house')}</option>
                     <option value="garage">{t('garage')}</option>
                     <option value="aparment">{t('aparment')}</option>
@@ -47,10 +47,10 @@ const EstateForm = ({title, setTitle,
                 <Form.Control type="number" value={area} onChange={(e) => setArea(e.target.value)} />
             </Form.Group>
             <Form.Group className="mb-3">
-                <Form.Label>{t('owner_rent')}</Form.Label>
                 <Form.Select aria-label="Default select example" value={owner} onChange={(e) => setOwner(e.target.value)}>
-                    <option value="new_cond">Владелец</option>
-                    <option value="bu_cond">Риелтор</option>
+                    <option>{t('owner_rent')}</option>
+                    <option value="owner">{t('owner')}</option>
+                    <option value="realtor">{t('realtor')}</option>
                 </Form.Select>
             </Form.Group>
             <Form.Group className="mb-3">
