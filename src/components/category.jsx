@@ -22,6 +22,19 @@ const Categories = () => {
 
   return (
     <div>
+
+      <style type="text/css">
+        {`
+        .list-group a {
+          text-decoration: none;
+          color: black;
+          }
+          .list-group a:hover {
+              color: #ffa600;
+          }
+        `}
+        </style>
+
       <Container id="advertMedia" className="d-none d-lg-block">
         <Form className="d-flex py-4">
           <a href="/advertisment">
