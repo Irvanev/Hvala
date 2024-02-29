@@ -1,6 +1,6 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import {Button, Form, FormGroup} from "react-bootstrap";
+import { Button, Form, FormGroup } from "react-bootstrap";
 
 const TarnsportForm = ({
     title, setTitle,
@@ -8,14 +8,14 @@ const TarnsportForm = ({
     model, setModel,
     price, setPrice,
     year, setYear,
-    meleage, setMeleage,
+    mileage, setMileage,
     body, setBody,
     color, setColor,
     transmission, setTransmission,
     drive, setDrive,
     wheel, setWheel,
     condition, setCondition,
-    customs, setCustoms,
+    owners, setOwners,
     phoneNumber, setPhoneNumber,
     description, setDescription,
     handleFileChange, photoUrls, handleSubmit
@@ -28,8 +28,8 @@ const TarnsportForm = ({
                 <Form.Control type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
             </FormGroup>
             <Form.Group className="mb-3">
-                <Form.Label>{t('choice_mark')}</Form.Label>
                 <Form.Select aria-label="Default select example" value={brand} onChange={(e) => setBrand(e.target.value)}>
+                    <option>{t('choice_mark')}</option>
                     <option value="Audi">Audi</option>
                     <option value="BMW">BMW</option>
                     <option value="Mersedes">Mersedes</option>
@@ -49,21 +49,21 @@ const TarnsportForm = ({
             </Form.Group>
             <Form.Group className="mb-3">
                 <Form.Label>{t('input_meleage')}</Form.Label>
-                <Form.Control type="number" value={meleage} onChange={(e) => setMeleage(e.target.value)} />
+                <Form.Control type="number" value={mileage} onChange={(e) => setMileage(e.target.value)} />
             </Form.Group>
             <Form.Group className="mb-3">
-                <Form.Label>{t('choice_body')}</Form.Label>
                 <Form.Select aria-label="Default select example" value={body} onChange={(e) => setBody(e.target.value)}>
-                    <option value="Седан">Седан</option>
-                    <option value="Хэтчбек">Хэтчбек</option>
-                    <option value="Универсал">Универсал</option>
-                    <option value="Купе">Купе</option>
-                    <option value="Кабоиолет">Кабоиолет</option>
-                    <option value="Кроссовер">Кроссовер</option>
-                    <option value="Внедорожник">Внедорожник</option>
-                    <option value="Пикап">Пикап</option>
-                    <option value="Минивен">Минивен</option>
-                    <option value="Лимузин">Лимузин</option>
+                    <option>{t('choice_body')}</option>
+                    <option value="sedan">{t('sedan')}</option>
+                    <option value="hatchback">{t('hatchback')}</option>
+                    <option value="station_wagon">{t('station_wagon')}</option>
+                    <option value="coupe">{t('coupe')}</option>
+                    <option value="convertible">{t('convertible')}</option>
+                    <option value="crossover">{t('crossover')}</option>
+                    <option value="Внедорsuv_sport_utility_vehicleожник">{t('Внедорsuv_sport_utility_vehicleожник')}</option>
+                    <option value="pickup_truck">{t('pickup_truck')}</option>
+                    <option value="minivan">{t('minivan')}</option>
+                    <option value="Limousine">{t('Limousine')}</option>
                 </Form.Select>
             </Form.Group>
             <Form.Group className="mb-3">
@@ -71,40 +71,41 @@ const TarnsportForm = ({
                 <Form.Control type="text" value={color} onChange={(e) => setColor(e.target.value)} />
             </Form.Group>
             <Form.Group className="mb-3">
-                <Form.Label>{t('choce_transmission')}</Form.Label>
                 <Form.Select aria-label="Default select example" value={transmission} onChange={(e) => setTransmission(e.target.value)}>
-                    <option value="1">Механическая</option>
-                    <option value="2">Автоматическая</option>
-                    <option value="3">Варитор</option>
-                    <option value="4">Двухсцепная</option>
-                    <option value="5">Полуавтоматичская</option>
+                    <option>{t('choce_transmission')}</option>
+                    <option value="manual_t">{t('manual_t')}</option>
+                    <option value="auto_t">{t('auto_t')}</option>
+                    <option value="semi_auto_t">{t('semi_auto_t')}</option>
+                    <option value="dual_clutch_t">{t('dual_clutch_t')}</option>
+                    <option value="continuously_t">{t('continuously_t')}</option>
                 </Form.Select>
             </Form.Group>
             <Form.Group className="mb-3">
-                <Form.Label>{t('choice_drive')}</Form.Label>
                 <Form.Select aria-label="Default select example" value={drive} onChange={(e) => setDrive(e.target.value)}>
-                    <option value="1">Полный</option>
-                    <option value="2">Передний</option>
-                    <option value="3">Задний</option>
+                    <option>{t('choice_drive')}</option>
+                    <option value="fwd">{t('fwd')}</option>
+                    <option value="rwd">{t('rwd')}</option>
+                    <option value="awd">{t('awd')}</option>
+                    <option value="four_wd">{t('four_wd')}</option>
                 </Form.Select>
             </Form.Group>
             <Form.Group className="mb-3">
-                <Form.Label>{t('choice_wheel')}</Form.Label>
                 <Form.Select aria-label="Default select example" value={wheel} onChange={(e) => setWheel(e.target.value)}>
-                    <option value="1">Левое</option>
-                    <option value="2">Правое</option>
+                    <option>{t('choice_wheel')}</option>
+                    <option value="left_hand_drive">{t('left_hand_drive')}</option>
+                    <option value="right_hand_drive">{t('right_hand_drive')}</option>
                 </Form.Select>
             </Form.Group>
             <Form.Group className="mb-3">
-                <Form.Label>{t('choice_condition')}</Form.Label>
                 <Form.Select aria-label="Default select example" value={condition} onChange={(e) => setCondition(e.target.value)}>
-                    <option value="nev_cond">{t('new_cond')}</option>
-                    <option value="bu_cond">{t('bu_cond')}</option>
+                    <option>{t('choice_condition')}</option>
+                    <option value="condition_new">{t('condition_new')}</option>
+                    <option value="used">{t('used')}</option>
                 </Form.Select>
             </Form.Group>
             <Form.Group className="mb-3">
                 <Form.Label>{t('choice_customs')}</Form.Label>
-                <Form.Control type="number" value={customs} onChange={(e) => setCustoms(e.target.value)} />
+                <Form.Control type="number" value={owners} onChange={(e) => setOwners(e.target.value)} />
             </Form.Group>
             <Form.Group className="mb-3">
                 <Form.Label>{t('phone_number')}</Form.Label>
