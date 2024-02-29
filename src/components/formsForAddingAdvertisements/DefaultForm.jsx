@@ -1,62 +1,30 @@
-import React from "react";
-import { Form, Button, FormGroup } from "react-bootstrap"
+import { FormGroup, Form, Button } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
+import React from "react";
 
-const PhoneAndTabletsForm = ({ title, setTitle,
+const DefaultForm = ({
+    title, setTitle,
     price, setPrice,
-    brand, setBrand,
-    model, setModel,
-    screen_size, setScreenSize,
-    memory, setMemory,
     condition, setCondition,
     phoneNumber, setPhoneNumber,
     description, setDescription,
     handleFileChange, photoUrls, handleSubmit
-
 }) => {
     const { t } = useTranslation();
     return (
         <div>
             <FormGroup className="mb-3">
                 <Form.Label>{t('title')}</Form.Label>
-                <Form.Control
-                    type="text"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                />
+                <Form.Control type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
             </FormGroup>
-            <Form.Group className="mb-3">
-                <Form.Label>{t('brand')}</Form.Label>
-                <Form.Select aria-label="Default select example" value={brand} onChange={(e) => setBrand(e.target.value)}>
-                    <option value="Samsung">Samsung</option>
-                    <option value="Apple">Apple</option>
-                    <option value="Xiaomi">Xiaomi</option>
-                    <option value="Huawei">Huawei</option>
-                    <option value="Honor">Honor</option>
-                    <option value="HTC">HTC</option>
-                    <option value="Oppo">Oppo</option>
-                    <option value="Realme">Realme</option>
-                </Form.Select>
-            </Form.Group>
-            <Form.Group className="mb-3">
-                <Form.Label>{t('model')}</Form.Label>
-                <Form.Control type="text" value={model} onChange={(e) => setModel(e.target.value)} />
-            </Form.Group>
             <Form.Group className="mb-3">
                 <Form.Label>{t('price')}</Form.Label>
                 <Form.Control type="text" value={price} onChange={(e) => setPrice(parseInt(e.target.value, 10))} />
             </Form.Group>
             <Form.Group className="mb-3">
-                <Form.Label>{t("size_screen")}</Form.Label>
-                <Form.Control type="number" placeholder="6.7" value={screen_size} onChange={(e) => setScreenSize(e.target.value)} />
-            </Form.Group>
-            <Form.Group className="mb-3">
-                <Form.Label>{t('memory')}</Form.Label>
-                <Form.Control type="number" value={memory} onChange={(e) => setMemory(e.target.value)} />
-            </Form.Group>
-            <Form.Group className="mb-3">
                 <Form.Label>{t('condition')}</Form.Label>
                 <Form.Select aria-label="Default select example" value={condition} onChange={(e) => setCondition(e.target.value)}>
+                    <option>{t('condition')}</option>
                     <option value="new_cond">Новое</option>
                     <option value="bu_cond">Б/У</option>
                 </Form.Select>
@@ -65,9 +33,9 @@ const PhoneAndTabletsForm = ({ title, setTitle,
                 <Form.Label>{t('phone_number')}</Form.Label>
                 <Form.Control type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
             </Form.Group>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1" value={description} onChange={(e) => setDescription(e.target.value)}>
+            <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
                 <Form.Label>{t('description')}</Form.Label>
-                <Form.Control as="textarea" rows={3} />
+                <Form.Control as="textarea" rows={3} value={description} onChange={(e) => setDescription(e.target.value)} />
             </Form.Group>
             <Form.Group controlId="formFileMultiple" className="mb-3">
                 <Form.Label>{t('photo')}</Form.Label>
@@ -92,4 +60,4 @@ const PhoneAndTabletsForm = ({ title, setTitle,
     );
 }
 
-export default PhoneAndTabletsForm;
+export default DefaultForm;
