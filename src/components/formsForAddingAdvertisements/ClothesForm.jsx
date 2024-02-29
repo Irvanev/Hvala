@@ -1,15 +1,17 @@
 import { FormGroup, Form, Button } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import React from "react";
+import SelectTypesForClothes from "../select-types/select-types-clothes/SelectTypesForClothes";
 
-const ClothesForm = ({ 
-    title, setTitle, 
-    price, setPrice, 
-    size, setSize, 
-    brand, setBrand, 
-    condition, setCondition, 
+const ClothesForm = ({
+    title, setTitle,
+    price, setPrice,
+    size, setSize,
+    brand, setBrand,
+    type, setType,
+    condition, setCondition,
     phoneNumber, setPhoneNumber,
-    description, setDescription, 
+    description, setDescription,
     handleFileChange, photoUrls, handleSubmit
 }) => {
     const { t } = useTranslation();
@@ -20,12 +22,17 @@ const ClothesForm = ({
                 <Form.Control type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
             </FormGroup>
             <Form.Group className="mb-3">
+                <Form.Label>{t('type')}</Form.Label>
+                <SelectTypesForClothes type={type} setType={setType} />
+            </Form.Group>
+            <Form.Group className="mb-3">
                 <Form.Label>{t('price')}</Form.Label>
                 <Form.Control type="text" value={price} onChange={(e) => setPrice(parseInt(e.target.value, 10))} />
             </Form.Group>
             <Form.Group className="mb-3">
                 <Form.Label>{t('size')}</Form.Label>
                 <Form.Select aria-label="Default select example" value={size} onChange={(e) => setSize(e.target.value)}>
+                    <option>{t('size')}</option>
                     <option value="XXS">XXS</option>
                     <option value="XS">XS</option>
                     <option value="S">S</option>
@@ -45,6 +52,7 @@ const ClothesForm = ({
             <Form.Group className="mb-3">
                 <Form.Label>{t('condition')}</Form.Label>
                 <Form.Select aria-label="Default select example" value={condition} onChange={(e) => setCondition(e.target.value)}>
+                    <option>{t('condition')}</option>
                     <option value="new_cond">Новое</option>
                     <option value="bu_cond">Б/У</option>
                 </Form.Select>
