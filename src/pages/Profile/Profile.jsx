@@ -1,5 +1,5 @@
 import Logo from '../../assets/logo.png';
-import { Container, Row, Col, Card, Image, Modal, Button } from 'react-bootstrap';
+import { Container, Row, Col, Card, Image, Modal, Button, ButtonGroup } from 'react-bootstrap';
 import { auth, db } from "../../config/firebase";
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import React, { useEffect, useState } from "react";
@@ -20,6 +20,15 @@ export const Profile = () => {
     const handleShow = () => setShow(true);
     const [reviews, setReviews] = useState([]);
     const [advertisment, setAdvertisment] = useState([]);
+    const [showModal, setShowModal] = useState(false);
+
+    const handleDelete = () => {
+        setShowModal(true);
+    };
+
+    const handleCloseM = () => {
+        setShowModal(false);
+    };
 
     useEffect(() => {
         const fetchUserAndReviews = async () => {
@@ -178,7 +187,7 @@ export const Profile = () => {
                     </Col>
                     <Col xs={9}>
                         <Container className="album mt-3">
-                            <Row xs={2} sm={2} md={3} lg={4} className="g-3" id="cardAds">
+                            <Row xs={2} sm={2} md={3} lg={3} className="g-3" id="cardAds">
                                 {advertisment.length > 0 ? (
                                     advertisment.map((advertisment) => (
                                         <Col key={advertisment.id}>
@@ -220,6 +229,10 @@ export const Profile = () => {
                                                     </Card.Body>
                                                 </Card>
                                             </Link>
+                                            <ButtonGroup aria-label="Basic example" >
+                                                <Button variant="secondary">Редактировать</Button>
+                                                <Button variant="danger" onClick={handleDelete}>Удалить</Button>
+                                            </ButtonGroup>
                                         </Col>
                                     ))
                                 ) : (
@@ -374,6 +387,21 @@ export const Profile = () => {
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleClose}>
                         Закрыть
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
+            <Modal show={showModal} onHide={handleCloseM}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Подтверждение удаления</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>Вы уверены, что хотите удалить этот элемент?</Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleCloseM}>
+                        Отмена
+                    </Button>
+                    <Button variant="danger">
+                        Удалить
                     </Button>
                 </Modal.Footer>
             </Modal>
