@@ -40,6 +40,7 @@ function App() {
           <Route exact path={"/sign_in"} component={Authorization} />
           <Route exact path={"/advertisments/:category"} component={CategoryAdvertisments} />
           <PrivateRoute exact path={"/message"} component={Message} />
+          <PrivateRoute exact path={"/edit/:id"} component={AddItem} />
           <PrivateRoute exact path={"/addItem"} component={AddItem} />
           <PrivateRoute path={"/profile"} component={Profile} />
           <Redirect from="/" to="/advertisment" />

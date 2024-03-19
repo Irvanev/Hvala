@@ -121,7 +121,7 @@ const Categories = () => {
           <InputGroup>
             <Form.Control
               placeholder="Search"
-              aria-label="Username"
+              aria-label="SerachBar"
               aria-describedby="basic-addon1"
             />
             <InputGroup.Text id="basic-addon1" className="">
