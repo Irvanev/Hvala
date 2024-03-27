@@ -11,10 +11,6 @@ const Contact = () => {
     window.location.href = `mailto:${email}`;
   };
 
-  const handleSocialClick = (url) => {
-    window.open(url, "_blank");
-  };
-
   const { t } = useTranslation();
 
   return (
@@ -76,22 +72,20 @@ const Contact = () => {
             justifyContent: "center",
           }}
         >
-          <Image
-            src={Instagram}
-            alt="Instagram"
-            style={{ height: "50px", width: "50px", marginRight: "10px" }}
-            onClick={() =>
-              handleSocialClick("https://www.instagram.com/your_username")
-            }
-          />
-          <Image
-            src={Facebook}
-            alt="Facebook"
-            style={{ height: "50px", width: "50px", marginLeft: "10px" }}
-            onClick={() =>
-              handleSocialClick("https://www.facebook.com/your_username")
-            }
-          />
+          <a href="https://www.instagram.com/your_username">
+            <Image
+              src={Instagram}
+              alt="Instagram"
+              style={{ height: "50px", width: "50px", marginRight: "10px" }}
+            />
+          </a>
+          <a href="https://www.facebook.com/your_username">
+            <Image
+              src={Facebook}
+              alt="Facebook"
+              style={{ height: "50px", width: "50px", marginLeft: "10px" }}
+            />
+          </a>
         </div>
       </Container>
     </div>

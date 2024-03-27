@@ -16,6 +16,7 @@ import Help from './pages/Help';
 import SellerProfile from './pages/Profile/SellerProfile';
 import ProfileSettings from './pages/Profile/Settings';
 import Contact from "./pages/contact";
+import EditItem from './pages/EditAdvertisment/EditAdvertismt';
 
 
 function App() {
@@ -40,7 +41,7 @@ function App() {
           <Route exact path={"/sign_in"} component={Authorization} />
           <Route exact path={"/advertisments/:category"} component={CategoryAdvertisments} />
           <PrivateRoute exact path={"/message"} component={Message} />
-          <PrivateRoute exact path={"/edit/:id"} component={AddItem} />
+          <PrivateRoute exact path={"/edit/:id"} component={EditItem} />
           <PrivateRoute exact path={"/addItem"} component={AddItem} />
           <PrivateRoute path={"/profile"} component={Profile} />
           <Redirect from="/" to="/advertisment" />
