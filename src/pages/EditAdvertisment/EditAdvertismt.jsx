@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { doc, getDoc, updateDoc, deleteField } from "firebase/firestore";
 import { db } from '../../config/firebase';
 import { useParams } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { Form, Container, FormGroup, Button } from "react-bootstrap"
 import { useTranslation } from "react-i18next";
 import NavbarForMobileRouting from "../../components/Navbar/NavbarForMobileRouting"
@@ -32,6 +33,7 @@ import SelectTypesForClothes from "../../components/select-types/select-types-cl
 
 export default function EditItem() {
     const { t } = useTranslation();
+    const history = useHistory();
     const { id } = useParams();
     const [data, setData] = useState(null);
     const [category, setCategory] = useState('');
@@ -365,6 +367,7 @@ export default function EditItem() {
             }
 
             console.log("Document successfully updated!");
+            history.push('/profile');
         } catch (error) {
             console.error("Error updating document: ", error);
         }
