@@ -5,8 +5,27 @@ import CharactersForCard from './CharactersForCard';
 import ModalForNumberPhone from './ModalForNumberPhone';
 import { Link } from 'react-router-dom';
 import Logo from "../../assets/logo.png"
+import { collection, query, where, getDocs } from "firebase/firestore";
+import { useEffect, useState } from 'react';
+import {db} from '../../config/firebase'
+
+
 
 const CardInPc = ({ adData, t, index, handleSelect, handleCallClick, showModal, handleCloseModal, userData, stars }) => {
+
+  const [feedbacks, setFeedbacks] = useState([]);
+
+  useEffect(() => {
+    const fetchFeedbacks = async () => {
+      const q = query(collection(db, "feedback"), where("from_uid", "==", userId));
+      const querySnapshot = await getDocs(q);
+
+      const feedbacks = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setFeedbacks(feedbacks);
+    };
+
+    fetchFeedbacks();
+  }, [userId]);
 
   const profileImage = {
     width: "60px",
@@ -96,7 +115,10 @@ const CardInPc = ({ adData, t, index, handleSelect, handleCallClick, showModal, 
                 <h5 className="mb-0">{userData?.name || 'User'}</h5>
               </Link>
               <div className="d-flex align-items-center">
-                <h5>{userData?.raiting}{stars}</h5>
+                <h5>{userData?.rating}{stars}</h5>
+              </div>
+              <div className="d-flex align-items-center">
+                <h5>{userData?.rating}{stars}</h5>
               </div>
             </div>
             <Link to={`/seller/${userData?.id}`} style={{ textDecoration: 'none' }}>

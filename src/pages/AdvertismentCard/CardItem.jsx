@@ -33,8 +33,8 @@ export const CardItem = () => {
 
 
   const stars = Array(5).fill(null).map((_, index) => {
-    if (userData?.raiting > index) {
-      if (userData?.raiting > index + 0.5) {
+    if (userData?.rating > index) {
+      if (userData?.rating > index + 0.5) {
         return <img src={star} alt="star" width="20" height="20" />;
       } else {
         return <img src={halfStar} alt="half star" width="20" height="20" />;
