@@ -2,11 +2,13 @@ import {useState} from 'react';
 import {useHistory} from 'react-router-dom';
 import {signInWithEmailAndPassword} from 'firebase/auth';
 import { Container, Form, Button } from 'react-bootstrap';
+import {useTranslation} from 'react-i18next';
 import Logotype from "../../assets/logo.png"
 import {auth} from "../../config/firebase"
 import {MyNavbar} from '../../components/Navbar/Navbar';
 
 export const Authorization = () => {
+    const {t} = useTranslation();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const history = useHistory();
@@ -77,23 +79,23 @@ export const Authorization = () => {
             <Container style={{ display: 'flex', alignItems: 'center', justifyContent: "center"}}>
                 <Form onSubmit={handleSubmit} style={{width: "400px"}} autocomplete="on">
                     <Form.Group className="mb-3">
-                        <Form.Label>Email address</Form.Label>
+                        <Form.Label>{t('email')}</Form.Label>
                         <Form.Control type="email" id="email" name='email' placeholder="name@example.com" value={email}
                                       onChange={e => setEmail(e.target.value)}/>
                     </Form.Group>
                     <Form.Group className="mb-3">
-                        <Form.Label>Password</Form.Label>
+                        <Form.Label>{t('password')}</Form.Label>
                         <Form.Control type="password" id="password" name='password' value={password}
                                       onChange={e => setPassword(e.target.value)}/>
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="saveSession">
-                        <Form.Check type="checkbox" label="Запомнить меня"/>
+                        <Form.Check type="checkbox" label={t('remember_me')}/>
                     </Form.Group>
                     <Form.Group className="mb-3">
-                        <p>Еще не зарегистрированы? <a href="/sign_up">Зарегистрироваться</a></p>
+                        <p>{t('notRegisteredYet')} <a href="/sign_up">{t('register')}</a></p>
                     </Form.Group>
                     <div>
-                        <Button type="submit" className="btn" id="login">Войти</Button>
+                        <Button type="submit" className="btn" id="login">{t('login')}</Button>
                     </div>
                 </Form>
             </Container>

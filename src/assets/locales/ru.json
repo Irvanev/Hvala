@@ -7,6 +7,12 @@
   "profile_navbar": "Профиль",
   "message_navbar": "Сообщения",
   "exit": "Выход",
+  "email": "Электронная почта",
+  "password": "Пароль",
+  "login": "Войти",
+  "remember_me": "Запомнить меня",
+  "register": "Зарегистрироваться",
+  "notRegisteredYet": "Еще не зарегистрированы?",
 
   "estate": "Недвижимость",
   "electronics": "Электроника",

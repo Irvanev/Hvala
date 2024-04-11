@@ -1,0 +1,81 @@
+{
+    "home_navbar": "Početna",
+    "contact_navbar": "Kontakt informacije",
+    "help_navbar": "Pomoć",
+    "addItem_navbar": "Dodaj oglas",
+    "auth": "Prijavi se i Registruj se",
+    "profile_navbar": "Profil",
+    "message_navbar": "Poruke",
+    "exit": "Izađi",
+    "email": "E-pošta",
+    "password": "Lozinka",
+    "login": "Prijavi se",
+    "remember_me": "Zapamti me",
+    "register": "Registruj se",
+    "notRegisteredYet": "Još niste registrovani?",
+  
+    "estate": "Nekretnine",
+    "electronics": "Elektronika",
+    "clothes": "Odeća",
+    "rest" : "Ostalo",
+    "transport": "Transport",
+    "house_goods": "Kućni predmeti",
+    "building_materials_and_tools": "Materijali za gradnju i alati",
+    "transport_goods": "Transportni proizvodi",
+    "home_appliance": "Kućni aparati",
+    "service": "Usluge",
+    "child_goods": "Dečji proizvodi",
+    "health_and_beauty": "Zdravlje i lepota",
+    "sport": "Sport",
+    "hobby_n_Relax": "Hobi i opuštanje",
+  
+    "size": "Veličina",
+    "type": "Tip",
+    "condition": "Stanje",
+    "new_cond": "Novo",
+    "bu_cond": "Korišćeno",
+    "brand": "Brend",
+    "model": "Model",
+    "location": "Lokacija",
+    "showOnMap": "Prikaži na mapi",
+    "description": "Opis",
+    "characteristics": "Karakteristike",
+    "size_screen": "Veličina ekrana",
+    "memory": "Memorija",
+  
+    "call": "Pozovi",
+    "to_write": "Napiši",
+  
+    "send_advert_question": "Kako objaviti oglas?",
+    "send_advert": "Da biste koristili ovu uslugu, potrebno je da se prijavite na svoj nalog. U slučaju nedostatka autorizacije, molimo vas da se registrujete. Nakon uspešne prijave na svoj nalog, opcija za postavljanje oglasa biće dostupna. Na glavnoj stranici sa oglasima, pronaći ćete dugme \"Kreiraj oglas\" u obliku \"plus\" znaka, koje će vas preusmeriti na stranicu za kreiranje oglasa. Pratite uputstva, i vaš oglas će uspešno biti objavljen.",
+  
+    "delete_advert_question": "Kako izbrisati oglas?",
+    "delete_advert": "Da biste koristili ovu uslugu, molimo vas da idete na \"lični kabinet\" koji se nalazi na dnu navigacionog menija. Ovde ćete pronaći sve vaše oglase, pored svakog od njih će se nalaziti ikona \"tri tačke\". Klikom na ovu ikonu, imaćete opciju ili da izbrišete oglas ili da napravite promene.",
+  
+    "change_password_question": "Šta učiniti ako ste zaboravili lozinku?",
+    "forgot_pass": "Ako ste zaboravili lozinku za svoj nalog, ne brinite. Idite na sekciju za autorizaciju, gde ćete videti opciju \"Zaboravljena lozinka?\". Klikom na nju, bićete preusmereni na stranicu za oporavak lozinke. Unesite e-mail adresu povezanu sa vašim nalogom. Instrukcije za dalji oporavak lozinke biće poslate na ovu e-mail adresu.",
+  
+    "change_email_question": "Kako promeniti jezik aplikacije?",
+    "change_language": "Da biste promenili jezik aplikacije, imate tri opcije: \n1) Na glavnoj stranici \n2) Na stranici za autorizaciju \n3) Na stranici profila",
+  
+    "share_advert_question": "Kako deliti oglas?",
+    "share_advert": "Da biste podelili oglas, trebate pronaći oglas koji vas zanima i kliknuti na ikonu \"deljenje\" u obliku strelice, koja se nalazi u gornjem desnom uglu oglasa. Nakon toga, možete podeliti oglas na društvenim mrežama ili poslati link oglasa u poruci.",
+  
+    "send_seller_question": "Kako kontaktirati prodavca?",
+    "send_seller": "Da biste kontaktirali prodavca, trebate pronaći oglas koji vas zanima i odabrati opciju \"Napiši\". Nakon toga, automatski ćete biti preusmereni na stranicu za čet, gde možete poslati poruku prodavcu.",
+  
+    "chat_helper_question": "Čemu služi ChatHelper na stranici za čet?",
+    "chat_helper": "ChatHelper je servis podrške koji vam pomaže da rešite sve probleme koji mogu nastati. Ako imate pitanja koja se odnose na funkcionalnost aplikacije, možete se obratiti ChatHelperu, koji će vam pomoći da rešite problem.",
+  
+    "do_filter_question": "Kako koristiti filtere za pretragu oglasa?",
+    "do_filter": "Da biste koristili filtere, kliknite na ikonu \"filter\" koja se nalazi ispod trake za pretragu. Nakon toga, možete odabrati potrebne parametre za pretragu oglasa. Nakon odabira parametara, kliknite na dugme \"Primeni\", i oglasi koji odgovaraju vašim kriterijumima će biti prikazani.",
+  
+    "edit_data_question": "Kako promeniti podatke u profilu?",
+    "edit_data": "Da biste promenili podatke u profilu, trebate da idete na \"lični kabinet\", koji se nalazi na dnu navigacionog menija. Ovde ćete pronaći sve vaše podatke koje možete izmeniti. Nakon izvršenih promena, ne zaboravite da kliknete na dugme \"Sačuvaj\".",
+  
+    "rating_seller_question": "Kako videti ocenu prodavca?",
+    "rating_seller": "Da biste videli ocenu prodavca, pronađite oglas koji vas zanima i kliknite na ime prodavca. Nakon toga, bićete preusmereni na stranicu profila prodavca, gde možete videti njihovu ocenu i komentare.",
+  
+    "security_data_question": "Da li su moji podaci sigurno zaštićeni?",
+    "security_data": "Da, vaši podaci su sigurno zaštićeni. Koristimo najnaprednije tehnologije kako bismo zaštitili vaše informacije. Svi podaci koje pružite čuvaju se u šifrovanom obliku i nisu dostupni trećim licima. Garantujemo potpunu sigurnost vaših podataka."
+  }

@@ -7,6 +7,12 @@
   "profile_navbar": "Profile",
   "message_navbar": "Messages",
   "exit": "Exit",
+  "email": "Email",
+  "password": "Password",
+  "login": "Login",
+  "remember_me": "Remember me",
+  "register": "Register",
+  "notRegisteredYet": "Not registered yet?",
 
   "estate": "Real estate",
   "electronics": "Electronics",

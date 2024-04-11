@@ -7,13 +7,15 @@ import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import en from "./assets/locales/en.json";
 import ru from "./assets/locales/ru.json";
+import me from "./assets/locales/me.json";
 
 i18n
     .use(initReactI18next)
     .init({
         resources: {
             en: { translation: en },
-            ru: { translation: ru }
+            ru: { translation: ru },
+            me: { translation: me }
         },
         lng: localStorage.getItem('i18nextLng') || 'en',
         fallbackLng: "en",
