@@ -2,9 +2,11 @@ import React, {useState, useEffect} from "react";
 import { Modal, Button } from "react-bootstrap";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "../../config/firebase";
+import {useTranslation} from 'react-i18next';
 
 const ModalForNumberReports = ({handleClose, reviews, show}) => {
     const [userNames, setUserNames] = useState({});
+    const {t} = useTranslation();
 
     useEffect(() => {
         const fetchUserNames = async () => {
@@ -26,7 +28,7 @@ const ModalForNumberReports = ({handleClose, reviews, show}) => {
     return (
         <Modal show={show} onHide={handleClose}>
             <Modal.Header closeButton>
-                <Modal.Title>Отзывы</Modal.Title>
+                <Modal.Title>{t('reviewsForProfile')}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 {reviews.length > 0 ? (
@@ -37,12 +39,12 @@ const ModalForNumberReports = ({handleClose, reviews, show}) => {
                         </div>
                     ))
                 ) : (
-                    <p>Нет отзывов</p>
+                    <p>{t('noReviews')}</p>
                 )}
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={handleClose}>
-                    Закрыть
+                    {t('close')}
                 </Button>
             </Modal.Footer>
         </Modal>

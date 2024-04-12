@@ -3,6 +3,7 @@ import { Container, Row, Col, Card, Image } from 'react-bootstrap';
 import React, { useEffect, useState } from "react";
 import { MyNavbar } from '../../components/Navbar/Navbar';
 import { Link } from "react-router-dom";
+import {useTranslation} from 'react-i18next';
 import ProfileCardForPc from '../../components/profile-card/ProfileInfoForPc';
 import { fetchUser, fetchReviews, fetchAdvertisements, deleteAdvertisement } from '../../services/ProfileService';
 import NavBarForProfileMobile from '../../components/Navbar/NavbarForProfileMobile';
@@ -11,6 +12,7 @@ import ModalForNumberReports from '../../components/profile-card/ModalForNumberR
 import DeleteModal from '../../components/profile-card/DropDownWithModal';
 
 export const Profile = () => {
+    const {t} = useTranslation();
     const [user, setUser] = useState(null);
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
@@ -160,7 +162,7 @@ export const Profile = () => {
                                             <Row className="g-0">
                                                 <Col md={8}>
                                                     <Card.Body>
-                                                        <Card.Title id="title">Здесь будут ваши объявления</Card.Title>
+                                                        <Card.Title id="title">{t('yourAdsWillBeHere')}</Card.Title>
                                                         <Card.Text id="price"></Card.Text>
                                                     </Card.Body>
                                                 </Col>
@@ -233,7 +235,7 @@ export const Profile = () => {
                                             </Col>
                                             <Col md={8}>
                                                 <Card.Body>
-                                                    <Card.Title id="title">Здесь будут ваши объявления</Card.Title>
+                                                    <Card.Title id="title">{t('yourAdsWillBeHere')}</Card.Title>
                                                     <Card.Text id="price"></Card.Text>
                                                 </Card.Body>
                                             </Col>

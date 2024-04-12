@@ -1,9 +1,12 @@
 import React from "react";
 import { Card, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
 import Logo from "../../assets/logo.png";
 
 const CardCategory = ({advertisment}) => {
+    const { i18n } = useTranslation();
+
     return (
         <Col>
             <Link key={advertisment.id} to={`/advertisment/${advertisment.id}`} style={{ textDecoration: "none" }}>
@@ -16,7 +19,7 @@ const CardCategory = ({advertisment}) => {
                             <strong>{advertisment.price + '€'}<br /></strong>
                             <span className="location-text">{advertisment.location}</span>
                             <span className="date-text">
-                                {new Date(advertisment.time_creation.seconds * 1000).toLocaleString('ru', {
+                                {new Date(advertisment.time_creation.seconds * 1000).toLocaleString(i18n.language, {
                                     day: 'numeric',
                                     month: 'long',
                                     hour: '2-digit',

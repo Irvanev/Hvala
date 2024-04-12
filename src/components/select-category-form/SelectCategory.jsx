@@ -4,7 +4,7 @@ import { Form } from "react-bootstrap";
 const SelectCategory = ({ handleCategoryChange, t }) => {
     return ( 
         <Form.Select className="mb-3" aria-label="Default select example" onChange={handleCategoryChange}>
-            <option>Выберите категорию</option>
+            <option>{t('choce_category')}</option>
             <option value="estate">{t('estate')}</option>
             <option value="transport">{t('transport')}</option>
             <option value="clothes">{t('clothes')}</option>

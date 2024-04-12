@@ -5,7 +5,7 @@ export default function CategorySelect({ handleCategoryChange, t, category }) {
     return (
         <div>
             <Form.Select className="mb-3" aria-label="Default select example" onChange={handleCategoryChange} value={category}>
-                <option>Выберите категорию</option>
+                <option>{t('choce_category')}</option>
                 <option value="estate">{t('estate')}</option>
                 <option value="transport">{t('transport')}</option>
                 <option value="clothes">{t('clothes')}</option>

@@ -2,6 +2,7 @@ import { MyNavbar } from "../../components/Navbar/Navbar";
 import { useHistory } from "react-router-dom";
 import { signOut } from "firebase/auth";
 import { useState, useEffect, useRef } from "react";
+import {useTranslation} from 'react-i18next';
 import { db, auth, storage } from "../../config/firebase";
 import { collection, getDocs, query, where, updateDoc, doc } from "firebase/firestore";
 import { Image, Container, Row, Col, Card, Form, Button, Modal } from "react-bootstrap";
@@ -12,6 +13,7 @@ import { Pencil } from 'react-bootstrap-icons';
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 const ProfileSettings = () => {
+    const {t} = useTranslation();
     const [user, setUser] = useState(null);
     const history = useHistory();
     const [isEditingEmail, setIsEditingEmail] = useState(false);
@@ -66,7 +68,7 @@ const ProfileSettings = () => {
                     setShowModal(true);
                     window.location.reload();
 
-                    alert('Фотография профиля успешно изменена!');
+                    alert(t('profilePictureChanged'));
                 });
             }
         );
@@ -80,18 +82,18 @@ const ProfileSettings = () => {
             const allUsersSnapshot = await getDocs(allUsersRef);
             const isNameTaken = allUsersSnapshot.docs.some(doc => doc.data().name === name);
             if (isNameTaken) {
-                alert('Это имя уже занято. Пожалуйста, выберите другое имя.');
+                alert(t('nameTaken'));
                 return;
             }
 
             const englishCheck = /^[A-Za-z0-9_\-]*$/;
             if (!englishCheck.test(name)) {
-                alert('Имя должно быть на английском языке. Пожалуйста, введите имя на английском языке.');
+                alert(t('nameInEnglish'));
                 return;
             }
 
             if (name.length < 2) {
-                alert('Имя должно содержать не менее 2 символов. Пожалуйста, введите имя длиной не менее 2 символов.');
+                alert(t('nameLength'));
                 return;
             }
 
@@ -207,12 +209,12 @@ const ProfileSettings = () => {
                             <div className="profile-reviews">
                                 <span>{user?.raiting.toFixed(1) || '0.0'}</span>
                                 <StarRating rating={user?.raiting || 0} />
-                                <p id="kolRating">{user?.reviewCount || '17'} Отзывов</p>
+                                <p id="kolRating">{user?.reviewCount || '17'} {t('reviews')}</p>
                             </div>
                         </Col>
                         <Col xs={9}>
-                            <h2>Линчая информация</h2>
-                            <h5>Электронная почта</h5>
+                            <h2>{t('personalInformation')}</h2>
+                            <h5>{t('email')}</h5>
                             <Row className="align-items-center mb-3">
                                 <Col>
                                     <Form.Control
@@ -228,7 +230,7 @@ const ProfileSettings = () => {
                                     </Button>
                                 </Col>
                             </Row>
-                            <h5>Отображаемое имя</h5>
+                            <h5>{t('displayName')}</h5>
                             <Row className="align-items-center mb-3">
                                 <Col>
                                     <Form.Control
@@ -248,7 +250,7 @@ const ProfileSettings = () => {
                             </Row>
                             <Form onSubmit={handleSubmit} style={{ textAlign: "center" }}>
                                 <Button variant="warning" style={{ backgroundColor: "orange", color: "white" }} type="submit">
-                                    Сохранить
+                                    {t('save')}
                                 </Button>
                             </Form>
                         </Col>
@@ -293,14 +295,14 @@ const ProfileSettings = () => {
                             <div className="profile-reviews">
                                 <span>{user?.raiting.toFixed(1) || '0.0'}</span>
                                 <StarRating rating={user?.raiting || 0} />
-                                <p id="kolRating">{user?.reviewCount || '17'} Отзывов</p>
+                                <p id="kolRating">{user?.reviewCount || '17'} {t('reviews')}</p>
                             </div>
                         </Col>
                     </Row>
                     <Row className="mt-3">
                         <Col>
-                            <h1>Линчая информация</h1>
-                            <h5>Электронная почта</h5>
+                            <h1>{t('personalInformation')}</h1>
+                            <h5>{t('email')}</h5>
                             <Row className="align-items-center mb-3">
                                 <Col>
                                     <Form.Control
@@ -316,7 +318,7 @@ const ProfileSettings = () => {
                                     </Button>
                                 </Col>
                             </Row>
-                            <h5>Отображаемое имя</h5>
+                            <h5>{t('displayName')}</h5>
                             <Row className="align-items-center mb-3">
                                 <Col>
                                     <Form.Control
@@ -336,7 +338,7 @@ const ProfileSettings = () => {
                             </Row>
                             <Form onSubmit={handleSubmit} style={{ textAlign: "center" }}>
                                 <Button variant="warning" style={{ backgroundColor: "orange", color: "white" }} type="submit">
-                                    Сохранить
+                                {t('save')}
                                 </Button>
                             </Form>
                         </Col>
@@ -345,12 +347,12 @@ const ProfileSettings = () => {
 
                 <Modal show={showModal} onHide={() => setShowModal(false)}>
                     <Modal.Header closeButton>
-                        <Modal.Title>Успех</Modal.Title>
+                        <Modal.Title>{t('success')}</Modal.Title>
                     </Modal.Header>
-                    <Modal.Body>Имя пользователя успешно обновлено!</Modal.Body>
+                    <Modal.Body>{t('usernameUpdated')}</Modal.Body>
                     <Modal.Footer>
                         <Button variant="secondary" onClick={() => setShowModal(false)}>
-                            Закрыть
+                            {t('close')}
                         </Button>
                     </Modal.Footer>
                 </Modal>

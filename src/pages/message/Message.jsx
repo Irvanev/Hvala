@@ -5,9 +5,11 @@ import { db, auth } from "../../config/firebase";
 import { collection, query, where, getDocs, onSnapshot, orderBy, addDoc, doc } from "firebase/firestore";
 import './messages.css';
 import Logo from '../../assets/logo.png';
+import {useTranslation} from 'react-i18next';
 
 
 export const Message = () => {
+    const {t} = useTranslation();
     const [messages, setMessages] = useState([]);
     const [selectedMessage, setSelectedMessage] = useState(null);
     const [msgList, setMsgList] = useState([]);
@@ -136,14 +138,14 @@ export const Message = () => {
                                 <Row>
                                     <Col xs="auto">
                                         <Button variant="secondary">
-                                            Прикрепить фото
+                                            {t('attachPhoto')}
                                         </Button>
                                     </Col>
                                     <Col>
                                         <Form.Group className="mb-3" controlId="messageInput">
                                             <Form.Control
                                                 type="text"
-                                                placeholder="Введите сообщение"
+                                                placeholder={t('enterMessage')}
                                                 value={message}
                                                 onChange={e => setMessage(e.target.value)}
                                             />
@@ -151,7 +153,7 @@ export const Message = () => {
                                     </Col>
                                     <Col xs="auto">
                                         <Button variant="primary" type="submit">
-                                            Отправить
+                                            {t('send')}
                                         </Button>
                                     </Col>
                                 </Row>

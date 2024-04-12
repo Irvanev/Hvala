@@ -2,16 +2,18 @@ import React from "react";
 import { Col, Image } from "react-bootstrap";
 import Logo from "../../assets/logo.png"
 import star from "../../assets/star.png";
+import {useTranslation} from 'react-i18next';
 import halfStar from "../../assets/rating2.png";
 import emptyStar from "../../assets/star2.png";
 
 const ProfileInfoForPc = ({user, handleShow}) => {
+    const {t} = useTranslation();
 
     function getReviewText(count) {
-        if (count === 0) return 'Нет отзывов';
-        if (count === 1) return '1 Отзыв';
-        if (count > 1 && count < 5) return `${count} Отзыва`;
-        return `${count} Отзывов`;
+        if (count === 0) return t('noReviews');
+        if (count === 1) return t('oneReview');
+        if (count > 1 && count < 5) return `${count} ${t('multipleReviews')}`;
+        return `${count} ${t('reviews')}`;
     }
 
     const stars = Array(5).fill(null).map((_, index) => {
@@ -40,8 +42,8 @@ const ProfileInfoForPc = ({user, handleShow}) => {
                 <h4>{getReviewText(user?.reviewCount || 0)}</h4>
             </a>
             <div className="profile-sections">
-                <a href="/settings">Настройки</a>
-                <a href="/message">Сообщения</a>
+                <a href="/settings">{t('settings')}</a>
+                <a href="/message">{t('messageForProfile')}</a>
             </div>
         </Col>
     );
