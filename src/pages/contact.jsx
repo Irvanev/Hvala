@@ -32,7 +32,7 @@ const Contact = () => {
       </style>
       <MyNavbar />
       <Container className="mt-3">
-        <h3>Контактная информация</h3>
+        <h3>{t('contact_navbar')}</h3>
         <h5
           style={{
             lineHeight: "1.5",
@@ -40,20 +40,14 @@ const Contact = () => {
             fontFamily: "Arial, sans-serif",
           }}
         >
-          Если у вас есть вопросы, предложения или комментарии, мы всегда рады
-          услышать от вас. Наша команда всегда готова помочь вам с любыми
-          вопросами, связанными с нашим приложением. Не стесняйтесь обращаться к
-          нам по электронной почте в любое время. Мы ценим ваше мнение и
-          стремимся улучшить наше приложение, чтобы оно было максимально удобным
-          и полезным для вас. Также вы можете связаться с нами через социальные
-          сети - мы активны в Instagram и Facebook.
+          {t('contactUs')}
         </h5>
         <div
           style={{ marginTop: "10px" }}
           onClick={() => handleEmailClick("support@hvala.app")}
         >
           <p style={{ fontSize: "20px", color: "black" }}>
-            Email: <span style={{ color: "orange" }}>support@hvala.app</span>
+            {t('email')}: <span style={{ color: "orange" }}>support@hvala.app</span>
           </p>
         </div>
         <div
@@ -61,7 +55,7 @@ const Contact = () => {
           onClick={() => handleEmailClick("info@hvala.app")}
         >
           <p style={{ fontSize: "20px", color: "black" }}>
-            Email: <span style={{ color: "orange" }}>info@hvala.app</span>
+            {t('email')}: <span style={{ color: "orange" }}>info@hvala.app</span>
           </p>
         </div>
         <div

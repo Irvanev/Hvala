@@ -109,7 +109,7 @@ export const CardItem = () => {
       {isLoading ? (
         <DefaultCardInPc />
       ) : (
-        <CardInPc adData={adData} t={t} index={index} handleSelect={handleSelect} handleCallClick={handleCallClick} showModal={showModal} handleCloseModal={handleCloseModal} userData={userData} stars={stars} />
+        <CardInPc adData={adData} t={t} index={index} handleSelect={handleSelect} handleCallClick={handleCallClick} showModal={showModal} handleCloseModal={handleCloseModal} userData={userData} stars={stars} fromUid />
       )}
 
       {isLoading ? (

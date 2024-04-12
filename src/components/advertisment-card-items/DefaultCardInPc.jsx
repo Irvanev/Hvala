@@ -1,8 +1,10 @@
 import React from "react";
 import Logo from "../../assets/logo.png";
 import { Container, Row, Col, Breadcrumb, Image, Placeholder } from "react-bootstrap";
+import {useTranslation} from 'react-i18next';
 
 const DefaultCardInPc = () => {
+    const {t} = useTranslation();
 
     const productImage = {
         width: "600px",
@@ -25,9 +27,9 @@ const DefaultCardInPc = () => {
             <Row>
                 <Col>
                     <Breadcrumb>
-                        <Breadcrumb.Item href="/advertisment">Главная</Breadcrumb.Item>
-                        <Breadcrumb.Item href="#">Catgory</Breadcrumb.Item>
-                        <Breadcrumb.Item active>SubCategory</Breadcrumb.Item>
+                        <Breadcrumb.Item href="/advertisment">{t('home_navbar')}</Breadcrumb.Item>
+                        <Breadcrumb.Item href="#">{t('category')}</Breadcrumb.Item>
+                        <Breadcrumb.Item active>{t('subCategory')}</Breadcrumb.Item>
                     </Breadcrumb>
                     <h2 id="product-title placeholder col-3">
                         <Placeholder animation="glow">

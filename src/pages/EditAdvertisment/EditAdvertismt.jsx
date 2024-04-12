@@ -439,7 +439,7 @@ export default function EditItem() {
             case 'transport':
                 return (<Transport t={t} />);
             default:
-                return <option>Выберите подкатегорию</option>;
+                return <option>{t('choce_subcategory')}</option>;
         }
     }
 
@@ -1039,7 +1039,7 @@ export default function EditItem() {
                             </Form.Select>
                         </Form.Group>
                         <Form.Group className="mb-3">
-                            <Form.Label>Введите цвет</Form.Label>
+                            <Form.Label>{t('enter_color')}</Form.Label>
                             <Form.Control type="text" value={color} onChange={(e) => setColor(e.target.value)} />
                         </Form.Group>
                         <Form.Group className="mb-3">
@@ -1141,7 +1141,7 @@ export default function EditItem() {
 
             <NavbarForMobileRouting />
             <Container className="mt-3">
-                <h3>Редактирование объявления</h3>
+                <h3>{t('edit_advertisement')}</h3>
                 <CategorySelect handleCategoryChange={handleCategoryChange} category={category} t={t} />
 
                 <Form.Select className="mb-3" aria-label="Default select example" onChange={handleSubcategoryChange} value={subcategory}>

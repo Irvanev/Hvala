@@ -3,7 +3,7 @@ import React from 'react'
 export default function HouseGoods({t}) {
     return (
         <>
-            <option>Выберите подкатегорию</option>
+            <option>{t('choce_subcategory')}</option>
             <option value="furniture">{t('furniture')}</option>
             <option value="lighting">{t('lighting')}</option>
             <option value="dishes"> {t('dishes')}</option>

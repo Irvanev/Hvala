@@ -3,7 +3,7 @@ import React from 'react'
 export default function HomeAppliance({t}) {
     return (
         <>
-            <option>Выберите подкатегорию</option>
+            <option>{t('choce_subcategory')}</option>
             <option value="refrigerators">{t('refrigerators')}</option>
             <option value="washing_machines">{t('washing_machines')}</option>
             <option value="vacuum_cleaners"> {t('vacuum_cleaners')}</option>

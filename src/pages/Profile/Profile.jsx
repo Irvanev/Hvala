@@ -12,6 +12,7 @@ import ModalForNumberReports from '../../components/profile-card/ModalForNumberR
 import DeleteModal from '../../components/profile-card/DropDownWithModal';
 
 export const Profile = () => {
+    const { i18n } = useTranslation();
     const {t} = useTranslation();
     const [user, setUser] = useState(null);
     const [show, setShow] = useState(false);
@@ -143,7 +144,7 @@ export const Profile = () => {
                                                         <span className="date-text">
                                                             {new Date(
                                                                 advertisment.time_creation.seconds * 1000
-                                                            ).toLocaleString("ru", {
+                                                            ).toLocaleString(i18n.language, {
                                                                 day: "numeric",
                                                                 month: "long",
                                                                 hour: "2-digit",
@@ -213,7 +214,7 @@ export const Profile = () => {
                                                         <span className="date-text">
                                                             {new Date(
                                                                 advertisment.time_creation.seconds * 1000
-                                                            ).toLocaleString("ru", {
+                                                            ).toLocaleString(i18n.language, {
                                                                 day: "numeric",
                                                                 month: "long",
                                                                 hour: "2-digit",

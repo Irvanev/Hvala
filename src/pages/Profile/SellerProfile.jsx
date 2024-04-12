@@ -9,8 +9,10 @@ import { Link } from "react-router-dom";
 import star from "../../assets/star.png";
 import halfStar from "../../assets/rating2.png";
 import emptyStar from "../../assets/star2.png";
+import { useTranslation } from 'react-i18next';
 
 const SellerProfile = () => {
+  const { i18n } = useTranslation();
   const { id } = useParams();
   const [user, setUser] = useState(null);
   const [ads, setAds] = useState([]);
@@ -191,7 +193,7 @@ const SellerProfile = () => {
                               <span className="date-text">
                                 {new Date(
                                   advertisment.time_creation.seconds * 1000
-                                ).toLocaleString("ru", {
+                                ).toLocaleString(i18n.language, {
                                   day: "numeric",
                                   month: "long",
                                   hour: "2-digit",
@@ -293,7 +295,7 @@ const SellerProfile = () => {
                               <span className="date-text">
                                 {new Date(
                                   advertisment.time_creation.seconds * 1000
-                                ).toLocaleString("ru", {
+                                ).toLocaleString(i18n.language, {
                                   day: "numeric",
                                   month: "long",
                                   hour: "2-digit",
