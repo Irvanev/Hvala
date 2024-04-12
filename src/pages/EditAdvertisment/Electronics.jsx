@@ -3,7 +3,7 @@ import React from 'react'
 export default function Electronics({t}) {
     return (
         <>
-            <option>Выберите подкатегорию</option>
+            <option>{t('choce_subcategory')}</option>
             <option value="computers">{t('computers')}</option>
             <option value="phones_and_tablets">{t('phones_and_tablets')}</option>
             <option value="tv"> {t('tv')}</option>

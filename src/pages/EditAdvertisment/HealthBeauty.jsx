@@ -3,7 +3,7 @@ import React from 'react'
 export default function HealthBeauty({t}) {
     return (
         <>
-            <option>Выберите подкатегорию</option>
+            <option>{t('choce_subcategory')}</option>
             <option value="makeup">{t('makeup')}</option>
             <option value="manicure_and_pedicure">{t('manicure_and_pedicure')}</option>
             <option value="healthcare_products"> {t('healthcare_products')}</option>

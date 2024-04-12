@@ -3,7 +3,7 @@ import React from 'react'
 export default function BuildingMaterial({t}) {
     return (
         <>
-            <option>Выберите подкатегорию</option>
+            <option>{t('choce_subcategory')}</option>
             <option value="tools">{t('tools')}</option>
             <option value="building_materials">{t('building_materials')}</option>
             <option value="heating_and_ventilation"> {t('heating_and_ventilation')}</option>

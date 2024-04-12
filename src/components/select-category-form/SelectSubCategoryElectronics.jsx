@@ -4,7 +4,7 @@ import { Form } from "react-bootstrap";
 const SelectSubCategoryElectronics = ({handleSubcategoryChange, t}) => {
     return (
         <Form.Select className="mb-3" aria-label="Default select example" onChange={handleSubcategoryChange}>
-            <option>Выберите подкатегорию</option>
+            <option>{t('choce_subcategory')}</option>
             <option value="computers">{t('computers')}</option>
             <option value="phones_and_tablets">{t('phones_and_tablets')}</option>
             <option value="tv"> {t('tv')}</option>

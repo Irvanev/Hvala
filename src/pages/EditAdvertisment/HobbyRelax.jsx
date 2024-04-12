@@ -3,7 +3,7 @@ import React from 'react'
 export default function HobbyRelax({t}) {
     return (
         <>
-            <option>Выберите подкатегорию</option>
+            <option>{t('choce_subcategory')}</option>
             <option value="table_games">{t('table_games')}</option>
             <option value="computer_games">{t('computer_games')}</option>
             <option value="books_n_magazines"> {t('books_n_magazines')}</option>

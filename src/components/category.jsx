@@ -169,55 +169,55 @@ const Categories = () => {
           <Offcanvas.Body>
             <ListGroup id="categories">
               <ListGroup.Item action onClick={handleClose}>
-                <Link to="/advertisments/estate">Недвижимость</Link>
+                <Link to="/advertisments/estate">{t('estate')}</Link>
               </ListGroup.Item>
               <ListGroup.Item action onClick={handleClose}>
-                <Link to="/advertisments/transport">Транспорт</Link>
+                <Link to="/advertisments/transport">{t('transport')}</Link>
               </ListGroup.Item>
               <ListGroup.Item action onClick={handleClose}>
-                <Link to="/advertisments/clothes">Одежда</Link>
+                <Link to="/advertisments/clothes">{t('clothes')}</Link>
               </ListGroup.Item>
               <ListGroup.Item action onClick={handleClose}>
-                <Link to="/advertisments/electronics">Электроника</Link>
+                <Link to="/advertisments/electronics">{t('electronics')}</Link>
               </ListGroup.Item>
               <ListGroup.Item action onClick={handleClose}>
-                <Link to="/advertisments/house_goods">Товары для дома</Link>
+                <Link to="/advertisments/house_goods">{t('house_goods')}</Link>
               </ListGroup.Item>
               <ListGroup.Item action onClick={handleClose}>
                 <Link to="/advertisments/building_materials_and_tools">
-                  Стройматериалы и инструменты
+                {t('building_materials_and_tools')}
                 </Link>
               </ListGroup.Item>
               <ListGroup.Item action onClick={handleClose}>
                 <Link to="/advertisments/transport_goods">
-                  Товары для транспорта
+                {t('transport_goods')}
                 </Link>
               </ListGroup.Item>
               <ListGroup.Item action onClick={handleClose}>
-                <Link to="/advertisments/home_appliance">Бытовая техника</Link>
+                <Link to="/advertisments/home_appliance">{t('home_appliance')}</Link>
               </ListGroup.Item>
               <ListGroup.Item action onClick={handleClose}>
-                <Link to="/advertisments/service">Услуги</Link>
+                <Link to="/advertisments/service">{t('service')}</Link>
               </ListGroup.Item>
               <ListGroup.Item action onClick={handleClose}>
-                <Link to="/advertisments/child_goods">Товары для детей</Link>
+                <Link to="/advertisments/child_goods">{t('child_goods')}</Link>
               </ListGroup.Item>
               <ListGroup.Item action onClick={handleClose}>
                 <Link to="/advertisments/health_and_beauty">
-                  Товары для красоты и здоровья
+                {t('health_and_beauty')}
                 </Link>
               </ListGroup.Item>
               <ListGroup.Item action onClick={handleClose}>
-                <Link to="/advertisments/sport">Спорт</Link>
+                <Link to="/advertisments/sport">{t('sport')}</Link>
               </ListGroup.Item>
               <ListGroup.Item action onClick={handleClose}>
-                <Link to="/advertisments/hobby_n_Relax">Хобби и отдых</Link>
+                <Link to="/advertisments/hobby_n_Relax">{t('hobby_n_Relax')}</Link>
               </ListGroup.Item>
               <ListGroup.Item action onClick={handleClose}>
-                <Link to="/advertisments/subcat14">Товары для животных</Link>
+                <Link to="/advertisments/subcat14">{t('petSupplies')}</Link>
               </ListGroup.Item>
               <ListGroup.Item action onClick={handleClose}>
-                <Link to="/advertisments/rest">Прочее</Link>
+                <Link to="/advertisments/rest">{t('rest')}</Link>
               </ListGroup.Item>
             </ListGroup>
           </Offcanvas.Body>

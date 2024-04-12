@@ -11,13 +11,13 @@ import {db} from '../../config/firebase'
 
 
 
-const CardInPc = ({ adData, t, index, handleSelect, handleCallClick, showModal, handleCloseModal, userData, stars }) => {
+const CardInPc = ({ adData, t, index, handleSelect, handleCallClick, showModal, handleCloseModal, userData, stars, fromUid }) => {
 
   const [feedbacks, setFeedbacks] = useState([]);
 
   useEffect(() => {
     const fetchFeedbacks = async () => {
-      const q = query(collection(db, "feedback"), where("from_uid", "==", userId));
+      const q = query(collection(db, "feedback"), where("from_uid", "==", fromUid));
       const querySnapshot = await getDocs(q);
 
       const feedbacks = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -25,7 +25,7 @@ const CardInPc = ({ adData, t, index, handleSelect, handleCallClick, showModal, 
     };
 
     fetchFeedbacks();
-  }, [userId]);
+  }, [fromUid]);
 
   const profileImage = {
     width: "60px",
@@ -43,7 +43,7 @@ const CardInPc = ({ adData, t, index, handleSelect, handleCallClick, showModal, 
       <Row>
         <Col xs={6}>
           <Breadcrumb>
-            <Breadcrumb.Item href="/advertisment">Главная</Breadcrumb.Item>
+            <Breadcrumb.Item href="/advertisment">{t('home_navbar')}</Breadcrumb.Item>
             <Breadcrumb.Item href={`/advertisments/${adData?.category}`}>
               {t(adData?.category)}
             </Breadcrumb.Item>
@@ -117,9 +117,7 @@ const CardInPc = ({ adData, t, index, handleSelect, handleCallClick, showModal, 
               <div className="d-flex align-items-center">
                 <h5>{userData?.rating}{stars}</h5>
               </div>
-              <div className="d-flex align-items-center">
-                <h5>{userData?.rating}{stars}</h5>
-              </div>
+              
             </div>
             <Link to={`/seller/${userData?.id}`} style={{ textDecoration: 'none' }}>
               <img

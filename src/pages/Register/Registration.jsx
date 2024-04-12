@@ -6,8 +6,10 @@ import { doc, setDoc, serverTimestamp, collection, query, where, getDocs } from 
 import { useHistory } from 'react-router-dom';
 import { MyNavbar } from '../../components/Navbar/Navbar';
 import { Button, Container, Form } from "react-bootstrap";
+import {useTranslation} from 'react-i18next';
 
 export const Registration = () => {
+    const {t} = useTranslation();
     const history = useHistory();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -28,12 +30,12 @@ export const Registration = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (password !== confPassword) {
-            setErrorMessage('Пароли не совпадают');
+            setErrorMessage(t('passwordsDoNotMatch'));
             return;
         }
         const isUsernameTaken = await checkUsername(username);
         if (isUsernameTaken) {
-            alert('Username уже занят');
+            alert(t('usernameTaken'));
             return;
         }
         try {
@@ -41,7 +43,7 @@ export const Registration = () => {
             const user = userCredential.user;
 
             await sendEmailVerification(user);
-            alert('Пожалуйста, подтвердите свой адрес электронной почты перед входом.');
+            alert(t('confirmEmail'));
 
             await setDoc(doc(db, 'users', user.uid), {
                 addtime: serverTimestamp(),
@@ -107,31 +109,31 @@ export const Registration = () => {
             <Container style={{ display: 'flex', alignItems: 'center', justifyContent: "center" }}>
                 <Form onSubmit={handleSubmit} style={{ width: "400px" }}>
                     <Form.Group className="mb-3">
-                        <Form.Label>Email address</Form.Label>
+                        <Form.Label>{t('email')}</Form.Label>
                         <Form.Control type="email" placeholder="name@example.com" value={email}
                             onChange={e => setEmail(e.target.value)} />
                     </Form.Group>
                     <Form.Group className="mb-3">
-                        <Form.Label>Username</Form.Label>
+                        <Form.Label>{t('username')}</Form.Label>
                         <Form.Control type="text" value={username} autoComplete="username"
                             onChange={e => setUsername(e.target.value)} />
                     </Form.Group>
                     <Form.Group className="mb-3">
-                        <Form.Label>Password</Form.Label>
+                        <Form.Label>{t('password')}</Form.Label>
                         <Form.Control type="password" value={password} autoComplete="new-password"
                             onChange={e => setPassword(e.target.value)} />
                     </Form.Group>
                     <Form.Group className="mb-3">
-                        <Form.Label>Confirm Password</Form.Label>
+                        <Form.Label>{t('confirmPassword')}</Form.Label>
                         <Form.Control type="password" value={confPassword} autoComplete="new-password"
                             onChange={e => setConfPassword(e.target.value)} />
                         <span style={{ color: 'red' }}>{errorMessage}</span>
                     </Form.Group>
                     <Form.Group className="mb-3">
-                        <p>Уже зарегистрированы? <a href="/sign_in">Войти</a></p>
+                        <p>{t('alreadyRegistered')} <a href="/sign_in">{t('login')}</a></p>
                     </Form.Group>
                     <div>
-                        <Button type="submit" className="btn" id="login">Зарегистрироваться</Button>
+                        <Button type="submit" className="btn" id="login">{t('register')}</Button>
                     </div>
                 </Form>
             </Container>

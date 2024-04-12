@@ -23,7 +23,7 @@ const LanguageModal = ({ show, handleClose }) => {
                 <Button variant="light" onClick={() => changeLanguage('ru')}>
                     <Flag code="ru" height="16" /> Русский
                 </Button>
-                <Button variant="light" onClick={() => changeLanguage('me')}>
+                <Button variant="light" onClick={() => changeLanguage('sr')}>
                     <Flag code="me" height="16" /> Crnogorski
                 </Button>
             </Modal.Body>

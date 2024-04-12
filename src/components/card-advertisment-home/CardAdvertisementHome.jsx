@@ -3,8 +3,10 @@ import { Col, Card } from "react-bootstrap";
 import { Link } from 'react-router-dom';
 import Logo from '../../assets/logo.png';
 import styles from './card-advertisment.module.css';
+import { useTranslation } from 'react-i18next';
 
 const CardAdvertisementHome = ({ advertisment, index }) => {
+    const { i18n } = useTranslation();
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
     const handleMouseOver = () => {
@@ -31,7 +33,7 @@ const CardAdvertisementHome = ({ advertisment, index }) => {
                             <span className={styles.locationText}>{advertisment.location}</span>
                             <span className={styles.dateText}>
                                 {advertisment.time_creation && advertisment.time_creation.seconds ?
-                                    new Date(advertisment.time_creation.seconds * 1000).toLocaleString('ru', {
+                                    new Date(advertisment.time_creation.seconds * 1000).toLocaleString(i18n.language, {
                                         day: 'numeric',
                                         month: 'long',
                                         hour: '2-digit',

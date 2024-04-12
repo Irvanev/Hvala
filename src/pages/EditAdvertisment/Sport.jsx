@@ -3,7 +3,7 @@ import React from 'react'
 export default function Sport({t}) {
     return (
         <>
-            <option>Выберите подкатегорию</option>
+            <option>{t('choce_subcategory')}</option>
             <option value="sports_protections">{t('sports_protections')}</option>
             <option value="bicycles">{t('bicycles')}</option>
             <option value="scooters"> {t('scooters')}</option>

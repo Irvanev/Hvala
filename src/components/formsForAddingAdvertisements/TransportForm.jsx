@@ -67,7 +67,7 @@ const TarnsportForm = ({
                 </Form.Select>
             </Form.Group>
             <Form.Group className="mb-3">
-                <Form.Label>Введите цвет</Form.Label>
+                <Form.Label>{t('enter_color')}</Form.Label>
                 <Form.Control type="text" value={color} onChange={(e) => setColor(e.target.value)} />
             </Form.Group>
             <Form.Group className="mb-3">

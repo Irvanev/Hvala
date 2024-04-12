@@ -3,7 +3,7 @@ import React from 'react'
 export default function Service({ t }) {
     return (
         <>
-            <option>Выберите подкатегорию</option>
+            <option>{t('choce_subcategory')}</option>
             <option value="education">{t('education')}</option>
             <option value="handyman">{t('handyman')}</option>
             <option value="beauty_and_health"> {t('beauty_and_health')}</option>

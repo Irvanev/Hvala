@@ -7,6 +7,7 @@ import NavbarForMobileRouting from '../../components/Navbar/NavbarForMobileRouti
 import DefaultCardCategory from '../../components/advertisment-card-category/DefaultCardCategory';
 import CardCategory from '../../components/advertisment-card-category/CardCategory';
 import { fetchAdvertismentsByCategory } from '../../services/AdvertismentsCardCategory';
+import { t } from 'i18next';
 
 export const CategoryAdvertisments = () => {
     const { category } = useParams();
@@ -112,7 +113,7 @@ export const CategoryAdvertisments = () => {
                 <Row>
                     <Col md={3} className='d-none d-lg-block'>
                         <Form.Select aria-label="Default select example">
-                            <option>Open this select menu</option>
+                            <option>{t('openSelectMenu')}</option>
                             <option value="1">One</option>
                             <option value="2">Two</option>
                             <option value="3">Three</option>
@@ -120,7 +121,7 @@ export const CategoryAdvertisments = () => {
                         <Row className='mt-3'>
                             <Col>
                                 <Form.Control
-                                    placeholder="Цена мин"
+                                    placeholder={t('minPricePlaceholder')}
                                     type="number"
                                     value={minPrice}
                                     onChange={handleMinPriceChange}
@@ -128,7 +129,7 @@ export const CategoryAdvertisments = () => {
                             </Col>
                             <Col>
                                 <Form.Control
-                                    placeholder="Цена макс"
+                                    placeholder={t('maxPricePlaceholder')}
                                     type="number"
                                     value={maxPrice}
                                     onChange={handleMaxPriceChange}
