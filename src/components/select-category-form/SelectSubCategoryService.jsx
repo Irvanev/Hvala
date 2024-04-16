@@ -1,25 +1,33 @@
 import React from "react";
 import { Form } from "react-bootstrap";
+import { Select } from 'antd';
 
 const SelectSubCategoryService = ({handleSubcategoryChange, t}) => {
     return (
-        <Form.Select className="mb-3" aria-label="Default select example" onChange={handleSubcategoryChange}>
-            <option>{t('choce_subcategory')}</option>
-            <option value="education">{t('education')}</option>
-            <option value="handyman">{t('handyman')}</option>
-            <option value="beauty_and_health"> {t('beauty_and_health')}</option>
-            <option value="transportation"> {t('transportation')}</option>
-            <option value="repair_and_construction"> {t('repair_and_construction')}</option>
-            <option value="computer_services"> {t('computer_services')}</option>
-            <option value="business_services"> {t('business_services')}</option>
-            <option value="cleaning"> {t('cleaning')}</option>
-            <option value="automotive_services"> {t('automotive_services')}</option>
-            <option value="appliance_repair"> {t('appliance_repair')}</option>
-            <option value="event_planning"> {t('event_planning')}</option>
-            <option value="photography_and_videography"> {t('photography_and_videography')}</option>
-            <option value="custom_manufacturing"> {t('custom_manufacturing')}</option>
-            <option value="pet_care"> {t('pet_care')}</option>
-        </Form.Select>
+        <>
+        <Form.Label className="mt-3">{t('subCategory')}</Form.Label>
+            <Select
+                onChange={handleSubcategoryChange}
+                style={{ width: '100%' }}
+                options={[
+                    { value: 'education', label: t('education') },
+                    { value: 'handyman', label: t('handyman') },
+                    { value: 'beauty_and_health', label: t('beauty_and_health') },
+                    { value: 'transportation', label: t('transportation') },
+                    { value: 'repair_and_construction', label: t('repair_and_construction') },
+                    { value: 'computer_services', label: t('computer_services') },
+                    { value: 'business_services', label: t('business_services') },
+                    { value: 'cleaning', label: t('cleaning') },
+                    { value: 'automotive_services', label: t('automotive_services') },
+                    { value: 'appliance_repair', label: t('appliance_repair') },
+                    { value: 'event_planning', label: t('event_planning') },
+                    { value: 'photography_and_videography', label: t('photography_and_videography') },
+                    { value: 'custom_manufacturing', label: t('custom_manufacturing') },
+                    { value: 'pet_care', label: t('pet_care') }
+
+                ]}
+            />
+        </>
     );
 }
 

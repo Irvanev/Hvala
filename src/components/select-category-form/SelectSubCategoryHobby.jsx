@@ -1,19 +1,26 @@
 import React from "react";
 import { Form } from "react-bootstrap"
+import { Select } from 'antd';
 
 const SelectSubCategoryHobby = ({handleSubcategoryChange, t}) => {
     return (
-        <Form.Select className="mb-3" aria-label="Default select example" onChange={handleSubcategoryChange}>
-            <option>{t('choce_subcategory')}</option>
-            <option value="table_games">{t('table_games')}</option>
-            <option value="computer_games">{t('computer_games')}</option>
-            <option value="books_n_magazines"> {t('books_n_magazines')}</option>
-            <option value="tickets"> {t('tickets')}</option>
-            <option value="collections"> {t('collections')}</option>
-            <option value="art_materials"> {t('art_materials')}</option>
-            <option value="music"> {t('music')}</option>
-            <option value="music_tools"> {t('music_tools')}</option>
-        </Form.Select>
+        <>
+        <Form.Label className="mt-3">{t('subCategory')}</Form.Label>
+            <Select
+                onChange={handleSubcategoryChange}
+                style={{ width: '100%' }}
+                options={[
+                    { value: 'table_games', label: t('table_games') },
+                    { value: 'computer_games', label: t('computer_games') },
+                    { value: 'books_n_magazines', label: t('books_n_magazines') },
+                    { value: 'tickets', label: t('tickets') },
+                    { value: 'collections', label: t('collections') },
+                    { value: 'art_materials', label: t('art_materials') },
+                    { value: 'music', label: t('music') },
+                    { value: 'music_tools', label: t('music_tools') }
+                ]}
+            />
+        </>
     );
 }
 

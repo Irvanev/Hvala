@@ -1,7 +1,7 @@
-import React from "react";
-import { Form, Button, FormGroup } from "react-bootstrap"
+import React, { useState } from "react";
+import { Form, Input, InputNumber, Button, Select, Upload, Image } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
 import { useTranslation } from "react-i18next";
-import SelectBrandsForMobile from "../../select-brands/SelectBrandsForMobile";
 
 const PhoneAndTabletsForm = ({ title, setTitle,
     price, setPrice,
@@ -12,73 +12,170 @@ const PhoneAndTabletsForm = ({ title, setTitle,
     condition, setCondition,
     phoneNumber, setPhoneNumber,
     description, setDescription,
-    handleFileChange, photoUrls, handleSubmit
+    handleSubmit, handleFileChange
 
 }) => {
     const { t } = useTranslation();
+    const { Option } = Select;
+
+    const [form] = Form.useForm();
+
+    const onSubmit = async () => {
+        try {
+            const values = await form.validateFields();
+            handleSubmit(values);
+        } catch (errorInfo) {
+            console.log('Failed:', errorInfo);
+        }
+    };
+
+    const [fileList, setFileList] = useState([]);
+    const [previewImage, setPreviewImage] = useState('');
+    const [previewOpen, setPreviewOpen] = useState(false);
+
+    const handlePreview = async (file) => {
+        setPreviewImage(file.thumbUrl);
+        setPreviewOpen(true);
+    };
+
+    const handleChange = ({ fileList }) => setFileList(fileList);
+
     return (
         <div>
-            <FormGroup className="mb-3">
-                <Form.Label>{t('title')}</Form.Label>
-                <Form.Control
-                    type="text"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                />
-            </FormGroup>
-            <Form.Group className="mb-3">
-                <SelectBrandsForMobile brand={brand} setBrand={setBrand} />
-            </Form.Group>
-            <Form.Group className="mb-3">
-                <Form.Label>{t('model')}</Form.Label>
-                <Form.Control type="text" value={model} onChange={(e) => setModel(e.target.value)} />
-            </Form.Group>
-            <Form.Group className="mb-3">
-                <Form.Label>{t('price')}</Form.Label>
-                <Form.Control type="text" value={price} onChange={(e) => setPrice(parseInt(e.target.value, 10))} />
-            </Form.Group>
-            <Form.Group className="mb-3">
-                <Form.Label>{t("size_screen")}</Form.Label>
-                <Form.Control type="number" placeholder="6.7" value={screen_size} onChange={(e) => setScreenSize(e.target.value)} />
-            </Form.Group>
-            <Form.Group className="mb-3">
-                <Form.Label>{t('memory')}</Form.Label>
-                <Form.Control type="number" value={memory} onChange={(e) => setMemory(e.target.value)} />
-            </Form.Group>
-            <Form.Group className="mb-3">
-                <Form.Select aria-label="Default select example" value={condition} onChange={(e) => setCondition(e.target.value)}>
-                    <option>{t('condition')}</option>
-                    <option value="new_cond">{t('new_cond')}</option>
-                    <option value="bu_cond">{t('bu_cond')}</option>
-                </Form.Select>
-            </Form.Group>
-            <Form.Group className="mb-3">
-                <Form.Label>{t('phone_number')}</Form.Label>
-                <Form.Control type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1" value={description} onChange={(e) => setDescription(e.target.value)}>
-                <Form.Label>{t('description')}</Form.Label>
-                <Form.Control as="textarea" rows={3} />
-            </Form.Group>
-            <Form.Group controlId="formFileMultiple" className="mb-3">
-                <Form.Label>{t('photo')}</Form.Label>
-                <Form.Control type="file" accept="image/*" multiple onChange={handleFileChange} />
-            </Form.Group>
-            <div className="mb-3">
-                {photoUrls.map((file, index) => (
-                    <img
-                        key={index}
-                        src={URL.createObjectURL(file)}
-                        alt={`preview ${index}`}
-                        style={{ width: '100px', height: '100px', marginRight: '10px', marginBottom: '10px' }}
+            <Form
+                form={form}
+                className='mt-3'
+                layout="vertical"
+            >
+                <Form.Item
+                    name="title"
+                    label={t('title')}
+                    rules={[{ required: true, message: 'Please input the title!' }]}
+                >
+                    <Input value={title} onChange={(e) => setTitle(e.target.value)} />
+                </Form.Item>
+                <Form.Item label={t('brand')}>
+                    <Select
+                        showSearch
+                        value={brand}
+                        onChange={(value) => setBrand(value)}
+                        optionFilterProp="children"
+                        filterOption={(input, option) =>
+                            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        }
+                    >
+                        <Option value="Samsung">Samsung</Option>
+                        <Option value="Apple">Apple</Option>
+                        <Option value="Xiaomi">Xiaomi</Option>
+                        <Option value="Huawei">Huawei</Option>
+                        <Option value="Honor">Honor</Option>
+                        <Option value="HTC">HTC</Option>
+                        <Option value="Oppo">Oppo</Option>
+                        <Option value="Realme">Realme</Option>
+                        <Option value="Nokia">Nokia</Option>
+                        <Option value="OnePlus">OnePlus</Option>
+                        <Option value="Acer">Acer</Option>
+                        <Option value="Alcatel">Alcatel</Option>
+                        <Option value="Asus">Asus</Option>
+                        <Option value="LG">LG</Option>
+                        <Option value="Meizu">Meizu</Option>
+                        <Option value="Google">Google</Option>
+                        <Option value="Oppo">Oppo</Option>
+                    </Select>
+                </Form.Item>
+                <Form.Item label={t('model')}>
+                    <Input type="text" value={model} onChange={(e) => setModel(e.target.value)} />
+                </Form.Item>
+                <Form.Item
+                    label={t('price')}
+                    name='price'
+                    rules={[{ required: true, message: 'Please input the price!' }]}
+                >
+                    <InputNumber
+                        prefix="€"
+                        value={price}
+                        onChange={(value) => setPrice(parseInt(value, 10))}
+                        style={{
+                            width: '100%',
+                        }}
                     />
-                ))}
-            </div>
-            <div className="d-grid gap-2">
-                <Button onClick={handleSubmit} variant="primary" size="lg">
-                    {t('add')}
-                </Button>
-            </div>
+                </Form.Item>
+                <Form.Item label={t('size_screen')}>
+                    <Input type="text" value={screen_size} onChange={(e) => setScreenSize(e.target.value)} />
+                </Form.Item>
+                <Form.Item label={t('memory')}>
+                    <Input type="text" value={memory} onChange={(e) => setMemory(e.target.value)} />
+                </Form.Item>
+                <Form.Item
+                    label={t('condition')}
+                    name='condition'
+                    rules={[{ required: true, message: 'Please input the price!' }]}
+                >
+                    <Select value={condition} onChange={(value) => setCondition(value)}>
+                        <Option value="new_cond">{t('new_cond')}</Option>
+                        <Option value="bu_cond">{t('bu_cond')}</Option>
+                    </Select>
+                </Form.Item>
+                <Form.Item label={t('phone_number')}>
+                    <Input type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
+                </Form.Item>
+                <Form.Item label={t('description')}>
+                    <Input.TextArea rows={3} value={description} onChange={(e) => setDescription(e.target.value)} />
+                </Form.Item>
+
+                <Form.Item label={t('photos')}>
+                    <Upload
+                        multiple
+                        listType="picture-card"
+                        fileList={fileList}
+                        onPreview={handlePreview}
+                        onChange={handleChange}
+                        beforeUpload={file => {
+                            handleFileChange(file);
+                            return false;
+                        }}
+                    >
+                        {fileList.length >= 8 ? null :
+                            <button
+                                style={{
+                                    border: 0,
+                                    background: 'none',
+                                }}
+                                type="button"
+                            >
+                                <PlusOutlined />
+                                <div
+                                    style={{
+                                        marginTop: 8,
+                                    }}
+                                >
+                                    Upload
+                                </div>
+                            </button>
+                        }
+                    </Upload>
+                    {previewImage && (
+                        <Image
+                            wrapperStyle={{
+                                display: 'none',
+                            }}
+                            preview={{
+                                visible: previewOpen,
+                                onVisibleChange: (visible) => setPreviewOpen(visible),
+                                afterOpenChange: (visible) => !visible && setPreviewImage(''),
+                            }}
+                            src={previewImage}
+                        />
+                    )}
+                </Form.Item>
+
+                <Form.Item style={{ display: 'flex', justifyContent: 'center' }}>
+                    <Button type="primary" onClick={onSubmit} size='large' style={{ backgroundColor: 'orange', width: '150px' }}>
+                        {t('add')}
+                    </Button>
+                </Form.Item>
+
+            </Form>
         </div>
     );
 }

@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Button, Form, FormGroup } from "react-bootstrap";
+import { Form, Input, InputNumber, Button, Select, Image, Upload } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
 
 const TarnsportForm = ({
     title, setTitle,
@@ -18,122 +19,209 @@ const TarnsportForm = ({
     owners, setOwners,
     phoneNumber, setPhoneNumber,
     description, setDescription,
-    handleFileChange, photoUrls, handleSubmit
+    handleSubmit, handleFileChange
 }) => {
     const { t } = useTranslation();
+    const { Option } = Select;
+
+    const [form] = Form.useForm();
+
+    const onSubmit = async () => {
+        try {
+            const values = await form.validateFields();
+            handleSubmit(values);
+        } catch (errorInfo) {
+            console.log('Failed:', errorInfo);
+        }
+    };
+
+    const [fileList, setFileList] = useState([]);
+    const [previewImage, setPreviewImage] = useState('');
+    const [previewOpen, setPreviewOpen] = useState(false);
+
+    const handlePreview = async (file) => {
+        setPreviewImage(file.thumbUrl);
+        setPreviewOpen(true);
+    };
+
+    const handleChange = ({ fileList }) => setFileList(fileList);
+
     return (
         <div>
-            <FormGroup className="mb-3">
-                <Form.Label>{t('title')}</Form.Label>
-                <Form.Control type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
-            </FormGroup>
-            <Form.Group className="mb-3">
-                <Form.Select aria-label="Default select example" value={brand} onChange={(e) => setBrand(e.target.value)}>
-                    <option>{t('choice_mark')}</option>
-                    <option value="Audi">Audi</option>
-                    <option value="BMW">BMW</option>
-                    <option value="Mersedes">Mersedes</option>
-                </Form.Select>
-            </Form.Group>
-            <Form.Group className="mb-3">
-                <Form.Label>{t('input_model')}</Form.Label>
-                <Form.Control type="text" value={model} onChange={(e) => setModel(e.target.value)} />
-            </Form.Group>
-            <Form.Group className="mb-3">
-                <Form.Label>{t('price')}</Form.Label>
-                <Form.Control type="text" value={price} onChange={(e) => setPrice(parseInt(e.target.value, 10))} />
-            </Form.Group>
-            <Form.Group className="mb-3">
-                <Form.Label>{t('input_year')}</Form.Label>
-                <Form.Control type="number" value={year} onChange={(e) => setYear(e.target.value)} placeholder="2020" />
-            </Form.Group>
-            <Form.Group className="mb-3">
-                <Form.Label>{t('input_meleage')}</Form.Label>
-                <Form.Control type="number" value={mileage} onChange={(e) => setMileage(e.target.value)} />
-            </Form.Group>
-            <Form.Group className="mb-3">
-                <Form.Select aria-label="Default select example" value={body} onChange={(e) => setBody(e.target.value)}>
-                    <option>{t('choice_body')}</option>
-                    <option value="sedan">{t('sedan')}</option>
-                    <option value="hatchback">{t('hatchback')}</option>
-                    <option value="station_wagon">{t('station_wagon')}</option>
-                    <option value="coupe">{t('coupe')}</option>
-                    <option value="convertible">{t('convertible')}</option>
-                    <option value="crossover">{t('crossover')}</option>
-                    <option value="Внедорsuv_sport_utility_vehicleожник">{t('Внедорsuv_sport_utility_vehicleожник')}</option>
-                    <option value="pickup_truck">{t('pickup_truck')}</option>
-                    <option value="minivan">{t('minivan')}</option>
-                    <option value="Limousine">{t('Limousine')}</option>
-                </Form.Select>
-            </Form.Group>
-            <Form.Group className="mb-3">
-                <Form.Label>{t('enter_color')}</Form.Label>
-                <Form.Control type="text" value={color} onChange={(e) => setColor(e.target.value)} />
-            </Form.Group>
-            <Form.Group className="mb-3">
-                <Form.Select aria-label="Default select example" value={transmission} onChange={(e) => setTransmission(e.target.value)}>
-                    <option>{t('choce_transmission')}</option>
-                    <option value="manual_t">{t('manual_t')}</option>
-                    <option value="auto_t">{t('auto_t')}</option>
-                    <option value="semi_auto_t">{t('semi_auto_t')}</option>
-                    <option value="dual_clutch_t">{t('dual_clutch_t')}</option>
-                    <option value="continuously_t">{t('continuously_t')}</option>
-                </Form.Select>
-            </Form.Group>
-            <Form.Group className="mb-3">
-                <Form.Select aria-label="Default select example" value={drive} onChange={(e) => setDrive(e.target.value)}>
-                    <option>{t('choice_drive')}</option>
-                    <option value="fwd">{t('fwd')}</option>
-                    <option value="rwd">{t('rwd')}</option>
-                    <option value="awd">{t('awd')}</option>
-                    <option value="four_wd">{t('four_wd')}</option>
-                </Form.Select>
-            </Form.Group>
-            <Form.Group className="mb-3">
-                <Form.Select aria-label="Default select example" value={wheel} onChange={(e) => setWheel(e.target.value)}>
-                    <option>{t('choice_wheel')}</option>
-                    <option value="left_hand_drive">{t('left_hand_drive')}</option>
-                    <option value="right_hand_drive">{t('right_hand_drive')}</option>
-                </Form.Select>
-            </Form.Group>
-            <Form.Group className="mb-3">
-                <Form.Select aria-label="Default select example" value={condition} onChange={(e) => setCondition(e.target.value)}>
-                    <option>{t('choice_condition')}</option>
-                    <option value="condition_new">{t('condition_new')}</option>
-                    <option value="used">{t('used')}</option>
-                </Form.Select>
-            </Form.Group>
-            <Form.Group className="mb-3">
-                <Form.Label>{t('choice_customs')}</Form.Label>
-                <Form.Control type="number" value={owners} onChange={(e) => setOwners(e.target.value)} />
-            </Form.Group>
-            <Form.Group className="mb-3">
-                <Form.Label>{t('phone_number')}</Form.Label>
-                <Form.Control type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
-                <Form.Label>{t('description')}</Form.Label>
-                <Form.Control as="textarea" rows={3} value={description} onChange={(e) => setDescription(e.target.value)} />
-            </Form.Group>
-            <Form.Group controlId="formFileMultiple" className="mb-3">
-                <Form.Label>{t('photo')}</Form.Label>
-                <Form.Control type="file" accept="image/*" multiple onChange={handleFileChange} />
-            </Form.Group>
-            <div className="mb-3">
-                {photoUrls.map((file, index) => (
-                    <img
-                        key={index}
-                        src={URL.createObjectURL(file)}
-                        alt={`preview ${index}`}
-                        style={{ width: '100px', height: '100px', marginRight: '10px', marginBottom: '10px' }}
+            <Form
+                form={form}
+                className='mt-3'
+                layout="vertical"
+            >
+                <Form.Item
+                    name="title"
+                    label={t('title')}
+                    rules={[{ required: true, message: 'Please input the title!' }]}
+                >
+                    <Input value={title} onChange={(e) => setTitle(e.target.value)} />
+                </Form.Item>
+                <Form.Item label={t('choice_mark')}>
+                    <Select
+                        showSearch
+                        value={brand}
+                        onChange={(value) => setBrand(value)}
+                        optionFilterProp="children"
+                        filterOption={(input, option) =>
+                            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        }
+                    >
+                        <Option value="Audi">Audi</Option>
+                        <Option value="BMW">BMW</Option>
+                        <Option value="Mersedes">Mersedes</Option>
+                        <Option value="Porshe">Porshe</Option>
+                        <Option value="Volvo">Volvo</Option>
+                        <Option value="Volkswagen">Volkswagen</Option>
+                        <Option value="Ford">Ford</Option>
+                    </Select>
+                </Form.Item>
+                <Form.Item label={t('input_model')}>
+                    <Input type="tel" value={model} onChange={(e) => setModel(e.target.value)} />
+                </Form.Item>
+                <Form.Item
+                    label={t('price')}
+                    name='price'
+                    rules={[{ required: true, message: 'Please input the price!' }]}
+                >
+                    <InputNumber
+                        prefix="€"
+                        value={price}
+                        onChange={(value) => setPrice(parseInt(value, 10))}
+                        style={{
+                            width: '100%',
+                        }}
                     />
-                ))}
-            </div>
-            <div className="d-grid gap-2">
-                <Button onClick={handleSubmit} variant="primary" size="lg">
-                    {t('add')}
-                </Button>
-            </div>
+                </Form.Item>
+                <Form.Item label={t('input_year')}>
+                    <Input type="text" value={year} onChange={(e) => setYear(e.target.value)} />
+                </Form.Item>
+                <Form.Item label={t('input_meleage')}>
+                    <Input type="text" value={mileage} onChange={(e) => setMileage(e.target.value)} />
+                </Form.Item>
+                <Form.Item label={t('choice_body')}>
+                    <Select
+                        showSearch
+                        value={body}
+                        onChange={(value) => setBody(value)}
+                        optionFilterProp="children"
+                        filterOption={(input, option) =>
+                            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        }
+                    >
+                        <Option value="sedan">{t('sedan')}</Option>
+                        <Option value="hatchback">{t('hatchback')}</Option>
+                        <Option value="station_wagon">{t('station_wagon')}</Option>
+                        <Option value="coupe">{t('coupe')}</Option>
+                        <Option value="convertible">{t('convertible')}</Option>
+                        <Option value="crossover">{t('crossover')}</Option>
+                        <Option value="suv_sport_utility_vehicle">{t('suv_sport_utility_vehicle')}</Option>
+                        <Option value="pickup_truck">{t('pickup_truck')}</Option>
+                        <Option value="minivan">{t('minivan')}</Option>
+                        <Option value="Limousine">{t('Limousine')}</Option>
+                    </Select>
+                </Form.Item>
+                <Form.Item label={t('enter_color')}>
+                    <Input type="text" value={color} onChange={(e) => setColor(e.target.value)} />
+                </Form.Item>
+                <Form.Item label={t('choce_transmission')}>
+                    <Select value={transmission} onChange={(value) => setTransmission(value)}>
+                        <Option value="manual_t">{t('manual_t')}</Option>
+                        <Option value="auto_t">{t('auto_t')}</Option>
+                        <Option value="semi_auto_t">{t('semi_auto_t')}</Option>
+                        <Option value="dual_clutch_t">{t('dual_clutch_t')}</Option>
+                        <Option value="continuously_t">{t('continuously_t')}</Option>
+                    </Select>
+                </Form.Item>
+                <Form.Item label={t('choice_drive')}>
+                    <Select value={drive} onChange={(value) => setDrive(value)}>
+                        <Option value="fwd">{t('fwd')}</Option>
+                        <Option value="rwd">{t('rwd')}</Option>
+                        <Option value="awd">{t('awd')}</Option>
+                        <Option value="four_wd">{t('four_wd')}</Option>
+                    </Select>
+                </Form.Item>
+                <Form.Item label={t('choice_wheel')}>
+                    <Select value={wheel} onChange={(value) => setWheel(value)}>
+                        <Option value="left_hand_drive">{t('left_hand_drive')}</Option>
+                        <Option value="right_hand_drive">{t('right_hand_drive')}</Option>
+                    </Select>
+                </Form.Item>
+                <Form.Item
+                    label={t('choice_condition')}
+                    name='condition'
+                    rules={[{ required: true, message: 'Please input the price!' }]}
+                >
+                    <Select value={condition} onChange={(value) => setCondition(value)}>
+                        <Option value="condition_new">{t('condition_new')}</Option>
+                        <Option value="used">{t('used')}</Option>
+                    </Select>
+                </Form.Item>
+                <Form.Item label={t('choice_customs')}>
+                    <Input type="text" value={owners} onChange={(e) => setOwners(e.target.value)} />
+                </Form.Item>
+                <Form.Item label={t('phone_number')}>
+                    <Input type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
+                </Form.Item>
+                <Form.Item label={t('description')}>
+                    <Input.TextArea rows={3} value={description} onChange={(e) => setDescription(e.target.value)} />
+                </Form.Item>
+
+                <Form.Item label={t('photos')}>
+                    <Upload
+                        multiple
+                        listType="picture-card"
+                        fileList={fileList}
+                        onPreview={handlePreview}
+                        onChange={handleChange}
+                        beforeUpload={file => {
+                            handleFileChange(file);
+                            return false;
+                        }}
+                    >
+                        {fileList.length >= 8 ? null :
+                            <button
+                                style={{
+                                    border: 0,
+                                    background: 'none',
+                                }}
+                                type="button"
+                            >
+                                <PlusOutlined />
+                                <div
+                                    style={{
+                                        marginTop: 8,
+                                    }}
+                                >
+                                    Upload
+                                </div>
+                            </button>
+                        }
+                    </Upload>
+                    {previewImage && (
+                        <Image
+                            wrapperStyle={{
+                                display: 'none',
+                            }}
+                            preview={{
+                                visible: previewOpen,
+                                onVisibleChange: (visible) => setPreviewOpen(visible),
+                                afterOpenChange: (visible) => !visible && setPreviewImage(''),
+                            }}
+                            src={previewImage}
+                        />
+                    )}
+                </Form.Item>
+
+                <Form.Item style={{ display: 'flex', justifyContent: 'center' }}>
+                    <Button type="primary" onClick={onSubmit} size='large' style={{ backgroundColor: 'orange', width: '150px' }}>
+                        {t('add')}
+                    </Button>
+                </Form.Item>
+            </Form>
         </div>
     );
 }

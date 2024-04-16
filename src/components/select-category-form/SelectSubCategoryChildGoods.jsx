@@ -1,23 +1,30 @@
 import React from "react";
 import { Form } from "react-bootstrap"
+import { Select } from 'antd';
 
 const SelectSubCategoryChildGoods = ({handleSubcategoryChange, t}) => {
     return (
-        <Form.Select className="mb-3" aria-label="Default select example" onChange={handleSubcategoryChange}>
-            <option>{t('choce_subcategory')}</option>
-            <option value="car_seats">{t('car_seats')}</option>
-            <option value="health_and_care">{t('health_and_care')}</option>
-            <option value="toys_and_games"> {t('toys_and_games')}</option>
-            <option value="strollers"> {t('strollers')}</option>
-            <option value="feeding_and_nutrition"> {t('feeding_and_nutrition')}</option>
-            <option value="bathing"> {t('bathing')}</option>
-            <option value="nursery"> {t('nursery')}</option>
-            <option value="diapers_and_potties"> {t('diapers_and_potties')}</option>
-            <option value="baby_monitors"> {t('baby_monitors')}</option>
-            <option value="maternity_products"> {t('maternity_products')}</option>
-            <option value="schoold_supplies"> {t('schoold_supplies')}</option>
-            <option value="other_cat"> {t('other_cat')}</option>
-        </Form.Select>
+        <>
+        <Form.Label className="mt-3">{t('subCategory')}</Form.Label>
+            <Select
+                onChange={handleSubcategoryChange}
+                style={{ width: '100%' }}
+                options={[
+                    { value: 'car_seats', label: t('car_seats') },
+                    { value: 'health_and_care', label: t('health_and_care') },
+                    { value: 'toys_and_games', label: t('toys_and_games') },
+                    { value: 'strollers', label: t('strollers') },
+                    { value: 'feeding_and_nutrition', label: t('feeding_and_nutrition') },
+                    { value: 'bathing', label: t('bathing') },
+                    { value: 'nursery', label: t('nursery') },
+                    { value: 'diapers_and_potties', label: t('diapers_and_potties') },
+                    { value: 'baby_monitors', label: t('baby_monitors') },
+                    { value: 'maternity_products', label: t('maternity_products') },
+                    { value: 'schoold_supplies', label: t('schoold_supplies') },
+                    { value: 'other_cat', label: t('other_cat') }
+                ]}
+            />
+        </>
     );
 }
 

@@ -1,28 +1,28 @@
 import React from "react";
-import { Form } from "react-bootstrap"
+import { Select } from 'antd';
 import { useTranslation } from "react-i18next";
 
 const SelectTypesForClothes = ({ type, setType }) => {
     const { t } = useTranslation();
+    const { Option } = Select;
     return (
         <div>
-            <Form.Select aria-label="Default select example" value={type} onChange={(e) => setType(e.target.value)}>
-                <option>{t('type')}</option>
-                <option value="outwear">{t('outwear')}</option>
-                <option value="hats">{t('hats')}</option>
-                <option value="accessories">{t('accessories')}</option>
-                <option value="homewear">{t('homewear')}</option>
-                <option value="underwear">{t('underwear')}</option>
-                <option value="shoes">{t('shoes')}</option>
-                <option value="jackets_and_suits">{t('jackets_and_suits')}</option>
-                <option value="shirts">{t('shirts')}</option>
-                <option value="Steam sweaters_and_hoodies">{t('sweaters_and_hoodies')}</option>
-                <option value="Nvidia workwear">{t('workwear')}</option>
-                <option value="sportswear">{t('sportswear')}</option>
-                <option value="t_shirts_and_polos">{t('t_shirts_and_polos')}</option>
-                <option value="pants_and_shorts">{t('pants_and_shorts')}</option>
-                <option value="rest">{t('rest')}</option>
-            </Form.Select>
+            <Select aria-label="Default select example" value={type} onChange={(value) => setType(value)}>
+                <Option value="outwear">{t('outwear')}</Option>
+                <Option value="hats">{t('hats')}</Option>
+                <Option value="accessories">{t('accessories')}</Option>
+                <Option value="homewear">{t('homewear')}</Option>
+                <Option value="underwear">{t('underwear')}</Option>
+                <Option value="shoes">{t('shoes')}</Option>
+                <Option value="jackets_and_suits">{t('jackets_and_suits')}</Option>
+                <Option value="shirts">{t('shirts')}</Option>
+                <Option value="Steam sweaters_and_hoodies">{t('sweaters_and_hoodies')}</Option>
+                <Option value="Nvidia workwear">{t('workwear')}</Option>
+                <Option value="sportswear">{t('sportswear')}</Option>
+                <Option value="t_shirts_and_polos">{t('t_shirts_and_polos')}</Option>
+                <Option value="pants_and_shorts">{t('pants_and_shorts')}</Option>
+                <Option value="rest">{t('rest')}</Option>
+            </Select>
         </div>
     );
 }

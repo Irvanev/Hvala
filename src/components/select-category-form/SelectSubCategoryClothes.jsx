@@ -1,14 +1,21 @@
 import React from "react";
 import { Form } from "react-bootstrap";
+import { Select } from 'antd';
 
 const SelectSubCategoryClothes = ({handleSubcategoryChange, t}) => {
     return ( 
-        <Form.Select className="mb-3" aria-label="Default select example" onChange={handleSubcategoryChange}>
-        <option>{t('choce_subcategory')}</option>
-        <option value="mens_clothing">{t('mens_clothing')}</option>
-        <option value="womens_clothing">{t('womens_clothing')}</option>
-        <option value="childrens_clothing">{t('childrens_clothing')}</option>
-    </Form.Select>
+        <>
+        <Form.Label className="mt-3">{t('subCategory')}</Form.Label>
+            <Select
+                onChange={handleSubcategoryChange}
+                style={{ width: '100%' }}
+                options={[
+                    { value: 'mens_clothing', label: t('mens_clothing') },
+                    { value: 'womens_clothing', label: t('womens_clothing') },
+                    { value: 'childrens_clothing', label: t('childrens_clothing') }
+                ]}
+            />
+        </>
      );
 }
  

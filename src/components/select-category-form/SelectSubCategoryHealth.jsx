@@ -1,21 +1,28 @@
 import React from "react";
 import { Form } from "react-bootstrap"
+import { Select } from 'antd';
 
 const SelectSubCategoryHealth = ({handleSubcategoryChange, t}) => {
     return (
-        <Form.Select className="mb-3" aria-label="Default select example" onChange={handleSubcategoryChange}>
-            <option>{t('choce_subcategory')}</option>
-            <option value="makeup">{t('makeup')}</option>
-            <option value="manicure_and_pedicure">{t('manicure_and_pedicure')}</option>
-            <option value="healthcare_products"> {t('healthcare_products')}</option>
-            <option value="perfume"> {t('perfume')}</option>
-            <option value="skincare"> {t('skincare')}</option>
-            <option value="haircare"> {t('haircare')}</option>
-            <option value="tattoos_and_tatooing"> {t('tattoos_and_tatooing')}</option>
-            <option value="tanning_and_sunbeds"> {t('tanning_and_sunbeds')}</option>
-            <option value="personal_hygiene_products"> {t('personal_hygiene_products')}</option>
-            <option value="other_cat"> {t('other_cat')}</option>
-        </Form.Select>
+        <>
+        <Form.Label className="mt-3">{t('subCategory')}</Form.Label>
+            <Select
+                onChange={handleSubcategoryChange}
+                style={{ width: '100%' }}
+                options={[
+                    { value: 'makeup', label: t('makeup') },
+                    { value: 'manicure_and_pedicure', label: t('manicure_and_pedicure') },
+                    { value: 'healthcare_products', label: t('healthcare_products') },
+                    { value: 'perfume', label: t('perfume') },
+                    { value: 'skincare', label: t('skincare') },
+                    { value: 'haircare', label: t('haircare') },
+                    { value: 'tattoos_and_tatooing', label: t('tattoos_and_tatooing') },
+                    { value: 'tanning_and_sunbeds', label: t('tanning_and_sunbeds') },
+                    { value: 'personal_hygiene_products', label: t('personal_hygiene_products') },
+                    { value: 'other_cat', label: t('other_cat') }
+                ]}
+            />
+        </>
     );
 }
 

@@ -1,18 +1,25 @@
 import React from "react";
 import { Form } from "react-bootstrap";
+import { Select } from 'antd';
 
 const SelectSubCategoryHouseGoods = ({handleSubcategoryChange, t}) => {
     return (
-        <Form.Select className="mb-3" aria-label="Default select example" onChange={handleSubcategoryChange}>
-            <option>{t('choce_subcategory')}</option>
-            <option value="furniture">{t('furniture')}</option>
-            <option value="lighting">{t('lighting')}</option>
-            <option value="dishes"> {t('dishes')}</option>
-            <option value="garden_equipment"> {t('garden_equipment')}</option>
-            <option value="domestic_cleaning"> {t('domestic_cleaning')}</option>
-            <option value="kitchen_equipment"> {t('kitchen_equipment')}</option>
-            <option value="other_cat"> {t('other_cat')}</option>
-        </Form.Select>
+        <>
+        <Form.Label className="mt-3">{t('subCategory')}</Form.Label>
+            <Select
+                onChange={handleSubcategoryChange}
+                style={{ width: '100%' }}
+                options={[
+                    { value: 'furniture', label: t('furniture') },
+                    { value: 'lighting', label: t('lighting') },
+                    { value: 'dishes', label: t('dishes') },
+                    { value: 'garden_equipment', label: t('garden_equipment') },
+                    { value: 'domestic_cleaning', label: t('domestic_cleaning') },
+                    { value: 'kitchen_equipment', label: t('kitchen_equipment') },
+                    { value: 'other_cat', label: t('other_cat') }
+                ]}
+            />
+        </>
     );
 }
 

@@ -1,14 +1,21 @@
 import React from "react";
 import { Form } from 'react-bootstrap';
+import { Select } from 'antd';
 
 const SelectSubCategoryEstate = ({ handleSubcategoryChange, t }) => {
-    return ( 
-        <Form.Select aria-label="Default select example" onChange={handleSubcategoryChange} className="mb-3">
-            <option>{t('choce_subcategory')}</option>
-            <option value="sale_estate">{t('sale_estate')}</option>
-            <option value="rent_estate">{t('rent_estate')}</option>
-        </Form.Select>
-     );
+    return (
+        <>
+        <Form.Label className="mt-3">{t('subCategory')}</Form.Label>
+            <Select
+                onChange={handleSubcategoryChange}
+                style={{ width: '100%' }}
+                options={[
+                    { value: 'sale_estate', label: t('sale_estate') },
+                    { value: 'rent_estate', label: t('rent_estate') }
+                ]}
+            />
+        </>
+    );
 }
- 
+
 export default SelectSubCategoryEstate;

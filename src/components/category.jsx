@@ -1,228 +1,192 @@
-import LogoSearch from "../assets/hvala.png";
-import { Link } from "react-router-dom";
-import { Filter, List, Search } from "react-bootstrap-icons";
-import { useState } from "react";
-import { Image, Row, Col } from "react-bootstrap";
-
-import {
-  Container,
-  Form,
-  ListGroup,
-  InputGroup,
-  Button,
-  Offcanvas,
-  FormControl,
-} from "react-bootstrap";
-import { t } from "i18next";
+import React, { useState } from 'react'
+import { Link } from 'react-router-dom';
+import { MenuOutlined, MoreOutlined } from '@ant-design/icons';
+import { Dropdown, Input, Button, Modal, Select, InputNumber } from 'antd';
+import Logo from '../assets/hvala.png'
+import { t } from 'i18next';
 
 const Categories = () => {
-  const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-  const [isSearchClicked, setIsSearchClicked] = useState(false);
+  const { Search } = Input;
+  const { Option } = Select;
+  const onSearch = (value, _e, info) => console.log(info?.source, value);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
+  const items = [
+    {
+      key: '1',
+      label: (
+        <Link to="/advertisments/estate" style={{ fontSize: '16px', textDecoration: 'none' }}>
+          {t('estate')}
+        </Link>
+      ),
+    },
+    {
+      key: '2',
+      label: (
+        <Link to="/advertisments/transport" style={{ fontSize: '16px', textDecoration: 'none' }}>
+          {t('transport')}
+        </Link>
+      ),
+    },
+    {
+      key: '3',
+      label: (
+        <Link to="/advertisments/electronics" style={{ fontSize: '16px', textDecoration: 'none' }}>
+          {t('electronics')}
+        </Link>
+      ),
+    },
+    {
+      key: '4',
+      label: (
+        <Link to="/advertisments/clothes" style={{ fontSize: '16px', textDecoration: 'none' }}>
+          {t('clothes')}
+        </Link>
+      ),
+    },
+    {
+      key: '5',
+      label: (
+        <Link to="/advertisments/house_goods" style={{ fontSize: '16px', textDecoration: 'none' }}>
+          {t('house_goods')}
+        </Link>
+      ),
+    },
+    {
+      key: '6',
+      label: (
+        <Link to="/advertisments/building_materials_and_tools" style={{ fontSize: '16px', textDecoration: 'none' }}>
+          {t('building_materials_and_tools')}
+        </Link>
+      ),
+    },
+    {
+      key: '7',
+      label: (
+        <Link to="/advertisments/transport_goods" style={{ fontSize: '16px', textDecoration: 'none' }}>
+          {t('transport_goods')}
+        </Link>
+      ),
+    },
+    {
+      key: '8',
+      label: (
+        <Link to="/advertisments/petSupplies" style={{ fontSize: '16px', textDecoration: 'none' }}>
+          {t('petSupplies')}
+        </Link>
+      ),
+    },
+    {
+      key: '9',
+      label: (
+        <Link to="/advertisments/home_appliance" style={{ fontSize: '16px', textDecoration: 'none' }}>
+          {t('home_appliance')}
+        </Link>
+      ),
+    },
+    {
+      key: '10',
+      label: (
+        <Link to="/advertisments/service" style={{ fontSize: '16px', textDecoration: 'none' }}>
+          {t('service')}
+        </Link>
+      ),
+    },
+    {
+      key: '11',
+      label: (
+        <Link to="/advertisments/child_goods" style={{ fontSize: '16px', textDecoration: 'none' }}>
+          {t('child_goods')}
+        </Link>
+      ),
+    },
+    {
+      key: '12',
+      label: (
+        <Link to="/advertisments/health_and_beauty" style={{ fontSize: '16px', textDecoration: 'none' }}>
+          {t('health_and_beauty')}
+        </Link>
+      ),
+    },
+    {
+      key: '13',
+      label: (
+        <Link to="/advertisments/sport" style={{ fontSize: '16px', textDecoration: 'none' }}>
+          {t('sport')}
+        </Link>
+      ),
+    },
+    {
+      key: '14',
+      label: (
+        <Link to="/advertisments/hobby_n_Relax" style={{ fontSize: '16px', textDecoration: 'none' }}>
+          {t('hobby_n_Relax')}
+        </Link>
+      ),
+    },
+    {
+      key: '15',
+      label: (
+        <Link to="/advertisments/rest" style={{ fontSize: '16px', textDecoration: 'none' }}>
+          {t('rest')}
+        </Link>
+      ),
+    },
+  ];
 
   return (
-    <div>
-
-      <style type="text/css">
-        {`
-        .list-group a {
-          text-decoration: none;
-          color: black;
-          }
-          .list-group a:hover {
-              color: #ffa600;
-          }
-        `}
-        </style>
-
-      <Container id="advertMedia" className="d-none d-lg-block">
-        <Form className="d-flex py-4">
-          <a href="/advertisment">
-            <img
-              src={LogoSearch}
-              alt="Logo"
-              style={{ marginRight: "10px", width: "140px" }}
+    <div className='container mb-3' style={{ display: 'flex', justifyContent: 'space-between' }}>
+      <div className='logo' style={{marginRight: '20px'}}>
+        <img src={Logo} alt='logo' style={{height: '40px', width: '160px'}}></img>
+      </div>
+      <Dropdown
+        menu={{
+          items,
+        }}
+      >
+        <a onClick={(e) => e.preventDefault()}>
+          <Button style={{ marginRight: '20px', backgroundColor: 'orange', color: 'white', border: 'none' }} size='large' icon={<MenuOutlined />}>
+            Категории
+          </Button>
+        </a>
+      </Dropdown>
+      <Search placeholder="input search text" onSearch={onSearch} size='large' />
+      <Button onClick={showModal} style={{ marginLeft: '20px', backgroundColor: 'orange', color: 'white', border: 'none' }} size='large' icon={<MoreOutlined />}>
+        Фильтры
+      </Button>
+      <Modal title="Фильтры" open={isModalOpen} footer={null} onCancel={handleCancel}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <p>Диапазон цен:</p>
+          <div>
+            <InputNumber
+              defaultValue={0}
+              formatter={(value) => `€ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+              parser={(value) => value?.replace(/\$\s?|(,*)/g, '')}
+              style={{marginRight: '20px'}}
             />
-          </a>
-          <button
-            className="btn btn me-2"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#collapseExample"
-            style={{ backgroundColor: "#ffa600", color: "azure" }}
-          >
-            {t('categories')}
-          </button>
-
-          <div
-            className="collapse"
-            id="collapseExample"
-            style={{
-              position: "absolute",
-              zIndex: 1,
-              top: "16%",
-              boxShadow: "0px 8px 16px 0px rgba(0,0,0,0.5)",
-            }}
-          >
-            <ListGroup id="categories"y>
-              <ListGroup.Item>
-                <Link to="/advertisments/estate">{t('estate')}</Link>
-              </ListGroup.Item>
-              <ListGroup.Item>
-                <Link to="/advertisments/transport">{t('transport')}</Link>
-              </ListGroup.Item>
-              <ListGroup.Item>
-                <Link to="/advertisments/clothes">{t('clothes')}</Link>
-              </ListGroup.Item>
-              <ListGroup.Item>
-                <Link to="/advertisments/electronics">{t('electronics')}</Link>
-              </ListGroup.Item>
-              <ListGroup.Item>
-                <Link to="/advertisments/house_goods">{t('house_goods')}</Link>
-              </ListGroup.Item>
-              <ListGroup.Item>
-                <Link to="/advertisments/building_materials_and_tools">
-                {t('building_materials_and_tools')}
-                </Link>
-              </ListGroup.Item>
-              <ListGroup.Item>
-                <Link to="/advertisments/transport_goods">
-                {t('transport_goods')}
-                </Link>
-              </ListGroup.Item>
-              <ListGroup.Item>
-                <Link to="/advertisments/home_appliance">{t('home_appliance')}</Link>
-              </ListGroup.Item>
-              <ListGroup.Item>
-                <Link to="/advertisments/service">{t('service')}</Link>
-              </ListGroup.Item>
-              <ListGroup.Item>
-                <Link to="/advertisments/child_goods">{t('child_goods')}</Link>
-              </ListGroup.Item>
-              <ListGroup.Item>
-                <Link to="/advertisments/health_and_beauty">
-                {t('health_and_beauty')}
-                </Link>
-              </ListGroup.Item>
-              <ListGroup.Item>
-                <Link to="/advertisments/sport">{t('sport')}</Link>
-              </ListGroup.Item>
-              <ListGroup.Item>
-                <Link to="/advertisments/hobby_n_Relax">{t('hobby_n_Relax')}</Link>
-              </ListGroup.Item>
-              <ListGroup.Item>
-                <Link to="/advertisments/subcat14">{t('petSupplies')}</Link>
-              </ListGroup.Item>
-              <ListGroup.Item>
-                <Link to="/advertisments/rest">{t('rest')}</Link>
-              </ListGroup.Item>
-            </ListGroup>
+            <InputNumber
+              defaultValue={0}
+              formatter={(value) => `€ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+              parser={(value) => value?.replace(/\$\s?|(,*)/g, '')}
+            />
           </div>
-          <InputGroup>
-            <Form.Control
-              placeholder={t('search')}
-              aria-label="SerachBar"
-              aria-describedby="basic-addon1"
-            />
-            <InputGroup.Text id="basic-addon1" className="">
-              <Button
-                variant="link"
-                onClick={() => console.log("Icon clicked")}
-              >
-                <Filter />
-              </Button>
-            </InputGroup.Text>
-          </InputGroup>
-        </Form>
-      </Container>
-
-      <Container className="mt-3 d-lg-none">
-
-        <Row>
-          <Col className="d-flex justify-content-center">
-            <Button className="me-3" variant="light" onClick={handleShow}>
-              <List />
-            </Button>
-          </Col>
-          <Col className="d-flex justify-content-center">
-            <Image src={LogoSearch} alt="Logo" style={{ marginRight: "10px", width: "140px" }} />
-          </Col>
-          <Col className="d-flex justify-content-center">
-            <Button variant="light" onClick={() => setIsSearchClicked(prevState => !prevState)}>
-              <Search />
-            </Button>
-          </Col>
-        </Row>
-        {isSearchClicked && (
-          <Form className="mt-3">
-            <FormControl
-              type="search"
-              placeholder={t('search')}
-              aria-label="Search"
-            />
-          </Form>
-        )}
-
-        <Offcanvas show={show} onHide={handleClose}>
-          <Offcanvas.Header closeButton></Offcanvas.Header>
-          <Offcanvas.Body>
-            <ListGroup id="categories">
-              <ListGroup.Item action onClick={handleClose}>
-                <Link to="/advertisments/estate">{t('estate')}</Link>
-              </ListGroup.Item>
-              <ListGroup.Item action onClick={handleClose}>
-                <Link to="/advertisments/transport">{t('transport')}</Link>
-              </ListGroup.Item>
-              <ListGroup.Item action onClick={handleClose}>
-                <Link to="/advertisments/clothes">{t('clothes')}</Link>
-              </ListGroup.Item>
-              <ListGroup.Item action onClick={handleClose}>
-                <Link to="/advertisments/electronics">{t('electronics')}</Link>
-              </ListGroup.Item>
-              <ListGroup.Item action onClick={handleClose}>
-                <Link to="/advertisments/house_goods">{t('house_goods')}</Link>
-              </ListGroup.Item>
-              <ListGroup.Item action onClick={handleClose}>
-                <Link to="/advertisments/building_materials_and_tools">
-                {t('building_materials_and_tools')}
-                </Link>
-              </ListGroup.Item>
-              <ListGroup.Item action onClick={handleClose}>
-                <Link to="/advertisments/transport_goods">
-                {t('transport_goods')}
-                </Link>
-              </ListGroup.Item>
-              <ListGroup.Item action onClick={handleClose}>
-                <Link to="/advertisments/home_appliance">{t('home_appliance')}</Link>
-              </ListGroup.Item>
-              <ListGroup.Item action onClick={handleClose}>
-                <Link to="/advertisments/service">{t('service')}</Link>
-              </ListGroup.Item>
-              <ListGroup.Item action onClick={handleClose}>
-                <Link to="/advertisments/child_goods">{t('child_goods')}</Link>
-              </ListGroup.Item>
-              <ListGroup.Item action onClick={handleClose}>
-                <Link to="/advertisments/health_and_beauty">
-                {t('health_and_beauty')}
-                </Link>
-              </ListGroup.Item>
-              <ListGroup.Item action onClick={handleClose}>
-                <Link to="/advertisments/sport">{t('sport')}</Link>
-              </ListGroup.Item>
-              <ListGroup.Item action onClick={handleClose}>
-                <Link to="/advertisments/hobby_n_Relax">{t('hobby_n_Relax')}</Link>
-              </ListGroup.Item>
-              <ListGroup.Item action onClick={handleClose}>
-                <Link to="/advertisments/subcat14">{t('petSupplies')}</Link>
-              </ListGroup.Item>
-              <ListGroup.Item action onClick={handleClose}>
-                <Link to="/advertisments/rest">{t('rest')}</Link>
-              </ListGroup.Item>
-            </ListGroup>
-          </Offcanvas.Body>
-        </Offcanvas>
-      </Container>
+          <p>Выбор страны:</p>
+          <Select defaultValue="Россия" style={{ width: 240 }}>
+            <Option value="Россия">Россия</Option>
+            <Option value="США">США</Option>
+            <Option value="Китай">Китай</Option>
+          </Select>
+          <Button className='mt-3' type='primary' style={{ backgroundColor: 'orange', border: 'none' }}>Применить</Button>
+        </div>
+      </Modal>
     </div>
   );
 };
