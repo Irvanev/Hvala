@@ -1,20 +1,35 @@
 import React, { useEffect, useState } from 'react';
 import { MyNavbar } from '../../components/Navbar/Navbar';
-import Categories from '../../components/category';
-import { useParams } from 'react-router-dom';
-import { Container, Form, Row, Col } from 'react-bootstrap';
-import NavbarForMobileRouting from '../../components/Navbar/NavbarForMobileRouting';
+import { useParams, useHistory } from 'react-router-dom';
+import { Container, Row, Col } from 'react-bootstrap';
+import { Button, Input, Modal, Select, InputNumber } from 'antd'
 import DefaultCardCategory from '../../components/advertisment-card-category/DefaultCardCategory';
 import CardCategory from '../../components/advertisment-card-category/CardCategory';
 import { fetchAdvertismentsByCategory } from '../../services/AdvertismentsCardCategory';
+import { ArrowLeftOutlined, MoreOutlined } from '@ant-design/icons';
+import Logo from '../../assets/hvala.png'
 import { t } from 'i18next';
 
 export const CategoryAdvertisments = () => {
+    const history = useHistory();
     const { category } = useParams();
     const [advertisments, setAdvertisments] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [minPrice, setMinPrice] = useState('');
     const [maxPrice, setMaxPrice] = useState('');
+    const { Search } = Input;
+    const { Option } = Select;
+
+    const onSearch = (value, _e, info) => console.log(info?.source, value);
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const showModal = () => {
+        setIsModalOpen(true);
+    };
+
+    const handleCancel = () => {
+        setIsModalOpen(false);
+    };
 
     const handleMinPriceChange = (event) => {
         setMinPrice(event.target.value);
@@ -28,6 +43,10 @@ export const CategoryAdvertisments = () => {
         return (minPrice ? ad.price >= minPrice : true) && (maxPrice ? ad.price <= maxPrice : true);
     });
 
+    const goBack = () => {
+        history.goBack();
+    };
+
 
     useEffect(() => {
         const unsubscribe = fetchAdvertismentsByCategory(category, setAdvertisments, setIsLoading);
@@ -39,108 +58,85 @@ export const CategoryAdvertisments = () => {
     return (
         <div>
 
-            <style type="text/css">
-                {`
-                    @media (max-width: 1000px) {
-                        body {
-                            padding-bottom: 6.0rem;
-                            padding-top: 3.5rem;
-                        }
-                        .imageAdvertisment {
-                            width: 100%;
-                            height: 150px;
-                            object-fit: cover;
-                          }
-                          .card {
-                            height: 320px;
-                            }
-                    }
-                    @media (min-width: 1000px) {
-                        body {
-                            padding-top: 3.5rem;
-                            padding-bottom: 3.5em;
-                        }
-                        .card {
-                            height: 400px;
-                        }
-                        .imageAdvertisment {
-                            width: 100%;
-                            height: 220px;
-                            object-fit: cover;
-                        }
-                    }
-                    .list-group a {
-                    text-decoration: none;
-                    color: black;
-                    }
-                    .list-group a:hover {
-                        color: #ffa600;
-                    }
-                    .advertisment-description {
-                        display: -webkit-box;
-                        -webkit-line-clamp: 3;
-                        -webkit-box-orient: vertical;  
-                        overflow: hidden;
-                        text-overflow: ellipsis;
-                    }
-                    .location-text {
-                        display: -webkit-box;
-                        -webkit-line-clamp: 2;
-                        -webkit-box-orient: vertical;  
-                        overflow: hidden;
-                        text-overflow: ellipsis;
-                    }
-                    .date-text {
-                        display: -webkit-box;
-                        -webkit-line-clamp: 1;
-                        -webkit-box-orient: vertical;  
-                        overflow: hidden;
-                        text-overflow: ellipsis;
-                    }
-                    .date-text {
-                        color: #888888; /* Замените на цвет, который вы хотите использовать */
-                    }
-                    `}
-            </style>
-
             <MyNavbar />
 
-            <NavbarForMobileRouting />
+            <nav className="navbar navbar-expand-md navbar-light fixed-top bg-light d-lg-none">
+                <div className="container">
+                    <ul className="navbar-nav me-auto mb-md-0">
+                        <li className="nav-item container">
+                            <a
+                                className="nav-link active"
+                                aria-current="page"
+                                onClick={goBack}
+                            >
+                                <ArrowLeftOutlined style={{ fontSize: '22px', color: 'black' }} />
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
 
-            <Categories />
+            <div className='container d-lg-none' style={{ marginTop: '70px' }}>
+                <div className='container' style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <Search placeholder="input search text" onSearch={onSearch} size='large' />
+                    <Button onClick={showModal} style={{ backgroundColor: 'orange', color: 'white', border: 'none' }} size='large' icon={<MoreOutlined />}>
+                    </Button>
+                </div>
+            </div>
+
+            <div className='d-none d-lg-block' style={{ marginTop: '80px' }}>
+                <div className='container mb-3' style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <div className='logo' style={{ marginRight: '20px' }}>
+                        <img src={Logo} alt='logo' style={{ height: '40px', width: '160px' }}></img>
+                    </div>
+                    <Search placeholder="input search text" onSearch={onSearch} size='large' />
+                    <Button onClick={showModal} style={{ marginLeft: '20px', backgroundColor: 'orange', color: 'white', border: 'none' }} size='large' icon={<MoreOutlined />}>
+                        Фильтры
+                    </Button>
+                </div>
+            </div>
+
+            <Modal title="Фильтры" open={isModalOpen} footer={null} onCancel={handleCancel}>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <p>Диапазон цен:</p>
+                    <div>
+                        <InputNumber
+                            defaultValue={0}
+                            formatter={(value) => `€ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                            parser={(value) => value?.replace(/\$\s?|(,*)/g, '')}
+                            style={{ marginRight: '20px' }}
+                        />
+                        <InputNumber
+                            defaultValue={0}
+                            formatter={(value) => `€ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                            parser={(value) => value?.replace(/\$\s?|(,*)/g, '')}
+                        />
+                    </div>
+                    <p>Выбор страны:</p>
+                    <Select defaultValue="Россия" style={{ width: 240 }}>
+                        <Option value="Россия">Россия</Option>
+                        <Option value="США">США</Option>
+                        <Option value="Китай">Китай</Option>
+                    </Select>
+                    <Button className='mt-3' type='primary' style={{ backgroundColor: 'orange', border: 'none' }}>Применить</Button>
+                </div>
+            </Modal>
 
             <Container>
                 <Row>
                     <Col md={3} className='d-none d-lg-block'>
-                        <Form.Select aria-label="Default select example">
-                            <option>{t('openSelectMenu')}</option>
-                            <option value="1">One</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option>
-                        </Form.Select>
-                        <Row className='mt-3'>
-                            <Col>
-                                <Form.Control
-                                    placeholder={t('minPricePlaceholder')}
-                                    type="number"
-                                    value={minPrice}
-                                    onChange={handleMinPriceChange}
-                                />
-                            </Col>
-                            <Col>
-                                <Form.Control
-                                    placeholder={t('maxPricePlaceholder')}
-                                    type="number"
-                                    value={maxPrice}
-                                    onChange={handleMaxPriceChange}
-                                />
-                            </Col>
-                        </Row>
+                        <Select
+                            defaultValue="lucy"
+                            style={{
+                                marginTop: '20px',
+                                width: '100%',
+                            }}
+                        />
                     </Col>
                     {isLoading ? (
                         <Col md={9}>
                             <Container className="album mt-3">
-                                <Row xs={2} sm={2} md={3} lg={4} className="g-3" id="cardAds">
+                                <Row xs={2} sm={2} md={3} lg={3} className="g-3" id="cardAds">
                                     {Array.from({ length: 10 }).map((_, index) => (
                                         <DefaultCardCategory key={index} />
                                     ))}
@@ -150,7 +146,7 @@ export const CategoryAdvertisments = () => {
                     ) : (
                         <Col md={9}>
                             <Container className="album mt-3">
-                                <Row xs={2} sm={2} md={3} lg={4} className="g-3" id="cardAds">
+                                <Row xs={2} sm={2} md={3} lg={3} className="g-3" id="cardAds">
                                     {filteredAdvertisments.map((advertisment) => (
                                         <CardCategory key={advertisment.id} advertisment={advertisment} />
                                     ))}

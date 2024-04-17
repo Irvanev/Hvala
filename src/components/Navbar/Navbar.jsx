@@ -6,6 +6,7 @@ import {useTranslation} from 'react-i18next';
 import {MdLanguage} from "react-icons/md";
 import LanguageModal from '../../LanguageModal';
 import {useLocation} from 'react-router-dom';
+import { HomeOutlined } from '@ant-design/icons';
 
 export const MyNavbar = () => {
     const {t} = useTranslation();
@@ -51,14 +52,6 @@ export const MyNavbar = () => {
 
     return (
         <div>
-
-            <style>
-                {`
-                    #navPc {
-                        box-shadow: 0px 10px 20px rgba(0,0,0,0.1);
-                    }
-                `}
-            </style>
 
             <Navbar expand="md" bg="light" fixed="top" className="d-none d-lg-block" id="navPc">
                 <Container>

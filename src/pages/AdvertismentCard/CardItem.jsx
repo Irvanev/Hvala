@@ -1,9 +1,6 @@
 import { useHistory, useParams } from "react-router-dom";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../config/firebase";
-import star from '../../assets/star.png';
-import halfStar from '../../assets/rating2.png';
-import emptyStar from '../../assets/star2.png';
 import React, { useEffect, useState } from "react";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import "./cardItem.css";
@@ -31,25 +28,12 @@ export const CardItem = () => {
     setIndex(selectedIndex);
   };
 
-
-  const stars = Array(5).fill(null).map((_, index) => {
-    if (userData?.rating > index) {
-      if (userData?.rating > index + 0.5) {
-        return <img src={star} alt="star" width="20" height="20" />;
-      } else {
-        return <img src={halfStar} alt="half star" width="20" height="20" />;
-      }
-    } else {
-      return <img src={emptyStar} alt="empty star" width="20" height="20" />;
-    }
-  });
-
   const handleCallClick = () => {
     if (isUserAuthenticated) {
       setShowModal(true);
     } else {
       setShowModal(true);
-      history.push('/login');
+      //history.push('/login');
     }
   };
   const handleCloseModal = () => setShowModal(false);
@@ -109,13 +93,13 @@ export const CardItem = () => {
       {isLoading ? (
         <DefaultCardInPc />
       ) : (
-        <CardInPc adData={adData} t={t} index={index} handleSelect={handleSelect} handleCallClick={handleCallClick} showModal={showModal} handleCloseModal={handleCloseModal} userData={userData} stars={stars} fromUid />
+        <CardInPc adData={adData} t={t} index={index} handleSelect={handleSelect} handleCallClick={handleCallClick} showModal={showModal} handleCloseModal={handleCloseModal} userData={userData} fromUid />
       )}
 
       {isLoading ? (
         <DefaultCardInMobile />
       ) : (
-        <CardInMobile adData={adData} t={t} index={index} handleSelect={handleSelect} handleCallClick={handleCallClick} userData={userData} stars={stars} />
+        <CardInMobile adData={adData} t={t} index={index} handleSelect={handleSelect} handleCallClick={handleCallClick} userData={userData} />
       )}
     </div >
   );

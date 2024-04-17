@@ -7,10 +7,9 @@ import { db, auth, storage } from "../../config/firebase";
 import { collection, getDocs, query, where, updateDoc, doc } from "firebase/firestore";
 import { Image, Container, Row, Col, Card, Form, Button, Modal } from "react-bootstrap";
 import Logo from "../../assets/logo.png";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faStar as fasStar } from '@fortawesome/free-solid-svg-icons'
 import { Pencil } from 'react-bootstrap-icons';
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { Rate } from 'antd';
 
 const ProfileSettings = () => {
     const {t} = useTranslation();
@@ -21,6 +20,7 @@ const ProfileSettings = () => {
     const [name, setName] = useState("");
     const [showModal, setShowModal] = useState(false);
     const fileInput = useRef(null);
+
     useEffect(() => {
         const fetchUser = async () => {
             const userId = localStorage.getItem('userId');
@@ -39,6 +39,7 @@ const ProfileSettings = () => {
 
         fetchUser();
     }, []);
+    const rat = user?.rating
 
     const handleNameChange = (e) => {
         setName(e.target.value);
@@ -125,45 +126,6 @@ const ProfileSettings = () => {
         }
     };
 
-    const StarRating = ({ rating }) => {
-        return (
-            <div>
-
-                <style type="text/css">
-                    {`
-                    .star-filled {
-                        color: yellow;
-                    }
-                    
-                    .star-empty {
-                        color: gray;
-                    }
-                    @media (max-width: 1000px) {
-                          body {
-                              padding-bottom: 6.0rem;
-                          }
-                      }
-                      @media (min-width: 1000px) {
-                          body {
-                              padding-top: 4.5rem;
-                              padding-bottom: 3.5em;
-                          }
-                      }
-                    `}
-                </style>
-
-                {[...Array(5)].map((star, i) => {
-                    const ratingValue = i + 1;
-                    return (
-                        <label key={i}>
-                            <FontAwesomeIcon className={ratingValue <= rating ? 'star-filled' : 'star-empty'} icon={fasStar} />
-                        </label>
-                    );
-                })}
-            </div>
-        );
-    };
-
     return (
         <div>
 
@@ -207,8 +169,8 @@ const ProfileSettings = () => {
                             </div>
                             <h2 className="profile-name" id="userName">{user?.name || 'Name'}</h2>
                             <div className="profile-reviews">
-                                <span>{user?.raiting.toFixed(1) || '0.0'}</span>
-                                <StarRating rating={user?.raiting || 0} />
+                                <span>{user?.rating.toFixed(1) || '0.0'}</span>
+                                {rat && <Rate disabled defaultValue={rat} />}
                                 <p id="kolRating">{user?.reviewCount || '17'} {t('reviews')}</p>
                             </div>
                         </Col>
@@ -293,8 +255,8 @@ const ProfileSettings = () => {
                             <input type="file" ref={fileInput} onChange={handleFileChange} style={{ display: 'none' }} accept="image/*" />
                             <h2 className="profile-name" id="userName">{user?.name || 'Name'}</h2>
                             <div className="profile-reviews">
-                                <span>{user?.raiting.toFixed(1) || '0.0'}</span>
-                                <StarRating rating={user?.raiting || 0} />
+                                <span>{user?.rating.toFixed(1) || '0.0'}</span>
+                                {rat && <Rate disabled defaultValue={rat} />}
                                 <p id="kolRating">{user?.reviewCount || '17'} {t('reviews')}</p>
                             </div>
                         </Col>

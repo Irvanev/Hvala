@@ -1,18 +1,10 @@
 import React from "react";
-import { Modal, Button } from "react-bootstrap";
+import { Modal, Button } from "antd";
 
 const ModalForNumberPhone = ({adData, showModal, handleCloseModal}) => {
     return (
-        <Modal show={showModal} onHide={handleCloseModal}>
-            <Modal.Header closeButton>
-                <Modal.Title>Номер телефона</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>{adData?.phone}</Modal.Body>
-            <Modal.Footer>
-                <Button variant="secondary" onClick={handleCloseModal}>
-                    Закрыть
-                </Button>
-            </Modal.Footer>
+        <Modal title="Номер телефона" open={showModal} onCancel={handleCloseModal} footer={null}>
+            <h3>{adData?.phone || 'Номер не указан'}</h3>
         </Modal>
     );
 }

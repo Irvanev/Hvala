@@ -1,27 +1,42 @@
 import React from "react";
+import { Card, Col, Carousel } from 'antd';
 import Logo from '../../assets/logo.png';
-import styles from './card-advertisment.module.css';
-import {Col, Card, Placeholder} from "react-bootstrap";
 
 const DefaultCardAdvertisment = () => {
     return (
-        <Col>
-            <Card className={styles.card}>
-                <Card.Img variant="top" src={Logo}
-                    alt="imageAdvertisment" className={styles.imageAdvertisment}
-                />
-                <Card.Body>
-                    <Card.Text>
-                            <Placeholder animation="glow">
-                                <Placeholder xs={12} />
-                            </Placeholder>
-                            <Placeholder animation="glow">
-                                <Placeholder xs={7} /> <Placeholder xs={4} />{" "}
-                                <Placeholder xs={4} /> <Placeholder xs={6} />{" "}
-                                <Placeholder xs={8} />
-                            </Placeholder>
-                    </Card.Text>
-                </Card.Body>
+        <Col key={index}>
+            <Card
+                hoverable
+                style={{ height: '57vh' }}
+                cover={
+                    <Carousel>
+                        {advertisment.photoUrls && advertisment.photoUrls.length > 0 ? (
+                            advertisment.photoUrls.map((url, index) => (
+                                <div key={index} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '30vh' }}>
+                                    <img style={{ height: '30vh', width: '100%', objectFit: 'cover' }} alt="example" src={url || Logo} />
+                                </div>
+                            ))
+                        ) : (
+                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '30vh' }}>
+                                <img style={{ height: '30vh', width: '100%', objectFit: 'cover' }} alt="example" src={Logo} />
+                            </div>
+                        )}
+                    </Carousel>
+                }
+            >
+                <Card.Meta title={advertisment.title} />
+                <h5 style={{ color: 'grey' }}>{advertisment.price + '€'}</h5>
+                <p>{advertisment.location}</p>
+                <p>
+                    {advertisment.time_creation && advertisment.time_creation.seconds ?
+                        new Date(advertisment.time_creation.seconds * 1000).toLocaleString(i18n.language, {
+                            day: 'numeric',
+                            month: 'long',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        }) : 'Не указано время создания'
+                    }
+                </p>
             </Card>
         </Col>
     );

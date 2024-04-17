@@ -3,12 +3,10 @@ import { Container, Row, Col, Image, Card } from "react-bootstrap";
 import Logo from "../../assets/logo.png";
 import { MyNavbar } from "../../components/Navbar/Navbar";
 import { useParams, useHistory } from "react-router-dom";
-import { collection, query, where, getDocs } from "firebase/firestore";
-import { db } from "../../config/firebase";
+import { collection, query, where, getDocs, addDoc, serverTimestamp } from "firebase/firestore";
+import { db, auth } from "../../config/firebase";
 import { Link } from "react-router-dom";
-import star from "../../assets/star.png";
-import halfStar from "../../assets/rating2.png";
-import emptyStar from "../../assets/star2.png";
+import { Rate, Modal, Input, Button, message } from 'antd'
 import { useTranslation } from 'react-i18next';
 
 const SellerProfile = () => {
@@ -43,23 +41,94 @@ const SellerProfile = () => {
     fetchUserAndAds();
   }, [id]);
 
-  const stars = Array(5).fill(null).map((_, index) => {
-    if (user?.rating > index) {
-      if (user?.rating > index + 0.5) {
-        return <img src={star} alt="star" width="20" height="20" />;
-      } else {
-        return <img src={halfStar} alt="half star" width="20" height="20" />;
-      }
-    } else {
-      return <img src={emptyStar} alt="empty star" width="20" height="20" />;
-    }
-  });
 
   const aStyle = {
     textDecoration: "none",
   };
   const goBack = () => {
     history.goBack();
+  };
+
+  const [feedbacks, setFeedbacks] = useState([]);
+  const rat = user?.rating
+  const userId = user?.id
+
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const showModalFee = () => {
+    setIsModalVisible(true);
+  };
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+
+  const [isReviewFormVisible, setIsReviewFormVisible] = useState(false);
+
+  const toggleReviewForm = () => {
+    setIsReviewFormVisible(!isReviewFormVisible);
+  };
+
+  const [reviewText, setReviewText] = useState("");
+  const [rating, setRating] = useState(1);
+
+  const handleReviewChange = (e) => {
+    setReviewText(e.target.value);
+  };
+
+  const handleRatingChange = (value) => {
+    setRating(value);
+  };
+
+
+  useEffect(() => {
+    const fetchFeedbacks = async () => {
+      const q = query(collection(db, "feedback"), where("to_uid", "==", userId));
+      const querySnapshot = await getDocs(q);
+
+      const feedbacks = await Promise.all(
+        querySnapshot.docs.map(async doc => {
+          const feedback = doc.data();
+          const userQuery = query(collection(db, "users"), where("id", "==", feedback.from_uid));
+          const userSnapshot = await getDocs(userQuery);
+          const user = userSnapshot.docs[0]?.data();
+
+          return { id: doc.id, ...feedback, userName: user?.name };
+        })
+      );
+
+      setFeedbacks(feedbacks);
+    };
+
+    fetchFeedbacks();
+  }, [userId]);
+
+  const submitReview = async () => {
+    try {
+      const me = auth.currentUser ? auth.currentUser.uid : null;
+
+      // Проверьте, существует ли уже отзыв от этого пользователя
+      const q = query(collection(db, "feedback"), where("from_uid", "==", me), where("to_uid", "==", userId));
+      const querySnapshot = await getDocs(q);
+
+      if (!querySnapshot.empty) {
+        message.error("Вы уже оставили отзыв этому пользователю");
+        return;
+      }
+
+      await addDoc(collection(db, "feedback"), {
+        description: reviewText,
+        rating: rating,
+        to_uid: userId,
+        time_creation: serverTimestamp(),
+        from_uid: me
+      });
+
+      setReviewText("");
+      setRating(1);
+      setIsReviewFormVisible(false);
+      message.success("Отзыв добавлен");
+    } catch (e) {
+      console.error("Error adding document: ", e);
+    }
   };
 
   return (
@@ -150,9 +219,13 @@ const SellerProfile = () => {
               </h2>
             )}
             {user && (
-              <div className="profile-reviews">
-                {stars}
-              </div>
+              <>
+                <div className="profile-reviews">
+                  <span className="me-2">{rat.toFixed(1) || '0.0'}</span>
+                  <Rate disabled defaultValue={rat} />
+                </div>
+                <p onClick={showModalFee}>посмотреть отзывы</p>
+              </>
             )}
           </Col>
           <Col xs={9}>
@@ -244,13 +317,45 @@ const SellerProfile = () => {
         <Row className="text-center">
           <Col>
             <div className="profile-picture my-3">
-              <Image src={user?.photoURL || Logo} alt="photoProfile" id="userPhoto" className="mx-auto" />
+              <Image src={user?.photoUrl || Logo} alt="photoProfile" id="userPhoto" className="mx-auto" />
             </div>
             <h2 className="profile-name" id="userName">{user?.name}</h2>
             {user && (
-              <div className="profile-reviews">
-                {stars}
-              </div>
+              <>
+                <div className="profile-reviews">
+                  <span className="me-2">{rat.toFixed(1) || '0.0'}</span>
+                  <Rate disabled defaultValue={rat} />
+                </div>
+                <p onClick={showModalFee}>посмотреть отзывы</p>
+                <Modal title="Отзывы" open={isModalVisible} onCancel={handleCancel} footer={null}>
+                  {feedbacks.map((feedback, index) => (
+                    <div key={index}>
+                      <h5 className='mt-3'>{new Date(feedback.time_creation?.seconds * 1000).toLocaleDateString()}</h5>
+                      <h5>Комментарий от {feedback.userName}</h5>
+                      <p>{feedback.description} <Rate disabled defaultValue={feedback.rating} /></p>
+                    </div>
+                  ))}
+
+                  {!isReviewFormVisible && (
+                    <Button className='mt-3'
+                      type="primary" onClick={toggleReviewForm}>Оставить отзыв</Button>
+                  )}
+
+                  {isReviewFormVisible && (
+                    <>
+                      <Input.TextArea
+                        className='mt-3'
+                        rows={4}
+                        value={reviewText}
+                        onChange={handleReviewChange}
+                        placeholder="Введите ваш отзыв здесь..."
+                      />
+                      <Rate className='mt-3' value={rating} onChange={handleRatingChange} />
+                      <Button type="primary" onClick={submitReview}>Отправить отзыв</Button>
+                    </>
+                  )}
+                </Modal>
+              </>
             )}
             <div className="profile-sections">
             </div>

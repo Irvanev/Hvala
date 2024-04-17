@@ -143,25 +143,54 @@ const Categories = () => {
   ];
 
   return (
-    <div className='container mb-3' style={{ display: 'flex', justifyContent: 'space-between' }}>
-      <div className='logo' style={{marginRight: '20px'}}>
-        <img src={Logo} alt='logo' style={{height: '40px', width: '160px'}}></img>
-      </div>
-      <Dropdown
-        menu={{
-          items,
-        }}
-      >
-        <a onClick={(e) => e.preventDefault()}>
-          <Button style={{ marginRight: '20px', backgroundColor: 'orange', color: 'white', border: 'none' }} size='large' icon={<MenuOutlined />}>
-            Категории
+    <>
+      <div className='d-none d-lg-block' style={{marginTop: '80px'}}>
+        <div className='container mb-3' style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <div className='logo' style={{ marginRight: '20px' }}>
+            <img src={Logo} alt='logo' style={{ height: '40px', width: '160px' }}></img>
+          </div>
+          <Dropdown
+            menu={{
+              items,
+            }}
+          >
+            <a onClick={(e) => e.preventDefault()}>
+              <Button style={{ marginRight: '20px', backgroundColor: 'orange', color: 'white', border: 'none' }} size='large' icon={<MenuOutlined />}>
+                Категории
+              </Button>
+            </a>
+          </Dropdown>
+          <Search placeholder="input search text" onSearch={onSearch} size='large' />
+          <Button onClick={showModal} style={{ marginLeft: '20px', backgroundColor: 'orange', color: 'white', border: 'none' }} size='large' icon={<MoreOutlined />}>
+            Фильтры
           </Button>
-        </a>
-      </Dropdown>
-      <Search placeholder="input search text" onSearch={onSearch} size='large' />
-      <Button onClick={showModal} style={{ marginLeft: '20px', backgroundColor: 'orange', color: 'white', border: 'none' }} size='large' icon={<MoreOutlined />}>
-        Фильтры
-      </Button>
+        </div>
+      </div>
+
+      <div className='d-lg-none mt-3'>
+        <div className='logo mb-3' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+          <img src={Logo} alt='logo' style={{ height: '50px', width: '160px' }}></img>
+        </div>
+        <div className='container mb-3' style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <Dropdown
+            menu={{
+              items,
+            }}
+          >
+            <a onClick={(e) => e.preventDefault()}>
+              <Button style={{ marginRight: '20px', backgroundColor: 'orange', color: 'white', border: 'none' }} size='large' icon={<MenuOutlined />}>
+              </Button>
+            </a>
+          </Dropdown>
+          <Search placeholder="input search text" onSearch={onSearch} size='large' />
+          <Button onClick={showModal} style={{backgroundColor: 'orange', color: 'white', border: 'none' }} size='large' icon={<MoreOutlined />}>
+          </Button>
+        </div>
+        <div className='container'>
+        </div>
+      </div>
+
+
       <Modal title="Фильтры" open={isModalOpen} footer={null} onCancel={handleCancel}>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <p>Диапазон цен:</p>
@@ -170,7 +199,7 @@ const Categories = () => {
               defaultValue={0}
               formatter={(value) => `€ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
               parser={(value) => value?.replace(/\$\s?|(,*)/g, '')}
-              style={{marginRight: '20px'}}
+              style={{ marginRight: '20px' }}
             />
             <InputNumber
               defaultValue={0}
@@ -187,7 +216,8 @@ const Categories = () => {
           <Button className='mt-3' type='primary' style={{ backgroundColor: 'orange', border: 'none' }}>Применить</Button>
         </div>
       </Modal>
-    </div>
+    </>
+
   );
 };
 

@@ -3,17 +3,18 @@ import { Container, Row, Col, Card, Image } from 'react-bootstrap';
 import React, { useEffect, useState } from "react";
 import { MyNavbar } from '../../components/Navbar/Navbar';
 import { Link } from "react-router-dom";
-import {useTranslation} from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import ProfileCardForPc from '../../components/profile-card/ProfileInfoForPc';
 import { fetchUser, fetchReviews, fetchAdvertisements, deleteAdvertisement } from '../../services/ProfileService';
 import NavBarForProfileMobile from '../../components/Navbar/NavbarForProfileMobile';
 import ProfileInfoForMobile from '../../components/profile-card/ProfileInfoForMobile';
 import ModalForNumberReports from '../../components/profile-card/ModalForNumberReports';
 import DeleteModal from '../../components/profile-card/DropDownWithModal';
+import { Button, Empty } from 'antd';
 
 export const Profile = () => {
     const { i18n } = useTranslation();
-    const {t} = useTranslation();
+    const { t } = useTranslation();
     const [user, setUser] = useState(null);
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
@@ -158,18 +159,19 @@ export const Profile = () => {
                                         </Col>
                                     ))
                                 ) : (
-                                    <div>
-                                        <Card className="mb-3">
-                                            <Row className="g-0">
-                                                <Col md={8}>
-                                                    <Card.Body>
-                                                        <Card.Title id="title">{t('yourAdsWillBeHere')}</Card.Title>
-                                                        <Card.Text id="price"></Card.Text>
-                                                    </Card.Body>
-                                                </Col>
-                                            </Row>
-                                        </Card>
-                                    </div>
+                                    <div >
+                                    <Empty
+                                        image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
+                                        imageStyle={{
+                                            height: 60,
+                                        }}
+                                        description={
+                                            <span>Тут будут ваши объявления</span>
+                                        }
+                                    >
+                                        <Button type="primary">Создать объявление</Button>
+                                    </Empty>
+                                </div>
                                 )}
                             </Row>
                         </Container>
@@ -228,20 +230,18 @@ export const Profile = () => {
                                     </Col>
                                 ))
                             ) : (
-                                <div>
-                                    <Card className="mb-3">
-                                        <Row className="g-0">
-                                            <Col md={3}>
-                                                <Image className="img-fluid rounded-start" alt="" id="adPhoto" />
-                                            </Col>
-                                            <Col md={8}>
-                                                <Card.Body>
-                                                    <Card.Title id="title">{t('yourAdsWillBeHere')}</Card.Title>
-                                                    <Card.Text id="price"></Card.Text>
-                                                </Card.Body>
-                                            </Col>
-                                        </Row>
-                                    </Card>
+                                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%'}}>
+                                    <Empty
+                                        image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
+                                        imageStyle={{
+                                            height: 60,
+                                        }}
+                                        description={
+                                            <span>Тут будут ваши объявления</span>
+                                        }
+                                    >
+                                        <Button type="primary">Создать объявление</Button>
+                                    </Empty>
                                 </div>
                             )}
                         </Row>
