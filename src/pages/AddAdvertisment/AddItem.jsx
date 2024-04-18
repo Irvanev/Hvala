@@ -6,7 +6,7 @@ import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { useState } from 'react';
 import { MyNavbar } from "../../components/Navbar/Navbar";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import NavbarForMobileRouting from "../../components/Navbar/NavbarForMobileRouting"
+import {NavBarBack} from "../../components/Navbar/NavBarBack"
 import ClothesForm from "../../components/formsForAddingAdvertisements/ClothesForm";
 import PhoneAndTabletsForm from "../../components/formsForAddingAdvertisements/electronics-forms/PhoneAndTabletsForm";
 import TarnsportForm from "../../components/formsForAddingAdvertisements/TransportForm";
@@ -504,7 +504,7 @@ return (
                 }
                 @media (min-width: 1000px) {
                   body {
-                        padding-top: 3.5rem;
+                        padding-top: 4.5rem;
                         padding-bottom: 2.5rem;
                     }
                 }
@@ -513,7 +513,7 @@ return (
 
         <MyNavbar />
 
-        <NavbarForMobileRouting />
+        <NavBarBack/>
 
         <Container className="mt-3">
             <h3>{t('create_advertisement')}</h3>

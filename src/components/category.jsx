@@ -144,7 +144,7 @@ const Categories = () => {
 
   return (
     <>
-      <div className='d-none d-lg-block' style={{marginTop: '80px'}}>
+      <div className='d-none d-lg-block' style={{marginTop: '20px'}}>
         <div className='container mb-3' style={{ display: 'flex', justifyContent: 'space-between' }}>
           <div className='logo' style={{ marginRight: '20px' }}>
             <img src={Logo} alt='logo' style={{ height: '40px', width: '160px' }}></img>

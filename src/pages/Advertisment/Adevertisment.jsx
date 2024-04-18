@@ -41,10 +41,27 @@ export const Advertisement = () => {
 
     return (
         <div>
+
+            <style type="text/css">
+                {`
+                @media (max-width: 1000px) {
+                    body {
+                        padding-bottom: 6rem;
+                    }
+                }
+                @media (min-width: 1000px) {
+                  body {
+                        padding-top: 4.5rem;
+                        padding-bottom: 2.5rem;
+                    }
+                }
+                `}
+            </style>
+
             <MyNavbar />
             <Categories />
             <CategoryCards />
-            <Container className="album mt-3">
+            <Container className="album mt-3 pb-5">
                 <InfiniteScroll
                     dataLength={advertisment.length}
                     next={fetchMoreData}

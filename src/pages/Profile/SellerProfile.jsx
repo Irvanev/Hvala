@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Image, Card } from "react-bootstrap";
 import Logo from "../../assets/logo.png";
 import { MyNavbar } from "../../components/Navbar/Navbar";
+import { NavBarBack } from "../../components/Navbar/NavBarBack";
 import { useParams, useHistory } from "react-router-dom";
 import { collection, query, where, getDocs, addDoc, serverTimestamp } from "firebase/firestore";
 import { db, auth } from "../../config/firebase";
@@ -45,13 +46,10 @@ const SellerProfile = () => {
   const aStyle = {
     textDecoration: "none",
   };
-  const goBack = () => {
-    history.goBack();
-  };
 
   const [feedbacks, setFeedbacks] = useState([]);
   const rat = user?.rating
-  const userId = user?.id
+  const { id: userId } = useParams();
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const showModalFee = () => {
@@ -164,7 +162,6 @@ const SellerProfile = () => {
                   @media (min-width: 1000px) {
                     body {
                       padding-bottom: 3.5rem;
-                          padding-top: 4.5rem;
                       }
                       .imageAdvertisment {
                         width: 100%;
@@ -200,6 +197,8 @@ const SellerProfile = () => {
       </style>
 
       <MyNavbar />
+
+      <NavBarBack />
 
       <Container id="info" className="d-none d-lg-block">
         <Row>
@@ -284,34 +283,6 @@ const SellerProfile = () => {
           </Col>
         </Row>
       </Container>
-
-      <nav className="navbar navbar-expand-md navbar-light fixed-top bg-light d-lg-none">
-        <div className="container">
-          <ul className="navbar-nav me-auto mb-md-0">
-            <li className="nav-item">
-              <a
-                className="nav-link active"
-                aria-current="page"
-                onClick={goBack}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="25"
-                  height="25"
-                  fill="currentColor"
-                  className="bi bi-arrow-left"
-                  viewBox="0 0 16 16"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"
-                  />
-                </svg>
-              </a>
-            </li>
-          </ul>
-        </div>
-      </nav>
 
       <Container className="d-lg-none">
         <Row className="text-center">

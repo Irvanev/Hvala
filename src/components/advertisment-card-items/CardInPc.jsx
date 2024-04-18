@@ -194,7 +194,7 @@ const CardInPc = ({ adData, t, index, handleSelect, handleCallClick, showModal, 
               </Link>
               <div className="d-flex align-items-center">
                 <span className="me-2">{userData?.rating.toFixed(1) || '0.0'}</span>
-                {rat && <Rate disabled defaultValue={rat} />}
+                <Rate disabled defaultValue={rat} />
               </div>
               <p onClick={showModalFee}>посмотреть отзывы</p>
 

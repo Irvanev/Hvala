@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Carousel, Row, Col, Image, Button } from 'react-bootstrap';
+import { Container, Carousel, Row, Col, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import CharactersForCard from './CharactersForCard';
 import Logo from '../../assets/logo.png'
-import { Rate, Breadcrumb, message, Modal, Input } from "antd";
+import { Rate, Breadcrumb, message, Modal, Input, Image } from "antd";
 import { collection, query, where, getDocs, addDoc, serverTimestamp } from "firebase/firestore";
 import { db, auth } from '../../config/firebase'
 
-const CardInMobile = ({ adData, t, index, handleSelect, handleCallClick, userData, stars }) => {
+const CardInMobile = ({ adData, t, index, handleSelect, handleCallClick, userData }) => {
 
     const [feedbacks, setFeedbacks] = useState([]);
     const rat = userData?.rating
@@ -117,11 +117,11 @@ const CardInMobile = ({ adData, t, index, handleSelect, handleCallClick, userDat
                                     justifyContent: "center",
                                 }}
                             >
-                                <img
+                                <Image
                                     className="d-block"
                                     src={url}
                                     alt={`Slide ${index + 1}`}
-                                    style={{ maxWidth: "100%" }}
+                                    style={{ maxWidth: "100%", objectFit: "contain", maxHeight: "400px" }}
                                 />
                             </div>
                         </Carousel.Item>
@@ -130,7 +130,7 @@ const CardInMobile = ({ adData, t, index, handleSelect, handleCallClick, userDat
                 <Row className="mt-3">
                     {adData?.photoUrls.map((url, index) => (
                         <Col xs={3} md={2} key={index} className="mt-3">
-                            <Image
+                            <img
                                 style={{ objectFit: "contain", height: "70px", width: "70px" }}
                                 src={url}
                                 alt={`Slide ${index + 1}`}
@@ -163,58 +163,58 @@ const CardInMobile = ({ adData, t, index, handleSelect, handleCallClick, userDat
                     </Row>
                 </Container>
                 <CharactersForCard adData={adData} t={t} />
-                <Link to={`/seller/${userData?.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                    <Row className="d-flex justify-content-between align-items-center mt-3">
-                        <Col>
+                <Row className="d-flex justify-content-between align-items-center mt-3">
+                    <Col>
+                        <Link to={`/seller/${userData?.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                             <h5 className="mb-0">{userData?.name || "User"}</h5>
                             <div className="d-flex align-items-center">
-                                <span className="me-2">{userData?.rating.toFixed(1) || '0.0'}</span>
-                                {rat && <Rate disabled defaultValue={rat} />}
+                                <span className="me-2">{userData?.rating.toFixed(1) || '0'}</span>
+                                <Rate disabled defaultValue={rat} />
                             </div>
-                            <p onClick={showModalFee}>Посмотреть отзывы</p>
+                        </Link>
+                        <p onClick={showModalFee}>Посмотреть отзывы</p>
 
-                            <Modal title="Отзывы" open={isModalVisible} onCancel={handleCancel} footer={null}>
-                                {feedbacks.map((feedback, index) => (
-                                    <div key={index}>
-                                        <h5 className='mt-3'>{new Date(feedback.time_creation?.seconds * 1000).toLocaleDateString()}</h5>
-                                        <h5>Комментарий от {feedback.userName}</h5>
-                                        <p>{feedback.description} <Rate disabled defaultValue={feedback.rating} /></p>
-                                    </div>
-                                ))}
+                        <Modal title="Отзывы" open={isModalVisible} onCancel={handleCancel} footer={null}>
+                            {feedbacks.map((feedback, index) => (
+                                <div key={index}>
+                                    <h5 className='mt-3'>{new Date(feedback.time_creation?.seconds * 1000).toLocaleDateString()}</h5>
+                                    <h5>Комментарий от {feedback.userName}</h5>
+                                    <p>{feedback.description} <Rate disabled defaultValue={feedback.rating} /></p>
+                                </div>
+                            ))}
 
-                                {!isReviewFormVisible && (
-                                    <Button className='mt-3'
-                                        type="primary" onClick={toggleReviewForm}>Оставить отзыв</Button>
-                                )}
+                            {!isReviewFormVisible && (
+                                <Button className='mt-3'
+                                    type="primary" onClick={toggleReviewForm}>Оставить отзыв</Button>
+                            )}
 
-                                {isReviewFormVisible && (
-                                    <>
-                                        <Input.TextArea
-                                            className='mt-3'
-                                            rows={4}
-                                            value={reviewText}
-                                            onChange={handleReviewChange}
-                                            placeholder="Введите ваш отзыв здесь..."
-                                        />
-                                        <Rate className='mt-3' value={rating} onChange={handleRatingChange} />
-                                        <Button type="primary" onClick={submitReview}>Отправить отзыв</Button>
-                                    </>
-                                )}
-                            </Modal>
+                            {isReviewFormVisible && (
+                                <>
+                                    <Input.TextArea
+                                        className='mt-3'
+                                        rows={4}
+                                        value={reviewText}
+                                        onChange={handleReviewChange}
+                                        placeholder="Введите ваш отзыв здесь..."
+                                    />
+                                    <Rate className='mt-3' value={rating} onChange={handleRatingChange} />
+                                    <Button type="primary" onClick={submitReview}>Отправить отзыв</Button>
+                                </>
+                            )}
+                        </Modal>
 
-                        </Col>
-                        <Col className="d-flex justify-content-end">
-                            <Image
-                                src={userData?.photoUrl || Logo}
-                                alt="Seller Image"
-                                roundedCircle
-                                style={{ width: "60px", height: "60px" }}
-                            />
-                        </Col>
-                    </Row>
-                </Link>
+                    </Col>
+                    <Col className="d-flex justify-content-end">
+                        <Image
+                            src={userData?.photoUrl || Logo}
+                            alt="Seller Image"
+                            roundedCircle
+                            style={{ width: "60px", height: "60px" }}
+                        />
+                    </Col>
+                </Row>
             </div>
-        </Container>
+        </Container >
     );
 }
 

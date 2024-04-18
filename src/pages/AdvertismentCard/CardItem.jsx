@@ -12,6 +12,7 @@ import DefaultCardInPc from "../../components/advertisment-card-items/DefaultCar
 import DefaultCardInMobile from "../../components/advertisment-card-items/DefaultCardInMobile";
 import CardInPc from "../../components/advertisment-card-items/CardInPc";
 import CardInMobile from "../../components/advertisment-card-items/CardInMobile";
+import { NavBarShare } from "../../components/Navbar/NavBarShare";
 
 export const CardItem = () => {
   const { id } = useParams();
@@ -86,7 +87,7 @@ export const CardItem = () => {
                 `}
       </style>
 
-      <NavbarForMobileRouting />
+      <NavBarShare />
 
       <MyNavbar />
 

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { MyNavbar } from '../../components/Navbar/Navbar';
+import { NavBarBack } from '../../components/Navbar/NavBarBack';
 import { useParams, useHistory } from 'react-router-dom';
 import { Container, Row, Col } from 'react-bootstrap';
 import { Button, Input, Modal, Select, InputNumber } from 'antd'
@@ -58,25 +59,27 @@ export const CategoryAdvertisments = () => {
     return (
         <div>
 
+            <style type="text/css">
+                {`
+                @media (max-width: 1000px) {
+                    body {
+                        padding-bottom: 6rem;
+                        padding-top: 3.5rem;
+                    }
+                }
+                @media (min-width: 1000px) {
+                  body {
+                        padding-top: 4.5rem;
+                        padding-bottom: 2.5rem;
+                    }
+                }
+                `}
+            </style>
+
             <MyNavbar />
+            <NavBarBack />
 
-            <nav className="navbar navbar-expand-md navbar-light fixed-top bg-light d-lg-none">
-                <div className="container">
-                    <ul className="navbar-nav me-auto mb-md-0">
-                        <li className="nav-item container">
-                            <a
-                                className="nav-link active"
-                                aria-current="page"
-                                onClick={goBack}
-                            >
-                                <ArrowLeftOutlined style={{ fontSize: '22px', color: 'black' }} />
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
-
-            <div className='container d-lg-none' style={{ marginTop: '70px' }}>
+            <div className='container d-lg-none'>
                 <div className='container' style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <Search placeholder="input search text" onSearch={onSearch} size='large' />
                     <Button onClick={showModal} style={{ backgroundColor: 'orange', color: 'white', border: 'none' }} size='large' icon={<MoreOutlined />}>
@@ -84,7 +87,7 @@ export const CategoryAdvertisments = () => {
                 </div>
             </div>
 
-            <div className='d-none d-lg-block' style={{ marginTop: '80px' }}>
+            <div className='d-none d-lg-block mt-3'>
                 <div className='container mb-3' style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <div className='logo' style={{ marginRight: '20px' }}>
                         <img src={Logo} alt='logo' style={{ height: '40px', width: '160px' }}></img>

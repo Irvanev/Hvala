@@ -6,11 +6,11 @@ import { Link } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 import ProfileCardForPc from '../../components/profile-card/ProfileInfoForPc';
 import { fetchUser, fetchReviews, fetchAdvertisements, deleteAdvertisement } from '../../services/ProfileService';
-import NavBarForProfileMobile from '../../components/Navbar/NavbarForProfileMobile';
 import ProfileInfoForMobile from '../../components/profile-card/ProfileInfoForMobile';
 import ModalForNumberReports from '../../components/profile-card/ModalForNumberReports';
 import DeleteModal from '../../components/profile-card/DropDownWithModal';
 import { Button, Empty } from 'antd';
+import { NavBarLogout } from '../../components/Navbar/NavBarLogout';
 
 export const Profile = () => {
     const { i18n } = useTranslation();
@@ -55,7 +55,6 @@ export const Profile = () => {
                 }
                 @media (max-width: 1000px) {
                     body {
-                        padding-bottom: 6rem;
                         padding-top: 3.5rem;
                     }
                     .imageAdvertisment {
@@ -68,8 +67,9 @@ export const Profile = () => {
                     }
                 }
                 @media (min-width: 1000px) {
-                  body {
-                        padding-top: 3.5rem;
+                    body {
+                        padding-bottom: 3.5rem;
+                        padding-top: 4.5rem;
                     }
                     .imageAdvertisment {
                         width: 100%;
@@ -106,7 +106,7 @@ export const Profile = () => {
 
             <MyNavbar />
 
-            <Container id="info" className="d-none d-lg-block">
+            <Container id="info" className="d-none d-lg-block mt-3">
                 <Row>
                     <ProfileCardForPc user={user} handleShow={handleShow} />
                     <Col xs={9}>
@@ -179,7 +179,7 @@ export const Profile = () => {
                 </Row>
             </Container>
 
-            <NavBarForProfileMobile />
+            <NavBarLogout />
 
             <Container className="d-lg-none">
                 <ProfileInfoForMobile user={user} />
