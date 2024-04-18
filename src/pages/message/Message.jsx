@@ -1,8 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
+import { Link } from 'react-router-dom';
+import styles from './message.module.css'
 import { MyNavbar } from "../../components/Navbar/Navbar";
 import { db, auth } from "../../config/firebase";
 import { FaPaperPlane } from 'react-icons/fa';
 import { BsCardImage } from 'react-icons/bs';
+import { List, Avatar, Image, Input } from 'antd';
+import { SendOutlined, PaperClipOutlined } from '@ant-design/icons';
+import { Button, NavBar } from 'antd-mobile'
 
 import {
     collection,
@@ -18,6 +23,7 @@ import {
 } from "firebase/firestore";
 import './messages.css';
 import Logo from '../../assets/logo.png';
+import { NavBarBack } from "../../components/Navbar/NavBarBack";
 
 
 export const Message = () => {
@@ -29,8 +35,10 @@ export const Message = () => {
     const user = auth.currentUser;
     const [recipientId, setRecipientId] = useState(null);
     const fileInput = useRef();
+    const { TextArea } = Input;
 
     const [modalImage, setModalImage] = useState(null);
+    const [isMessagesContainerOpen, setIsMessagesContainerOpen] = useState(false);
 
     const openImageModal = (imageUrl) => {
         setModalImage(imageUrl);
@@ -41,6 +49,27 @@ export const Message = () => {
     }
 
     const [userImageUrl, setUserImageUrl] = useState('');
+    const [userName, setUserName] = useState('');
+    const [userId, setUserId] = useState('');
+
+    function formatTime(timestamp) {
+        if (timestamp) {
+            const messageDate = timestamp.toDate();
+            const now = new Date();
+
+            const diffInDays = Math.floor((now - messageDate) / (1000 * 60 * 60 * 24));
+
+            if (diffInDays === 0) {
+                return messageDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            } else if (diffInDays === 1) {
+                return 'Вчера';
+            } else {
+                return `${diffInDays} дней назад`;
+            }
+        } else {
+            return 'Неизвестное время';
+        }
+    }
 
     useEffect(() => {
         const fetchUserImage = async () => {
@@ -51,6 +80,8 @@ export const Message = () => {
                 const user = querySnapshot.docs[0]?.data();
                 if (user) {
                     setUserImageUrl(user.photoUrl);
+                    setUserName(user.name);
+                    setUserId(user.id);
                 }
             }
         };
@@ -65,23 +96,27 @@ export const Message = () => {
     useEffect(scrollToBottom, [msgList]);
 
     useEffect(() => {
-        const fetchData = async () => {
+        const fetchData = () => {
             if (user) {
                 const q = query(
-                    collection(db, "message"), 
+                    collection(db, "message"),
                     where("from_uid", "==", user.uid)
                 );
-                const querySnapshot = await getDocs(q);
-    
-                const messages = querySnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
-    
-                messages.sort((a, b) => b.last_time - a.last_time); // Сортировка по дате в обратном порядке
-    
-                setMessages(messages);
+
+                const unsubscribe = onSnapshot(q, (querySnapshot) => {
+                    const messages = querySnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
+
+                    messages.sort((a, b) => b.last_time - a.last_time); // Сортировка по дате в обратном порядке
+
+                    setMessages(messages);
+                });
+
+                // Отписка от слушателя при размонтировании компонента
+                return unsubscribe;
             }
         };
-    
-        fetchData();
+
+        return fetchData();
     }, [user]);
 
     useEffect(() => {
@@ -122,7 +157,8 @@ export const Message = () => {
             console.log("Сообщение успешно добавлено с ID: ", docRef.id);
 
             await updateDoc(messageDocRef, {
-                last_msg: newMessage.content
+                last_msg: newMessage.content,
+                last_time: serverTimestamp()
             });
 
         } catch (error) {
@@ -144,9 +180,16 @@ export const Message = () => {
 
     return (
         <div>
-            <MyNavbar />
-            <div className="container">
-                <h3 className=" text-center">Messaging</h3>
+
+            {!isMessagesContainerOpen && (
+                <MyNavbar />
+            )}
+
+            {!isMessagesContainerOpen && (
+                <NavBarBack />
+            )}
+
+            <div className="container d-none d-lg-block mt-3">
                 <div className="messaging">
                     <div className="inbox_msg">
                         <div className="inbox_people">
@@ -180,10 +223,7 @@ export const Message = () => {
                                             </div>
                                             <div className="chat_ib">
                                                 <h5>{message.to_name} <span className="chat_date">
-                                                {new Date(message.last_time * 1000).toLocaleTimeString([], {
-                                                        hour: '2-digit',
-                                                        minute: '2-digit'
-                                                    })}</span></h5>
+                                                    {formatTime(message.last_time)}</span></h5>
                                                 <p style={{ display: '-webkit-box', WebkitLineClamp: '2', WebkitBoxOrient: 'vertical', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                                                     {message.last_msg}
                                                 </p>
@@ -200,7 +240,7 @@ export const Message = () => {
                                         <div className="outgoing_msg" key={index}>
                                             <div className="sent_msg">
                                                 {msg.type === "image" ? (
-                                                    <img src={msg.content} alt="received" style={{maxWidth: '200px'}} onClick={() => openImageModal(msg.content)}/>
+                                                    <img src={msg.content} alt="received" style={{ maxWidth: '200px' }} onClick={() => openImageModal(msg.content)} />
                                                 ) : (
                                                     <p>{msg.content}</p>
                                                 )}
@@ -227,7 +267,7 @@ export const Message = () => {
                                             <div className="received_msg">
                                                 <div className="received_withd_msg">
                                                     {msg.type === "image" ? (
-                                                        <img src={msg.content} alt="received" style={{maxWidth: '200px'}} onClick={() => openImageModal(msg.content)}/>
+                                                        <img src={msg.content} alt="received" style={{ maxWidth: '200px' }} onClick={() => openImageModal(msg.content)} />
                                                     ) : (
                                                         <p>{msg.content}</p>
                                                     )}
@@ -283,6 +323,104 @@ export const Message = () => {
 
                 </div>
             </div>
-        </div>
+
+            <div className="d-lg-none">
+                <List className="container" style={{paddingTop: '3.5rem'}}
+                    dataSource={messages}
+                    renderItem={(message, index) => (
+                        <List.Item key={index} onClick={() => {
+                            setSelectedMessage(message.id);
+                            setRecipientId(message.to_uid);
+                            setIsMessagesContainerOpen(true);
+                        }} style={{ display: isMessagesContainerOpen ? 'none' : 'flex', justifyContent: 'space-between', position: 'relative' }}>
+                            <List.Item.Meta
+                                avatar={<Avatar size={64} src={message.to_avatar || Logo} />}
+                                title={message.to_name}
+                                description={message.last_msg}
+                            />
+                            <div style={{ position: 'absolute', top: 0, right: 0 }}>
+                                {formatTime(message.last_time)}
+                            </div>
+                        </List.Item>
+                    )}
+                />
+                <div className="messages-container" style={{ display: isMessagesContainerOpen ? 'block' : 'none', paddingTop: '50px' }}>
+                    <div className="test" style={{ height: 'calc(100vh - 100px)', overflowY: 'scroll' }}>
+                        <div className={styles.messageHistory}>
+                            {msgList.map((msg, index) => (
+                                msg.from === user.uid ? (
+                                    <div className={styles.outgoingMessage} key={index}>
+                                        <NavBar
+                                            style={{
+                                                position: 'fixed',
+                                                top: 0,
+                                                width: '100%',
+                                                zIndex: 9999,
+                                                borderBottom: 'solid 1px grey',
+                                                backgroundColor: 'white'
+                                            }}
+                                            onBack={() => setIsMessagesContainerOpen(false)}
+                                        >
+                                            <Link to={`/seller/${userId}`}>
+                                                <Avatar src={userImageUrl || Logo} alt="Profile" style={{ width: '40px', height: '40px', borderRadius: '50%' }} />
+                                                <span style={{ marginLeft: '10px' }}>{userName}</span>
+                                            </Link>
+                                        </NavBar>
+
+                                        <div className={styles.messageToBlock} >
+                                            {msg.type === "image" ? (
+
+                                                <Image src={msg.content} alt="received" />
+                                            ) : (
+                                                <span style={{ wordBreak: 'break-word' }}>{msg.content}</span>
+                                            )}
+                                            <span className={styles.timeStamp}>
+                                                {new Date(msg.addtime * 1000).toLocaleTimeString([], {
+                                                    hour: '2-digit',
+                                                    minute: '2-digit'
+                                                })}
+                                            </span>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className={styles.incomingMessage} key={index}>
+                                        <div className="incoming-message-img" style={{ marginRight: '10px' }}>
+                                            <img className={styles.userPhoto} src={userImageUrl || Logo} alt="sunil" />
+                                        </div>
+                                        <div className={styles.messageFromBlock}>
+                                            {msg.type === "image" ? (
+                                                <Image src={msg.content} alt="received" style={{ maxWidth: '200px' }} />
+                                            ) : (
+                                                <span style={{ wordBreak: 'break-word' }}>{msg.content}</span>
+                                            )}
+                                            <span className={styles.timeStamp}>
+                                                {new Date(msg.addtime * 1000).toLocaleTimeString([], {
+                                                    hour: '2-digit',
+                                                    minute: '2-digit'
+                                                })}
+                                            </span>
+                                        </div>
+                                    </div>
+                                )
+                            ))}
+                            <div ref={messagesEndRef} />
+                        </div>
+                    </div>
+                    <form onSubmit={handleSubmit}>
+                        <div className={styles.inputMessage}>
+                            <PaperClipOutlined className={styles.sendIcon} />
+                            <TextArea className={styles.textInput} rows={1}
+                                placeholder="input message" autoSize={{ minRows: 1, maxRows: 4 }}
+                                value={message} onChange={e => setMessage(e.target.value)}
+                                onPressEnter={handleSubmit}
+                            />
+                            <Button type="submit" htmlType="submit" className={styles.sendButton}>
+                                <SendOutlined className={styles.sendIcon} />
+                            </Button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div >
     );
 }
