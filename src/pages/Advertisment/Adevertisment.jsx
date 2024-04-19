@@ -1,12 +1,12 @@
 import { Container, Row } from 'react-bootstrap';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { collection, getDocs, orderBy, query, startAfter, limit } from 'firebase/firestore';
 import { db } from "../../config/firebase";
 import { MyNavbar } from '../../components/Navbar/Navbar';
 import Categories from '../../components/category';
 import CategoryCards from "../../components/category-cards/CategoryCards";
 import CardAdvertisementHome from "../../components/card-advertisment-home/CardAdvertisementHome";
-import { Skeleton } from 'antd';
+import { Skeleton, Input } from 'antd';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
 export const Advertisement = () => {
@@ -37,6 +37,8 @@ export const Advertisement = () => {
         fetchAds(lastDoc);
     };
 
+    const { Search } = Input;
+
 
 
     return (
@@ -46,7 +48,7 @@ export const Advertisement = () => {
                 {`
                 @media (max-width: 1000px) {
                     body {
-                        padding-bottom: 6rem;
+                        padding-bottom: 4.5rem;
                     }
                 }
                 @media (min-width: 1000px) {
@@ -59,7 +61,7 @@ export const Advertisement = () => {
             </style>
 
             <MyNavbar />
-            <Categories />
+            <Categories  />
             <CategoryCards />
             <Container className="album mt-3 pb-5">
                 <InfiniteScroll

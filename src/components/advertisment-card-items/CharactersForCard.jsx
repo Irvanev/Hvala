@@ -67,6 +67,20 @@ const CharactersForCard = ({ adData, t }) => {
                         </a>
                     </div>
                 )}
+                {adData?.coordinates && (
+                    <div className="mt-3">
+                        <h5>{t('coordinates')}</h5>
+                        <span id="product-description">{`${adData.coordinates.latitude}, ${adData.coordinates.longitude}`}</span>
+                        <a
+                            href={`https://www.google.com/maps/search/?api=1&query=${adData.coordinates.latitude},${adData.coordinates.longitude}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{ marginLeft: "10px" }}
+                        >
+                            {t('showOnMap')}
+                        </a>
+                    </div>
+                )}
             </div>
         </div>
     );

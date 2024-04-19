@@ -16,7 +16,7 @@ import { Modal, Input, Button, message, Breadcrumb } from "antd";
 const CardInPc = ({ adData, t, index, handleSelect, handleCallClick, showModal, handleCloseModal, userData, fromUid }) => {
 
   const [feedbacks, setFeedbacks] = useState([]);
-  const rat = userData?.rating
+  const rat = userData?.rating || userData?.raiting; //!TODO
   const userId = userData?.id
 
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -193,12 +193,12 @@ const CardInPc = ({ adData, t, index, handleSelect, handleCallClick, showModal, 
                 <h5 className="mb-0">{userData?.name || 'User'}</h5>
               </Link>
               <div className="d-flex align-items-center">
-                <span className="me-2">{userData?.rating.toFixed(1) || '0.0'}</span>
+                <span className="me-2">{userData?.rating || userData?.raiting}</span>
                 <Rate disabled defaultValue={rat} />
               </div>
               <p onClick={showModalFee}>посмотреть отзывы</p>
 
-              <Modal title="Отзывы" open={isModalVisible} onCancel={handleCancel} footer={null}>
+              <Modal title={t('reviewsForProfile')} open={isModalVisible} onCancel={handleCancel} footer={null}>
                 {feedbacks.map((feedback, index) => (
                   <div key={index}>
                     <h5 className='mt-3'>{new Date(feedback.time_creation?.seconds * 1000).toLocaleDateString()}</h5>

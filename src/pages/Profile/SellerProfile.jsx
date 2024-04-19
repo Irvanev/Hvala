@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Container, Row, Col, Image, Card } from "react-bootstrap";
+import { Container, Row, Col, Image } from "react-bootstrap";
+import { Card, Carousel } from 'antd';
 import Logo from "../../assets/logo.png";
 import { MyNavbar } from "../../components/Navbar/Navbar";
 import { NavBarBack } from "../../components/Navbar/NavBarBack";
@@ -162,6 +163,7 @@ const SellerProfile = () => {
                   @media (min-width: 1000px) {
                     body {
                       padding-bottom: 3.5rem;
+                      padding-top: 4.5rem;
                       }
                       .imageAdvertisment {
                         width: 100%;
@@ -200,7 +202,7 @@ const SellerProfile = () => {
 
       <NavBarBack />
 
-      <Container id="info" className="d-none d-lg-block">
+      <Container id="info" className="d-none d-lg-block mt-3">
         <Row>
           <Col xs={3} className="profile">
             <div className="profile-picture">
@@ -239,41 +241,29 @@ const SellerProfile = () => {
                         to={`/advertisment/${advertisment.id}`}
                         style={aStyle}
                       >
-                        <Card className="shadow-sm">
-                          <Card.Img
-                            variant="top"
-                            src={
-                              (advertisment.photoUrls &&
-                                advertisment.photoUrls[0]) ||
-                              Logo
+                        <Card
+                            hoverable
+                            style={{ width: 240 }}
+                            cover={
+                              <Carousel autoplay>
+                                {advertisment.photoUrls.map((url, index) => (
+                                    <div key={index}>
+                                      <img alt="example" src={url || Logo} style={{ width: '100%', height: 'auto' }} />
+                                    </div>
+                                ))}
+                              </Carousel>
                             }
-                            alt="imageAdvertisment"
-                            className="imageAdvertisment"
-                          />
-                          <Card.Body>
-                            <Card.Text>
-                              <span className="location-text">
-                                {advertisment.title}
-                              </span>
-                              <strong>
-                                {advertisment.price + "€"}
-                                <br />
-                              </strong>
-                              <span className="location-text">
-                                {advertisment.location}
-                              </span>
-                              <span className="date-text">
-                                {new Date(
-                                  advertisment.time_creation.seconds * 1000
-                                ).toLocaleString(i18n.language, {
-                                  day: "numeric",
-                                  month: "long",
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                })}
-                              </span>
-                            </Card.Text>
-                          </Card.Body>
+                        >
+                          <Card.Meta title={advertisment.title} description={advertisment.location} />
+                          <strong>{advertisment.price + "€"}</strong>
+                          <p>
+                            {new Date(advertisment.time_creation.seconds * 1000).toLocaleString(i18n.language, {
+                              day: "numeric",
+                              month: "long",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })}
+                          </p>
                         </Card>
                       </Link>
                     </Col>
@@ -345,41 +335,28 @@ const SellerProfile = () => {
                         to={`/advertisment/${advertisment.id}`}
                         style={aStyle}
                       >
-                        <Card className="shadow-sm">
-                          <Card.Img
-                            variant="top"
-                            src={
-                              (advertisment.photoUrls &&
-                                advertisment.photoUrls[0]) ||
-                              Logo
+                        <Card
+                            hoverable
+                            cover={
+                              <Carousel autoplay>
+                                {advertisment.photoUrls.map((url, index) => (
+                                    <div key={index}>
+                                      <img alt="example" src={url || Logo} style={{ width: '100%', height: 'auto' }} />
+                                    </div>
+                                ))}
+                              </Carousel>
                             }
-                            alt="imageAdvertisment"
-                            className="imageAdvertisment"
-                          />
-                          <Card.Body>
-                            <Card.Text>
-                              <span className="location-text">
-                                {advertisment.title}
-                              </span>
-                              <strong>
-                                {advertisment.price + "€"}
-                                <br />
-                              </strong>
-                              <span className="location-text">
-                                {advertisment.location}
-                              </span>
-                              <span className="date-text">
-                                {new Date(
-                                  advertisment.time_creation.seconds * 1000
-                                ).toLocaleString(i18n.language, {
-                                  day: "numeric",
-                                  month: "long",
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                })}
-                              </span>
-                            </Card.Text>
-                          </Card.Body>
+                        >
+                          <Card.Meta title={advertisment.title} description={advertisment.location} />
+                          <strong>{advertisment.price + "€"}</strong>
+                          <p>
+                            {new Date(advertisment.time_creation.seconds * 1000).toLocaleString(i18n.language, {
+                              day: "numeric",
+                              month: "long",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })}
+                          </p>
                         </Card>
                       </Link>
                     </Col>

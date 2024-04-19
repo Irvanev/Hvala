@@ -7,7 +7,6 @@ import "./cardItem.css";
 import { MyNavbar } from "../../components/Navbar/Navbar";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { useTranslation } from "react-i18next";
-import NavbarForMobileRouting from "../../components/Navbar/NavbarForMobileRouting";
 import DefaultCardInPc from "../../components/advertisment-card-items/DefaultCardInPc";
 import DefaultCardInMobile from "../../components/advertisment-card-items/DefaultCardInMobile";
 import CardInPc from "../../components/advertisment-card-items/CardInPc";
@@ -75,11 +74,12 @@ export const CardItem = () => {
                 @media (max-width: 1000px) {
                     body {
                       padding-top: 3.5rem;
-                        padding-bottom: 6rem;
+                      padding-bottom: 6rem;
                     }
                 }
                 @media (min-width: 1000px) {
                   body {
+                    padding-top: 3.5rem;
                     padding-bottom: 3.5rem;
                   }
                 }

@@ -1,12 +1,11 @@
 import React from 'react'
 import { useState, useEffect } from 'react';
 import { doc, getDoc, updateDoc, deleteField } from "firebase/firestore";
-import { db } from '../../config/firebase';
+import { db, auth } from '../../config/firebase';
 import { useParams } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
 import { Form, Container, FormGroup, Button } from "react-bootstrap"
 import { useTranslation } from "react-i18next";
-import NavbarForMobileRouting from "../../components/Navbar/NavbarForMobileRouting"
 import { MyNavbar } from "../../components/Navbar/Navbar";
 import CategorySelect from '../../pages/EditAdvertisment/CategorySelect';
 import BuildingMaterial from './BuildingMaterial';
@@ -22,6 +21,7 @@ import HobbyRelax from './HobbyRelax';
 import ChildGoods from './ChildGoods';
 import Estate from './Estate';
 import Transport from './Transport';
+import { message } from 'antd';
 
 import SelectBrandsForMobile from "../../components/select-brands/SelectBrandsForMobile";
 import SelectTypesForComputersAccs from "../../components/select-types/select-types-electronics/SelectTypesForComputersAccs";
@@ -30,6 +30,7 @@ import SelectBrandsForComputers from "../../components/select-brands/SelectBrand
 import SelectTypeForComputer from "../../components/select-types/select-types-electronics/SelectTypesForComputers";
 import SelectBrandsForGameCondole from "../../components/select-brands/SelectBrandsForGameConsole";
 import SelectTypesForClothes from "../../components/select-types/select-types-clothes/SelectTypesForClothes";
+import {NavBarBack} from "../../components/Navbar/NavBarBack";
 
 export default function EditItem() {
     const { t } = useTranslation();
@@ -381,16 +382,21 @@ export default function EditItem() {
 
                 if (docSnap.exists()) {
                     const data = docSnap.data();
-                    setData(data);
-                    setCategory(data.category);
-                    setSubcategory(data.subcategory);
-                    setSelectedFiles(data.photoUrls);
-                    setTitle(data.title);
-                    setPrice(data.price);
-                    setDescription(data.description);
-                    setPhoneNumber(data.phone);
-                    setCondition(data.condition);
-                    console.log("Document data:", data);
+                    if (auth.currentUser && auth.currentUser.uid === data.from_uid) {
+                        setData(data);
+                        setCategory(data.category);
+                        setSubcategory(data.subcategory);
+                        setSelectedFiles(data.photoUrls);
+                        setTitle(data.title);
+                        setPrice(data.price);
+                        setDescription(data.description);
+                        setPhoneNumber(data.phone);
+                        setCondition(data.condition);
+                        console.log("Document data:", data);
+                    } else {
+                        setData(null);
+                        message.error('Объявление принадлежит не этому пользвателю');
+                    }
                 } else {
                     console.log("No such document!");
                 }
@@ -1139,16 +1145,18 @@ export default function EditItem() {
         <>
             <MyNavbar />
 
-            <NavbarForMobileRouting />
-            <Container className="mt-3">
-                <h3>{t('edit_advertisement')}</h3>
-                <CategorySelect handleCategoryChange={handleCategoryChange} category={category} t={t} />
+            <NavBarBack />
+            {data && ( // Если data не null, отобразите форму
+                <Container className="mt-3">
+                    <h3>{t('edit_advertisement')}</h3>
+                    <CategorySelect handleCategoryChange={handleCategoryChange} category={category} t={t} />
 
-                <Form.Select className="mb-3" aria-label="Default select example" onChange={handleSubcategoryChange} value={subcategory}>
-                    {getSubcategories()}
-                </Form.Select>
-                {getForm()}
-            </Container>
+                    <Form.Select className="mb-3" aria-label="Default select example" onChange={handleSubcategoryChange} value={subcategory}>
+                        {getSubcategories()}
+                    </Form.Select>
+                    {getForm()}
+                </Container>
+            )}
         </>
     )
 }

@@ -3,6 +3,7 @@ import { Col, Image } from "react-bootstrap";
 import Logo from "../../assets/logo.png"
 import {useTranslation} from 'react-i18next';
 import { Rate } from 'antd';
+import styles from './profileInfo.module.css'
 
 const ProfileInfoForPc = ({user, handleShow}) => {
     const {t} = useTranslation();
@@ -17,7 +18,7 @@ const ProfileInfoForPc = ({user, handleShow}) => {
 
     return (
         <Col xs={3} className="profile">
-            <div className="profile-picture">
+            <div className={styles.profilePicture}>
                 <Image src={user?.photoUrl || Logo} alt="photoProfile" id="userPhoto" />
             </div>
             <h2 className="profile-name" id="userName">{user?.name || 'Name'}</h2>
@@ -28,7 +29,7 @@ const ProfileInfoForPc = ({user, handleShow}) => {
             <a onClick={handleShow} style={{ cursor: 'pointer' }}>
                 <h4>{getReviewText(user?.reviewCount || 0)}</h4>
             </a>
-            <div className="profile-sections">
+            <div className={styles.profileSections}>
                 <a href="/settings">{t('settings')}</a>
                 <a href="/message">{t('messageForProfile')}</a>
             </div>

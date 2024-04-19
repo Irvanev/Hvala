@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link } from 'react-router-dom';
 import styles from './message.module.css'
 import { MyNavbar } from "../../components/Navbar/Navbar";
-import { db, auth } from "../../config/firebase";
+import { db, auth, storage } from "../../config/firebase";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { FaPaperPlane } from 'react-icons/fa';
 import { BsCardImage } from 'react-icons/bs';
 import { List, Avatar, Image, Input } from 'antd';
@@ -136,6 +137,40 @@ export const Message = () => {
         fetchMsgList();
     }, [selectedMessage]);
 
+    async function uploadImage(file) {
+        const storageRef = ref(storage, `images/${file.name}`);
+        await uploadBytes(storageRef, file);
+        const downloadURL = await getDownloadURL(storageRef);
+        return downloadURL;
+    }
+
+// Функция для обработки загрузки изображения
+    async function handleImageUpload(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const imageUrl = await uploadImage(file);
+        const newMessage = {
+            from: user.uid,
+            content: imageUrl,
+            addtime: serverTimestamp(),
+            type: "image",
+            to: recipientId
+        };
+        // Добавьте новое сообщение в список сообщений
+        setMsgList(oldMsgList => [...oldMsgList, newMessage]);
+        // Загрузите новое сообщение в Firebase Firestore
+        try {
+            const messageDocRef = doc(db, 'message', selectedMessage);
+            const docRef = await addDoc(collection(messageDocRef, 'msglist'), newMessage);
+            console.log("Сообщение успешно добавлено с ID: ", docRef.id);
+            await updateDoc(messageDocRef, {
+                last_msg: "Image sent",
+                last_time: serverTimestamp()
+            });
+        } catch (error) {
+            console.error("Ошибка добавления сообщения: ", error);
+        }
+    }
 
 
     const handleMessage = async () => {
@@ -176,6 +211,7 @@ export const Message = () => {
             return;
         }
         await handleMessage();
+        await handleImageUpload(e);
     }
 
     return (
@@ -189,7 +225,7 @@ export const Message = () => {
                 <NavBarBack />
             )}
 
-            <div className="container d-none d-lg-block mt-3">
+            <div className="container d-none d-lg-block mt-3" style={{paddingTop: '70px'}}>
                 <div className="messaging">
                     <div className="inbox_msg">
                         <div className="inbox_people">
@@ -301,20 +337,23 @@ export const Message = () => {
                                 <div ref={messagesEndRef} />
                             </div>
                             <div className="type_msg">
-                                <form onSubmit={handleSubmit} className="input_msg_write" style={{ display: 'flex', alignItems: 'center' }}>
+                                <form onSubmit={handleSubmit} className="input_msg_write"
+                                      style={{display: 'flex', alignItems: 'center'}}>
                                     <BsCardImage
                                         size={30}
-                                        style={{ marginRight: '10px', cursor: "pointer" }}
+                                        style={{marginRight: '10px', cursor: "pointer"}}
                                         onClick={() => fileInput.current.click()}
                                     />
                                     <input
                                         type="file"
                                         ref={fileInput}
-                                        style={{ display: 'none' }}
+                                        style={{display: 'none'}}
+                                        onChange={handleImageUpload}
                                     />
-                                    <input type="text" className="write_msg" placeholder="Type a message" value={message} onChange={e => setMessage(e.target.value)} />
+                                    <input type="text" className="write_msg" placeholder="Type a message"
+                                           value={message} onChange={e => setMessage(e.target.value)}/>
                                     <button className="msg_send_btn" type="submit">
-                                        <FaPaperPlane />
+                                        <FaPaperPlane/>
                                     </button>
                                 </form>
                             </div>
@@ -344,7 +383,7 @@ export const Message = () => {
                         </List.Item>
                     )}
                 />
-                <div className="messages-container" style={{ display: isMessagesContainerOpen ? 'block' : 'none', paddingTop: '50px' }}>
+                <div className="messages-container" style={{ display: isMessagesContainerOpen ? 'block' : 'none' }}>
                     <div className="test" style={{ height: 'calc(100vh - 100px)', overflowY: 'scroll' }}>
                         <div className={styles.messageHistory}>
                             {msgList.map((msg, index) => (
@@ -408,7 +447,13 @@ export const Message = () => {
                     </div>
                     <form onSubmit={handleSubmit}>
                         <div className={styles.inputMessage}>
-                            <PaperClipOutlined className={styles.sendIcon} />
+                            <input
+                                type="file"
+                                ref={fileInput}
+                                style={{display: 'none'}}
+                                onChange={handleImageUpload}
+                            />
+                            <PaperClipOutlined className={styles.sendIcon} onClick={() => fileInput.current.click()}/>
                             <TextArea className={styles.textInput} rows={1}
                                 placeholder="input message" autoSize={{ minRows: 1, maxRows: 4 }}
                                 value={message} onChange={e => setMessage(e.target.value)}

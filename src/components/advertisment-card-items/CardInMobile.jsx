@@ -10,7 +10,7 @@ import { db, auth } from '../../config/firebase'
 const CardInMobile = ({ adData, t, index, handleSelect, handleCallClick, userData }) => {
 
     const [feedbacks, setFeedbacks] = useState([]);
-    const rat = userData?.rating
+    const rat = userData?.rating || userData?.raiting; //!TODO
     const userId = userData?.id
 
     const [isModalVisible, setIsModalVisible] = useState(false);
@@ -168,7 +168,7 @@ const CardInMobile = ({ adData, t, index, handleSelect, handleCallClick, userDat
                         <Link to={`/seller/${userData?.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                             <h5 className="mb-0">{userData?.name || "User"}</h5>
                             <div className="d-flex align-items-center">
-                                <span className="me-2">{userData?.rating.toFixed(1) || '0'}</span>
+                                <span className="me-2">{userData?.rating || userData?.raiting}</span>
                                 <Rate disabled defaultValue={rat} />
                             </div>
                         </Link>
