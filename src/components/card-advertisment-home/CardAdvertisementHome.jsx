@@ -1,18 +1,32 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, Col, Carousel } from 'antd';
 import { Link } from 'react-router-dom';
 import Logo from '../../assets/logo.png';
 import { useTranslation } from 'react-i18next';
+import { getConversionRate } from '../../services/AdvertismentsHome/AdvertismentsService';
 
 const CardAdvertisementHome = ({ advertisment, index }) => {
     const { i18n } = useTranslation();
+    const [conversionRate, setConversionRate] = useState(null);
+    const [currency, setCurrency] = useState('eur');
+
+    useEffect(() => {
+        const fetchConversionRate = async () => {
+            const rate = await getConversionRate(currency);
+            setConversionRate(rate);
+        }
+    
+        fetchConversionRate();
+    }, [currency]);
+
+    const convertedPrice = Math.round(advertisment.price * conversionRate);
 
     return (
         <Col key={index}>
             <Link key={advertisment.id} to={`/advertisment/${advertisment.id}`} style={{ textDecoration: "none" }}>
                 <Card
                     hoverable
-                    style={{ height: '57vh' }}
+                    style={{ height: '61vh', width: '100%'}}
                     cover={
                         <Carousel>
                             {advertisment.photoUrls && advertisment.photoUrls.length > 0 ? (
@@ -30,7 +44,13 @@ const CardAdvertisementHome = ({ advertisment, index }) => {
                     }
                 >
                     <Card.Meta title={advertisment.title} />
-                    <h5 style={{ color: 'grey' }}>{advertisment.price + '€'}</h5>
+                    <p style={{ color: 'grey', fontSize: '1.3em' }}>
+                        {advertisment.price + ' ' + currency.toUpperCase()}
+                        {conversionRate &&
+                            <span style={{ fontSize: '0.8em' }}> ~{convertedPrice.toFixed(2) + ' ' + (currency === 'eur' ? 'din' : '€')}
+                            </span>
+                        }
+                    </p>
                     <p style={{
                         display: '-webkit-box',
                         WebkitLineClamp: '2',
@@ -40,16 +60,7 @@ const CardAdvertisementHome = ({ advertisment, index }) => {
                     }}>
                         {advertisment.location}
                     </p>
-                    <p>
-                        {advertisment.time_creation && advertisment.time_creation.seconds ?
-                            new Date(advertisment.time_creation.seconds * 1000).toLocaleString(i18n.language, {
-                                day: 'numeric',
-                                month: 'long',
-                                hour: '2-digit',
-                                minute: '2-digit'
-                            }) : 'Не указано время создания'
-                        }
-                    </p>
+                    
                 </Card>
             </Link>
         </Col>

@@ -1,5 +1,5 @@
 import { db } from '../config/firebase';
-import { collection, query, where, onSnapshot, orderBy } from 'firebase/firestore';
+import { collection, query, where, onSnapshot } from 'firebase/firestore';
 
 export const fetchAdvertismentsByCategory = (category, setAdvertisments, setIsLoading) => {
     const q = query(collection(db, 'advertisment'), where('category', '==', category));

@@ -1,4 +1,4 @@
-import { collection, query, where, getDocs, doc, deleteDoc } from "firebase/firestore";
+import { collection, query, where, getDocs, doc, updateDoc, deleteDoc } from "firebase/firestore";
 import { db } from "../config/firebase";
 
 export const fetchUser = async (userId) => {
@@ -29,10 +29,18 @@ export const fetchReviews = async (userId) => {
 
 export const fetchAdvertisements = async (userId) => {
     const advertisementRef = collection(db, 'advertisment');
-    const advertisementQuery = query(advertisementRef, where('from_uid', '==', userId));
+    const advertisementQuery = query(advertisementRef, where('from_uid', '==', userId), where('in_archive', '==', false));
     const advertisementSnapshot = await getDocs(advertisementQuery);
     const advertisements = advertisementSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
     return advertisements;
+}
+
+export const fetchAdvertismentsArchive = async (userId) => {
+    const advertisementRef = collection(db, 'advertisment');
+    const advertisementQuery = query(advertisementRef, where('from_uid', '==', userId), where('in_archive', '==', true));
+    const advertisementSnapshot = await getDocs(advertisementQuery);
+    const advertisementsArchive = advertisementSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
+    return advertisementsArchive;
 }
 
 export const fetchUserAndReviews = async (userId) => {
@@ -43,12 +51,38 @@ export const fetchUserAndReviews = async (userId) => {
     return { user: { ...user, reviewCount: feedbackCount }, reviews, advertisements };
 }
 
+export async function archivedAdvertisement(id) {
+    const docRef = doc(db, "advertisment", id);
+
+    try {
+        await updateDoc(docRef, {
+            in_archive: true
+        });
+        console.log(`Document with ID ${id} was archived!`);
+    } catch (e) {
+        console.error("Error deleting document: ", e);
+    }
+}
+
+export async function unarchivedAdvertisement(id) {
+    const docRef = doc(db, "advertisment", id);
+
+    try {
+        await updateDoc(docRef, {
+            in_archive: false
+        });
+        console.log(`Document with ID ${id} was unarchived!`);
+    } catch (e) {
+        console.error("Error deleting document: ", e);
+    }
+}
+
 export async function deleteAdvertisement(id) {
     const docRef = doc(db, "advertisment", id);
 
     try {
         await deleteDoc(docRef);
-        console.log(`Document with ID ${id} deleted`);
+        console.log(`Document with ID ${id} was deleted!`);
     } catch (e) {
         console.error("Error deleting document: ", e);
     }

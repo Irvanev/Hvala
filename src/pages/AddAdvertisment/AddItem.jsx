@@ -47,6 +47,9 @@ export const AddItem = () => {
     const [model, setModel] = useState('');
     const [type, setType] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
+    const [country, setCountry] = useState('');
+    const [region, setRegion] = useState('');
+    const [location, setLocation] = useState('');
 
     // Для автомобилей
     const [mileage, setMileage] = useState('');
@@ -221,9 +224,9 @@ export const AddItem = () => {
                 model,
                 condition,
                 description,
-                region: "",
-                location: "",
-                country: "",
+                region,
+                location,
+                country,
                 availability: "available",
                 photoUrls: fileUrls,
                 time_creation: serverTimestamp(),
@@ -466,9 +469,9 @@ export const AddItem = () => {
                 price,
                 description,
                 availability: "available",
-                region: "",
-                location: "",
-                country: "",
+                region,
+                location,
+                country,
                 time_creation: serverTimestamp(),
                 photoUrls: fileUrls,
             }
@@ -653,6 +656,9 @@ return (
                 {(selectedSubcategory === 'computers') && (
                     <ComputerForm
                         title={title} setTitle={setTitle}
+                        country={country} setCountry={setCountry}
+                        region={region} setRegion={setRegion}
+                        location={location} setLocation={setLocation}
                         price={price} setPrice={setPrice}
                         model={model} setModel={setModel}
                         brand={brand} setBrand={setBrand}
@@ -668,6 +674,8 @@ return (
                 {(selectedSubcategory === 'computer_accessories') && (
                     <ComputersAccsForm
                         title={title} setTitle={setTitle}
+                        country={country} setCountry={setCountry}
+                        region={region} setRegion={setRegion}
                         price={price} setPrice={setPrice}
                         model={model} setModel={setModel}
                         brand={brand} setBrand={setBrand}

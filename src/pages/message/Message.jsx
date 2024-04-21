@@ -41,10 +41,6 @@ export const Message = () => {
     const [modalImage, setModalImage] = useState(null);
     const [isMessagesContainerOpen, setIsMessagesContainerOpen] = useState(false);
 
-    const openImageModal = (imageUrl) => {
-        setModalImage(imageUrl);
-    }
-
     const closeImageModal = () => {
         setModalImage(null);
     }
@@ -164,7 +160,7 @@ export const Message = () => {
             const docRef = await addDoc(collection(messageDocRef, 'msglist'), newMessage);
             console.log("Сообщение успешно добавлено с ID: ", docRef.id);
             await updateDoc(messageDocRef, {
-                last_msg: "Image sent",
+                last_msg: "Image",
                 last_time: serverTimestamp()
             });
         } catch (error) {
@@ -276,7 +272,7 @@ export const Message = () => {
                                         <div className="outgoing_msg" key={index}>
                                             <div className="sent_msg">
                                                 {msg.type === "image" ? (
-                                                    <img src={msg.content} alt="received" style={{ maxWidth: '200px' }} onClick={() => openImageModal(msg.content)} />
+                                                    <Image src={msg.content} alt="received" style={{ maxWidth: '200px' }} />
                                                 ) : (
                                                     <p>{msg.content}</p>
                                                 )}
@@ -303,7 +299,7 @@ export const Message = () => {
                                             <div className="received_msg">
                                                 <div className="received_withd_msg">
                                                     {msg.type === "image" ? (
-                                                        <img src={msg.content} alt="received" style={{ maxWidth: '200px' }} onClick={() => openImageModal(msg.content)} />
+                                                        <Image src={msg.content} alt="received" style={{ maxWidth: '200px' }} />
                                                     ) : (
                                                         <p>{msg.content}</p>
                                                     )}

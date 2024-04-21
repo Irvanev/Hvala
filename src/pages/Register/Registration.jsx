@@ -7,6 +7,7 @@ import { useHistory } from 'react-router-dom';
 import { MyNavbar } from '../../components/Navbar/Navbar';
 import { Form, Input, Button, Modal } from 'antd';
 import { useTranslation } from 'react-i18next';
+import { NavBarBack } from '../../components/Navbar/NavBarBack';
 
 export const Registration = () => {
     const { t } = useTranslation();
@@ -101,30 +102,26 @@ export const Registration = () => {
                     background-color: darkorange;
                     color: white;
                 }
+                @media (max-width: 1000px) {
+                    body {
+                        padding-bottom: 4.5rem;
+                    }
+                }
+                @media (min-width: 1000px) {
+                  body {
+                        padding-top: 4.5rem;
+                        padding-bottom: 2.5rem;
+                    }
                 
                 `}
             </style>
 
-            <nav className="navbar navbar-expand-md navbar-light fixed-top bg-light d-lg-none">
-                <div className="container">
-                    <ul className="navbar-nav me-auto mb-md-0">
-                        <li className="nav-item">
-                            <a className="nav-link active" aria-current="page" onClick={goBack}>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
-                                    className="bi bi-arrow-left" viewBox="0 0 16 16">
-                                    <path fillRule="evenodd"
-                                        d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z" />
-                                </svg>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
+            <NavBarBack />
 
             <MyNavbar />
 
             <div className='container'>
-                <div style={{ paddingTop: '1.5rem' }}>
+                <div style={{ paddingTop: '4.5rem' }}>
                     <img src={Logotype} alt="logo"
                         style={{ width: "200px", height: "200px", borderRadius: "50%", display: "block", margin: "auto" }} />
                 </div>

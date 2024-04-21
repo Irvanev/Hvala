@@ -30,7 +30,8 @@ const SellerProfile = () => {
 
       const qAds = query(
         collection(db, "advertisment"),
-        where("from_uid", "==", id)
+        where("from_uid", "==", id),
+        where("in_arhive", "==", false),
       );
       const adsSnapshot = await getDocs(qAds);
       if (!adsSnapshot.empty) {

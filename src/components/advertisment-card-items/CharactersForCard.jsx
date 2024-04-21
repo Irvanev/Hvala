@@ -1,5 +1,6 @@
 import React from "react";
 
+
 const CharactersForCard = ({ adData, t }) => {
     return (
         <div>
@@ -57,28 +58,18 @@ const CharactersForCard = ({ adData, t }) => {
                     <div className="mt-3">
                         <h5>{t('location')}</h5>
                         <span id="product-description">{t(adData.location)}</span>
-                        <a
-                            href={`https://www.google.com/maps/search/?api=1&query=${adData.location}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            style={{ marginLeft: "10px" }}
-                        >
-                            {t('showOnMap')}
-                        </a>
                     </div>
                 )}
                 {adData?.coordinates && (
                     <div className="mt-3">
-                        <h5>{t('coordinates')}</h5>
-                        <span id="product-description">{`${adData.coordinates.latitude}, ${adData.coordinates.longitude}`}</span>
-                        <a
-                            href={`https://www.google.com/maps/search/?api=1&query=${adData.coordinates.latitude},${adData.coordinates.longitude}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            style={{ marginLeft: "10px" }}
-                        >
-                            {t('showOnMap')}
-                        </a>
+                        <iframe
+                            width="100%"
+                            height="450"
+                            style={{ border: 0 }}
+                            loading="lazy"
+                            allowFullScreen
+                            src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyD7K42WP5zjV99GP3xll40eFr_5DaAk3ZU&q=${adData.coordinates.latitude},${adData.coordinates.longitude}`}
+                        />
                     </div>
                 )}
             </div>

@@ -33,10 +33,10 @@ export const Authorization = () => {
         try {
             const persistence = rememberMe ? browserLocalPersistence : browserSessionPersistence;
             await setPersistence(auth, persistence);
-    
+
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
-    
+
             if (user.emailVerified) {
                 const userId = user.uid;
                 localStorage.setItem('userId', userId);
@@ -60,45 +60,47 @@ export const Authorization = () => {
 
             <MyNavbar />
 
-            <div className='container'>
-                <div style={{ paddingTop: '3.5rem' }}>
-                    <img src={Logotype} alt="logo" style={{ width: "200px", height: "200px", borderRadius: "50%", display: "block", margin: "auto" }} />
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: "center" }}>
-                    <Form layout="vertical" onFinish={handleSubmit} style={{ width: "400px" }} autoComplete="on">
-                        <Form.Item
-                            label={t('email')}
-                            name='email'
-                            rules={[
-                                { required: true, message: 'Пожалуйста, введите ваш email!' },
-                                { type: 'email', message: 'Пожалуйста, введите корректный email!' }
-                            ]}
-                        >
-                            <Input type="email" id="email" name='email' placeholder="name@example.com" value={email}
-                                onChange={e => setEmail(e.target.value)} />
-                        </Form.Item>
-                        <Form.Item
-                            label={t('password')}
-                            name='password'
-                            rules={[
-                                { required: true, message: 'Пожалуйста, введите ваш пароль!' },
-                                { min: 6, message: 'Пароль должен содержать минимум 6 символов!' }
-                            ]}
-                        >
-                            <Input.Password id="password" name='password' value={password}
-                                onChange={e => setPassword(e.target.value)} />
-                        </Form.Item>
-                        {loginError && <p style={{ color: 'red' }}>{loginError}</p>}
-                        <Form.Item name="saveSession" valuePropName="checked">
-                            <Checkbox onChange={onRememberMeChange}>{t('remember_me')}</Checkbox>
-                        </Form.Item>
-                        <Form.Item>
-                            <p>{t('notRegisteredYet')} <Link href="/sign_up">{t('register')}</Link></p>
-                        </Form.Item>
-                        <Form.Item>
-                            <Button className={styles.submitButton} size='large' type="primary" htmlType="submit" id="login">{t('login')}</Button>
-                        </Form.Item>
-                    </Form>
+            <div className={styles.body}>
+                <div className='container'>
+                    <div style={{ paddingTop: '4.5rem' }}>
+                        <img src={Logotype} alt="logo" style={{ width: "200px", height: "200px", borderRadius: "50%", display: "block", margin: "auto" }} />
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: "center" }}>
+                        <Form layout="vertical" onFinish={handleSubmit} style={{ width: "400px" }} autoComplete="on">
+                            <Form.Item
+                                label={t('email')}
+                                name='email'
+                                rules={[
+                                    { required: true, message: 'Пожалуйста, введите ваш email!' },
+                                    { type: 'email', message: 'Пожалуйста, введите корректный email!' }
+                                ]}
+                            >
+                                <Input type="email" id="email" name='email' placeholder="name@example.com" value={email}
+                                    onChange={e => setEmail(e.target.value)} />
+                            </Form.Item>
+                            <Form.Item
+                                label={t('password')}
+                                name='password'
+                                rules={[
+                                    { required: true, message: 'Пожалуйста, введите ваш пароль!' },
+                                    { min: 6, message: 'Пароль должен содержать минимум 6 символов!' }
+                                ]}
+                            >
+                                <Input.Password id="password" name='password' value={password}
+                                    onChange={e => setPassword(e.target.value)} />
+                            </Form.Item>
+                            {loginError && <p style={{ color: 'red' }}>{loginError}</p>}
+                            <Form.Item name="saveSession" valuePropName="checked">
+                                <Checkbox onChange={onRememberMeChange}>{t('remember_me')}</Checkbox>
+                            </Form.Item>
+                            <Form.Item>
+                                <p>{t('notRegisteredYet')} <Link href="/sign_up">{t('register')}</Link></p>
+                            </Form.Item>
+                            <Form.Item>
+                                <Button className={styles.submitButton} size='large' type="primary" htmlType="submit" id="login">{t('login')}</Button>
+                            </Form.Item>
+                        </Form>
+                    </div>
                 </div>
             </div>
         </div>

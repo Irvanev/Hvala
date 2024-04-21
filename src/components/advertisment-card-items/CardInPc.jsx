@@ -16,7 +16,7 @@ import { Modal, Input, Button, message, Breadcrumb } from "antd";
 const CardInPc = ({ adData, t, index, handleSelect, handleCallClick, showModal, handleCloseModal, userData, fromUid }) => {
 
   const [feedbacks, setFeedbacks] = useState([]);
-  const rat = userData?.rating || userData?.raiting; //!TODO
+  const rat = userData?.rating || userData?.raiting;
   const userId = userData?.id
 
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -163,7 +163,6 @@ const CardInPc = ({ adData, t, index, handleSelect, handleCallClick, showModal, 
               </Col>
             ))}
           </Row>
-          <CharactersForCard adData={adData} t={t} />
         </Col>
         <div className="col-3" style={{ paddingTop: "40px" }}>
           <h2 id="product-price">{adData?.price + "€"}</h2>
@@ -240,6 +239,7 @@ const CardInPc = ({ adData, t, index, handleSelect, handleCallClick, showModal, 
         </div>
         <ModalForNumberPhone adData={adData} showModal={showModal} handleCloseModal={handleCloseModal} />
       </Row>
+      <CharactersForCard adData={adData} t={t} />
     </Container>
   );
 }

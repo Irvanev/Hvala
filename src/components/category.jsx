@@ -1,14 +1,13 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom';
 import { MenuOutlined, MoreOutlined } from '@ant-design/icons';
-import { Dropdown, Input, Button, Modal, Select, InputNumber } from 'antd';
+import { Dropdown, Input, Button, Modal, Select, InputNumber, AutoComplete } from 'antd';
 import Logo from '../assets/hvala.png'
 import { t } from 'i18next';
 
-const Categories = () => {
+const Categories = ({ setSearchText, options }) => {
   const { Search } = Input;
   const { Option } = Select;
-  const onSearch = (value, _e, info) => console.log(info?.source, value);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const showModal = () => {
@@ -18,6 +17,12 @@ const Categories = () => {
   const handleCancel = () => {
     setIsModalOpen(false);
   };
+
+  const [inputValue, setInputValue] = useState('');
+
+  const filteredOptions = options.filter(option =>
+    option.value.toLowerCase().includes(inputValue.toLowerCase())
+  );
 
   const items = [
     {
@@ -144,7 +149,7 @@ const Categories = () => {
 
   return (
     <>
-      <div className='d-none d-lg-block' style={{marginTop: '20px'}}>
+      <div className='d-none d-lg-block' style={{ marginTop: '20px' }}>
         <div className='container mb-3' style={{ display: 'flex', justifyContent: 'space-between' }}>
           <div className='logo' style={{ marginRight: '20px' }}>
             <img src={Logo} alt='logo' style={{ height: '40px', width: '160px' }}></img>
@@ -160,7 +165,19 @@ const Categories = () => {
               </Button>
             </a>
           </Dropdown>
-          <Search placeholder="input search text" onSearch={onSearch} size='large' />
+          <AutoComplete
+            options={filteredOptions}
+            style={{ width: 800 }}
+            size='large'
+            onSelect={value => setSearchText(value)}
+            onSearch={value => setInputValue(value)}
+            onKeyDown={event => {
+              if (event.key === 'Enter') {
+                setSearchText(inputValue);
+              }
+            }}
+            placeholder="input search text"
+          />
           <Button onClick={showModal} style={{ marginLeft: '20px', backgroundColor: 'orange', color: 'white', border: 'none' }} size='large' icon={<MoreOutlined />}>
             Фильтры
           </Button>
@@ -168,7 +185,7 @@ const Categories = () => {
       </div>
 
       <div className='d-lg-none mt-3'>
-        <div className='logo mb-3' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+        <div className='logo mb-3' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
           <img src={Logo} alt='logo' style={{ height: '50px', width: '160px' }}></img>
         </div>
         <div className='container mb-3' style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -182,8 +199,20 @@ const Categories = () => {
               </Button>
             </a>
           </Dropdown>
-          <Search placeholder="input search text" onSearch={onSearch} size='large' />
-          <Button onClick={showModal} style={{backgroundColor: 'orange', color: 'white', border: 'none' }} size='large' icon={<MoreOutlined />}>
+          <AutoComplete
+            options={filteredOptions}
+            style={{ width: 400}}
+            size='large'
+            onSelect={value => setSearchText(value)}
+            onSearch={value => setInputValue(value)}
+            onKeyDown={event => {
+              if (event.key === 'Enter') {
+                setSearchText(inputValue);
+              }
+            }}
+            placeholder="input search text"
+          />
+          <Button onClick={showModal} style={{ backgroundColor: 'orange', color: 'white', border: 'none' }} size='large' icon={<MoreOutlined />}>
           </Button>
         </div>
         <div className='container'>

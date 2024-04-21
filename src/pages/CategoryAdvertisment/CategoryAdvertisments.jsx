@@ -10,19 +10,16 @@ import {fetchAdvertismentsByCategory, fetchAdvertismentsBySubcategory} from '../
 import {MoreOutlined} from '@ant-design/icons';
 import Logo from '../../assets/hvala.png'
 import {t} from 'i18next';
+import Categories from '../../components/category';
 
 export const CategoryAdvertisments = () => {
     const {category} = useParams();
     const [advertisments, setAdvertisments] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [minPrice, setMinPrice] = useState('');
-    const [maxPrice, setMaxPrice] = useState('');
-    const {Search} = Input;
     const {Option} = Select;
 
     const [selectedSubcategory, setSelectedSubcategory] = useState(null);
 
-    const onSearch = (value, _e, info) => console.log(info?.source, value);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const showModal = () => {
@@ -33,11 +30,19 @@ export const CategoryAdvertisments = () => {
         setIsModalOpen(false);
     };
 
+    const [searchText, setSearchText] = useState('');
 
-    const filteredAdvertisments = advertisments.filter(ad => {
-        return (minPrice ? ad.price >= minPrice : true) && (maxPrice ? ad.price <= maxPrice : true);
-    });
+    const options = advertisments
+        .map(ad => ad.title)
+        .reduce((unique, title) => {
+            return unique.findIndex(obj => obj.value === title) < 0
+                ? [...unique, { value: title }]
+                : unique;
+        }, []);
 
+    const filteredAdvertisements = advertisments.filter(ad =>
+        ad.title.toLowerCase().includes(searchText.toLowerCase())
+    );
 
     useEffect(() => {
         let unsubscribe;
@@ -232,23 +237,7 @@ export const CategoryAdvertisments = () => {
             <MyNavbar/>
             <NavBarBack/>
 
-            <div className='container d-lg-none'>
-                <div className='container' style={{display: 'flex', justifyContent: 'space-between'}}>
-                    <Search placeholder="input search text" onSearch={onSearch} size='large'/>
-                    <Button onClick={showModal} style={{backgroundColor: 'orange', color: 'white', border: 'none'}}
-                            size='large' icon={<MoreOutlined/>}>
-                    </Button>
-                </div>
-            </div>
-
-            <div className='container d-none d-lg-block mt-3'>
-                <div className='container mb-3' style={{display: 'flex', justifyContent: 'space-between'}}>
-                    <div className='logo' style={{marginRight: '20px'}}>
-                        <img src={Logo} alt='logo' style={{height: '40px', width: '160px'}}></img>
-                    </div>
-                    <Search placeholder="input search text" onSearch={onSearch} size='large'/>
-                </div>
-            </div>
+            <Categories setSearchText={setSearchText} options={options}/>
 
             <Modal title="Фильтры" open={isModalOpen} footer={null} onCancel={handleCancel}>
                 <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
@@ -309,7 +298,7 @@ export const CategoryAdvertisments = () => {
                         <Col md={9}>
                             <Container className="album mt-3">
                                 <Row xs={2} sm={2} md={3} lg={3} className="g-3" id="cardAds">
-                                    {filteredAdvertisments.map((advertisment) => (
+                                    {filteredAdvertisements.map((advertisment) => (
                                         <CardCategory key={advertisment.id} advertisment={advertisment}/>
                                     ))}
                                 </Row>

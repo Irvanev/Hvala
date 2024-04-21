@@ -2,9 +2,13 @@ import React, { useState } from "react";
 import { Form, Input, InputNumber, Button, Select, Image, Upload } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { useTranslation } from "react-i18next";
+import { CountryRegion } from "../CountryRegion";
 
 const ComputerForm = ({
     title, setTitle,
+    country, setCountry,
+    region, setRegion,
+    location, setLocation,
     price, setPrice,
     brand, setBrand,
     model, setModel,
@@ -46,6 +50,56 @@ const ComputerForm = ({
                 className='mt-3'
                 layout="vertical"
             >
+
+                <Form.Item label={t('Photo')}>
+                    <Upload
+                        multiple
+                        listType="picture-card"
+                        fileList={fileList}
+                        onPreview={handlePreview}
+                        onChange={handleChange}
+                        beforeUpload={file => {
+                            handleFileChange(file);
+                            return false;
+                        }}
+                    >
+                        {fileList.length >= 8 ? null :
+                            <button
+                                style={{
+                                    border: 0,
+                                    background: 'none',
+                                }}
+                                type="button"
+                            >
+                                <PlusOutlined />
+                                <div
+                                    style={{
+                                        marginTop: 8,
+                                    }}
+                                >
+                                    Upload
+                                </div>
+                            </button>
+                        }
+                    </Upload>
+                    {previewImage && (
+                        <Image
+                            wrapperStyle={{
+                                display: 'none',
+                            }}
+                            preview={{
+                                visible: previewOpen,
+                                onVisibleChange: (visible) => setPreviewOpen(visible),
+                                afterOpenChange: (visible) => !visible && setPreviewImage(''),
+                            }}
+                            src={previewImage}
+                        />
+                    )}
+                </Form.Item>
+
+                <CountryRegion country={country} setCountry={setCountry}
+                region={region} setRegion={setRegion} location={location} setLocation={setLocation} t={t}/>
+
                 <Form.Item
                     name="title"
                     label={t('title')}
@@ -115,52 +169,6 @@ const ComputerForm = ({
                 </Form.Item>
                 <Form.Item label={t('description')}>
                     <Input.TextArea rows={3} value={description} onChange={(e) => setDescription(e.target.value)} />
-                </Form.Item>
-
-                <Form.Item label={t('photos')}>
-                    <Upload
-                        multiple
-                        listType="picture-card"
-                        fileList={fileList}
-                        onPreview={handlePreview}
-                        onChange={handleChange}
-                        beforeUpload={file => {
-                            handleFileChange(file);
-                            return false;
-                        }}
-                    >
-                        {fileList.length >= 8 ? null :
-                            <button
-                                style={{
-                                    border: 0,
-                                    background: 'none',
-                                }}
-                                type="button"
-                            >
-                                <PlusOutlined />
-                                <div
-                                    style={{
-                                        marginTop: 8,
-                                    }}
-                                >
-                                    Upload
-                                </div>
-                            </button>
-                        }
-                    </Upload>
-                    {previewImage && (
-                        <Image
-                            wrapperStyle={{
-                                display: 'none',
-                            }}
-                            preview={{
-                                visible: previewOpen,
-                                onVisibleChange: (visible) => setPreviewOpen(visible),
-                                afterOpenChange: (visible) => !visible && setPreviewImage(''),
-                            }}
-                            src={previewImage}
-                        />
-                    )}
                 </Form.Item>
 
                 <Form.Item style={{ display: 'flex', justifyContent: 'center' }}>

@@ -148,15 +148,15 @@ const ProfileSettings = () => {
                     }
                     @media (max-width: 1000px) {
                         body {
-                            padding-bottom: 3.5rem;
                             padding-top: 3.5rem;
+                            padding-bottom: 4.5rem;
                         }
                     }
                     @media (min-width: 1000px) {
-                    body {
-                            padding-top: 3.5rem;
+                      body {
+                            padding-top: 4.5rem;
+                            padding-bottom: 2.5rem;
                         }
-                    }
                     `}
                 </style>
 
