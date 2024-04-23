@@ -33,14 +33,15 @@ function App() {
         <Switch>
           <Route exact path={"/help"} component={Help} />
           <Route exact path={"/contacts"} component={Contact} />
-          <Route exact path={"/settings"} component={ProfileSettings} />
           <Route exact path={"/seller/:id"} component={SellerProfile} />
           <Route path={"/advertisment/:id"} component={CardItem} />
           <Route exact path={"/advertisment"} component={Advertisement} />
           <Route exact path={"/sign_up"} component={Registration} />
           <Route exact path={"/sign_in"} component={Authorization} />
           <Route exact path={"/advertisments/:category"} component={CategoryAdvertisments} />
+          <PrivateRoute exact path={"/settings"} component={ProfileSettings} />
           <PrivateRoute exact path={"/message"} component={Message} />
+          <PrivateRoute exact path={"/message/:chatId"} component={Message} />
           <PrivateRoute exact path={"/edit/:id"} component={EditItem} />
           <PrivateRoute exact path={"/addItem"} component={AddItem} />
           <PrivateRoute path={"/profile"} component={Profile} />

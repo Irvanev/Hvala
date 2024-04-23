@@ -1,13 +1,13 @@
 import React from "react";
 import { Col, Image } from "react-bootstrap";
 import Logo from "../../assets/logo.png"
-import {useTranslation} from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { Rate } from 'antd';
 import styles from './profileInfo.module.css'
 
-const ProfileInfoForPc = ({user, handleShow}) => {
-    const {t} = useTranslation();
-    const rat = user?.rating
+const ProfileInfoForPc = ({ user, handleShow }) => {
+    const { t } = useTranslation();
+    const rat = user?.rating || user?.raiting;
 
     function getReviewText(count) {
         if (count === 0) return t('noReviews');
@@ -27,7 +27,7 @@ const ProfileInfoForPc = ({user, handleShow}) => {
                 {rat && <Rate disabled defaultValue={rat} />}
             </div>
             <a onClick={handleShow} style={{ cursor: 'pointer' }}>
-                <h4>{getReviewText(user?.reviewCount || 0)}</h4>
+                <p >{getReviewText(user?.reviewCount || 0)}</p>
             </a>
             <div className={styles.profileSections}>
                 <a href="/settings">{t('settings')}</a>

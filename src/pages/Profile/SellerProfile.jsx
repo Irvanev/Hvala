@@ -10,6 +10,7 @@ import { db, auth } from "../../config/firebase";
 import { Link } from "react-router-dom";
 import { Rate, Modal, Input, Button, message } from 'antd'
 import { useTranslation } from 'react-i18next';
+import CardAdvertisementHome from "../../components/card-advertisment-home/CardAdvertisementHome";
 
 const SellerProfile = () => {
   const { i18n } = useTranslation();
@@ -30,8 +31,8 @@ const SellerProfile = () => {
 
       const qAds = query(
         collection(db, "advertisment"),
-        where("from_uid", "==", id),
-        where("in_arhive", "==", false),
+        where("from_uid", "==", id)
+        // ,where("in_arhive", "==", false),
       );
       const adsSnapshot = await getDocs(qAds);
       if (!adsSnapshot.empty) {
@@ -50,7 +51,7 @@ const SellerProfile = () => {
   };
 
   const [feedbacks, setFeedbacks] = useState([]);
-  const rat = user?.rating
+  const rat = user?.rating || user?.raiting;
   const { id: userId } = useParams();
 
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -319,6 +320,7 @@ const SellerProfile = () => {
                 </Modal>
               </>
             )}
+            <p>{user?.description}</p>
             <div className="profile-sections">
             </div>
           </Col>
@@ -330,37 +332,7 @@ const SellerProfile = () => {
                 {user &&
                   ads &&
                   ads.map((advertisment, index) => (
-                    <Col key={index}>
-                      <Link
-                        key={advertisment.id}
-                        to={`/advertisment/${advertisment.id}`}
-                        style={aStyle}
-                      >
-                        <Card
-                            hoverable
-                            cover={
-                              <Carousel autoplay>
-                                {advertisment.photoUrls.map((url, index) => (
-                                    <div key={index}>
-                                      <img alt="example" src={url || Logo} style={{ width: '100%', height: 'auto' }} />
-                                    </div>
-                                ))}
-                              </Carousel>
-                            }
-                        >
-                          <Card.Meta title={advertisment.title} description={advertisment.location} />
-                          <strong>{advertisment.price + "€"}</strong>
-                          <p>
-                            {new Date(advertisment.time_creation.seconds * 1000).toLocaleString(i18n.language, {
-                              day: "numeric",
-                              month: "long",
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })}
-                          </p>
-                        </Card>
-                      </Link>
-                    </Col>
+                    <CardAdvertisementHome key={index} advertisment={advertisment} />
                   ))}
               </Row>
             </Container>

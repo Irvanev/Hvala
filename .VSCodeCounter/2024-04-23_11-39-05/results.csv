@@ -1,0 +1,128 @@
+"filename", "language", "JavaScript", "JavaScript JSX", "CSS", "XML", "JSON", "HTML", "Markdown", "comment", "blank", "total"
+"/Users/irvanev/Works/hvala-web/.idea/hvala-web.iml", "XML", 0, 0, 0, 14, 0, 0, 0, 0, 0, 14
+"/Users/irvanev/Works/hvala-web/.idea/inspectionProfiles/Project_Default.xml", "XML", 0, 0, 0, 6, 0, 0, 0, 0, 0, 6
+"/Users/irvanev/Works/hvala-web/.idea/modules.xml", "XML", 0, 0, 0, 8, 0, 0, 0, 0, 0, 8
+"/Users/irvanev/Works/hvala-web/.idea/vcs.xml", "XML", 0, 0, 0, 6, 0, 0, 0, 0, 0, 6
+"/Users/irvanev/Works/hvala-web/README.md", "Markdown", 0, 0, 0, 0, 0, 0, 39, 0, 35, 74
+"/Users/irvanev/Works/hvala-web/firebase.json", "JSON", 0, 0, 0, 0, 17, 0, 0, 0, 1, 18
+"/Users/irvanev/Works/hvala-web/package-lock.json", "JSON", 0, 0, 0, 0, 22651, 0, 0, 0, 1, 22652
+"/Users/irvanev/Works/hvala-web/package.json", "JSON", 0, 0, 0, 0, 69, 0, 0, 0, 1, 70
+"/Users/irvanev/Works/hvala-web/public/firebase-messaging-sw.js", "JavaScript", 6, 0, 0, 0, 0, 0, 0, 0, 2, 8
+"/Users/irvanev/Works/hvala-web/public/index.html", "HTML", 0, 0, 0, 0, 0, 20, 0, 0, 1, 21
+"/Users/irvanev/Works/hvala-web/public/manifest.json", "JSON", 0, 0, 0, 0, 26, 0, 0, 0, 1, 27
+"/Users/irvanev/Works/hvala-web/src/404.html", "HTML", 0, 0, 0, 0, 0, 32, 0, 0, 2, 34
+"/Users/irvanev/Works/hvala-web/src/App.js", "JavaScript", 49, 0, 0, 0, 0, 0, 0, 0, 6, 55
+"/Users/irvanev/Works/hvala-web/src/App.test.js", "JavaScript", 7, 0, 0, 0, 0, 0, 0, 0, 2, 9
+"/Users/irvanev/Works/hvala-web/src/AuthContext.jsx", "JavaScript JSX", 0, 11, 0, 0, 0, 0, 0, 0, 4, 15
+"/Users/irvanev/Works/hvala-web/src/LanguageModal.jsx", "JavaScript JSX", 0, 34, 0, 0, 0, 0, 0, 0, 6, 40
+"/Users/irvanev/Works/hvala-web/src/UserContext.js", "JavaScript", 5, 0, 0, 0, 0, 0, 0, 0, 3, 8
+"/Users/irvanev/Works/hvala-web/src/assets/category-svgrepo-com.svg", "XML", 0, 0, 0, 7, 0, 0, 0, 0, 0, 7
+"/Users/irvanev/Works/hvala-web/src/assets/locales/en.json", "JSON", 0, 0, 0, 0, 329, 0, 0, 0, 23, 352
+"/Users/irvanev/Works/hvala-web/src/assets/locales/me.json", "JSON", 0, 0, 0, 0, 330, 0, 0, 0, 22, 352
+"/Users/irvanev/Works/hvala-web/src/assets/locales/ru.json", "JSON", 0, 0, 0, 0, 329, 0, 0, 0, 42, 371
+"/Users/irvanev/Works/hvala-web/src/assets/sport_and_relax_unselected.svg", "XML", 0, 0, 0, 6, 0, 0, 0, 1, 5, 12
+"/Users/irvanev/Works/hvala-web/src/components/Navbar/NavBarBack.jsx", "JavaScript JSX", 0, 14, 0, 0, 0, 0, 0, 0, 3, 17
+"/Users/irvanev/Works/hvala-web/src/components/Navbar/NavBarLogout.jsx", "JavaScript JSX", 0, 25, 0, 0, 0, 0, 0, 0, 5, 30
+"/Users/irvanev/Works/hvala-web/src/components/Navbar/NavBarShare.jsx", "JavaScript JSX", 0, 38, 0, 0, 0, 0, 0, 0, 5, 43
+"/Users/irvanev/Works/hvala-web/src/components/Navbar/Navbar.jsx", "JavaScript JSX", 0, 124, 0, 0, 0, 0, 0, 0, 11, 135
+"/Users/irvanev/Works/hvala-web/src/components/PrivateRoute.jsx", "JavaScript JSX", 0, 43, 0, 0, 0, 0, 0, 0, 5, 48
+"/Users/irvanev/Works/hvala-web/src/components/advertisment-card-category/CardCategory.jsx", "JavaScript JSX", 0, 56, 0, 0, 0, 0, 0, 0, 3, 59
+"/Users/irvanev/Works/hvala-web/src/components/advertisment-card-category/DefaultCardCategory.jsx", "JavaScript JSX", 0, 26, 0, 0, 0, 0, 0, 0, 2, 28
+"/Users/irvanev/Works/hvala-web/src/components/advertisment-card-items/CardInMobile.jsx", "JavaScript JSX", 0, 195, 0, 0, 0, 0, 0, 1, 25, 221
+"/Users/irvanev/Works/hvala-web/src/components/advertisment-card-items/CardInPc.jsx", "JavaScript JSX", 0, 215, 0, 0, 0, 0, 0, 2, 30, 247
+"/Users/irvanev/Works/hvala-web/src/components/advertisment-card-items/CharactersForCard.jsx", "JavaScript JSX", 0, 77, 0, 0, 0, 0, 0, 0, 3, 80
+"/Users/irvanev/Works/hvala-web/src/components/advertisment-card-items/DefaultCardInMobile.jsx", "JavaScript JSX", 0, 81, 0, 0, 0, 0, 0, 0, 6, 87
+"/Users/irvanev/Works/hvala-web/src/components/advertisment-card-items/DefaultCardInPc.jsx", "JavaScript JSX", 0, 82, 0, 0, 0, 0, 0, 0, 5, 87
+"/Users/irvanev/Works/hvala-web/src/components/advertisment-card-items/ModalForNumberPhone.jsx", "JavaScript JSX", 0, 10, 0, 0, 0, 0, 0, 0, 2, 12
+"/Users/irvanev/Works/hvala-web/src/components/card-advertisment-home/CardAdvertisementHome.jsx", "JavaScript JSX", 0, 130, 0, 0, 0, 0, 0, 0, 13, 143
+"/Users/irvanev/Works/hvala-web/src/components/card-advertisment-home/DefaultCardAdvertisment.jsx", "JavaScript JSX", 0, 43, 0, 0, 0, 0, 0, 0, 2, 45
+"/Users/irvanev/Works/hvala-web/src/components/card-advertisment-home/ImageMiniature.jsx", "JavaScript JSX", 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+"/Users/irvanev/Works/hvala-web/src/components/card-advertisment-home/card-advertisment.module.css", "CSS", 0, 0, 46, 0, 0, 0, 0, 0, 4, 50
+"/Users/irvanev/Works/hvala-web/src/components/category-cards/CategoryCards.jsx", "JavaScript JSX", 0, 48, 0, 0, 0, 0, 0, 0, 2, 50
+"/Users/irvanev/Works/hvala-web/src/components/category-cards/category-cards.module.css", "CSS", 0, 0, 17, 0, 0, 0, 0, 0, 0, 17
+"/Users/irvanev/Works/hvala-web/src/components/category.jsx", "JavaScript JSX", 0, 241, 0, 0, 0, 0, 0, 0, 13, 254
+"/Users/irvanev/Works/hvala-web/src/components/edit-advertisments-forms/FormsWithOutCondition.jsx", "JavaScript JSX", 0, 7, 0, 0, 0, 0, 0, 0, 3, 10
+"/Users/irvanev/Works/hvala-web/src/components/formsForAddingAdvertisements/ClothesForm.jsx", "JavaScript JSX", 0, 185, 0, 0, 0, 0, 0, 0, 10, 195
+"/Users/irvanev/Works/hvala-web/src/components/formsForAddingAdvertisements/CountryRegion.jsx", "JavaScript JSX", 0, 130, 0, 0, 0, 0, 0, 0, 6, 136
+"/Users/irvanev/Works/hvala-web/src/components/formsForAddingAdvertisements/DefaultForm.jsx", "JavaScript JSX", 0, 130, 0, 0, 0, 0, 0, 0, 12, 142
+"/Users/irvanev/Works/hvala-web/src/components/formsForAddingAdvertisements/DefaultFormWithoutCondition.jsx", "JavaScript JSX", 0, 118, 0, 0, 0, 0, 0, 0, 11, 129
+"/Users/irvanev/Works/hvala-web/src/components/formsForAddingAdvertisements/EstateForm.jsx", "JavaScript JSX", 0, 149, 0, 0, 0, 0, 0, 0, 12, 161
+"/Users/irvanev/Works/hvala-web/src/components/formsForAddingAdvertisements/HomeApplianceForm.jsx", "JavaScript JSX", 0, 134, 0, 0, 0, 0, 0, 0, 10, 144
+"/Users/irvanev/Works/hvala-web/src/components/formsForAddingAdvertisements/TransportForm.jsx", "JavaScript JSX", 0, 219, 0, 0, 0, 0, 0, 0, 10, 229
+"/Users/irvanev/Works/hvala-web/src/components/formsForAddingAdvertisements/electronics-forms/ComputerForm.jsx", "JavaScript JSX", 0, 172, 0, 0, 0, 0, 0, 0, 12, 184
+"/Users/irvanev/Works/hvala-web/src/components/formsForAddingAdvertisements/electronics-forms/ComputersAccsForm.jsx", "JavaScript JSX", 0, 172, 0, 0, 0, 0, 0, 0, 10, 182
+"/Users/irvanev/Works/hvala-web/src/components/formsForAddingAdvertisements/electronics-forms/GameConsoleForm.jsx", "JavaScript JSX", 0, 159, 0, 0, 0, 0, 0, 0, 10, 169
+"/Users/irvanev/Works/hvala-web/src/components/formsForAddingAdvertisements/electronics-forms/PhoneAndTabletsForm.jsx", "JavaScript JSX", 0, 171, 0, 0, 0, 0, 0, 0, 12, 183
+"/Users/irvanev/Works/hvala-web/src/components/formsForAddingAdvertisements/electronics-forms/PhotoVideoForm.jsx", "JavaScript JSX", 0, 155, 0, 0, 0, 0, 0, 0, 10, 165
+"/Users/irvanev/Works/hvala-web/src/components/formsForAddingAdvertisements/electronics-forms/TvForm.jsx", "JavaScript JSX", 0, 156, 0, 0, 0, 0, 0, 0, 10, 166
+"/Users/irvanev/Works/hvala-web/src/components/profile-card/DropDownWithModal.jsx", "JavaScript JSX", 0, 48, 0, 0, 0, 0, 0, 1, 7, 56
+"/Users/irvanev/Works/hvala-web/src/components/profile-card/ModalForNumberReports.jsx", "JavaScript JSX", 0, 52, 0, 0, 0, 0, 0, 0, 6, 58
+"/Users/irvanev/Works/hvala-web/src/components/profile-card/ProfileInfoForMobile.jsx", "JavaScript JSX", 0, 38, 0, 0, 0, 0, 0, 0, 5, 43
+"/Users/irvanev/Works/hvala-web/src/components/profile-card/ProfileInfoForPc.jsx", "JavaScript JSX", 0, 36, 0, 0, 0, 0, 0, 0, 4, 40
+"/Users/irvanev/Works/hvala-web/src/components/profile-card/profileInfo.module.css", "CSS", 0, 0, 11, 0, 0, 0, 0, 0, 1, 12
+"/Users/irvanev/Works/hvala-web/src/components/select-brands/SelectBrandsForComputers.jsx", "JavaScript JSX", 0, 22, 0, 0, 0, 0, 0, 0, 2, 24
+"/Users/irvanev/Works/hvala-web/src/components/select-brands/SelectBrandsForComputersAccs.jsx", "JavaScript JSX", 0, 27, 0, 0, 0, 0, 0, 0, 2, 29
+"/Users/irvanev/Works/hvala-web/src/components/select-brands/SelectBrandsForGameConsole.jsx", "JavaScript JSX", 0, 24, 0, 0, 0, 0, 0, 0, 2, 26
+"/Users/irvanev/Works/hvala-web/src/components/select-brands/SelectBrandsForMobile.jsx", "JavaScript JSX", 0, 29, 0, 0, 0, 0, 0, 0, 2, 31
+"/Users/irvanev/Works/hvala-web/src/components/select-brands/SelectBrandsForVideo.jsx", "JavaScript JSX", 0, 20, 0, 0, 0, 0, 0, 0, 2, 22
+"/Users/irvanev/Works/hvala-web/src/components/select-category-form/SelectCategory.jsx", "JavaScript JSX", 0, 31, 0, 0, 0, 0, 0, 0, 2, 33
+"/Users/irvanev/Works/hvala-web/src/components/select-category-form/SelectSubCategoryBulding.jsx", "JavaScript JSX", 0, 26, 0, 0, 0, 0, 0, 0, 2, 28
+"/Users/irvanev/Works/hvala-web/src/components/select-category-form/SelectSubCategoryChildGoods.jsx", "JavaScript JSX", 0, 29, 0, 0, 0, 0, 0, 0, 2, 31
+"/Users/irvanev/Works/hvala-web/src/components/select-category-form/SelectSubCategoryClothes.jsx", "JavaScript JSX", 0, 20, 0, 0, 0, 0, 0, 0, 2, 22
+"/Users/irvanev/Works/hvala-web/src/components/select-category-form/SelectSubCategoryElectronics.jsx", "JavaScript JSX", 0, 23, 0, 0, 0, 0, 0, 0, 2, 25
+"/Users/irvanev/Works/hvala-web/src/components/select-category-form/SelectSubCategoryEstate.jsx", "JavaScript JSX", 0, 19, 0, 0, 0, 0, 0, 0, 2, 21
+"/Users/irvanev/Works/hvala-web/src/components/select-category-form/SelectSubCategoryHealth.jsx", "JavaScript JSX", 0, 27, 0, 0, 0, 0, 0, 0, 2, 29
+"/Users/irvanev/Works/hvala-web/src/components/select-category-form/SelectSubCategoryHobby.jsx", "JavaScript JSX", 0, 25, 0, 0, 0, 0, 0, 0, 2, 27
+"/Users/irvanev/Works/hvala-web/src/components/select-category-form/SelectSubCategoryHomeAppliance.jsx", "JavaScript JSX", 0, 25, 0, 0, 0, 0, 0, 0, 3, 28
+"/Users/irvanev/Works/hvala-web/src/components/select-category-form/SelectSubCategoryHouseGoods.jsx", "JavaScript JSX", 0, 24, 0, 0, 0, 0, 0, 0, 2, 26
+"/Users/irvanev/Works/hvala-web/src/components/select-category-form/SelectSubCategoryService.jsx", "JavaScript JSX", 0, 31, 0, 0, 0, 0, 0, 0, 3, 34
+"/Users/irvanev/Works/hvala-web/src/components/select-category-form/SelectSubCategorySport.jsx", "JavaScript JSX", 0, 32, 0, 0, 0, 0, 0, 0, 2, 34
+"/Users/irvanev/Works/hvala-web/src/components/select-category-form/SelectSubCategoryTransport.jsx", "JavaScript JSX", 0, 20, 0, 0, 0, 0, 0, 0, 2, 22
+"/Users/irvanev/Works/hvala-web/src/components/select-category-form/SelectSubCategoryTransportGoods.jsx", "JavaScript JSX", 0, 20, 0, 0, 0, 0, 0, 0, 3, 23
+"/Users/irvanev/Works/hvala-web/src/components/select-types/select-types-clothes/SelectTypesForClothes.jsx", "JavaScript JSX", 0, 28, 0, 0, 0, 0, 0, 0, 2, 30
+"/Users/irvanev/Works/hvala-web/src/components/select-types/select-types-electronics/SelectTypesForComputers.jsx", "JavaScript JSX", 0, 16, 0, 0, 0, 0, 0, 0, 2, 18
+"/Users/irvanev/Works/hvala-web/src/components/select-types/select-types-electronics/SelectTypesForComputersAccs.jsx", "JavaScript JSX", 0, 16, 0, 0, 0, 0, 0, 0, 2, 18
+"/Users/irvanev/Works/hvala-web/src/config/firebase.js", "JavaScript", 18, 0, 0, 0, 0, 0, 0, 0, 2, 20
+"/Users/irvanev/Works/hvala-web/src/index.css", "CSS", 0, 0, 12, 0, 0, 0, 0, 0, 1, 13
+"/Users/irvanev/Works/hvala-web/src/index.html", "HTML", 0, 0, 0, 0, 0, 79, 0, 6, 5, 90
+"/Users/irvanev/Works/hvala-web/src/index.js", "JavaScript", 31, 0, 0, 0, 0, 0, 0, 0, 3, 34
+"/Users/irvanev/Works/hvala-web/src/pages/AddAdvertisment/AddItem.jsx", "JavaScript JSX", 0, 728, 0, 0, 0, 0, 0, 4, 52, 784
+"/Users/irvanev/Works/hvala-web/src/pages/Advertisment/Adevertisment.jsx", "JavaScript JSX", 0, 117, 0, 0, 0, 0, 0, 1, 16, 134
+"/Users/irvanev/Works/hvala-web/src/pages/AdvertismentCard/CardItem.jsx", "JavaScript JSX", 0, 93, 0, 0, 0, 0, 0, 1, 14, 108
+"/Users/irvanev/Works/hvala-web/src/pages/AdvertismentCard/cardItem.css", "CSS", 0, 0, 5, 0, 0, 0, 0, 0, 0, 5
+"/Users/irvanev/Works/hvala-web/src/pages/Auth/Authorization.jsx", "JavaScript JSX", 0, 96, 0, 0, 0, 0, 0, 0, 12, 108
+"/Users/irvanev/Works/hvala-web/src/pages/Auth/authorizations.module.css", "CSS", 0, 0, 19, 0, 0, 0, 0, 0, 1, 20
+"/Users/irvanev/Works/hvala-web/src/pages/CategoryAdvertisment/CategoryAdvertisments.jsx", "JavaScript JSX", 0, 294, 0, 0, 0, 0, 0, 0, 19, 313
+"/Users/irvanev/Works/hvala-web/src/pages/EditAdvertisment/BuildingMaterial.jsx", "JavaScript JSX", 0, 15, 0, 0, 0, 0, 0, 0, 2, 17
+"/Users/irvanev/Works/hvala-web/src/pages/EditAdvertisment/CategorySelect.jsx", "JavaScript JSX", 0, 26, 0, 0, 0, 0, 0, 0, 2, 28
+"/Users/irvanev/Works/hvala-web/src/pages/EditAdvertisment/ChildGoods.jsx", "JavaScript JSX", 0, 20, 0, 0, 0, 0, 0, 0, 2, 22
+"/Users/irvanev/Works/hvala-web/src/pages/EditAdvertisment/Clothes.jsx", "JavaScript JSX", 0, 11, 0, 0, 0, 0, 0, 0, 2, 13
+"/Users/irvanev/Works/hvala-web/src/pages/EditAdvertisment/EditAdvertismt.jsx", "JavaScript JSX", 0, 1130, 0, 0, 0, 0, 0, 1, 32, 1163
+"/Users/irvanev/Works/hvala-web/src/pages/EditAdvertisment/Electronics.jsx", "JavaScript JSX", 0, 14, 0, 0, 0, 0, 0, 0, 2, 16
+"/Users/irvanev/Works/hvala-web/src/pages/EditAdvertisment/Estate.jsx", "JavaScript JSX", 0, 10, 0, 0, 0, 0, 0, 0, 2, 12
+"/Users/irvanev/Works/hvala-web/src/pages/EditAdvertisment/HealthBeauty.jsx", "JavaScript JSX", 0, 18, 0, 0, 0, 0, 0, 0, 2, 20
+"/Users/irvanev/Works/hvala-web/src/pages/EditAdvertisment/HobbyRelax.jsx", "JavaScript JSX", 0, 16, 0, 0, 0, 0, 0, 0, 2, 18
+"/Users/irvanev/Works/hvala-web/src/pages/EditAdvertisment/HomeAppliance.jsx", "JavaScript JSX", 0, 16, 0, 0, 0, 0, 0, 0, 2, 18
+"/Users/irvanev/Works/hvala-web/src/pages/EditAdvertisment/HouseGoods.jsx", "JavaScript JSX", 0, 15, 0, 0, 0, 0, 0, 0, 2, 17
+"/Users/irvanev/Works/hvala-web/src/pages/EditAdvertisment/Service.jsx", "JavaScript JSX", 0, 22, 0, 0, 0, 0, 0, 0, 2, 24
+"/Users/irvanev/Works/hvala-web/src/pages/EditAdvertisment/Sport.jsx", "JavaScript JSX", 0, 24, 0, 0, 0, 0, 0, 0, 2, 26
+"/Users/irvanev/Works/hvala-web/src/pages/EditAdvertisment/Transport.jsx", "JavaScript JSX", 0, 11, 0, 0, 0, 0, 0, 0, 2, 13
+"/Users/irvanev/Works/hvala-web/src/pages/EditAdvertisment/TransportGoods.jsx", "JavaScript JSX", 0, 11, 0, 0, 0, 0, 0, 0, 2, 13
+"/Users/irvanev/Works/hvala-web/src/pages/Help.jsx", "JavaScript JSX", 0, 76, 0, 0, 0, 0, 0, 0, 4, 80
+"/Users/irvanev/Works/hvala-web/src/pages/Profile/Profile.jsx", "JavaScript JSX", 0, 356, 0, 0, 0, 0, 0, 1, 15, 372
+"/Users/irvanev/Works/hvala-web/src/pages/Profile/SellerProfile.jsx", "JavaScript JSX", 0, 340, 0, 0, 0, 0, 0, 2, 33, 375
+"/Users/irvanev/Works/hvala-web/src/pages/Profile/Settings.jsx", "JavaScript JSX", 0, 279, 0, 0, 0, 0, 0, 0, 24, 303
+"/Users/irvanev/Works/hvala-web/src/pages/Profile/profile.module.css", "CSS", 0, 0, 43, 0, 0, 0, 0, 0, 7, 50
+"/Users/irvanev/Works/hvala-web/src/pages/Register/Registration.jsx", "JavaScript JSX", 0, 198, 0, 0, 0, 0, 0, 0, 16, 214
+"/Users/irvanev/Works/hvala-web/src/pages/Register/registration.css", "CSS", 0, 0, 23, 0, 0, 0, 0, 0, 5, 28
+"/Users/irvanev/Works/hvala-web/src/pages/contact.jsx", "JavaScript JSX", 0, 85, 0, 0, 0, 0, 0, 0, 5, 90
+"/Users/irvanev/Works/hvala-web/src/pages/message/Message.jsx", "JavaScript JSX", 0, 417, 0, 0, 0, 0, 0, 4, 46, 467
+"/Users/irvanev/Works/hvala-web/src/pages/message/message.module.css", "CSS", 0, 0, 85, 0, 0, 0, 0, 0, 17, 102
+"/Users/irvanev/Works/hvala-web/src/pages/message/messages.css", "CSS", 0, 0, 162, 0, 0, 0, 0, 0, 35, 197
+"/Users/irvanev/Works/hvala-web/src/reportWebVitals.js", "JavaScript", 12, 0, 0, 0, 0, 0, 0, 0, 2, 14
+"/Users/irvanev/Works/hvala-web/src/services/AdvertismentsCardCategory.js", "JavaScript", 30, 0, 0, 0, 0, 0, 0, 0, 11, 41
+"/Users/irvanev/Works/hvala-web/src/services/AdvertismentsHome/AdvertismentsService.js", "JavaScript", 22, 0, 0, 0, 0, 0, 0, 0, 5, 27
+"/Users/irvanev/Works/hvala-web/src/services/GetFormDataForAddAdvertisments.js", "JavaScript", 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+"/Users/irvanev/Works/hvala-web/src/services/ProfileService.js", "JavaScript", 74, 0, 0, 0, 0, 0, 0, 0, 15, 89
+"/Users/irvanev/Works/hvala-web/src/setupTests.js", "JavaScript", 1, 0, 0, 0, 0, 0, 0, 4, 1, 6
+"Total", "-", 255, 8696, 423, 47, 23751, 131, 39, 29, 932, 34303

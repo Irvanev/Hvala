@@ -1,24 +1,27 @@
 import { MyNavbar } from "../../components/Navbar/Navbar";
 import { NavBarLogout } from "../../components/Navbar/NavBarLogout";
-import { useHistory } from "react-router-dom";
-import { signOut } from "firebase/auth";
 import { useState, useEffect, useRef } from "react";
-import {useTranslation} from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { db, auth, storage } from "../../config/firebase";
 import { collection, getDocs, query, where, updateDoc, doc } from "firebase/firestore";
-import { Image, Container, Row, Col, Card, Form, Button, Modal } from "react-bootstrap";
+import { Image, Container, Row, Col, Modal } from "react-bootstrap";
 import Logo from "../../assets/logo.png";
-import { Pencil } from 'react-bootstrap-icons';
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { Rate } from 'antd';
+import { Rate, Input, Button, Form } from 'antd';
+import { EditOutlined } from '@ant-design/icons';
 
 const ProfileSettings = () => {
-    const {t} = useTranslation();
+    const { TextArea } = Input;
+    const { t } = useTranslation();
     const [user, setUser] = useState(null);
-    const history = useHistory();
+
     const [isEditingEmail, setIsEditingEmail] = useState(false);
     const [isEditingName, setIsEditingName] = useState(false);
+    const [isEditingDescription, setIsEditingDescription] = useState(false);
+
     const [name, setName] = useState("");
+    const [description, setDescription] = useState("");
+
     const [showModal, setShowModal] = useState(false);
     const fileInput = useRef(null);
 
@@ -48,6 +51,10 @@ const ProfileSettings = () => {
     const handleImageClick = () => {
         fileInput.current.click();
     };
+    const handleDescriptionChange = (e) => {
+        setDescription(e.target.value);
+    }
+
     const handleFileChange = (event) => {
         const file = event.target.files[0];
         const storageRef = ref(storage, 'profilePictures/' + file.name);
@@ -77,8 +84,12 @@ const ProfileSettings = () => {
     };
 
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const handleSubmit = async () => {
+        console.log("handleSubmit called");
+
+        const updatedUser = { ...user };
+        delete updatedUser.addtime;
+
         if (name) {
             const allUsersRef = collection(db, 'users');
             const allUsersSnapshot = await getDocs(allUsersRef);
@@ -99,33 +110,25 @@ const ProfileSettings = () => {
                 return;
             }
 
-            const usersRef = collection(db, 'users');
-            const q = query(usersRef, where("id", "==", user.id));
-            const querySnapshot = await getDocs(q);
-            querySnapshot.forEach(async (doc) => {
-                await updateDoc(doc.ref, {
-                    name: name
-                });
-                let updatedUser = { ...user, name: name };
-                localStorage.removeItem('user');
-                localStorage.setItem('user', JSON.stringify(updatedUser));
-                setUser(updatedUser);
-                setShowModal(true);
-                window.location.reload();
-            });
+            updatedUser.name = name;
         }
-    };
 
-    const goBack = () => {
-        history.goBack();
-    }
-    const handleLogout = async () => {
-        try {
-            await signOut(auth);
-        } catch (error) {
-            alert(error.message);
+        if (description) {
+            updatedUser.description = description;
         }
-    };
+
+        const usersRef = collection(db, 'users');
+        const q = query(usersRef, where("id", "==", user.id));
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach(async (doc) => {
+            await updateDoc(doc.ref, updatedUser);
+            localStorage.removeItem('user');
+            localStorage.setItem('user', JSON.stringify(updatedUser));
+            setUser(updatedUser);
+            setShowModal(true);
+            window.location.reload();
+        });
+    }
 
     return (
         <div>
@@ -181,39 +184,47 @@ const ProfileSettings = () => {
                             <h5>{t('email')}</h5>
                             <Row className="align-items-center mb-3">
                                 <Col>
-                                    <Form.Control
-                                        type="text"
+                                    <Input
                                         disabled={!isEditingEmail}
-                                        readOnly={!isEditingEmail}
                                         placeholder={user?.email}
                                     />
                                 </Col>
                                 <Col xs="auto">
-                                    <Button variant="outline-secondary">
-                                        <Pencil />
-                                    </Button>
+                                    <Button icon={<EditOutlined />} />
                                 </Col>
                             </Row>
                             <h5>{t('displayName')}</h5>
                             <Row className="align-items-center mb-3">
                                 <Col>
-                                    <Form.Control
-                                        type="text"
+                                    <Input
                                         disabled={!isEditingName}
-                                        readOnly={!isEditingName}
                                         placeholder={user?.name}
                                         value={name}
                                         onChange={handleNameChange}
                                     />
                                 </Col>
                                 <Col xs="auto">
-                                    <Button variant="outline-secondary" onClick={() => setIsEditingName(!isEditingName)}>
-                                        <Pencil />
-                                    </Button>
+                                    <Button icon={<EditOutlined />} onClick={() => setIsEditingName(!isEditingName)}/>
                                 </Col>
                             </Row>
-                            <Form onSubmit={handleSubmit} style={{ textAlign: "center" }}>
-                                <Button variant="warning" style={{ backgroundColor: "orange", color: "white" }} type="submit">
+                            <h5>Description</h5>
+                            <Row>
+                                <Col>
+                                    <TextArea
+                                        showCount
+                                        maxLength={150}
+                                        disabled={!isEditingDescription}
+                                        placeholder={user?.description}
+                                        onChange={handleDescriptionChange}
+                                        value={description}
+                                    />
+                                </Col>
+                                <Col xs="auto">
+                                    <Button icon={<EditOutlined />} onClick={() => setIsEditingDescription(!isEditingDescription)} />
+                                </Col>
+                            </Row>
+                            <Form className="mt-3" onFinish={handleSubmit} style={{ textAlign: "center", border: 'none' }}>
+                                <Button type="primary" htmlType="submit">
                                     {t('save')}
                                 </Button>
                             </Form>
@@ -242,40 +253,48 @@ const ProfileSettings = () => {
                             <h5>{t('email')}</h5>
                             <Row className="align-items-center mb-3">
                                 <Col>
-                                    <Form.Control
-                                        type="text"
+                                    <Input
                                         disabled={!isEditingEmail}
-                                        readOnly={!isEditingEmail}
                                         placeholder={user?.email}
                                     />
                                 </Col>
                                 <Col xs="auto">
-                                    <Button variant="outline-secondary">
-                                        <Pencil />
-                                    </Button>
+                                    <Button icon={<EditOutlined />} />
                                 </Col>
                             </Row>
                             <h5>{t('displayName')}</h5>
                             <Row className="align-items-center mb-3">
                                 <Col>
-                                    <Form.Control
-                                        type="text"
+                                    <Input
                                         disabled={!isEditingName}
-                                        readOnly={!isEditingName}
                                         placeholder={user?.name}
                                         value={name}
                                         onChange={handleNameChange}
                                     />
                                 </Col>
                                 <Col xs="auto">
-                                    <Button variant="outline-secondary" onClick={() => setIsEditingName(!isEditingName)}>
-                                        <Pencil />
-                                    </Button>
+                                    <Button icon={<EditOutlined />} onClick={() => setIsEditingName(!isEditingName)} />
                                 </Col>
                             </Row>
-                            <Form onSubmit={handleSubmit} style={{ textAlign: "center" }}>
-                                <Button variant="warning" style={{ backgroundColor: "orange", color: "white" }} type="submit">
-                                {t('save')}
+                            <h5>Description</h5>
+                            <Row>
+                                <Col>
+                                    <TextArea
+                                        showCount
+                                        maxLength={150}
+                                        disabled={!isEditingDescription}
+                                        placeholder={user?.description}
+                                        onChange={handleDescriptionChange}
+                                        value={description}
+                                    />
+                                </Col>
+                                <Col xs="auto">
+                                    <Button icon={<EditOutlined />} onClick={() => setIsEditingDescription(!isEditingDescription)} />
+                                </Col>
+                            </Row>
+                            <Form className="mt-3" onFinish={handleSubmit} style={{ textAlign: "center", border: 'none' }}>
+                                <Button type="primary" htmlType="submit">
+                                    {t('save')}
                                 </Button>
                             </Form>
                         </Col>

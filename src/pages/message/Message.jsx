@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link } from 'react-router-dom';
+import { Link, useParams, useHistory } from 'react-router-dom';
 import styles from './message.module.css'
 import { MyNavbar } from "../../components/Navbar/Navbar";
 import { db, auth, storage } from "../../config/firebase";
@@ -20,7 +20,8 @@ import {
     addDoc,
     doc,
     serverTimestamp,
-    updateDoc
+    updateDoc,
+    limitToLast
 } from "firebase/firestore";
 import './messages.css';
 import Logo from '../../assets/logo.png';
@@ -28,6 +29,7 @@ import { NavBarBack } from "../../components/Navbar/NavBarBack";
 
 
 export const Message = () => {
+    const history = useHistory();
     const [messages, setMessages] = useState([]);
     const [selectedMessage, setSelectedMessage] = useState(null);
     const [msgList, setMsgList] = useState([]);
@@ -48,6 +50,8 @@ export const Message = () => {
     const [userImageUrl, setUserImageUrl] = useState('');
     const [userName, setUserName] = useState('');
     const [userId, setUserId] = useState('');
+
+    const { chatId } = useParams();
 
     function formatTime(timestamp) {
         if (timestamp) {
@@ -83,12 +87,13 @@ export const Message = () => {
             }
         };
 
+        setSelectedMessage(chatId)
         fetchUserImage();
     }, [recipientId]);
 
 
     const scrollToBottom = () => {
-        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+        messagesEndRef.current?.scrollIntoView({ behavior: "auto" })
     }
     useEffect(scrollToBottom, [msgList]);
 
@@ -103,12 +108,11 @@ export const Message = () => {
                 const unsubscribe = onSnapshot(q, (querySnapshot) => {
                     const messages = querySnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
 
-                    messages.sort((a, b) => b.last_time - a.last_time); // Сортировка по дате в обратном порядке
+                    messages.sort((a, b) => b.last_time - a.last_time);
 
                     setMessages(messages);
                 });
 
-                // Отписка от слушателя при размонтировании компонента
                 return unsubscribe;
             }
         };
@@ -120,7 +124,7 @@ export const Message = () => {
         const fetchMsgList = () => {
             if (selectedMessage) {
                 const msgListRef = collection(db, "message", selectedMessage, "msglist");
-                const q = query(msgListRef, orderBy("addtime"));
+                const q = query(msgListRef, orderBy("addtime"), limitToLast(50));
 
                 const unsubscribe = onSnapshot(q, (snapshot) => {
                     setMsgList(snapshot.docs.map(doc => doc.data()));
@@ -132,6 +136,8 @@ export const Message = () => {
 
         fetchMsgList();
     }, [selectedMessage]);
+
+    useEffect(scrollToBottom, [messages]);
 
     async function uploadImage(file) {
         const storageRef = ref(storage, `images/${file.name}`);
@@ -238,6 +244,7 @@ export const Message = () => {
                                         onClick={() => {
                                             setSelectedMessage(message.id);
                                             setRecipientId(message.to_uid);
+                                            history.push(`/message/${message.id}`);
                                         }}
                                     >
                                         <div className="chat_people">
@@ -366,6 +373,7 @@ export const Message = () => {
                         <List.Item key={index} onClick={() => {
                             setSelectedMessage(message.id);
                             setRecipientId(message.to_uid);
+                            history.push(`/message/${message.id}`);
                             setIsMessagesContainerOpen(true);
                         }} style={{ display: isMessagesContainerOpen ? 'none' : 'flex', justifyContent: 'space-between', position: 'relative' }}>
                             <List.Item.Meta

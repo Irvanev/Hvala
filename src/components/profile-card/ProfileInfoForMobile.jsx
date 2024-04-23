@@ -3,10 +3,10 @@ import { Col, Image, Row } from "react-bootstrap";
 import Logo from "../../assets/logo.png"
 import { Rate } from 'antd';
 import styles from './profileInfo.module.css'
-import {useTranslation} from "react-i18next";
+import { useTranslation } from "react-i18next";
 
 const ProfileInfoForMobile = ({ user, handleShow }) => {
-    const {t} = useTranslation();
+    const { t } = useTranslation();
     const rat = user?.rating
 
     function getReviewText(count) {
@@ -27,8 +27,8 @@ const ProfileInfoForMobile = ({ user, handleShow }) => {
 
                     <span>{user?.rating.toFixed(1) || '0.0'}</span>
                     {rat && <Rate disabled defaultValue={rat} />}
-                    <a onClick={handleShow} style={{cursor: 'pointer'}}>
-                        <h4>{getReviewText(user?.reviewCount || 0)}</h4>
+                    <a onClick={handleShow} style={{ cursor: 'pointer' }}>
+                        <p >{getReviewText(user?.reviewCount || 0)}</p>
                     </a>
                 </div>
                 <div className={styles.profileSections}>

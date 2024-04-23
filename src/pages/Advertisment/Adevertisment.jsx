@@ -45,7 +45,7 @@ export const Advertisement = () => {
         const q = query(
             advertismentsCollection,
             orderBy("time_creation", "desc"),
-            limit(loadedAdvertisements) // Используем количество уже загруженных объявлений
+            limit(loadedAdvertisements)
         );
         const querySnapshot = await getDocs(q);
         const advertisments = querySnapshot.docs.map(doc => ({...doc.data(), id: doc.id}));
@@ -60,7 +60,7 @@ export const Advertisement = () => {
             setAdvertisement(prevAdvertisements => [...prevAdvertisements, ...additionalAdvertisements]);
             setLoadedAdvertisements(prevLoaded => prevLoaded + additionalAdvertisements.length);
         } else {
-            setLoadMoreButtonVisible(false); // Если больше нет объявлений, скрываем кнопку "Показать еще"
+            setLoadMoreButtonVisible(false);
         }
     };
 
@@ -70,7 +70,7 @@ export const Advertisement = () => {
             advertismentsCollection,
             orderBy("time_creation", "desc"),
             limit(40),
-            startAfter(advertisment[advertisment.length - 1].time_creation) // Загрузка объявлений после последнего загруженного
+            startAfter(advertisment[advertisment.length - 1].time_creation)
         );
         const querySnapshot = await getDocs(q);
         const additionalAdvertisements = querySnapshot.docs.map(doc => ({...doc.data(), id: doc.id}));
@@ -106,7 +106,7 @@ export const Advertisement = () => {
             <FloatButton
                 icon={<GlobalOutlined />}
                 style={{ right: 24, bottom: 80 }}
-                onClick={showModal} // Вызов showModal при нажатии на кнопку
+                onClick={showModal}
             />
             <LanguageModal
                 show={isModalVisible}

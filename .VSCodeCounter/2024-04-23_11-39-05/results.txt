@@ -1,0 +1,198 @@
+Date : 2024-04-23 11:39:05
+Directory : /Users/irvanev/Works/hvala-web
+Total : 126 files,  33342 codes, 29 comments, 932 blanks, all 34303 lines
+
+Languages
++----------------+------------+------------+------------+------------+------------+
+| language       | files      | code       | comment    | blank      | total      |
++----------------+------------+------------+------------+------------+------------+
+| JSON           |          7 |     23,751 |          0 |         91 |     23,842 |
+| JavaScript JSX |         87 |      8,696 |         18 |        669 |      9,383 |
+| CSS            |         10 |        423 |          0 |         71 |        494 |
+| JavaScript     |         12 |        255 |          4 |         53 |        312 |
+| HTML           |          3 |        131 |          6 |          8 |        145 |
+| XML            |          6 |         47 |          1 |          5 |         53 |
+| Markdown       |          1 |         39 |          0 |         35 |         74 |
++----------------+------------+------------+------------+------------+------------+
+
+Directories
++----------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                                 | files      | code       | comment    | blank      | total      |
++----------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                                    |        126 |     33,342 |         29 |        932 |     34,303 |
+| . (Files)                                                                                                            |          4 |     22,776 |          0 |         38 |     22,814 |
+| .idea                                                                                                                |          4 |         34 |          0 |          0 |         34 |
+| .idea (Files)                                                                                                        |          3 |         28 |          0 |          0 |         28 |
+| .idea/inspectionProfiles                                                                                             |          1 |          6 |          0 |          0 |          6 |
+| public                                                                                                               |          3 |         52 |          0 |          4 |         56 |
+| src                                                                                                                  |        115 |     10,480 |         29 |        890 |     11,399 |
+| src (Files)                                                                                                          |         11 |        273 |         10 |         35 |        318 |
+| src/assets                                                                                                           |          5 |      1,001 |          1 |         92 |      1,094 |
+| src/assets (Files)                                                                                                   |          2 |         13 |          1 |          5 |         19 |
+| src/assets/locales                                                                                                   |          3 |        988 |          0 |         87 |      1,075 |
+| src/components                                                                                                       |         61 |      4,287 |          4 |        348 |      4,639 |
+| src/components (Files)                                                                                               |          2 |        284 |          0 |         18 |        302 |
+| src/components/Navbar                                                                                                |          4 |        201 |          0 |         24 |        225 |
+| src/components/advertisment-card-category                                                                            |          2 |         82 |          0 |          5 |         87 |
+| src/components/advertisment-card-items                                                                               |          6 |        660 |          3 |         71 |        734 |
+| src/components/card-advertisment-home                                                                                |          4 |        219 |          0 |         20 |        239 |
+| src/components/category-cards                                                                                        |          2 |         65 |          0 |          2 |         67 |
+| src/components/edit-advertisments-forms                                                                              |          1 |          7 |          0 |          3 |         10 |
+| src/components/formsForAddingAdvertisements                                                                          |         13 |      2,050 |          0 |        135 |      2,185 |
+| src/components/formsForAddingAdvertisements (Files)                                                                  |          7 |      1,065 |          0 |         71 |      1,136 |
+| src/components/formsForAddingAdvertisements/electronics-forms                                                        |          6 |        985 |          0 |         64 |      1,049 |
+| src/components/profile-card                                                                                          |          5 |        185 |          1 |         23 |        209 |
+| src/components/select-brands                                                                                         |          5 |        122 |          0 |         10 |        132 |
+| src/components/select-category-form                                                                                  |         14 |        352 |          0 |         31 |        383 |
+| src/components/select-types                                                                                          |          3 |         60 |          0 |          6 |         66 |
+| src/components/select-types/select-types-clothes                                                                     |          1 |         28 |          0 |          2 |         30 |
+| src/components/select-types/select-types-electronics                                                                 |          2 |         32 |          0 |          4 |         36 |
+| src/config                                                                                                           |          1 |         18 |          0 |          2 |         20 |
+| src/pages                                                                                                            |         33 |      4,775 |         14 |        381 |      5,170 |
+| src/pages (Files)                                                                                                    |          2 |        161 |          0 |          9 |        170 |
+| src/pages/AddAdvertisment                                                                                            |          1 |        728 |          4 |         52 |        784 |
+| src/pages/Advertisment                                                                                               |          1 |        117 |          1 |         16 |        134 |
+| src/pages/AdvertismentCard                                                                                           |          2 |         98 |          1 |         14 |        113 |
+| src/pages/Auth                                                                                                       |          2 |        115 |          0 |         13 |        128 |
+| src/pages/CategoryAdvertisment                                                                                       |          1 |        294 |          0 |         19 |        313 |
+| src/pages/EditAdvertisment                                                                                           |         15 |      1,359 |          1 |         60 |      1,420 |
+| src/pages/Profile                                                                                                    |          4 |      1,018 |          3 |         79 |      1,100 |
+| src/pages/Register                                                                                                   |          2 |        221 |          0 |         21 |        242 |
+| src/pages/message                                                                                                    |          3 |        664 |          4 |         98 |        766 |
+| src/services                                                                                                         |          4 |        126 |          0 |         32 |        158 |
+| src/services (Files)                                                                                                 |          3 |        104 |          0 |         27 |        131 |
+| src/services/AdvertismentsHome                                                                                       |          1 |         22 |          0 |          5 |         27 |
++----------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++----------------------------------------------------------------------------------------------------------------------+----------------+------------+------------+------------+------------+
+| filename                                                                                                             | language       | code       | comment    | blank      | total      |
++----------------------------------------------------------------------------------------------------------------------+----------------+------------+------------+------------+------------+
+| /Users/irvanev/Works/hvala-web/.idea/hvala-web.iml                                                                   | XML            |         14 |          0 |          0 |         14 |
+| /Users/irvanev/Works/hvala-web/.idea/inspectionProfiles/Project_Default.xml                                          | XML            |          6 |          0 |          0 |          6 |
+| /Users/irvanev/Works/hvala-web/.idea/modules.xml                                                                     | XML            |          8 |          0 |          0 |          8 |
+| /Users/irvanev/Works/hvala-web/.idea/vcs.xml                                                                         | XML            |          6 |          0 |          0 |          6 |
+| /Users/irvanev/Works/hvala-web/README.md                                                                             | Markdown       |         39 |          0 |         35 |         74 |
+| /Users/irvanev/Works/hvala-web/firebase.json                                                                         | JSON           |         17 |          0 |          1 |         18 |
+| /Users/irvanev/Works/hvala-web/package-lock.json                                                                     | JSON           |     22,651 |          0 |          1 |     22,652 |
+| /Users/irvanev/Works/hvala-web/package.json                                                                          | JSON           |         69 |          0 |          1 |         70 |
+| /Users/irvanev/Works/hvala-web/public/firebase-messaging-sw.js                                                       | JavaScript     |          6 |          0 |          2 |          8 |
+| /Users/irvanev/Works/hvala-web/public/index.html                                                                     | HTML           |         20 |          0 |          1 |         21 |
+| /Users/irvanev/Works/hvala-web/public/manifest.json                                                                  | JSON           |         26 |          0 |          1 |         27 |
+| /Users/irvanev/Works/hvala-web/src/404.html                                                                          | HTML           |         32 |          0 |          2 |         34 |
+| /Users/irvanev/Works/hvala-web/src/App.js                                                                            | JavaScript     |         49 |          0 |          6 |         55 |
+| /Users/irvanev/Works/hvala-web/src/App.test.js                                                                       | JavaScript     |          7 |          0 |          2 |          9 |
+| /Users/irvanev/Works/hvala-web/src/AuthContext.jsx                                                                   | JavaScript JSX |         11 |          0 |          4 |         15 |
+| /Users/irvanev/Works/hvala-web/src/LanguageModal.jsx                                                                 | JavaScript JSX |         34 |          0 |          6 |         40 |
+| /Users/irvanev/Works/hvala-web/src/UserContext.js                                                                    | JavaScript     |          5 |          0 |          3 |          8 |
+| /Users/irvanev/Works/hvala-web/src/assets/category-svgrepo-com.svg                                                   | XML            |          7 |          0 |          0 |          7 |
+| /Users/irvanev/Works/hvala-web/src/assets/locales/en.json                                                            | JSON           |        329 |          0 |         23 |        352 |
+| /Users/irvanev/Works/hvala-web/src/assets/locales/me.json                                                            | JSON           |        330 |          0 |         22 |        352 |
+| /Users/irvanev/Works/hvala-web/src/assets/locales/ru.json                                                            | JSON           |        329 |          0 |         42 |        371 |
+| /Users/irvanev/Works/hvala-web/src/assets/sport_and_relax_unselected.svg                                             | XML            |          6 |          1 |          5 |         12 |
+| /Users/irvanev/Works/hvala-web/src/components/Navbar/NavBarBack.jsx                                                  | JavaScript JSX |         14 |          0 |          3 |         17 |
+| /Users/irvanev/Works/hvala-web/src/components/Navbar/NavBarLogout.jsx                                                | JavaScript JSX |         25 |          0 |          5 |         30 |
+| /Users/irvanev/Works/hvala-web/src/components/Navbar/NavBarShare.jsx                                                 | JavaScript JSX |         38 |          0 |          5 |         43 |
+| /Users/irvanev/Works/hvala-web/src/components/Navbar/Navbar.jsx                                                      | JavaScript JSX |        124 |          0 |         11 |        135 |
+| /Users/irvanev/Works/hvala-web/src/components/PrivateRoute.jsx                                                       | JavaScript JSX |         43 |          0 |          5 |         48 |
+| /Users/irvanev/Works/hvala-web/src/components/advertisment-card-category/CardCategory.jsx                            | JavaScript JSX |         56 |          0 |          3 |         59 |
+| /Users/irvanev/Works/hvala-web/src/components/advertisment-card-category/DefaultCardCategory.jsx                     | JavaScript JSX |         26 |          0 |          2 |         28 |
+| /Users/irvanev/Works/hvala-web/src/components/advertisment-card-items/CardInMobile.jsx                               | JavaScript JSX |        195 |          1 |         25 |        221 |
+| /Users/irvanev/Works/hvala-web/src/components/advertisment-card-items/CardInPc.jsx                                   | JavaScript JSX |        215 |          2 |         30 |        247 |
+| /Users/irvanev/Works/hvala-web/src/components/advertisment-card-items/CharactersForCard.jsx                          | JavaScript JSX |         77 |          0 |          3 |         80 |
+| /Users/irvanev/Works/hvala-web/src/components/advertisment-card-items/DefaultCardInMobile.jsx                        | JavaScript JSX |         81 |          0 |          6 |         87 |
+| /Users/irvanev/Works/hvala-web/src/components/advertisment-card-items/DefaultCardInPc.jsx                            | JavaScript JSX |         82 |          0 |          5 |         87 |
+| /Users/irvanev/Works/hvala-web/src/components/advertisment-card-items/ModalForNumberPhone.jsx                        | JavaScript JSX |         10 |          0 |          2 |         12 |
+| /Users/irvanev/Works/hvala-web/src/components/card-advertisment-home/CardAdvertisementHome.jsx                       | JavaScript JSX |        130 |          0 |         13 |        143 |
+| /Users/irvanev/Works/hvala-web/src/components/card-advertisment-home/DefaultCardAdvertisment.jsx                     | JavaScript JSX |         43 |          0 |          2 |         45 |
+| /Users/irvanev/Works/hvala-web/src/components/card-advertisment-home/ImageMiniature.jsx                              | JavaScript JSX |          0 |          0 |          1 |          1 |
+| /Users/irvanev/Works/hvala-web/src/components/card-advertisment-home/card-advertisment.module.css                    | CSS            |         46 |          0 |          4 |         50 |
+| /Users/irvanev/Works/hvala-web/src/components/category-cards/CategoryCards.jsx                                       | JavaScript JSX |         48 |          0 |          2 |         50 |
+| /Users/irvanev/Works/hvala-web/src/components/category-cards/category-cards.module.css                               | CSS            |         17 |          0 |          0 |         17 |
+| /Users/irvanev/Works/hvala-web/src/components/category.jsx                                                           | JavaScript JSX |        241 |          0 |         13 |        254 |
+| /Users/irvanev/Works/hvala-web/src/components/edit-advertisments-forms/FormsWithOutCondition.jsx                     | JavaScript JSX |          7 |          0 |          3 |         10 |
+| /Users/irvanev/Works/hvala-web/src/components/formsForAddingAdvertisements/ClothesForm.jsx                           | JavaScript JSX |        185 |          0 |         10 |        195 |
+| /Users/irvanev/Works/hvala-web/src/components/formsForAddingAdvertisements/CountryRegion.jsx                         | JavaScript JSX |        130 |          0 |          6 |        136 |
+| /Users/irvanev/Works/hvala-web/src/components/formsForAddingAdvertisements/DefaultForm.jsx                           | JavaScript JSX |        130 |          0 |         12 |        142 |
+| /Users/irvanev/Works/hvala-web/src/components/formsForAddingAdvertisements/DefaultFormWithoutCondition.jsx           | JavaScript JSX |        118 |          0 |         11 |        129 |
+| /Users/irvanev/Works/hvala-web/src/components/formsForAddingAdvertisements/EstateForm.jsx                            | JavaScript JSX |        149 |          0 |         12 |        161 |
+| /Users/irvanev/Works/hvala-web/src/components/formsForAddingAdvertisements/HomeApplianceForm.jsx                     | JavaScript JSX |        134 |          0 |         10 |        144 |
+| /Users/irvanev/Works/hvala-web/src/components/formsForAddingAdvertisements/TransportForm.jsx                         | JavaScript JSX |        219 |          0 |         10 |        229 |
+| /Users/irvanev/Works/hvala-web/src/components/formsForAddingAdvertisements/electronics-forms/ComputerForm.jsx        | JavaScript JSX |        172 |          0 |         12 |        184 |
+| /Users/irvanev/Works/hvala-web/src/components/formsForAddingAdvertisements/electronics-forms/ComputersAccsForm.jsx   | JavaScript JSX |        172 |          0 |         10 |        182 |
+| /Users/irvanev/Works/hvala-web/src/components/formsForAddingAdvertisements/electronics-forms/GameConsoleForm.jsx     | JavaScript JSX |        159 |          0 |         10 |        169 |
+| /Users/irvanev/Works/hvala-web/src/components/formsForAddingAdvertisements/electronics-forms/PhoneAndTabletsForm.jsx | JavaScript JSX |        171 |          0 |         12 |        183 |
+| /Users/irvanev/Works/hvala-web/src/components/formsForAddingAdvertisements/electronics-forms/PhotoVideoForm.jsx      | JavaScript JSX |        155 |          0 |         10 |        165 |
+| /Users/irvanev/Works/hvala-web/src/components/formsForAddingAdvertisements/electronics-forms/TvForm.jsx              | JavaScript JSX |        156 |          0 |         10 |        166 |
+| /Users/irvanev/Works/hvala-web/src/components/profile-card/DropDownWithModal.jsx                                     | JavaScript JSX |         48 |          1 |          7 |         56 |
+| /Users/irvanev/Works/hvala-web/src/components/profile-card/ModalForNumberReports.jsx                                 | JavaScript JSX |         52 |          0 |          6 |         58 |
+| /Users/irvanev/Works/hvala-web/src/components/profile-card/ProfileInfoForMobile.jsx                                  | JavaScript JSX |         38 |          0 |          5 |         43 |
+| /Users/irvanev/Works/hvala-web/src/components/profile-card/ProfileInfoForPc.jsx                                      | JavaScript JSX |         36 |          0 |          4 |         40 |
+| /Users/irvanev/Works/hvala-web/src/components/profile-card/profileInfo.module.css                                    | CSS            |         11 |          0 |          1 |         12 |
+| /Users/irvanev/Works/hvala-web/src/components/select-brands/SelectBrandsForComputers.jsx                             | JavaScript JSX |         22 |          0 |          2 |         24 |
+| /Users/irvanev/Works/hvala-web/src/components/select-brands/SelectBrandsForComputersAccs.jsx                         | JavaScript JSX |         27 |          0 |          2 |         29 |
+| /Users/irvanev/Works/hvala-web/src/components/select-brands/SelectBrandsForGameConsole.jsx                           | JavaScript JSX |         24 |          0 |          2 |         26 |
+| /Users/irvanev/Works/hvala-web/src/components/select-brands/SelectBrandsForMobile.jsx                                | JavaScript JSX |         29 |          0 |          2 |         31 |
+| /Users/irvanev/Works/hvala-web/src/components/select-brands/SelectBrandsForVideo.jsx                                 | JavaScript JSX |         20 |          0 |          2 |         22 |
+| /Users/irvanev/Works/hvala-web/src/components/select-category-form/SelectCategory.jsx                                | JavaScript JSX |         31 |          0 |          2 |         33 |
+| /Users/irvanev/Works/hvala-web/src/components/select-category-form/SelectSubCategoryBulding.jsx                      | JavaScript JSX |         26 |          0 |          2 |         28 |
+| /Users/irvanev/Works/hvala-web/src/components/select-category-form/SelectSubCategoryChildGoods.jsx                   | JavaScript JSX |         29 |          0 |          2 |         31 |
+| /Users/irvanev/Works/hvala-web/src/components/select-category-form/SelectSubCategoryClothes.jsx                      | JavaScript JSX |         20 |          0 |          2 |         22 |
+| /Users/irvanev/Works/hvala-web/src/components/select-category-form/SelectSubCategoryElectronics.jsx                  | JavaScript JSX |         23 |          0 |          2 |         25 |
+| /Users/irvanev/Works/hvala-web/src/components/select-category-form/SelectSubCategoryEstate.jsx                       | JavaScript JSX |         19 |          0 |          2 |         21 |
+| /Users/irvanev/Works/hvala-web/src/components/select-category-form/SelectSubCategoryHealth.jsx                       | JavaScript JSX |         27 |          0 |          2 |         29 |
+| /Users/irvanev/Works/hvala-web/src/components/select-category-form/SelectSubCategoryHobby.jsx                        | JavaScript JSX |         25 |          0 |          2 |         27 |
+| /Users/irvanev/Works/hvala-web/src/components/select-category-form/SelectSubCategoryHomeAppliance.jsx                | JavaScript JSX |         25 |          0 |          3 |         28 |
+| /Users/irvanev/Works/hvala-web/src/components/select-category-form/SelectSubCategoryHouseGoods.jsx                   | JavaScript JSX |         24 |          0 |          2 |         26 |
+| /Users/irvanev/Works/hvala-web/src/components/select-category-form/SelectSubCategoryService.jsx                      | JavaScript JSX |         31 |          0 |          3 |         34 |
+| /Users/irvanev/Works/hvala-web/src/components/select-category-form/SelectSubCategorySport.jsx                        | JavaScript JSX |         32 |          0 |          2 |         34 |
+| /Users/irvanev/Works/hvala-web/src/components/select-category-form/SelectSubCategoryTransport.jsx                    | JavaScript JSX |         20 |          0 |          2 |         22 |
+| /Users/irvanev/Works/hvala-web/src/components/select-category-form/SelectSubCategoryTransportGoods.jsx               | JavaScript JSX |         20 |          0 |          3 |         23 |
+| /Users/irvanev/Works/hvala-web/src/components/select-types/select-types-clothes/SelectTypesForClothes.jsx            | JavaScript JSX |         28 |          0 |          2 |         30 |
+| /Users/irvanev/Works/hvala-web/src/components/select-types/select-types-electronics/SelectTypesForComputers.jsx      | JavaScript JSX |         16 |          0 |          2 |         18 |
+| /Users/irvanev/Works/hvala-web/src/components/select-types/select-types-electronics/SelectTypesForComputersAccs.jsx  | JavaScript JSX |         16 |          0 |          2 |         18 |
+| /Users/irvanev/Works/hvala-web/src/config/firebase.js                                                                | JavaScript     |         18 |          0 |          2 |         20 |
+| /Users/irvanev/Works/hvala-web/src/index.css                                                                         | CSS            |         12 |          0 |          1 |         13 |
+| /Users/irvanev/Works/hvala-web/src/index.html                                                                        | HTML           |         79 |          6 |          5 |         90 |
+| /Users/irvanev/Works/hvala-web/src/index.js                                                                          | JavaScript     |         31 |          0 |          3 |         34 |
+| /Users/irvanev/Works/hvala-web/src/pages/AddAdvertisment/AddItem.jsx                                                 | JavaScript JSX |        728 |          4 |         52 |        784 |
+| /Users/irvanev/Works/hvala-web/src/pages/Advertisment/Adevertisment.jsx                                              | JavaScript JSX |        117 |          1 |         16 |        134 |
+| /Users/irvanev/Works/hvala-web/src/pages/AdvertismentCard/CardItem.jsx                                               | JavaScript JSX |         93 |          1 |         14 |        108 |
+| /Users/irvanev/Works/hvala-web/src/pages/AdvertismentCard/cardItem.css                                               | CSS            |          5 |          0 |          0 |          5 |
+| /Users/irvanev/Works/hvala-web/src/pages/Auth/Authorization.jsx                                                      | JavaScript JSX |         96 |          0 |         12 |        108 |
+| /Users/irvanev/Works/hvala-web/src/pages/Auth/authorizations.module.css                                              | CSS            |         19 |          0 |          1 |         20 |
+| /Users/irvanev/Works/hvala-web/src/pages/CategoryAdvertisment/CategoryAdvertisments.jsx                              | JavaScript JSX |        294 |          0 |         19 |        313 |
+| /Users/irvanev/Works/hvala-web/src/pages/EditAdvertisment/BuildingMaterial.jsx                                       | JavaScript JSX |         15 |          0 |          2 |         17 |
+| /Users/irvanev/Works/hvala-web/src/pages/EditAdvertisment/CategorySelect.jsx                                         | JavaScript JSX |         26 |          0 |          2 |         28 |
+| /Users/irvanev/Works/hvala-web/src/pages/EditAdvertisment/ChildGoods.jsx                                             | JavaScript JSX |         20 |          0 |          2 |         22 |
+| /Users/irvanev/Works/hvala-web/src/pages/EditAdvertisment/Clothes.jsx                                                | JavaScript JSX |         11 |          0 |          2 |         13 |
+| /Users/irvanev/Works/hvala-web/src/pages/EditAdvertisment/EditAdvertismt.jsx                                         | JavaScript JSX |      1,130 |          1 |         32 |      1,163 |
+| /Users/irvanev/Works/hvala-web/src/pages/EditAdvertisment/Electronics.jsx                                            | JavaScript JSX |         14 |          0 |          2 |         16 |
+| /Users/irvanev/Works/hvala-web/src/pages/EditAdvertisment/Estate.jsx                                                 | JavaScript JSX |         10 |          0 |          2 |         12 |
+| /Users/irvanev/Works/hvala-web/src/pages/EditAdvertisment/HealthBeauty.jsx                                           | JavaScript JSX |         18 |          0 |          2 |         20 |
+| /Users/irvanev/Works/hvala-web/src/pages/EditAdvertisment/HobbyRelax.jsx                                             | JavaScript JSX |         16 |          0 |          2 |         18 |
+| /Users/irvanev/Works/hvala-web/src/pages/EditAdvertisment/HomeAppliance.jsx                                          | JavaScript JSX |         16 |          0 |          2 |         18 |
+| /Users/irvanev/Works/hvala-web/src/pages/EditAdvertisment/HouseGoods.jsx                                             | JavaScript JSX |         15 |          0 |          2 |         17 |
+| /Users/irvanev/Works/hvala-web/src/pages/EditAdvertisment/Service.jsx                                                | JavaScript JSX |         22 |          0 |          2 |         24 |
+| /Users/irvanev/Works/hvala-web/src/pages/EditAdvertisment/Sport.jsx                                                  | JavaScript JSX |         24 |          0 |          2 |         26 |
+| /Users/irvanev/Works/hvala-web/src/pages/EditAdvertisment/Transport.jsx                                              | JavaScript JSX |         11 |          0 |          2 |         13 |
+| /Users/irvanev/Works/hvala-web/src/pages/EditAdvertisment/TransportGoods.jsx                                         | JavaScript JSX |         11 |          0 |          2 |         13 |
+| /Users/irvanev/Works/hvala-web/src/pages/Help.jsx                                                                    | JavaScript JSX |         76 |          0 |          4 |         80 |
+| /Users/irvanev/Works/hvala-web/src/pages/Profile/Profile.jsx                                                         | JavaScript JSX |        356 |          1 |         15 |        372 |
+| /Users/irvanev/Works/hvala-web/src/pages/Profile/SellerProfile.jsx                                                   | JavaScript JSX |        340 |          2 |         33 |        375 |
+| /Users/irvanev/Works/hvala-web/src/pages/Profile/Settings.jsx                                                        | JavaScript JSX |        279 |          0 |         24 |        303 |
+| /Users/irvanev/Works/hvala-web/src/pages/Profile/profile.module.css                                                  | CSS            |         43 |          0 |          7 |         50 |
+| /Users/irvanev/Works/hvala-web/src/pages/Register/Registration.jsx                                                   | JavaScript JSX |        198 |          0 |         16 |        214 |
+| /Users/irvanev/Works/hvala-web/src/pages/Register/registration.css                                                   | CSS            |         23 |          0 |          5 |         28 |
+| /Users/irvanev/Works/hvala-web/src/pages/contact.jsx                                                                 | JavaScript JSX |         85 |          0 |          5 |         90 |
+| /Users/irvanev/Works/hvala-web/src/pages/message/Message.jsx                                                         | JavaScript JSX |        417 |          4 |         46 |        467 |
+| /Users/irvanev/Works/hvala-web/src/pages/message/message.module.css                                                  | CSS            |         85 |          0 |         17 |        102 |
+| /Users/irvanev/Works/hvala-web/src/pages/message/messages.css                                                        | CSS            |        162 |          0 |         35 |        197 |
+| /Users/irvanev/Works/hvala-web/src/reportWebVitals.js                                                                | JavaScript     |         12 |          0 |          2 |         14 |
+| /Users/irvanev/Works/hvala-web/src/services/AdvertismentsCardCategory.js                                             | JavaScript     |         30 |          0 |         11 |         41 |
+| /Users/irvanev/Works/hvala-web/src/services/AdvertismentsHome/AdvertismentsService.js                                | JavaScript     |         22 |          0 |          5 |         27 |
+| /Users/irvanev/Works/hvala-web/src/services/GetFormDataForAddAdvertisments.js                                        | JavaScript     |          0 |          0 |          1 |          1 |
+| /Users/irvanev/Works/hvala-web/src/services/ProfileService.js                                                        | JavaScript     |         74 |          0 |         15 |         89 |
+| /Users/irvanev/Works/hvala-web/src/setupTests.js                                                                     | JavaScript     |          1 |          4 |          1 |          6 |
+| Total                                                                                                                |                |     33,342 |         29 |        932 |     34,303 |
++----------------------------------------------------------------------------------------------------------------------+----------------+------------+------------+------------+------------+

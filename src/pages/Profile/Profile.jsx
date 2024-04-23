@@ -13,6 +13,7 @@ import ModalForNumberReports from '../../components/profile-card/ModalForNumberR
 import { Button, Carousel, Empty, Tabs, Card, Dropdown, Menu, Popconfirm, Badge, Space } from 'antd';
 import { NavBarLogout } from '../../components/Navbar/NavBarLogout';
 import { EditOutlined, EllipsisOutlined } from '@ant-design/icons';
+import CardAdvertisementHome from '../../components/card-advertisment-home/CardAdvertisementHome'
 
 export const Profile = () => {
     const { i18n } = useTranslation();
@@ -84,72 +85,9 @@ export const Profile = () => {
                                     >
                                         <Row xs={2} sm={2} md={3} lg={3} className="g-3" id="cardAds">
                                             {advertisment.length > 0 ? (
-                                                advertisment.map((advertisment) => (
+                                                advertisment.map((advertisment, index) => (
                                                     <Col key={advertisment.id}>
-                                                        <Card
-                                                            hoverable
-                                                            actions={[
-                                                                <EditOutlined key="edit" />,
-                                                                <Dropdown
-                                                                    overlay={
-                                                                        <Menu>
-                                                                            <Menu.Item key="1">
-                                                                                <Popconfirm
-                                                                                    title="Вы уверены, что хотите переместить объявление в архив?"
-                                                                                    onConfirm={() => handleArchive(advertisment.id)}
-                                                                                    okText="Да"
-                                                                                    cancelText="Нет"
-                                                                                >
-                                                                                    <a href="#">Перместить в архив</a>
-                                                                                </Popconfirm>
-                                                                            </Menu.Item>
-                                                                        </Menu>
-                                                                    }
-                                                                    visible={dropdownVisible}
-                                                                    onVisibleChange={setDropdownVisible}
-                                                                >
-                                                                    <EllipsisOutlined onClick={() => setDropdownVisible(!dropdownVisible)} />
-                                                                </Dropdown>,
-                                                            ]}
-                                                            cover={
-                                                                <Link to={`/advertisment/${advertisment.id}`}
-                                                                    style={{ textDecoration: "none" }}>
-                                                                    <Carousel>
-                                                                        {(
-                                                                            advertisment.photoUrls.map((url, index) => (
-                                                                                <div className={styles.carousel}
-                                                                                    key={index}>
-                                                                                    <img
-                                                                                        className={styles.imageCarousel}
-                                                                                        alt="example"
-                                                                                        src={url || Logo} />
-                                                                                </div>
-                                                                            ))
-                                                                        )}
-                                                                    </Carousel>
-                                                                </Link>
-                                                            }
-                                                        >
-                                                            <div className={styles.cardContext}>
-                                                                <Link to={`/advertisment/${advertisment.id}`}>
-                                                                    <Card.Meta title={advertisment.title} />
-                                                                    <h5 style={{ color: 'grey' }}>{advertisment.price + '€'}</h5>
-                                                                    <p className={styles.textLocation}>
-                                                                        {advertisment.location}
-                                                                    </p>
-                                                                    <p className={styles.date}>
-                                                                        {advertisment.time_creation && advertisment.time_creation.seconds ?
-                                                                            new Date(advertisment.time_creation.seconds * 1000).toLocaleString(i18n.language, {
-                                                                                day: 'numeric',
-                                                                                month: 'long',
-                                                                                hour: '2-digit',
-                                                                                minute: '2-digit'
-                                                                            }) : 'Не указано время создания'
-                                                                        }
-                                                                    </p>
-                                                                </Link>
-                                                            </div>
-                                                        </Card>
+                                                        <CardAdvertisementHome key={index} advertisment={advertisment} />
                                                     </Col>
                                                 ))
                                             ) : (

@@ -8,8 +8,8 @@ import Logo from "../../assets/logo.png"
 import { collection, query, where, getDocs, addDoc, serverTimestamp } from "firebase/firestore";
 import { useEffect, useState } from 'react';
 import { db, auth } from '../../config/firebase'
-import { Image, Rate } from 'antd';
-import { Modal, Input, Button, message, Breadcrumb } from "antd";
+import { Modal, Input, Button, message, Breadcrumb, Rate, Image } from "antd";
+import { useHistory } from 'react-router-dom';
 
 
 
@@ -18,6 +18,8 @@ const CardInPc = ({ adData, t, index, handleSelect, handleCallClick, showModal, 
   const [feedbacks, setFeedbacks] = useState([]);
   const rat = userData?.rating || userData?.raiting;
   const userId = userData?.id
+  const from_uid = auth.currentUser ? auth.currentUser.uid : null;
+  const history = useHistory();
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const showModalFee = () => {
@@ -43,6 +45,38 @@ const CardInPc = ({ adData, t, index, handleSelect, handleCallClick, showModal, 
   const handleRatingChange = (value) => {
     setRating(value);
   };
+
+  const createChat = async () => {
+    const chatsQuery = query(
+        collection(db, 'message'),
+        where('from_uid', '==', from_uid),
+        where('to_uid', '==', userId)
+    );
+    const chatsSnapshot = await getDocs(chatsQuery);
+
+    let chatId;
+    if (chatsSnapshot.empty) {
+        const chatDoc = await addDoc(collection(db, 'message'), {
+            from_name: 'Test',
+            from_uid: from_uid,
+            last_msg: '',
+            last_time: serverTimestamp(),
+            to_avatar: userData?.photoUrl,
+            to_name: userData?.name,
+            to_uid: userId,
+        });
+        chatId = chatDoc.id;
+    } else {
+        chatId = chatsSnapshot.docs[0].id;
+    }
+
+    return chatId;
+}
+
+const handleButtonWrite = async () => {
+    const chatId = await createChat();
+    history.push(`/message/${chatId}`);
+}
 
 
   useEffect(() => {
@@ -176,9 +210,9 @@ const CardInPc = ({ adData, t, index, handleSelect, handleCallClick, showModal, 
           </a>
           <a
             id="product-phone"
-            href=""
             className="btn d-block mb-3"
             style={productPhone}
+            onClick={handleButtonWrite}
           >
             {t('to_write')}
           </a>

@@ -5,10 +5,8 @@ import {useParams} from 'react-router-dom';
 import {Container, Row, Col} from 'react-bootstrap';
 import {Button, Input, Modal, Select, InputNumber} from 'antd'
 import DefaultCardCategory from '../../components/advertisment-card-category/DefaultCardCategory';
-import CardCategory from '../../components/advertisment-card-category/CardCategory';
+import CardAdvertisementHome from '../../components/card-advertisment-home/CardAdvertisementHome';
 import {fetchAdvertismentsByCategory, fetchAdvertismentsBySubcategory} from '../../services/AdvertismentsCardCategory';
-import {MoreOutlined} from '@ant-design/icons';
-import Logo from '../../assets/hvala.png'
 import {t} from 'i18next';
 import Categories from '../../components/category';
 
@@ -298,8 +296,8 @@ export const CategoryAdvertisments = () => {
                         <Col md={9}>
                             <Container className="album mt-3">
                                 <Row xs={2} sm={2} md={3} lg={3} className="g-3" id="cardAds">
-                                    {filteredAdvertisements.map((advertisment) => (
-                                        <CardCategory key={advertisment.id} advertisment={advertisment}/>
+                                    {filteredAdvertisements.map((advertisment, index) => (
+                                        <CardAdvertisementHome key={index} advertisment={advertisment} />
                                     ))}
                                 </Row>
                             </Container>
