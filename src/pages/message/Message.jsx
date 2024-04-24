@@ -97,23 +97,36 @@ export const Message = () => {
     }
     useEffect(scrollToBottom, [msgList]);
 
+    const [messagesFrom, setMessagesFrom] = useState([]);
+    const [messagesTo, setMessagesTo] = useState([]);
+
     useEffect(() => {
         const fetchData = () => {
             if (user) {
-                const q = query(
+                const q1 = query(
                     collection(db, "message"),
                     where("from_uid", "==", user.uid)
                 );
 
-                const unsubscribe = onSnapshot(q, (querySnapshot) => {
+                const q2 = query(
+                    collection(db, "message"),
+                    where("to_uid", "==", user.uid)
+                );
+
+                const unsubscribe1 = onSnapshot(q1, (querySnapshot) => {
                     const messages = querySnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
-
-                    messages.sort((a, b) => b.last_time - a.last_time);
-
-                    setMessages(messages);
+                    setMessagesFrom(messages);
                 });
 
-                return unsubscribe;
+                const unsubscribe2 = onSnapshot(q2, (querySnapshot) => {
+                    const messages = querySnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
+                    setMessagesTo(messages);
+                });
+
+                return () => {
+                    unsubscribe1();
+                    unsubscribe2();
+                };
             }
         };
 
@@ -146,7 +159,7 @@ export const Message = () => {
         return downloadURL;
     }
 
-// Функция для обработки загрузки изображения
+    // Функция для обработки загрузки изображения
     async function handleImageUpload(e) {
         const file = e.target.files[0];
         if (!file) return;
@@ -216,6 +229,8 @@ export const Message = () => {
         await handleImageUpload(e);
     }
 
+    const combinedMessages = [...messagesFrom, ...messagesTo].sort((a, b) => b.last_time - a.last_time);
+
     return (
         <div>
 
@@ -227,7 +242,7 @@ export const Message = () => {
                 <NavBarBack />
             )}
 
-            <div className="container d-none d-lg-block mt-3" style={{paddingTop: '70px'}}>
+            <div className="container d-none d-lg-block mt-3" style={{ paddingTop: '70px' }}>
                 <div className="messaging">
                     <div className="inbox_msg">
                         <div className="inbox_people">
@@ -237,20 +252,20 @@ export const Message = () => {
                                 </div>
                             </div>
                             <div className="inbox_chat">
-                                {messages.map((message, index) => (
+                                {combinedMessages.map((message, index) => (
                                     <div
                                         className={`chat_list ${selectedMessage === message.id ? 'active_chat' : ''}`}
                                         key={index}
                                         onClick={() => {
                                             setSelectedMessage(message.id);
-                                            setRecipientId(message.to_uid);
+                                            setRecipientId(message.from_uid === auth.currentUser.uid ? message.to_uid : message.from_uid);
                                             history.push(`/message/${message.id}`);
                                         }}
                                     >
                                         <div className="chat_people">
                                             <div className="chat_img">
                                                 <img
-                                                    src={message.to_avatar || Logo}
+                                                    src={(message.from_uid === auth.currentUser.uid ? message.to_avatar : message.from_avatar) || Logo}
                                                     alt="User"
                                                     style={{
                                                         borderRadius: '50%',
@@ -261,8 +276,11 @@ export const Message = () => {
                                                 />
                                             </div>
                                             <div className="chat_ib">
-                                                <h5>{message.to_name} <span className="chat_date">
-                                                    {formatTime(message.last_time)}</span></h5>
+                                                <h5>{message.from_uid === auth.currentUser.uid ? message.to_name : message.from_name}
+                                                    <span className="chat_date">
+                                                        {formatTime(message.last_time)}
+                                                    </span>
+                                                </h5>
                                                 <p style={{ display: '-webkit-box', WebkitLineClamp: '2', WebkitBoxOrient: 'vertical', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                                                     {message.last_msg}
                                                 </p>
@@ -341,22 +359,22 @@ export const Message = () => {
                             </div>
                             <div className="type_msg">
                                 <form onSubmit={handleSubmit} className="input_msg_write"
-                                      style={{display: 'flex', alignItems: 'center'}}>
+                                    style={{ display: 'flex', alignItems: 'center' }}>
                                     <BsCardImage
                                         size={30}
-                                        style={{marginRight: '10px', cursor: "pointer"}}
+                                        style={{ marginRight: '10px', cursor: "pointer" }}
                                         onClick={() => fileInput.current.click()}
                                     />
                                     <input
                                         type="file"
                                         ref={fileInput}
-                                        style={{display: 'none'}}
+                                        style={{ display: 'none' }}
                                         onChange={handleImageUpload}
                                     />
                                     <input type="text" className="write_msg" placeholder="Type a message"
-                                           value={message} onChange={e => setMessage(e.target.value)}/>
+                                        value={message} onChange={e => setMessage(e.target.value)} />
                                     <button className="msg_send_btn" type="submit">
-                                        <FaPaperPlane/>
+                                        <FaPaperPlane />
                                     </button>
                                 </form>
                             </div>
@@ -367,19 +385,27 @@ export const Message = () => {
             </div>
 
             <div className="d-lg-none">
-                <List className="container" style={{paddingTop: '3.5rem'}}
-                    dataSource={messages}
+                <List className="container" style={{ paddingTop: '3.5rem' }}
+                    dataSource={combinedMessages}
                     renderItem={(message, index) => (
                         <List.Item key={index} onClick={() => {
                             setSelectedMessage(message.id);
-                            setRecipientId(message.to_uid);
+                            setRecipientId(message.from_uid === auth.currentUser.uid ? message.to_uid : message.from_uid);
                             history.push(`/message/${message.id}`);
                             setIsMessagesContainerOpen(true);
                         }} style={{ display: isMessagesContainerOpen ? 'none' : 'flex', justifyContent: 'space-between', position: 'relative' }}>
                             <List.Item.Meta
-                                avatar={<Avatar size={64} src={message.to_avatar || Logo} />}
-                                title={message.to_name}
-                                description={message.last_msg}
+                                avatar={<Avatar size={64} src={(message.from_uid === auth.currentUser.uid ? message.to_avatar : message.from_avatar) || Logo} />}
+                                title={message.from_uid === auth.currentUser.uid ? message.to_name : message.from_name}
+                                description={
+                                    <div style={{
+                                        whiteSpace: 'nowrap',
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis',
+                                    }}>
+                                        {message.last_msg}
+                                    </div>
+                                }
                             />
                             <div style={{ position: 'absolute', top: 0, right: 0 }}>
                                 {formatTime(message.last_time)}
@@ -390,26 +416,25 @@ export const Message = () => {
                 <div className="messages-container" style={{ display: isMessagesContainerOpen ? 'block' : 'none' }}>
                     <div className="test" style={{ height: 'calc(100vh - 100px)', overflowY: 'scroll' }}>
                         <div className={styles.messageHistory}>
+                            <NavBar
+                                style={{
+                                    position: 'fixed',
+                                    top: 0,
+                                    width: '100%',
+                                    zIndex: 9999,
+                                    borderBottom: 'solid 1px grey',
+                                    backgroundColor: 'white'
+                                }}
+                                onBack={() => setIsMessagesContainerOpen(false)}
+                            >
+                                <Link to={`/seller/${userId}`}>
+                                    <Avatar src={userImageUrl || Logo} alt="Profile" style={{ width: '40px', height: '40px', borderRadius: '50%' }} />
+                                    <span style={{ marginLeft: '10px' }}>{userName}</span>
+                                </Link>
+                            </NavBar>
                             {msgList.map((msg, index) => (
                                 msg.from === user.uid ? (
                                     <div className={styles.outgoingMessage} key={index}>
-                                        <NavBar
-                                            style={{
-                                                position: 'fixed',
-                                                top: 0,
-                                                width: '100%',
-                                                zIndex: 9999,
-                                                borderBottom: 'solid 1px grey',
-                                                backgroundColor: 'white'
-                                            }}
-                                            onBack={() => setIsMessagesContainerOpen(false)}
-                                        >
-                                            <Link to={`/seller/${userId}`}>
-                                                <Avatar src={userImageUrl || Logo} alt="Profile" style={{ width: '40px', height: '40px', borderRadius: '50%' }} />
-                                                <span style={{ marginLeft: '10px' }}>{userName}</span>
-                                            </Link>
-                                        </NavBar>
-
                                         <div className={styles.messageToBlock} >
                                             {msg.type === "image" ? (
 
@@ -454,10 +479,10 @@ export const Message = () => {
                             <input
                                 type="file"
                                 ref={fileInput}
-                                style={{display: 'none'}}
+                                style={{ display: 'none' }}
                                 onChange={handleImageUpload}
                             />
-                            <PaperClipOutlined className={styles.sendIcon} onClick={() => fileInput.current.click()}/>
+                            <PaperClipOutlined className={styles.sendIcon} onClick={() => fileInput.current.click()} />
                             <TextArea className={styles.textInput} rows={1}
                                 placeholder="input message" autoSize={{ minRows: 1, maxRows: 4 }}
                                 value={message} onChange={e => setMessage(e.target.value)}

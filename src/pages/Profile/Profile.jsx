@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from "react";
 import styles from './profile.module.css'
 
-import Logo from '../../assets/logo.png';
 import { Container, Row, Col } from 'react-bootstrap';
 import { MyNavbar } from '../../components/Navbar/Navbar';
-import { Link } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 import ProfileCardForPc from '../../components/profile-card/ProfileInfoForPc';
-import { fetchUser, fetchReviews, fetchAdvertisements, fetchAdvertismentsArchive, archivedAdvertisement, unarchivedAdvertisement, deleteAdvertisement } from '../../services/ProfileService';
+import { fetchUser, fetchReviews, fetchAdvertisements, fetchAdvertismentsArchive } from '../../services/ProfileService';
 import ProfileInfoForMobile from '../../components/profile-card/ProfileInfoForMobile';
 import ModalForNumberReports from '../../components/profile-card/ModalForNumberReports';
-import { Button, Carousel, Empty, Tabs, Card, Dropdown, Menu, Popconfirm, Badge, Space } from 'antd';
+import { Button, Empty, Tabs, Badge, Space } from 'antd';
 import { NavBarLogout } from '../../components/Navbar/NavBarLogout';
-import { EditOutlined, EllipsisOutlined } from '@ant-design/icons';
-import CardAdvertisementHome from '../../components/card-advertisment-home/CardAdvertisementHome'
+import CardAdvertisementProfile from '../../components/profile-card/CardAdvertismentProfile'
+import CardAdvertisementProfileArchive from "../../components/profile-card/CardAdvertismentArchive";
+import CardAdvertisementProfileMobile from "../../components/profile-card/CardAdvertismentProfileMobile";
+import CardAdvertisementProfileArchiveMobile from "../../components/profile-card/CardAdvertismentArchiveMobile";
 
 export const Profile = () => {
     const { i18n } = useTranslation();
@@ -26,26 +26,6 @@ export const Profile = () => {
     const [advertisment, setAdvertisements] = useState([]);
     const [advertismentArchive, setAdvertisementsArchive] = useState([]);
     const { TabPane } = Tabs;
-    const [dropdownVisible, setDropdownVisible] = useState(false);
-
-    const [isUnarchived, setIsUnarchived] = useState(false);
-    const [isArchived, setIsArchived] = useState(false);
-    const [deleteAdvertisment, setDeleteAdvertisment] = useState(false);
-
-    const handleUnarchive = async (id) => {
-        await unarchivedAdvertisement(id);
-        setIsUnarchived(prevState => !prevState);
-    };
-
-    const handleArchive = async (id) => {
-        await archivedAdvertisement(id);
-        setIsArchived(prevState => !prevState);
-    };
-
-    const handleDelete = async (id) => {
-        await deleteAdvertisement(id);
-        setDeleteAdvertisment(prevState => !prevState);
-    };
 
 
     useEffect(() => {
@@ -61,7 +41,7 @@ export const Profile = () => {
             setAdvertisementsArchive(archive);
         };
         fetchData();
-    }, [isUnarchived, isArchived, deleteAdvertisment]);
+    }, [advertisment]);
 
     return (
         <div>
@@ -86,9 +66,7 @@ export const Profile = () => {
                                         <Row xs={2} sm={2} md={3} lg={3} className="g-3" id="cardAds">
                                             {advertisment.length > 0 ? (
                                                 advertisment.map((advertisment, index) => (
-                                                    <Col key={advertisment.id}>
-                                                        <CardAdvertisementHome key={index} advertisment={advertisment} />
-                                                    </Col>
+                                                    <CardAdvertisementProfile key={index} advertisment={advertisment} />
                                                 ))
                                             ) : (
                                                 <div>
@@ -118,83 +96,8 @@ export const Profile = () => {
                                     >
                                         <Row xs={2} sm={2} md={3} lg={3} className="g-3" id="cardAds">
                                             {advertismentArchive.length > 0 ? (
-                                                advertismentArchive.map((advertismentArchive) => (
-                                                    <Col key={advertismentArchive.id}>
-                                                        <Card
-                                                            hoverable
-                                                            actions={[
-                                                                <EditOutlined key="edit" />,
-                                                                <Dropdown
-                                                                    overlay={
-                                                                        <Menu>
-                                                                            <Menu.Item key="1">
-                                                                                <Popconfirm
-                                                                                    title="Вы уверены, что хотите опубликовать?"
-                                                                                    onConfirm={() => handleUnarchive(advertismentArchive.id)}
-                                                                                    okText="Да"
-                                                                                    cancelText="Нет"
-                                                                                >
-                                                                                    <a href="#">Опубликовать</a>
-                                                                                </Popconfirm>
-                                                                            </Menu.Item>
-                                                                            <Menu.Item key="2">
-                                                                                <Popconfirm
-                                                                                    title="Вы уверены, что хотите полнотсью удалить объявление?"
-                                                                                    onConfirm={() => handleDelete(advertismentArchive.id)}
-                                                                                    okText="Да"
-                                                                                    cancelText="Нет"
-                                                                                >
-                                                                                    <a href="#">Удалить</a>
-                                                                                </Popconfirm>
-                                                                            </Menu.Item>
-                                                                        </Menu>
-                                                                    }
-                                                                    visible={dropdownVisible}
-                                                                    onVisibleChange={setDropdownVisible}
-                                                                >
-                                                                    <EllipsisOutlined onClick={() => setDropdownVisible(!dropdownVisible)} />
-                                                                </Dropdown>,
-                                                            ]}
-                                                            cover={
-                                                                <Link to={`/advertisment/${advertismentArchive.id}`}
-                                                                    style={{ textDecoration: "none" }}>
-                                                                    <Carousel>
-                                                                        {(
-                                                                            advertismentArchive.photoUrls.map((url, index) => (
-                                                                                <div className={styles.carousel}
-                                                                                    key={index}>
-                                                                                    <img
-                                                                                        className={styles.imageCarousel}
-                                                                                        alt="example"
-                                                                                        src={url || Logo} />
-                                                                                </div>
-                                                                            ))
-                                                                        )}
-                                                                    </Carousel>
-                                                                </Link>
-                                                            }
-                                                        >
-                                                            <div className={styles.cardContext}>
-                                                                <Link to={`/advertisment/${advertismentArchive.id}`}>
-                                                                    <Card.Meta title={advertismentArchive.title} />
-                                                                    <h5 style={{ color: 'grey' }}>{advertismentArchive.price + '€'}</h5>
-                                                                    <p className={styles.textLocation}>
-                                                                        {advertismentArchive.location}
-                                                                    </p>
-                                                                    <p className={styles.date}>
-                                                                        {advertismentArchive.time_creation && advertismentArchive.time_creation.seconds ?
-                                                                            new Date(advertismentArchive.time_creation.seconds * 1000).toLocaleString(i18n.language, {
-                                                                                day: 'numeric',
-                                                                                month: 'long',
-                                                                                hour: '2-digit',
-                                                                                minute: '2-digit'
-                                                                            }) : 'Не указано время создания'
-                                                                        }
-                                                                    </p>
-                                                                </Link>
-                                                            </div>
-                                                        </Card>
-                                                    </Col>
+                                                advertismentArchive.map((advertismentArchive, index) => (
+                                                    <CardAdvertisementProfileArchive key={index} advertismentArchive={advertismentArchive} />
                                                 ))
                                             ) : (
                                                 <div>
@@ -226,56 +129,19 @@ export const Profile = () => {
                     <Row>
                         <Container className="album mt-3">
                             <Tabs defaultActiveKey="1" type="card">
-                                <TabPane tab="Мои объявления" key="1">
+                                <TabPane
+                                    tab={
+                                        <Space>
+                                            {advertisment.length > 0 && <Badge color="orange" count={advertisment.length} />}
+                                            Мои объявления
+                                        </Space>
+                                    }
+                                    key="1"
+                                >
                                     <Row xs={2} sm={2} md={3} lg={4} className="g-3" id="cardAds">
                                         {advertisment.length > 0 ? (
-                                            advertisment.map((advertisment) => (
-                                                <Col key={advertisment.id}>
-                                                    <Card
-                                                        hoverable
-                                                        actions={[
-
-                                                            <EditOutlined key="edit" />,
-                                                            <EllipsisOutlined key="ellipsis" />,
-                                                        ]}
-                                                        cover={
-                                                            <Link to={`/advertisment/${advertisment.id}`}
-                                                                style={{ textDecoration: "none" }}>
-                                                                <Carousel>
-                                                                    {(
-                                                                        advertisment.photoUrls.map((url, index) => (
-                                                                            <div className={styles.carousel}
-                                                                                key={index}>
-                                                                                <img className={styles.imageCarousel}
-                                                                                    alt="example" src={url || Logo} />
-                                                                            </div>
-                                                                        ))
-                                                                    )}
-                                                                </Carousel>
-                                                            </Link>
-                                                        }
-                                                    >
-                                                        <div className={styles.cardContext}>
-                                                            <Link to={`/advertisment/${advertisment.id}`}>
-                                                                <Card.Meta title={advertisment.title} />
-                                                                <h5 style={{ color: 'grey' }}>{advertisment.price + '€'}</h5>
-                                                                <p className={styles.textLocation}>
-                                                                    {advertisment.location}
-                                                                </p>
-                                                                <p className={styles.date}>
-                                                                    {advertisment.time_creation && advertisment.time_creation.seconds ?
-                                                                        new Date(advertisment.time_creation.seconds * 1000).toLocaleString(i18n.language, {
-                                                                            day: 'numeric',
-                                                                            month: 'long',
-                                                                            hour: '2-digit',
-                                                                            minute: '2-digit'
-                                                                        }) : 'Не указано время создания'
-                                                                    }
-                                                                </p>
-                                                            </Link>
-                                                        </div>
-                                                    </Card>
-                                                </Col>
+                                            advertisment.map((advertisment, index) => (
+                                                <CardAdvertisementProfileMobile key={index} advertisment={advertisment} />
                                             ))
                                         ) : (
                                             <div className={styles.emptyMobile}>
@@ -294,8 +160,20 @@ export const Profile = () => {
                                         )}
                                     </Row>
                                 </TabPane>
-                                <TabPane tab="Архив" key="2">
-                                    {/* Здесь разместите код для отображения архива */}
+                                <TabPane
+                                        tab={
+                                            <Space>
+                                                {advertismentArchive.length > 0 && <Badge color="orange" count={advertismentArchive.length} />}
+                                                Архив
+                                            </Space>
+                                        }
+                                        key="2"
+                                    >
+                                    <Row xs={2} sm={2} md={3} lg={4} className="g-3" id="cardAds">
+                                        {(advertismentArchive.map((advertismentArchive, index) => (
+                                            <CardAdvertisementProfileArchiveMobile key={index} advertismentArchive={advertismentArchive} />
+                                        )))}
+                                    </Row>
                                 </TabPane>
                             </Tabs>
                         </Container>

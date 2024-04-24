@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Carousel, Row, Col, Button } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import CharactersForCard from './CharactersForCard';
 import Logo from '../../assets/logo.png'
 import { Rate, Breadcrumb, message, Modal, Input, Image } from "antd";
@@ -9,9 +9,12 @@ import { db, auth } from '../../config/firebase'
 
 const CardInMobile = ({ adData, t, index, handleSelect, handleCallClick, userData }) => {
 
+    const history = useHistory();
     const [feedbacks, setFeedbacks] = useState([]);
     const rat = userData?.rating || userData?.raiting; //!TODO
     const userId = userData?.id
+    const from_uid = auth.currentUser ? auth.currentUser.uid : null;
+    const [userMe, setUserMe] = useState(null);
 
     const [isModalVisible, setIsModalVisible] = useState(false);
     const showModalFee = () => {
@@ -57,7 +60,7 @@ const CardInMobile = ({ adData, t, index, handleSelect, handleCallClick, userDat
 
             setFeedbacks(feedbacks);
         };
-
+        fetchUserMe();
         fetchFeedbacks();
     }, [userId]);
 
@@ -90,6 +93,57 @@ const CardInMobile = ({ adData, t, index, handleSelect, handleCallClick, userDat
             console.error("Error adding document: ", e);
         }
     };
+
+    const fetchUserMe = async () => { 
+        const userQuery = query(
+          collection(db, 'users'),
+          where('id', '==', from_uid)
+        );
+        const userSnapshot = await getDocs(userQuery);
+        
+        if (!userSnapshot.empty) {
+          userSnapshot.forEach((doc) => {
+            setUserMe(doc.data());
+          });
+        } else {
+          console.log('No such user!');
+        }
+      }
+
+    const createChat = async () => {
+        const chatsQuery = query(
+          collection(db, 'message'),
+          where('from_uid', '==', from_uid),
+          where('to_uid', '==', userId)
+        );
+        const chatsSnapshot = await getDocs(chatsQuery);
+    
+        let chatId;
+        if (chatsSnapshot.empty) {
+          const chatDoc = await addDoc(collection(db, 'message'), {
+            from_name: userMe?.name,
+            from_uid: from_uid,
+            from_avatar: userMe?.photoUrl,
+            last_msg: '',
+            last_time: serverTimestamp(),
+            to_avatar: userData?.photoUrl,
+            to_name: userData?.name,
+            to_uid: userId,
+          });
+          
+    
+          chatId = chatDoc.id;
+        } else {
+          chatId = chatsSnapshot.docs[0].id;
+        }
+    
+        return chatId;
+      }
+    
+      const handleButtonWrite = async () => {
+        const chatId = await createChat();
+        history.push(`/message/${chatId}`);
+      }
 
     return (
         <Container className="d-lg-none">
@@ -154,9 +208,9 @@ const CardInMobile = ({ adData, t, index, handleSelect, handleCallClick, userDat
                         </a>
                         <a
                             id="product-write"
-                            href=""
                             className="btn d-block flex-grow-1 mb-3"
                             style={{ backgroundColor: "orange", color: "white" }}
+                            onClick={handleButtonWrite}
                         >
                             {t('to_write')}
                         </a>

@@ -24,10 +24,6 @@ export const Authorization = () => {
     };
 
 
-    const goBack = () => {
-        history.goBack();
-    }
-
     const handleSubmit = async (values) => {
         const { email, password } = values;
         try {

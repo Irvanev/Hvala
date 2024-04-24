@@ -3,13 +3,12 @@ import React from 'react';
 import { Container, Row, Col, Carousel } from 'react-bootstrap';
 import CharactersForCard from './CharactersForCard';
 import ModalForNumberPhone from './ModalForNumberPhone';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import Logo from "../../assets/logo.png"
 import { collection, query, where, getDocs, addDoc, serverTimestamp } from "firebase/firestore";
 import { useEffect, useState } from 'react';
 import { db, auth } from '../../config/firebase'
 import { Modal, Input, Button, message, Breadcrumb, Rate, Image } from "antd";
-import { useHistory } from 'react-router-dom';
 
 
 
@@ -20,6 +19,7 @@ const CardInPc = ({ adData, t, index, handleSelect, handleCallClick, showModal, 
   const userId = userData?.id
   const from_uid = auth.currentUser ? auth.currentUser.uid : null;
   const history = useHistory();
+  const [userMe, setUserMe] = useState(null);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const showModalFee = () => {
@@ -46,37 +46,57 @@ const CardInPc = ({ adData, t, index, handleSelect, handleCallClick, showModal, 
     setRating(value);
   };
 
+  const fetchUserMe = async () => { 
+    const userQuery = query(
+      collection(db, 'users'),
+      where('id', '==', from_uid)
+    );
+    const userSnapshot = await getDocs(userQuery);
+    
+    if (!userSnapshot.empty) {
+      userSnapshot.forEach((doc) => {
+        setUserMe(doc.data());
+      });
+    } else {
+      console.log('No such user!');
+    }
+  }
+
+
   const createChat = async () => {
     const chatsQuery = query(
-        collection(db, 'message'),
-        where('from_uid', '==', from_uid),
-        where('to_uid', '==', userId)
+      collection(db, 'message'),
+      where('from_uid', '==', from_uid),
+      where('to_uid', '==', userId)
     );
     const chatsSnapshot = await getDocs(chatsQuery);
 
     let chatId;
     if (chatsSnapshot.empty) {
-        const chatDoc = await addDoc(collection(db, 'message'), {
-            from_name: 'Test',
-            from_uid: from_uid,
-            last_msg: '',
-            last_time: serverTimestamp(),
-            to_avatar: userData?.photoUrl,
-            to_name: userData?.name,
-            to_uid: userId,
-        });
-        chatId = chatDoc.id;
+      const chatDoc = await addDoc(collection(db, 'message'), {
+        from_name: userMe?.name,
+        from_uid: from_uid,
+        from_avatar: userMe?.photoUrl,
+        last_msg: '',
+        last_time: serverTimestamp(),
+        to_avatar: userData?.photoUrl,
+        to_name: userData?.name,
+        to_uid: userId,
+      });
+      
+
+      chatId = chatDoc.id;
     } else {
-        chatId = chatsSnapshot.docs[0].id;
+      chatId = chatsSnapshot.docs[0].id;
     }
 
     return chatId;
-}
+  }
 
-const handleButtonWrite = async () => {
+  const handleButtonWrite = async () => {
     const chatId = await createChat();
     history.push(`/message/${chatId}`);
-}
+  }
 
 
   useEffect(() => {
@@ -94,7 +114,7 @@ const handleButtonWrite = async () => {
           return { id: doc.id, ...feedback, userName: user?.name };
         })
       );
-
+      fetchUserMe();
       setFeedbacks(feedbacks);
     };
 

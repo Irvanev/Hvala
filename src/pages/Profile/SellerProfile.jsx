@@ -237,38 +237,7 @@ const SellerProfile = () => {
                 {user &&
                   ads &&
                   ads.map((advertisment, index) => (
-                    <Col key={index}>
-                      <Link
-                        key={advertisment.id}
-                        to={`/advertisment/${advertisment.id}`}
-                        style={aStyle}
-                      >
-                        <Card
-                            hoverable
-                            style={{ width: 240 }}
-                            cover={
-                              <Carousel autoplay>
-                                {advertisment.photoUrls.map((url, index) => (
-                                    <div key={index}>
-                                      <img alt="example" src={url || Logo} style={{ width: '100%', height: 'auto' }} />
-                                    </div>
-                                ))}
-                              </Carousel>
-                            }
-                        >
-                          <Card.Meta title={advertisment.title} description={advertisment.location} />
-                          <strong>{advertisment.price + "€"}</strong>
-                          <p>
-                            {new Date(advertisment.time_creation.seconds * 1000).toLocaleString(i18n.language, {
-                              day: "numeric",
-                              month: "long",
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })}
-                          </p>
-                        </Card>
-                      </Link>
-                    </Col>
+                    <CardAdvertisementHome key={index} advertisment={advertisment} />
                   ))}
               </Row>
             </Container>
