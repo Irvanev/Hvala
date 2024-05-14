@@ -5,8 +5,8 @@ import Logo from "../../assets/logo.png";
 const DefaultCardCategory = () => {
     return (
         <Col>
-            <Card className="shadow-sm">
-                <Card.Img variant="top" src={Logo}
+            <Card className="shadow-sm" style={{height: '400px'}}>
+                <Card.Img variant="top" src={Logo} style={{height: '250px', objectFit: 'cover'}}
                     alt="imageAdvertisment" className="imageAdvertisment" />
                 <Card.Body>
                     <Card.Text>
