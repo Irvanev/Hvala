@@ -1,0 +1,29 @@
+/* dropdown.module.css */
+.dropdown {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+  }
+  
+  .dropdown-content {
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+  }
+
+  .drawer {
+    position: fixed;
+    top: 150px; /* высота вашего navbar */
+    left: 0;
+    width: 100%; /* ширина вашего drawer */
+    height: 100%; /* высота вашего drawer */
+    background: white;
+    overflow: auto;
+    transform: translateX(-100%);
+    z-index: 1000;
+  }
+  
+  .drawer.open {
+    transform: translateX(0);
+  }

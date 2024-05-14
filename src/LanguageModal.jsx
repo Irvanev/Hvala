@@ -1,6 +1,7 @@
 import { Modal, Button } from 'antd';
 import { useTranslation } from 'react-i18next';
 import Flag from 'react-world-flags';
+import { t } from 'i18next';
 
 const LanguageModal = ({ show, handleClose }) => {
     const { i18n } = useTranslation();
@@ -14,7 +15,7 @@ const LanguageModal = ({ show, handleClose }) => {
     return (
 
 
-        <Modal open={show} onCancel={handleClose} footer={null} title="Choose your language">
+        <Modal open={show} onCancel={handleClose} footer={null} title={t('choose_language')}>
             <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', alignItems: 'center' }}>
                 <Button size='large' style={{ marginTop: '10px' }} onClick={() => changeLanguage('en')}>
                     <span style={{ marginRight: '8px' }}>

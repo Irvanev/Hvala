@@ -1,12 +1,11 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom';
 import { MenuOutlined, MoreOutlined } from '@ant-design/icons';
-import { Dropdown, Input, Button, Modal, Select, InputNumber, AutoComplete } from 'antd';
+import { Dropdown, Button, Modal, Select, InputNumber, AutoComplete } from 'antd';
 import Logo from '../assets/hvala.png'
 import { t } from 'i18next';
 
 const Categories = ({ setSearchText, options }) => {
-  const { Search } = Input;
   const { Option } = Select;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -161,7 +160,7 @@ const Categories = ({ setSearchText, options }) => {
           >
             <a onClick={(e) => e.preventDefault()}>
               <Button style={{ marginRight: '20px', backgroundColor: 'orange', color: 'white', border: 'none' }} size='large' icon={<MenuOutlined />}>
-                Категории
+                {t('category')}
               </Button>
             </a>
           </Dropdown>
@@ -176,10 +175,10 @@ const Categories = ({ setSearchText, options }) => {
                 setSearchText(inputValue);
               }
             }}
-            placeholder="input search text"
+            placeholder={t('search')}
           />
           <Button onClick={showModal} style={{ marginLeft: '20px', backgroundColor: 'orange', color: 'white', border: 'none' }} size='large' icon={<MoreOutlined />}>
-            Фильтры
+          {t('filter')} 
           </Button>
         </div>
       </div>
@@ -220,7 +219,7 @@ const Categories = ({ setSearchText, options }) => {
       </div>
 
 
-      <Modal title="Фильтры" open={isModalOpen} footer={null} onCancel={handleCancel}>
+      <Modal title={t('filter')} open={isModalOpen} footer={null} onCancel={handleCancel}>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <p>Диапазон цен:</p>
           <div>

@@ -30,7 +30,7 @@ export const fetchAdditionalAdvertisements = async (lastAdvertisementTime) => {
         advertismentsCollection,
         orderBy("time_creation", "desc"),
         limit(40),
-        startAfter(lastAdvertisementTime)
+        startAfter(lastAdvertisementTime[lastAdvertisementTime.length - 1].time_creation)
     );
     const querySnapshot = await getDocs(q);
     const additionalAdvertisements = querySnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));

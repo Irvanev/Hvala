@@ -1,4 +1,7 @@
 {
+  "filter": "Filters",
+  "show_more": "Load more",
+  "choose_language": "Chose your language",
   "home_navbar": "Home",
   "contact_navbar": "Contact Information",
   "help_navbar": "Help",

@@ -1,4 +1,4 @@
-import { Container, Row, Spinner } from 'react-bootstrap';
+import { Container, Row } from 'react-bootstrap';
 import React, { useEffect, useState } from 'react';
 
 import { fetchAdvertismentsSearch, fetchAdvertisments, fetchAdditionalAdvertisements } from '../../services/AdvertismentsHome/AdvertismentsService';
@@ -8,9 +8,11 @@ import CategoryCards from "../../components/category-cards/CategoryCards";
 import CardAdvertisementHome from "../../components/card-advertisment-home/CardAdvertisementHome";
 import LanguageModal from "../../LanguageModal";
 
-import { FloatButton } from "antd";
+import { FloatButton, Button, Result } from "antd";
 import { GlobalOutlined } from "@ant-design/icons";
 import DefaultCardCategory from '../../components/advertisment-card-category/DefaultCardCategory';
+import { CustomFooter } from '../../components/footer/footer';
+import { t } from 'i18next';
 
 export const Advertisement = () => {
     const [isLoading, setIsLoading] = useState(true);
@@ -44,7 +46,7 @@ export const Advertisement = () => {
     );
 
     const loadMoreAdvertisements = async () => {
-        const additionalAdvertisements = await fetchAdditionalAdvertisements();
+        const additionalAdvertisements = await fetchAdditionalAdvertisements(advertisment);
         if (additionalAdvertisements.length > 0) {
             setAdvertisement(prevAdvertisements => [...prevAdvertisements, ...additionalAdvertisements]);
             setLoadedAdvertisements(prevLoaded => prevLoaded + additionalAdvertisements.length);
@@ -53,14 +55,23 @@ export const Advertisement = () => {
         }
     };
 
+    const [isTimeout, setIsTimeout] = useState(false);
+
     useEffect(() => {
+        let timer;
         const fetchData = async () => {
             setIsLoading(true);
+            timer = setTimeout(() => {
+                setIsTimeout(true);
+            }, 10000);
             setAdvertisement(await fetchAdvertisments(loadedAdvertisements));
             setAdvertisementAll(await fetchAdvertismentsSearch());
             setIsLoading(false);
+            clearTimeout(timer);
+            setIsTimeout(false);
         };
         fetchData();
+        return () => clearTimeout(timer);
     }, []);
 
     return (
@@ -69,13 +80,11 @@ export const Advertisement = () => {
                 {`
                 @media (max-width: 1000px) {
                     body {
-                        padding-bottom: 4.5rem;
                     }
                 }
                 @media (min-width: 1000px) {
                     body {
                         padding-top: 4.5rem;
-                        padding-bottom: 2.5rem;
                     }
                 }
                 `}
@@ -94,12 +103,19 @@ export const Advertisement = () => {
             <Categories setSearchText={setSearchText} options={options} />
             <CategoryCards />
             <Container className="album mt-3">
-                {isLoading ? (
+                {isTimeout ? (
+                    <Result
+                        status="500"
+                        title="500"
+                        subTitle="Извините, что-то пошло не так."
+                        extra={<Button type="primary" onClick={() => window.location.reload()}>Обновить</Button>}
+                    />
+                ) : isLoading ? (
                     <Row xs={2} sm={2} md={3} lg={4} className="g-3">
-                    {Array.from({length: 10}).map((_, index) => (
-                        <DefaultCardCategory key={index}/>
-                    ))}
-                </Row>
+                        {Array.from({ length: 12 }).map((_, index) => (
+                            <DefaultCardCategory key={index} />
+                        ))}
+                    </Row>
                 ) : (
                     <Row xs={2} sm={2} md={3} lg={4} className="g-3">
                         {(searchText === "" ? advertisment : filteredAdvertisements).map((advertisment, index) => (
@@ -110,11 +126,12 @@ export const Advertisement = () => {
             </Container>
             {loadMoreButtonVisible && (
                 <div className="text-center mt-3">
-                    <button className="btn btn-primary" onClick={loadMoreAdvertisements}>
-                        Показать еще
+                    <button className="btn btn-primary" style={{ border: 'none', backgroundColor: 'orange', color: 'white' }} onClick={loadMoreAdvertisements}>
+                        {t("show_more")}
                     </button>
                 </div>
             )}
+            <CustomFooter />
         </div>
     );
 }

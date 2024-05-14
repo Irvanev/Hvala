@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import styles from './authorizations.module.css'
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 import { signInWithEmailAndPassword, setPersistence, browserSessionPersistence, browserLocalPersistence } from 'firebase/auth';
-import { Form, Input, Checkbox, Button, Typography } from 'antd';
+import { Form, Input, Checkbox, Button } from 'antd';
 import { useTranslation } from 'react-i18next';
 import Logotype from "../../assets/logo.png"
 import { auth } from "../../config/firebase"
@@ -10,7 +10,6 @@ import { MyNavbar } from '../../components/Navbar/Navbar';
 import { NavBarBack } from '../../components/Navbar/NavBarBack';
 
 export const Authorization = () => {
-    const { Link } = Typography;
     const { t } = useTranslation();
     const history = useHistory();
 
@@ -90,7 +89,7 @@ export const Authorization = () => {
                                 <Checkbox onChange={onRememberMeChange}>{t('remember_me')}</Checkbox>
                             </Form.Item>
                             <Form.Item>
-                                <p>{t('notRegisteredYet')} <Link href="/sign_up">{t('register')}</Link></p>
+                                <p>{t('notRegisteredYet')} <Link to={`/sign_up`}>{t('register')}</Link></p>
                             </Form.Item>
                             <Form.Item>
                                 <Button className={styles.submitButton} size='large' type="primary" htmlType="submit" id="login">{t('login')}</Button>

@@ -24,6 +24,22 @@ const CardAdvertisementHome = ({ advertisment, index }) => {
 
     const convertedPrice = Math.round(advertisment.price * conversionRate);
 
+    const formatPrice = (price) => {
+        if (price >= 1000000) {
+            return parseInt(price / 1000000) + 'm ';
+        } else {
+            return price;
+        }
+    }
+
+    const formatCurrency = (currency) => {
+        if (currency === 'eur') {
+            return '€';
+        } else {
+            return currency;
+        }
+    }
+
     function formatDate(timestamp) {
         const locales = { ru, en: enUS, sr };
         const locale = locales[i18n.language] || enUS;
@@ -71,9 +87,9 @@ const CardAdvertisementHome = ({ advertisment, index }) => {
                     >
                         <Card.Meta title={advertisment.title} />
                         <p style={{ color: 'grey', fontSize: '1.3em' }}>
-                            {advertisment.price + ' ' + currency.toUpperCase()}
+                            {advertisment.price + formatCurrency(currency)}
                             {conversionRate &&
-                                <span style={{ fontSize: '0.8em' }}> ~{convertedPrice.toFixed(2) + '' + (currency === 'eur' ? 'din' : '€')}
+                                <span style={{ fontSize: '0.8em' }}> ~{formatPrice(convertedPrice) + '' + (currency === 'eur' ? 'din' : '€')}
                                 </span>
                             }
                         </p>
@@ -116,9 +132,9 @@ const CardAdvertisementHome = ({ advertisment, index }) => {
                     >
                         <Card.Meta title={advertisment.title} />
                         <p style={{ color: 'grey', fontSize: '1.3em' }}>
-                            {advertisment.price + ' ' + currency.toUpperCase()}
+                            {advertisment.price + formatCurrency(currency)}
                             {conversionRate &&
-                                <span style={{ fontSize: '0.8em' }}> ~{convertedPrice.toFixed(2) + '' + (currency === 'eur' ? 'din' : '€')}
+                                <span style={{ fontSize: '0.8em' }}> ~{formatPrice(convertedPrice) + '' + (currency === 'eur' ? 'din' : '€')}
                                 </span>
                             }
                         </p>
