@@ -24,7 +24,30 @@ const markerStyle = {
     zIndex: 1,
 };
 
-const MapComponent = ({ coordinates, setCoordinates, setLocationName, mapRef }) => {
+const MapComponent = ({ coordinates, setCoordinates,setCountry, country, setRegion, region, setLocation, location, mapRef }) => {
+
+    const countryMappings = {
+        'Черногория': 'montenegro',
+        'Црна Гора': 'montenegro',
+        'Crna Gora': 'montenegro',
+        'Montenegro': 'montenegro',
+        'Сербия': 'serbia',
+        'Србија': 'serbia',
+        'Srbija': 'serbia',
+        'Serbia': 'serbia',
+        'Хорватия': 'croatia',
+        'Хрватска': 'croatia',
+        'Hrvatska': 'croatia',
+        'Croatia': 'croatia',
+        'Босния и Герцеговина': 'bosnia_and_herzegovina',
+        'Босна и Херцеговина': 'bosnia_and_herzegovina',
+        'Bosna i Hercegovina': 'bosnia_and_herzegovina',
+        'Bosnia and Herzegovina': 'bosnia_and_herzegovina'
+    };
+
+    function getCountryKey(countryName) {
+        return countryMappings[countryName] || null;  // Вернуть стандартизированный ключ или null, если отображение не найдено
+    }
 
     const onLoad = useCallback((map) => {
         mapRef.current = map;
@@ -45,18 +68,42 @@ const MapComponent = ({ coordinates, setCoordinates, setLocationName, mapRef }) 
             geocoder.geocode({ location: newCoordinates }, (results, status) => {
                 if (status === 'OK') {
                     if (results[0]) {
-                        console.log(results[0].formatted_address);
-                        setLocationName(results[0].formatted_address);
+                        const addressComponents = results[0].address_components;
+                        const formattedAddress = results[0].formatted_address;
+
+                        console.log(results[0]);
+
+                        let country = '';
+                        let region = '';
+
+                        if (addressComponents.length >= 6) {
+                            country = addressComponents[5]?.long_name || '';
+                            region = addressComponents[4]?.long_name || '';
+                        } else if (addressComponents.length >= 5) {
+                            country = addressComponents[4]?.long_name || '';
+                            region = addressComponents[3]?.long_name || '';
+                        } else if (addressComponents.length >= 4) {
+                            country = addressComponents[3]?.long_name || '';
+                            region = addressComponents[2]?.long_name || '';
+                        }
+
+                        console.log(country);
+                        console.log(region);
+
+                        setLocation(formattedAddress);
+                        setCountry(country);
+                        setRegion(region);
                     } else {
                         console.log("NOT OK");
-                        setLocationName('No results found');
+                        setLocation('No results found');
                     }
                 } else {
-                    setLocationName('Geocoder failed due to: ' + status);
+                    setLocation('Geocoder failed due to: ' + status);
                 }
             });
         }
     };
+
 
     return (
         <div style={containerStyle}>
@@ -77,6 +124,10 @@ const MapComponent = ({ coordinates, setCoordinates, setLocationName, mapRef }) 
 };
 
 const DefaultForm = ({
+    coordinates, setCoordinates,
+    location, setLocation,
+    country, setCountry,
+    region, setRegion,
     title, setTitle,
     price, setPrice,
     condition, setCondition,
@@ -93,7 +144,8 @@ const DefaultForm = ({
     const onSubmit = async () => {
         try {
             const values = await form.validateFields();
-            handleSubmit(values);
+            console.log("haha lolo" + values);
+            // handleSubmit(values);
         } catch (errorInfo) {
             console.log('Failed:', errorInfo);
         }
@@ -102,8 +154,8 @@ const DefaultForm = ({
     const [fileList, setFileList] = useState([]);
     const [previewImage, setPreviewImage] = useState('');
     const [previewOpen, setPreviewOpen] = useState(false);
-    const [coordinates, setCoordinates] = useState(center);
-    const [locationName, setLocationName] = useState('');
+    // const [coordinates, setCoordinates] = useState(center);
+    // const [locationName, setLocationName] = useState('');
     const [options, setOptions] = useState([]);
 
     const handlePreview = async (file) => {
@@ -137,6 +189,7 @@ const DefaultForm = ({
                     setOptions(places.map(place => ({
                         label: place.formattedAddress,  // Extract text from displayName object
                         value: place.formattedAddress,
+                        address_components: place.addressComponents,
                         f: place.location
                     })));
                 } else {
@@ -200,22 +253,53 @@ const DefaultForm = ({
     const handleSelect = async (value) => {
         const selectedPlace = options.find(option => option.value === value);
         console.log(selectedPlace);
+        console.log('here')
         if (selectedPlace) {
             const longitude = selectedPlace.f.longitude;
             const latitude = selectedPlace.f.latitude;
-             // Assuming `latitude` and `longitude` are correct
             if (latitude !== undefined && longitude !== undefined) {
                 const newCoordinates = {
-                    lat: parseFloat(latitude), // Convert to float if necessary
+                    lat: parseFloat(latitude), 
                     lng: parseFloat(longitude),
                 };
-                setCoordinates(newCoordinates); // Update coordinates state
-                setLocationName(value); // Set the selected location name
+                setCoordinates(newCoordinates); 
+                setLocation(value); 
 
-                // Trigger MapComponent to update with new coordinates
                 if (mapRef.current) {
                     mapRef.current.panTo(newCoordinates);
                 }
+                
+                let country = '';
+                let region = '';
+                const addressComponents = selectedPlace.address_components;
+
+                if (addressComponents.length >= 6) {
+                    country = addressComponents[5]?.longText || '';
+                    region = addressComponents[4]?.longText || '';
+                } else if (addressComponents.length >= 5) {
+                    country = addressComponents[4]?.longText || '';
+                    region = addressComponents[3]?.longText || '';
+                } else if (addressComponents.length >= 4) {
+                    country = addressComponents[3]?.longText || '';
+                    region = addressComponents[2]?.longText || '';
+                } else if (addressComponents.length >= 3) {
+                    country = addressComponents[2]?.longText || '';
+                    region = addressComponents[1]?.longText || '';
+                } else if (addressComponents.length >= 2) {
+                    country = addressComponents[1]?.longText || '';
+                    region = addressComponents[0]?.longText || '';
+                }
+
+                console.log(addressComponents)
+                console.log(country);
+                console.log(region);
+                console.log(value);
+                console.log(newCoordinates);
+                console.log('----');
+
+                setCountry(country);
+                setRegion(region);
+
             } else {
                 console.error('Invalid coordinates received:', selectedPlace);
             }
@@ -274,7 +358,7 @@ const DefaultForm = ({
                     </Form.Item>
 
                     <Form.Item label={t('coordinates')}>
-                        <MapComponent coordinates={coordinates} setCoordinates={setCoordinates} setLocationName={setLocationName} mapRef={mapRef} />
+                        <MapComponent coordinates={coordinates} setCoordinates={setCoordinates} setRegion={setRegion} setCountry={setCountry} setLocation={setLocation} mapRef={mapRef} />
                     </Form.Item>
 
                     <Form.Item label={t('location_name')}>
@@ -283,8 +367,8 @@ const DefaultForm = ({
                             onSearch={debounceFetchSuggestions}
                             onSelect={handleSelect}
                             placeholder="Search location"
-                            value={locationName} // Set the value to the selected location name
-                            onChange={(value) => setLocationName(value)} // Handle input changes
+                            value={location} // Set the value to the selected location name
+                            onChange={(value) => setLocation(value)} // Handle input changes
                         >
                             <Input />
                         </AutoComplete>

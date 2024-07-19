@@ -49,6 +49,7 @@ export const AddItem = () => {
     const [phoneNumber, setPhoneNumber] = useState('');
     const [country, setCountry] = useState('');
     const [region, setRegion] = useState('');
+    const [coordinates, setCoordinates] = useState({ lat: 42.44136169493567, lng: 19.262717285354550 });
     const [location, setLocation] = useState('');
 
     // Для автомобилей
@@ -127,9 +128,10 @@ export const AddItem = () => {
                     price,
                     description,
                     availability: "available",
-                    region: "",
-                    location: "",
-                    country: "",
+                    region: region,
+                    location: location,
+                    country: country,
+                    coordinates: coordinates,
                     time_creation: serverTimestamp(),
                     photoUrls: fileUrls,
                 };
@@ -155,9 +157,10 @@ export const AddItem = () => {
                 memory,
                 condition,
                 description,
-                region: "",
-                location: "",
-                country: "",
+                region: region,
+                location: location,
+                country: country,
+                coordinates: coordinates,
                 availability: "available",
                 photoUrls: fileUrls,
                 time_creation: serverTimestamp(),
@@ -178,9 +181,10 @@ export const AddItem = () => {
                 screen_size,
                 condition,
                 description,
-                region: "",
-                location: "",
-                country: "",
+                region: region,
+                location: location,
+                country: country,
+                coordinates: coordinates,
                 availability: "available",
                 photoUrls: fileUrls,
                 time_creation: serverTimestamp(),
@@ -201,9 +205,10 @@ export const AddItem = () => {
                 model,
                 condition,
                 description,
-                region: "",
-                location: "",
-                country: "",
+                region: region,
+                location: location,
+                country: country,
+                coordinates: coordinates,
                 availability: "available",
                 photoUrls: fileUrls,
                 time_creation: serverTimestamp(),
@@ -224,9 +229,10 @@ export const AddItem = () => {
                 model,
                 condition,
                 description,
-                region,
-                location,
-                country,
+                region: region,
+                location: location,
+                country: country,
+                coordinates: coordinates,
                 availability: "available",
                 photoUrls: fileUrls,
                 time_creation: serverTimestamp(),
@@ -247,9 +253,10 @@ export const AddItem = () => {
                 condition,
                 description,
                 availability: "available",
-                region: "",
-                location: "",
-                country: "",
+                region: region,
+                location: location,
+                country: country,
+                coordinates: coordinates, 
                 time_creation: serverTimestamp(),
                 photoUrls: fileUrls,
             }
@@ -279,9 +286,10 @@ export const AddItem = () => {
                 owners,
                 customs: "",
                 description,
-                region: "",
-                location: "",
-                country: "",
+                region: region,
+                location: location,
+                country: country,
+                coordinates: coordinates,
                 availability: "available", // !TODO
                 photoUrls: fileUrls,
                 time_creation: serverTimestamp(),
@@ -306,9 +314,10 @@ export const AddItem = () => {
                 kitchen_area: "",
                 to_center: "",
                 availability: "available",
-                region: "",
-                location: "",
-                country: "",
+                region: region,
+                location: location,
+                country: country,
+                coordinates: coordinates,
                 time_creation: serverTimestamp(),
                 photoUrls: fileUrls,
             };
@@ -331,9 +340,10 @@ export const AddItem = () => {
                 condition,
                 description,
                 availability: "available",
-                region: "",
-                location: "",
-                country: "",
+                region: region,
+                location: location,
+                country: country,
+                coordinates: coordinates,
                 time_creation: serverTimestamp(),
                 photoUrls: fileUrls,
             }
@@ -358,9 +368,10 @@ export const AddItem = () => {
                 condition,
                 description,
                 availability: "available",
-                region: "",
-                location: "",
-                country: "",
+                region: region,
+                location: location,
+                country: country,
+                coordinates: coordinates,
                 time_creation: serverTimestamp(),
                 photoUrls: fileUrls,
             }
@@ -417,9 +428,10 @@ export const AddItem = () => {
                 condition,
                 description,
                 availability: "available",
-                region: "",
-                location: "",
-                country: "",
+                region: region,
+                location: location,
+                country: country,
+                coordinates: coordinates,
                 time_creation: serverTimestamp(),
                 photoUrls: fileUrls,
             }
@@ -469,9 +481,10 @@ export const AddItem = () => {
                 price,
                 description,
                 availability: "available",
-                region,
-                location,
-                country,
+                region: region,
+                location: location,
+                country: country,
+                coordinates: coordinates,
                 time_creation: serverTimestamp(),
                 photoUrls: fileUrls,
             }
@@ -565,6 +578,10 @@ return (
                 )}
                 {selectedCategory === 'rest' && (
                     <DefaultForm
+                        coordinates={coordinates} setCoordinates={setCoordinates}
+                        location={location} setLocation={setLocation}
+                        region={region} setRegion={setRegion}
+                        country={country} setCountry={setCountry}
                         title={title} setTitle={setTitle}
                         price={price} setPrice={setPrice}
                         phoneNumber={phoneNumber} setPhoneNumber={setPhoneNumber}
@@ -593,6 +610,9 @@ return (
                         description={description} setDescription={setDescription}
                         handleFileChange={handleFileChange} photoUrls={photoUrls}
                         handleSubmit={handleSubmit}
+                        coordinates={coordinates} location={location}
+                        setCoordinates={setCoordinates} setLocation={setLocation}
+                        setRegion={setRegion} setCountry={setCountry}
                     />
                 )}
 
@@ -607,6 +627,9 @@ return (
                         description={description} setDescription={setDescription}
                         handleFileChange={handleFileChange} photoUrls={photoUrls}
                         handleSubmit={handleSubmit}
+                        coordinates={coordinates} location={location}
+                        setCoordinates={setCoordinates} setLocation={setLocation}
+                        setRegion={setRegion} setCountry={setCountry}
                     />
                 )}
 
@@ -622,6 +645,9 @@ return (
                         description={description} setDescription={setDescription}
                         handleFileChange={handleFileChange} photoUrls={photoUrls}
                         handleSubmit={handleSubmit}
+                        coordinates={coordinates} location={location}
+                        setCoordinates={setCoordinates} setLocation={setLocation}
+                        setRegion={setRegion} setCountry={setCountry}
                     />
                 )}
 
@@ -636,6 +662,9 @@ return (
                         description={description} setDescription={setDescription}
                         handleFileChange={handleFileChange} photoUrls={photoUrls}
                         handleSubmit={handleSubmit}
+                        coordinates={coordinates} location={location}
+                        setCoordinates={setCoordinates} setLocation={setLocation}
+                        setRegion={setRegion} setCountry={setCountry}
                     />
                 )}
 
@@ -650,6 +679,9 @@ return (
                         description={description} setDescription={setDescription}
                         handleFileChange={handleFileChange} photoUrls={photoUrls}
                         handleSubmit={handleSubmit}
+                        coordinates={coordinates} location={location}
+                        setCoordinates={setCoordinates} setLocation={setLocation}
+                        setRegion={setRegion} setCountry={setCountry}
                     />
                 )}
 
@@ -668,6 +700,8 @@ return (
                         description={description} setDescription={setDescription}
                         handleFileChange={handleFileChange} photoUrls={photoUrls}
                         handleSubmit={handleSubmit}
+                        setCoordinates={setCoordinates}
+                        coordinates={coordinates}
                     />
                 )}
 
@@ -685,6 +719,8 @@ return (
                         description={description} setDescription={setDescription}
                         handleFileChange={handleFileChange} photoUrls={photoUrls}
                         handleSubmit={handleSubmit}
+                        setCoordinates={setCoordinates} setLocation={setLocation}
+                        coordinates={coordinates} location={location}
                     />
                 )}
 
@@ -699,6 +735,9 @@ return (
                         description={description} setDescription={setDescription}
                         handleFileChange={handleFileChange} photoUrls={photoUrls}
                         handleSubmit={handleSubmit}
+                        setCoordinates={setCoordinates} setLocation={setLocation}
+                        setRegion={setRegion} setCountry={setCountry}
+                        coordinates={coordinates} location={location}
                     />
                 )}
 
@@ -715,6 +754,9 @@ return (
                             description={description} setDescription={setDescription}
                             handleFileChange={handleFileChange} photoUrls={photoUrls}
                             handleSubmit={handleSubmit}
+                        setCoordinates={setCoordinates} setLocation={setLocation}
+                        setRegion={setRegion} setCountry={setCountry}
+                        coordinates={coordinates} location={location}
                         />
                     )}
 
@@ -746,6 +788,9 @@ return (
                             description={description} setDescription={setDescription}
                             handleFileChange={handleFileChange} photoUrls={photoUrls}
                             handleSubmit={handleSubmit}
+                        setCoordinates={setCoordinates} setLocation={setLocation}
+                        setRegion={setRegion} setCountry={setCountry}
+                        coordinates={coordinates} location={location}
                         />
                     )}
 
@@ -773,6 +818,9 @@ return (
                             description={description} setDescription={setDescription}
                             handleFileChange={handleFileChange} photoUrls={photoUrls}
                             handleSubmit={handleSubmit}
+                        setCoordinates={setCoordinates} setLocation={setLocation}
+                        setRegion={setRegion} setCountry={setCountry}
+                        coordinates={coordinates} location={location}
                         />
                     )}
 
