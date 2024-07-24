@@ -611,11 +611,11 @@ const DefaultForm = ({
                         <Input.TextArea rows={3} value={description} onChange={(e) => setDescription(e.target.value)} />
                     </Form.Item>
 
-                    <Form.Item label={t('coordinates')}>
+                    <Form.Item label={t('Coordinates')}>
                         <MapComponent coordinates={coordinates} setCoordinates={setCoordinates} setRegion={setRegion} setCountry={setCountry} setLocation={setLocation} mapRef={mapRef} />
                     </Form.Item>
 
-                    <Form.Item label={t('location_name')}>
+                    <Form.Item label={t('Location')}>
                         <AutoComplete
                             options={options}
                             onSearch={debounceFetchSuggestions}
