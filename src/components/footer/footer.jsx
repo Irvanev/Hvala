@@ -1,4 +1,5 @@
 import styles from "./footer.module.css"
+import { Link } from "react-router-dom"
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebookF, faInstagram } from '@fortawesome/free-brands-svg-icons';
@@ -38,27 +39,58 @@ export const CustomFooter = () => {
           <div className={styles.footerCol}>
             <h4>Hvala</h4>
             <ul>
-              <li><a href="#">about us</a></li>
-              <li><a href="#">our services</a></li>
-              <li><a href="#">privacy policy</a></li>
-              <li><a href="#">affiliate program</a></li>
+              <li>
+                <Link to="#" style={{ textDecoration: 'none' }}>
+                  <a href="#">about us</a>
+                </Link>
+              </li>
+              <li>
+                <Link to="#" style={{ textDecoration: 'none' }}>
+                  <a href="#">our services</a>
+                </Link>
+              </li>
+              <li>
+                <Link to="#" style={{ textDecoration: 'none' }}>
+                  <a href="#">privacy policy</a>
+                </Link>
+              </li>
+              <li>
+                <Link to="#" style={{ textDecoration: 'none' }}>
+                  <a href="#">affiliate program</a>
+                </Link>
+              </li>
             </ul>
           </div>
           <div className={styles.footerCol}>
             <h4>Category</h4>
             <ul>
-              <li><a href="#">Electronics</a></li>
-              <li><a href="#">Estate</a></li>
-              <li><a href="#">Clothes</a></li>
-              <li><a href="#">Rest</a></li>
-
+              <li>
+                <Link to="/advertisments/electronics" style={{ textDecoration: 'none' }}>
+                  <a href="/advertisments/electronics">Electronics</a>
+                </Link>
+              </li>
+              <li>
+                <Link to="/advertisments/estate" style={{ textDecoration: 'none' }}>
+                  <a href="/advertisments/estate">Estate</a>
+                </Link>
+              </li>
+              <li>
+                <Link to="/advertisments/clothes" style={{ textDecoration: 'none' }}>
+                  <a href="/advertisments/clothes">Clothes</a>
+                </Link>
+              </li>
+              <li>
+                <Link to="/advertisments/rest" style={{ textDecoration: 'none' }}>
+                  <a href="/advertisments/rest">Rest</a>
+                </Link>
+              </li>
             </ul>
           </div>
           <div className={styles.footerCol}>
             <h4>follow us</h4>
             <div className={styles.socialLinks}>
-              <a href="#"><FontAwesomeIcon icon={faFacebookF} size="2x" /></a>
-              <a href="#"><FontAwesomeIcon icon={faInstagram} size="2x" /></a>
+              <a href="https://www.instagram.com/hvala.app?igsh=ZmJiOWtrbDY1enNm"><FontAwesomeIcon icon={faFacebookF} size="2x" /></a>
+              <a href="https://www.facebook.com/profile.php?id=61553691035329&mibextid=ZbWKwL"><FontAwesomeIcon icon={faInstagram} size="2x" /></a>
             </div>
           </div>
           <div className={styles.downloadApps}>
