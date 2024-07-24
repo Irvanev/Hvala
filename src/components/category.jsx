@@ -151,7 +151,9 @@ const Categories = ({ setSearchText, options }) => {
       <div className='d-none d-lg-block' style={{ marginTop: '20px' }}>
         <div className='container mb-3' style={{ display: 'flex', justifyContent: 'space-between' }}>
           <div className='logo' style={{ marginRight: '20px' }}>
-            <img src={Logo} alt='logo' style={{ height: '40px', width: '160px' }}></img>
+            <a href='/'>
+              <img src={Logo} alt='logo' style={{ height: '40px', width: '150px' }}></img>
+            </a>
           </div>
           <Dropdown
             menu={{
@@ -166,7 +168,7 @@ const Categories = ({ setSearchText, options }) => {
           </Dropdown>
           <AutoComplete
             options={filteredOptions}
-            style={{ width: 800 }}
+            style={{ width: 1000 }}
             size='large'
             onSelect={value => setSearchText(value)}
             onSearch={value => setInputValue(value)}
@@ -177,9 +179,6 @@ const Categories = ({ setSearchText, options }) => {
             }}
             placeholder={t('search')}
           />
-          <Button onClick={showModal} style={{ marginLeft: '20px', backgroundColor: 'orange', color: 'white', border: 'none' }} size='large' icon={<MoreOutlined />}>
-          {t('filter')} 
-          </Button>
         </div>
       </div>
 
@@ -200,7 +199,7 @@ const Categories = ({ setSearchText, options }) => {
           </Dropdown>
           <AutoComplete
             options={filteredOptions}
-            style={{ width: 400}}
+            style={{ width: 400 }}
             size='large'
             onSelect={value => setSearchText(value)}
             onSearch={value => setInputValue(value)}
@@ -211,39 +210,10 @@ const Categories = ({ setSearchText, options }) => {
             }}
             placeholder="input search text"
           />
-          <Button onClick={showModal} style={{ backgroundColor: 'orange', color: 'white', border: 'none' }} size='large' icon={<MoreOutlined />}>
-          </Button>
         </div>
         <div className='container'>
         </div>
       </div>
-
-
-      <Modal title={t('filter')} open={isModalOpen} footer={null} onCancel={handleCancel}>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <p>Диапазон цен:</p>
-          <div>
-            <InputNumber
-              defaultValue={0}
-              formatter={(value) => `€ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-              parser={(value) => value?.replace(/\$\s?|(,*)/g, '')}
-              style={{ marginRight: '20px' }}
-            />
-            <InputNumber
-              defaultValue={0}
-              formatter={(value) => `€ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-              parser={(value) => value?.replace(/\$\s?|(,*)/g, '')}
-            />
-          </div>
-          <p>Выбор страны:</p>
-          <Select defaultValue="Россия" style={{ width: 240 }}>
-            <Option value="Россия">Россия</Option>
-            <Option value="США">США</Option>
-            <Option value="Китай">Китай</Option>
-          </Select>
-          <Button className='mt-3' type='primary' style={{ backgroundColor: 'orange', border: 'none' }}>Применить</Button>
-        </div>
-      </Modal>
     </>
 
   );

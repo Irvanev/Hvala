@@ -17,13 +17,75 @@ export const fetchAdvertismentsByCategory = (category, setAdvertisments, setIsLo
     return unsubscribe;
 };
 
-
-export const fetchAdvertismentsBySubcategory = (category, subcategory, setAdvertisments, setIsLoading) => {
-    const q = query(
+export const fetchAdvertismentsByFilters = (
+    category, subcategory, country, region, 
+    condition, size, type, wheel, mileage, body, drive,
+    year, transmission, memory, screen_size, brand, setAdvertisments, setIsLoading
+) => {
+    let q = query(
         collection(db, 'advertisment'),
         where('category', '==', category),
-        where('subcategory', '==', subcategory)
     );
+
+    if (subcategory) {
+        q = query(q, where('subcategory', '==', subcategory))
+    }
+
+    if (condition) {
+        q = query(q, where('condition', '==', condition));
+    }
+
+    if (size) {
+        q = query(q, where('size', '==', size));
+    }
+
+    if (brand) {
+        q = query(q, where('brand', '==', brand));
+    }
+
+    if (memory) {
+        q = query(q, where('memory', '==', memory));
+    }
+
+    if (screen_size) {
+        q = query(q, where('screen_size', '==', screen_size));
+    }
+
+    if (type) {
+        q = query(q, where('type', '==', type));
+    }
+
+    if (body) {
+        q = query(q, where('body', '==', body));
+    }
+
+    if (drive) {
+        q = query(q, where('drive', '==', drive));
+    }
+
+    if (mileage) {
+        q = query(q, where('mileage', '==', mileage));
+    }
+
+    if (year) {
+        q = query(q, where('year', '==', year));
+    }
+
+    if (wheel) {
+        q = query(q, where('wheel', '==', wheel));
+    }
+
+    if (transmission) {
+        q = query(q, where('transmission', '==', transmission));
+    }
+
+    if (country) {
+        q = query(q, where('country', '==', country));
+    }
+
+    if (region) {
+        q = query(q, where('region', '==', region));
+    }
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
         const newAdvertisments = snapshot.docs.map((doc) => ({
@@ -37,4 +99,3 @@ export const fetchAdvertismentsBySubcategory = (category, subcategory, setAdvert
 
     return unsubscribe;
 };
-
