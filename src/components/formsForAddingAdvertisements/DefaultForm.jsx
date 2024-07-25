@@ -92,7 +92,7 @@ const MapComponent = ({ coordinates, setCoordinates,setCountry, country, setRegi
 
                         setLocation(formattedAddress);
                         setCountry(getCountryKey(country));
-                        setRegion(getRegionKey(region));
+                        //setRegion(getRegionKey(region)); !TODO
                     } else {
                         console.log("NOT OK");
                         setLocation('No results found');
