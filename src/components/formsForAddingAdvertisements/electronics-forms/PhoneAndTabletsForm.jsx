@@ -1,7 +1,127 @@
-import React, { useState } from "react";
-import { Form, Input, InputNumber, Button, Select, Upload, Image } from 'antd';
+import React, { useState, useCallback, useRef } from "react";
+import { Form, Input, InputNumber, Button, Select, Image, Upload, AutoComplete } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { useTranslation } from "react-i18next";
+import { GoogleMap, LoadScript } from '@react-google-maps/api';
+import debounce from 'lodash.debounce';
+
+const containerStyle = {
+    width: '100%',
+    height: '400px',
+    position: 'relative'
+};
+
+const center = {
+    lat: -3.745,
+    lng: -38.523
+};
+
+const markerStyle = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -100%)',
+    zIndex: 1,
+};
+
+const MapComponent = ({ coordinates, setCoordinates, setCountry, country, setRegion, region, setLocation, location, mapRef }) => {
+
+    const countryMappings = {
+        'Черногория': 'montenegro',
+        'Црна Гора': 'montenegro',
+        'Crna Gora': 'montenegro',
+        'Montenegro': 'montenegro',
+        'Сербия': 'serbia',
+        'Србија': 'serbia',
+        'Srbija': 'serbia',
+        'Serbia': 'serbia',
+        'Хорватия': 'croatia',
+        'Хрватска': 'croatia',
+        'Hrvatska': 'croatia',
+        'Croatia': 'croatia',
+        'Босния и Герцеговина': 'bosnia_and_herzegovina',
+        'Босна и Херцеговина': 'bosnia_and_herzegovina',
+        'Bosna i Hercegovina': 'bosnia_and_herzegovina',
+        'Bosnia and Herzegovina': 'bosnia_and_herzegovina'
+    };
+
+    function getCountryKey(countryName) {
+        return countryMappings[countryName] || null;  // Вернуть стандартизированный ключ или null, если отображение не найдено
+    }
+
+    const onLoad = useCallback((map) => {
+        mapRef.current = map;
+        map.panTo(coordinates);
+    }, [coordinates]);
+
+    const onDragEnd = async () => {
+        if (mapRef.current) {
+            const newCenter = mapRef.current.getCenter();
+            const newCoordinates = {
+                lat: newCenter.lat(),
+                lng: newCenter.lng()
+            };
+            setCoordinates(newCoordinates);
+
+            // Fetch the address using Geocoding API
+            const geocoder = new window.google.maps.Geocoder();
+            geocoder.geocode({ location: newCoordinates }, (results, status) => {
+                if (status === 'OK') {
+                    if (results[0]) {
+                        const addressComponents = results[0].address_components;
+                        const formattedAddress = results[0].formatted_address;
+
+                        console.log(results[0]);
+
+                        let country = '';
+                        let region = '';
+
+                        if (addressComponents.length >= 6) {
+                            country = addressComponents[5]?.long_name || '';
+                            region = addressComponents[4]?.long_name || '';
+                        } else if (addressComponents.length >= 5) {
+                            country = addressComponents[4]?.long_name || '';
+                            region = addressComponents[3]?.long_name || '';
+                        } else if (addressComponents.length >= 4) {
+                            country = addressComponents[3]?.long_name || '';
+                            region = addressComponents[2]?.long_name || '';
+                        }
+
+                        console.log(country);
+                        console.log(region);
+
+                        setLocation(formattedAddress);
+                        setCountry(country);
+                        setRegion(region);
+                    } else {
+                        console.log("NOT OK");
+                        setLocation('No results found');
+                    }
+                } else {
+                    setLocation('Geocoder failed due to: ' + status);
+                }
+            });
+        }
+    };
+
+
+    return (
+        <div style={containerStyle}>
+            <GoogleMap
+                mapContainerStyle={{ width: '100%', height: '100%' }}
+                center={coordinates}
+                zoom={10}
+                onLoad={onLoad}
+                onDragEnd={onDragEnd}
+            />
+            <img
+                src="https://maps.google.com/mapfiles/ms/icons/red-dot.png"
+                alt="marker"
+                style={markerStyle}
+            />
+        </div>
+    );
+};
 
 const PhoneAndTabletsForm = ({ title, setTitle,
     price, setPrice,
@@ -12,11 +132,16 @@ const PhoneAndTabletsForm = ({ title, setTitle,
     condition, setCondition,
     phoneNumber, setPhoneNumber,
     description, setDescription,
-    handleSubmit, handleFileChange
+    handleSubmit, handleFileChange,
+    coordinates, setCoordinates,
+    location, setLocation,
+    country, setCountry,
+    region, setRegion,
 
 }) => {
     const { t } = useTranslation();
     const { Option } = Select;
+    const mapRef = useRef(null);
 
     const [form] = Form.useForm();
 
@@ -32,6 +157,7 @@ const PhoneAndTabletsForm = ({ title, setTitle,
     const [fileList, setFileList] = useState([]);
     const [previewImage, setPreviewImage] = useState('');
     const [previewOpen, setPreviewOpen] = useState(false);
+    const [options, setOptions] = useState([]);
 
     const handlePreview = async (file) => {
         setPreviewImage(file.thumbUrl);
@@ -40,7 +166,104 @@ const PhoneAndTabletsForm = ({ title, setTitle,
 
     const handleChange = ({ fileList }) => setFileList(fileList);
 
+    const fetchSuggestions = async (value) => {
+        try {
+            const apiKey = 'AIzaSyD7K42WP5zjV99GP3xll40eFr_5DaAk3ZU';
+            const url = "https://places.googleapis.com/v1/places:searchText";
+            const headers = {
+                'Content-Type': 'application/json',
+                'X-Goog-Api-Key': apiKey,
+                'X-Goog-FieldMask': 'places.*',
+            };
+            const body = JSON.stringify({ textQuery: value });
+
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: headers,
+                body: body,
+            });
+
+            if (response.status === 200) {
+                const data = await response.json();
+                const places = data.places;
+                if (places && places.length > 0) {
+                    setOptions(places.map(place => ({
+                        label: place.formattedAddress,  // Extract text from displayName object
+                        value: place.formattedAddress,
+                        address_components: place.addressComponents,
+                        f: place.location
+                    })));
+                } else {
+                    console.log("No places found");
+                }
+            } else {
+                throw new Error("Failed to fetch suggestions: ${response.statusText}");
+            }
+        } catch (e) {
+            console.log("Error: ", e);
+        }
+    };
+
+    const debounceFetchSuggestions = debounce(fetchSuggestions, 300);
+
+    const handleSelect = async (value) => {
+        const selectedPlace = options.find(option => option.value === value);
+        console.log(selectedPlace);
+        console.log('here')
+        if (selectedPlace) {
+            const longitude = selectedPlace.f.longitude;
+            const latitude = selectedPlace.f.latitude;
+            if (latitude !== undefined && longitude !== undefined) {
+                const newCoordinates = {
+                    lat: parseFloat(latitude),
+                    lng: parseFloat(longitude),
+                };
+                setCoordinates(newCoordinates);
+                setLocation(value);
+
+                if (mapRef.current) {
+                    mapRef.current.panTo(newCoordinates);
+                }
+
+                let country = '';
+                let region = '';
+                const addressComponents = selectedPlace.address_components;
+
+                if (addressComponents.length >= 6) {
+                    country = addressComponents[5]?.longText || '';
+                    region = addressComponents[4]?.longText || '';
+                } else if (addressComponents.length >= 5) {
+                    country = addressComponents[4]?.longText || '';
+                    region = addressComponents[3]?.longText || '';
+                } else if (addressComponents.length >= 4) {
+                    country = addressComponents[3]?.longText || '';
+                    region = addressComponents[2]?.longText || '';
+                } else if (addressComponents.length >= 3) {
+                    country = addressComponents[2]?.longText || '';
+                    region = addressComponents[1]?.longText || '';
+                } else if (addressComponents.length >= 2) {
+                    country = addressComponents[1]?.longText || '';
+                    region = addressComponents[0]?.longText || '';
+                }
+
+                console.log(addressComponents)
+                console.log(country);
+                console.log(region);
+                console.log(value);
+                console.log(newCoordinates);
+                console.log('----');
+
+                setCountry(country);
+                setRegion(region);
+
+            } else {
+                console.error('Invalid coordinates received:', selectedPlace);
+            }
+        }
+    };
+
     return (
+        <LoadScript googleMapsApiKey="AIzaSyD7K42WP5zjV99GP3xll40eFr_5DaAk3ZU">
         <div>
             <Form
                 form={form}
@@ -169,6 +392,23 @@ const PhoneAndTabletsForm = ({ title, setTitle,
                     )}
                 </Form.Item>
 
+                        <Form.Item label={t('coordinates')}>
+                            <MapComponent coordinates={coordinates} setCoordinates={setCoordinates} setRegion={setRegion} setCountry={setCountry} setLocation={setLocation} mapRef={mapRef} />
+                        </Form.Item>
+
+                        <Form.Item label={t('location_name')}>
+                            <AutoComplete
+                                options={options}
+                                onSearch={debounceFetchSuggestions}
+                                onSelect={handleSelect}
+                                placeholder="Search location"
+                                value={location} // Set the value to the selected location name
+                                onChange={(value) => setLocation(value)} // Handle input changes
+                            >
+                                <Input />
+                            </AutoComplete>
+                        </Form.Item>
+
                 <Form.Item style={{ display: 'flex', justifyContent: 'center' }}>
                     <Button type="primary" onClick={onSubmit} size='large' style={{ backgroundColor: 'orange', width: '150px' }}>
                         {t('add')}
@@ -177,6 +417,7 @@ const PhoneAndTabletsForm = ({ title, setTitle,
 
             </Form>
         </div>
+        </LoadScript>
     );
 }
 
