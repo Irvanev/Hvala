@@ -1,6 +1,6 @@
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory, useParams, useLocation } from "react-router-dom";
 import { doc, getDoc } from "firebase/firestore";
-import { db } from "../../config/firebase";
+import { db, auth } from "../../config/firebase";
 import React, { useEffect, useState } from "react";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import "./cardItem.css";
@@ -12,6 +12,9 @@ import DefaultCardInMobile from "../../components/advertisment-card-items/Defaul
 import CardInPc from "../../components/advertisment-card-items/CardInPc";
 import CardInMobile from "../../components/advertisment-card-items/CardInMobile";
 import { NavBarShare } from "../../components/Navbar/NavBarShare";
+import Logo from '../../assets/logo.png'
+
+import { Helmet } from 'react-helmet';
 
 export const CardItem = () => {
   const { id } = useParams();
@@ -22,7 +25,10 @@ export const CardItem = () => {
   const { t } = useTranslation();
   const [showModal, setShowModal] = useState(false);
   const [userData, setUserData] = useState(null);
-  const isUserAuthenticated = localStorage.getItem('isAuthenticated');
+  const isUserAuthenticated = auth.currentUser;
+
+  const location = useLocation();
+  const fullUrl = `${window.location.origin}${location.pathname}`;
 
   const handleSelect = (selectedIndex, e) => {
     setIndex(selectedIndex);
@@ -33,7 +39,7 @@ export const CardItem = () => {
       setShowModal(true);
     } else {
       setShowModal(true);
-      //history.push('/login');
+      history.push('/sign_in');
     }
   };
   const handleCloseModal = () => setShowModal(false);
@@ -64,6 +70,14 @@ export const CardItem = () => {
 
   return (
     <div>
+      <Helmet>
+        <title>{adData?.title}</title>
+        <meta property="og:title" content={adData?.title} />
+        <meta property="og:description" content={adData?.description} />
+        <meta property="og:image" content={adData?.photoUrls[0] || Logo} />
+        <meta property="og:url" content={fullUrl} />
+        <meta property="og:type" content="website" />
+      </Helmet>
       <style type="text/css">
         {`
                 .carousel-item img {

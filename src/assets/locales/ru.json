@@ -1,4 +1,6 @@
 {
+  "filter": "Фильтры",
+  "show_more": "Показать еще",
   "home_navbar": "Главная",
   "contact_navbar": "Контактная информация",
   "help_navbar": "Помощь",
@@ -45,6 +47,7 @@
   "openSelectMenu": "Открыть выпадающее меню",
   "edit_advertisement": "Редактирование объявления",
   "enter_color": "Введите цвет",
+  "choose_language": "Выберите язык интерфейса",
 
   "estate": "Недвижимость",
   "electronics": "Электроника",

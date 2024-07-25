@@ -1,0 +1,13 @@
+.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+  }
+  
+  .sorting {
+    width: 48%;
+  }
+  
+  .filters {
+    width: 48%;
+  }

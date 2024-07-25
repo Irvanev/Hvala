@@ -58,7 +58,7 @@ const CardAdvertisementProfile = ({ advertisment, index }) => {
 
     return (
         <>
-            <Col key={index}>
+            <Col key={index} style={{paddingBottom: '50px'}}>
                 <Card
                     hoverable
                     actions={[

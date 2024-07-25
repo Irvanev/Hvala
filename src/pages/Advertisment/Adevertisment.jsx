@@ -1,19 +1,23 @@
 import { Container, Row } from 'react-bootstrap';
 import React, { useEffect, useState } from 'react';
 
-import { collection, query, where, getDocs,orderBy, limit, startAfter } from "firebase/firestore";
-import { db } from "../../config/firebase";
-
-//import { fetchAdvertisments } from '../../services/AdvertismentsHome/AdvertismentsService';
+import { fetchAdvertismentsSearch, fetchAdvertisments, fetchAdditionalAdvertisements } from '../../services/AdvertismentsHome/AdvertismentsService';
 import { MyNavbar } from '../../components/Navbar/Navbar';
 import Categories from '../../components/category';
 import CategoryCards from "../../components/category-cards/CategoryCards";
 import CardAdvertisementHome from "../../components/card-advertisment-home/CardAdvertisementHome";
-import {FloatButton} from "antd";
-import {GlobalOutlined} from "@ant-design/icons";
 import LanguageModal from "../../LanguageModal";
+
+import { FloatButton, Button, Result } from "antd";
+import { GlobalOutlined } from "@ant-design/icons";
+import DefaultCardCategory from '../../components/advertisment-card-category/DefaultCardCategory';
+import { CustomFooter } from '../../components/footer/footer';
+import { t } from 'i18next';
+
 export const Advertisement = () => {
+    const [isLoading, setIsLoading] = useState(true);
     const [advertisment, setAdvertisement] = useState([]);
+    const [advertismentAl, setAdvertisementAll] = useState([]);
     const [searchText, setSearchText] = useState('');
     const [loadedAdvertisements, setLoadedAdvertisements] = useState(40);
     const [loadMoreButtonVisible, setLoadMoreButtonVisible] = useState(true);
@@ -28,7 +32,8 @@ export const Advertisement = () => {
         setIsModalVisible(false);
     };
 
-    const options = advertisment
+
+    const options = advertismentAl
         .map(ad => ad.title)
         .reduce((unique, title) => {
             return unique.findIndex(obj => obj.value === title) < 0
@@ -36,26 +41,12 @@ export const Advertisement = () => {
                 : unique;
         }, []);
 
-    const filteredAdvertisements = advertisment.filter(ad =>
+    const filteredAdvertisements = advertismentAl.filter(ad =>
         ad.title.toLowerCase().includes(searchText.toLowerCase())
     );
 
-    const fetchAdvertisments = async () => {
-        const advertismentsCollection = collection(db, "advertisment");
-        const q = query(
-            advertismentsCollection,
-            orderBy("time_creation", "desc"),
-            limit(loadedAdvertisements)
-        );
-        const querySnapshot = await getDocs(q);
-        const advertisments = querySnapshot.docs.map(doc => ({...doc.data(), id: doc.id}));
-        return advertisments;
-    }
-
-
-
     const loadMoreAdvertisements = async () => {
-        const additionalAdvertisements = await fetchAdditionalAdvertisements();
+        const additionalAdvertisements = await fetchAdditionalAdvertisements(advertisment);
         if (additionalAdvertisements.length > 0) {
             setAdvertisement(prevAdvertisements => [...prevAdvertisements, ...additionalAdvertisements]);
             setLoadedAdvertisements(prevLoaded => prevLoaded + additionalAdvertisements.length);
@@ -64,24 +55,23 @@ export const Advertisement = () => {
         }
     };
 
-    const fetchAdditionalAdvertisements = async () => {
-        const advertismentsCollection = collection(db, "advertisment");
-        const q = query(
-            advertismentsCollection,
-            orderBy("time_creation", "desc"),
-            limit(40),
-            startAfter(advertisment[advertisment.length - 1].time_creation)
-        );
-        const querySnapshot = await getDocs(q);
-        const additionalAdvertisements = querySnapshot.docs.map(doc => ({...doc.data(), id: doc.id}));
-        return additionalAdvertisements;
-    }
+    const [isTimeout, setIsTimeout] = useState(false);
 
     useEffect(() => {
+        let timer;
         const fetchData = async () => {
-            setAdvertisement(await fetchAdvertisments());
+            setIsLoading(true);
+            timer = setTimeout(() => {
+                setIsTimeout(true);
+            }, 10000);
+            setAdvertisement(await fetchAdvertisments(loadedAdvertisements));
+            setAdvertisementAll(await fetchAdvertismentsSearch());
+            setIsLoading(false);
+            clearTimeout(timer);
+            setIsTimeout(false);
         };
         fetchData();
+        return () => clearTimeout(timer);
     }, []);
 
     return (
@@ -90,13 +80,11 @@ export const Advertisement = () => {
                 {`
                 @media (max-width: 1000px) {
                     body {
-                        padding-bottom: 4.5rem;
                     }
                 }
                 @media (min-width: 1000px) {
                     body {
                         padding-top: 4.5rem;
-                        padding-bottom: 2.5rem;
                     }
                 }
                 `}
@@ -115,19 +103,35 @@ export const Advertisement = () => {
             <Categories setSearchText={setSearchText} options={options} />
             <CategoryCards />
             <Container className="album mt-3">
-                <Row xs={2} sm={2} md={3} lg={4} className="g-3">
-                    {filteredAdvertisements.map((advertisment, index) => (
-                        <CardAdvertisementHome key={index} advertisment={advertisment} />
-                    ))}
-                </Row>
+                {isTimeout ? (
+                    <Result
+                        status="500"
+                        title="500"
+                        subTitle="Извините, что-то пошло не так."
+                        extra={<Button type="primary" onClick={() => window.location.reload()}>Обновить</Button>}
+                    />
+                ) : isLoading ? (
+                    <Row xs={2} sm={2} md={3} lg={4} className="g-3">
+                        {Array.from({ length: 12 }).map((_, index) => (
+                            <DefaultCardCategory key={index} />
+                        ))}
+                    </Row>
+                ) : (
+                    <Row xs={2} sm={2} md={3} lg={4} className="g-3">
+                        {(searchText === "" ? advertisment : filteredAdvertisements).map((advertisment, index) => (
+                            <CardAdvertisementHome key={index} advertisment={advertisment} />
+                        ))}
+                    </Row>
+                )}
             </Container>
             {loadMoreButtonVisible && (
                 <div className="text-center mt-3">
-                    <button className="btn btn-primary" onClick={loadMoreAdvertisements}>
-                        Показать еще
+                    <button className="btn btn-primary" style={{ border: 'none', backgroundColor: 'orange', color: 'white' }} onClick={loadMoreAdvertisements}>
+                        {t("show_more")}
                     </button>
                 </div>
             )}
+            <CustomFooter />
         </div>
     );
 }

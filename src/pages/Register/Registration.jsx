@@ -3,7 +3,7 @@ import Logotype from "../../assets/logo.png"
 import { auth, db } from "../../config/firebase"
 import { createUserWithEmailAndPassword, sendEmailVerification, onAuthStateChanged, signOut } from "firebase/auth";
 import { doc, setDoc, serverTimestamp, collection, query, where, getDocs } from "firebase/firestore";
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 import { MyNavbar } from '../../components/Navbar/Navbar';
 import { Form, Input, Button, Modal } from 'antd';
 import { useTranslation } from 'react-i18next';
@@ -48,10 +48,6 @@ export const Registration = () => {
         const q = query(collection(db, "users"), where("email", "==", email));
         const querySnapshot = await getDocs(q);
         return !querySnapshot.empty;
-    }
-
-    const goBack = () => {
-        history.goBack();
     }
 
     const handleSubmit = async (e) => {
@@ -198,7 +194,7 @@ export const Registration = () => {
                                 onChange={e => setConfPassword(e.target.value)} />
                         </Form.Item>
                         <Form.Item>
-                            <p>{t('alreadyRegistered')} <a href="/sign_in">{t('login')}</a></p>
+                            <p>{t('alreadyRegistered')} <Link to={`/sign_in`}>{t('login')}</Link></p>
                         </Form.Item>
                         <Form.Item>
                             <Button size='large' type="primary" htmlType="submit" id="login">{t('register')}</Button>

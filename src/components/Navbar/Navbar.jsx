@@ -1,5 +1,5 @@
 import React from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useHistory, useLocation, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { auth } from '../../config/firebase';
 import { signOut } from 'firebase/auth';
@@ -40,13 +40,13 @@ export const MyNavbar = () => {
     const menu = (
         <Menu>
             <Menu.Item>
-                <a href="/profile">{t("profile")}</a>
+                <Link to="/profile" style={{ textDecoration: 'none' }}>{t("profile_navbar")}</Link>
             </Menu.Item>
             <Menu.Item>
-                <a href="/settings">{t("settings")}</a>
+                <Link to="/settings" style={{ textDecoration: 'none' }}>{t("settings")}</Link>
             </Menu.Item>
             <Menu.Item onClick={logout}>
-                <a href="/logout">{t("exit")}</a>
+                <a style={{ textDecoration: 'none' }} href="/sign_in">{t("exit")}</a>
             </Menu.Item>
         </Menu>
     );
@@ -88,25 +88,39 @@ export const MyNavbar = () => {
                     <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                     <Navbar.Collapse id="responsive-navbar-nav">
                         <Nav className="me-auto">
-                            <Nav.Link href="/advertisment" style={{ fontSize: '18px' }}>{t("home_navbar")}</Nav.Link>
-                            <Nav.Link href="/help" style={{ fontSize: '18px' }}>{t("help_navbar")}</Nav.Link>
-                            <Nav.Link href="/contacts" style={{ fontSize: '18px' }}>{t("contact_navbar")}</Nav.Link>
+                            <Link to="/" style={{ textDecoration: 'none' }}>
+                                <Nav.Link href="/" style={{ fontSize: '18px' }}>{t("home_navbar")}</Nav.Link>
+                            </Link>
+                            <Link to="/help" style={{ textDecoration: 'none' }}>
+                                <Nav.Link href='/help' style={{ fontSize: '18px' }}>{t("help_navbar")}</Nav.Link>
+                            </Link>
+                            <Link to="/contacts" style={{ textDecoration: 'none' }}>
+                                <Nav.Link href="/contacts" style={{ fontSize: '18px' }}>{t("contact_navbar")}</Nav.Link>
+                            </Link>
                         </Nav>
                         <Nav>
-                            <Nav.Link href="/message" style={{ fontSize: '18px', padding: '12px' }}><MessageOutlined style={{ fontSize: '25px', padding: '3px' }} /></Nav.Link>
+                            <Link to="/message" style={{ textDecoration: 'none' }}>
+                                <Nav.Link href="/message" style={{ fontSize: '18px', padding: '12px' }}><MessageOutlined style={{ fontSize: '25px', padding: '3px' }} /></Nav.Link>
+                            </Link>
                             {user ? (
                                 <Dropdown overlay={menu}>
-                                    <Nav.Link href="/profile" style={{ fontSize: '18px', padding: '12px' }}>
-                                        <Avatar size={32} alt={user.name} src={user.photoUrl} style={{ marginRight: '10px' }} />
-                                        {user.name}<DownOutlined style={{ fontSize: '12px' }} />
-                                    </Nav.Link>
+                                    <Link to="/profile" style={{ textDecoration: 'none' }}>
+                                        <Nav.Link href="/profile" style={{ fontSize: '18px', padding: '12px' }}>
+                                            <Avatar size={32} alt={user.name} src={user.photoUrl} style={{ marginRight: '10px' }} />
+                                            {user.name}<DownOutlined style={{ fontSize: '12px' }} />
+                                        </Nav.Link>
+                                    </Link>
                                 </Dropdown>
                             ) : (
-                                <Nav.Link href="/sign_in" style={{ fontSize: '18px', padding: '12px' }}>{t("auth")}</Nav.Link>
+                                <Link to="/sign_in" style={{ textDecoration: 'none' }}>
+                                    <Nav.Link href="/sign_in" style={{ fontSize: '18px', padding: '12px' }}>{t("auth")}</Nav.Link>
+                                </Link>
                             )}
-                            <Nav.Link href="/addItem" >
-                                <Button style={{ backgroundColor: 'orange', color: 'white', border: 'none' }} size='large'>{t("addItem_navbar")}</Button>
-                            </Nav.Link>
+                            <Link to="/addItem" style={{ textDecoration: 'none' }}>
+                                <Nav.Link href="/addItem" >
+                                    <Button style={{ backgroundColor: 'orange', color: 'white', border: 'none' }} size='large'>{t("addItem_navbar")}</Button>
+                                </Nav.Link>
+                            </Link>
                         </Nav>
                     </Navbar.Collapse>
                 </Container>
