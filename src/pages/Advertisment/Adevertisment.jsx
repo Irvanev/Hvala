@@ -8,8 +8,8 @@ import CategoryCards from "../../components/category-cards/CategoryCards";
 import CardAdvertisementHome from "../../components/card-advertisment-home/CardAdvertisementHome";
 import LanguageModal from "../../LanguageModal";
 
-import { FloatButton, Button, Result } from "antd";
-import { GlobalOutlined } from "@ant-design/icons";
+import { FloatButton, Button, Result, Space } from "antd";
+import { GlobalOutlined, FilterOutlined } from "@ant-design/icons";
 import DefaultCardCategory from '../../components/advertisment-card-category/DefaultCardCategory';
 import { CustomFooter } from '../../components/footer/footer';
 import { t } from 'i18next';
@@ -55,6 +55,7 @@ export const Advertisement = () => {
         }
     };
 
+
     const [isTimeout, setIsTimeout] = useState(false);
 
     useEffect(() => {
@@ -91,17 +92,40 @@ export const Advertisement = () => {
             </style>
 
             <MyNavbar />
-            <FloatButton
-                icon={<GlobalOutlined />}
-                style={{ right: 24, bottom: 80 }}
-                onClick={showModal}
-            />
+            <div className='app d-lg-none'>
+                <FloatButton
+                    icon={<GlobalOutlined />}
+                    style={{ right: 24, bottom: 80, height: '50px', width: '80px' }}
+                    shape='square'
+                    description="Language"
+                    onClick={showModal}
+                />
+            </div>
             <LanguageModal
                 show={isModalVisible}
                 handleClose={handleModalClose}
             />
             <Categories setSearchText={setSearchText} options={options} />
             <CategoryCards />
+            <div className='container mt-3' style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
+                <Space>
+                    <a>
+                        По умолчанию
+                    </a>
+                    <a>
+                        Подешевле
+                    </a>
+                    <a>
+                        Подороже
+                    </a>
+                </Space>
+                <a onClick={showModal}>
+                    <Space>
+                        <FilterOutlined />
+                        Фильтры
+                    </Space>
+                </a>
+            </div>
             <Container className="album mt-3">
                 {isTimeout ? (
                     <Result

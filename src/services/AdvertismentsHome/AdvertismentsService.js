@@ -53,3 +53,14 @@ export const getConversionRate = async (currency) => {
 
     return conversionRate;
 }
+
+export const fetchAdvertisementsByPrice = async (order = "asc") => {
+    const advertismentsCollection = collection(db, "advertisment");
+    const q = query(
+        advertismentsCollection,
+        orderBy("price", order)
+    );
+    const querySnapshot = await getDocs(q);
+    const advertisments = querySnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
+    return advertisments;
+}

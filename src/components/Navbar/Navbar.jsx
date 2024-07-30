@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useHistory, useLocation, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { auth } from '../../config/firebase';
@@ -6,7 +6,7 @@ import { signOut } from 'firebase/auth';
 
 import { TabBar } from 'antd-mobile';
 import { Avatar, Button, Dropdown, Menu } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
+import { DownOutlined, GlobalOutlined } from '@ant-design/icons';
 import { Nav, Navbar, Container } from 'react-bootstrap'
 import {
     SetOutline,
@@ -16,6 +16,7 @@ import {
     AppstoreOutline
 } from 'antd-mobile-icons'
 import { MessageOutlined } from '@ant-design/icons';
+import LanguageModal from '../../LanguageModal';
 
 export const MyNavbar = () => {
     const { t } = useTranslation();
@@ -23,6 +24,16 @@ export const MyNavbar = () => {
     const location = useLocation();
     const { pathname } = location;
     const user = JSON.parse(localStorage.getItem('user'));
+
+    const [isModalVisible, setIsModalVisible] = useState(false);
+
+    const showModal = () => {
+        setIsModalVisible(true);
+    };
+
+    const handleModalClose = () => {
+        setIsModalVisible(false);
+    };
 
     const setRoute = (value) => {
         history.push(value);
@@ -83,11 +94,19 @@ export const MyNavbar = () => {
     return (
         <div>
 
-            <Navbar collapseOnSelect expand="lg" className="bg-body-tertiary d-none d-lg-block" style={{ position: 'fixed', width: '100%', zIndex: '999', top: 0 }}>
+            <Navbar collapseOnSelect expand="lg" className="bg-body-tertiary d-none d-lg-block" style={{ position: 'fixed', width: '100%', zIndex: '999', top: 0, backgroundColor: '#f8f9fa' }}>
                 <Container>
                     <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                     <Navbar.Collapse id="responsive-navbar-nav">
                         <Nav className="me-auto">
+                            <Link to="" style={{ textDecoration: 'none' }} onClick={showModal}>
+                                <Nav.Link href="" style={{ fontSize: '18px' }}><GlobalOutlined /> {t("Language")}</Nav.Link>
+                            </Link>
+
+                            <LanguageModal
+                                show={isModalVisible}
+                                handleClose={handleModalClose}
+                            />
                             <Link to="/" style={{ textDecoration: 'none' }}>
                                 <Nav.Link href="/" style={{ fontSize: '18px' }}>{t("home_navbar")}</Nav.Link>
                             </Link>
@@ -118,7 +137,7 @@ export const MyNavbar = () => {
                             )}
                             <Link to="/addItem" style={{ textDecoration: 'none' }}>
                                 <Nav.Link href="/addItem" >
-                                    <Button style={{ backgroundColor: 'orange', color: 'white', border: 'none' }} size='large'>{t("addItem_navbar")}</Button>
+                                    <Button style={{ backgroundColor: '#FFBF34', color: 'white', border: 'none' }} size='large'>{t("addItem_navbar")}</Button>
                                 </Nav.Link>
                             </Link>
                         </Nav>

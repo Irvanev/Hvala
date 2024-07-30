@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom';
 import { MenuOutlined, MoreOutlined } from '@ant-design/icons';
 import { Dropdown, Button, Modal, Select, InputNumber, AutoComplete } from 'antd';
-import Logo from '../assets/hvala.png'
+import Logo from '../assets/new_logo.png'
 import { t } from 'i18next';
 
 const Categories = ({ setSearchText, options }) => {
@@ -149,23 +149,12 @@ const Categories = ({ setSearchText, options }) => {
   return (
     <>
       <div className='d-none d-lg-block' style={{ marginTop: '20px' }}>
-        <div className='container mb-3' style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <div className='container mb-3' style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div className='logo' style={{ marginRight: '20px' }}>
             <a href='/'>
-              <img src={Logo} alt='logo' style={{ height: '40px', width: '150px' }}></img>
+              <img src={Logo} alt='logo' style={{ width: '100px', height: 'auto' }}></img>
             </a>
           </div>
-          <Dropdown
-            menu={{
-              items,
-            }}
-          >
-            <a onClick={(e) => e.preventDefault()}>
-              <Button style={{ marginRight: '20px', backgroundColor: 'orange', color: 'white', border: 'none' }} size='large' icon={<MenuOutlined />}>
-                {t('category')}
-              </Button>
-            </a>
-          </Dropdown>
           <AutoComplete
             options={filteredOptions}
             style={{ width: 1000 }}
@@ -179,12 +168,23 @@ const Categories = ({ setSearchText, options }) => {
             }}
             placeholder={t('search')}
           />
+          <Dropdown
+            menu={{
+              items,
+            }}
+          >
+            <a onClick={(e) => e.preventDefault()}>
+              <Button style={{ marginRight: '20px', backgroundColor: '#FFBF34', color: 'white', border: 'none' }} size='large' icon={<MenuOutlined />}>
+                {t('category')}
+              </Button>
+            </a>
+          </Dropdown>
         </div>
       </div>
 
       <div className='d-lg-none mt-3'>
         <div className='logo mb-3' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <img src={Logo} alt='logo' style={{ height: '50px', width: '160px' }}></img>
+          <img src={Logo} alt='logo' style={{ width: '120px', height: 'auto' }}></img>
         </div>
         <div className='container mb-3' style={{ display: 'flex', justifyContent: 'space-between' }}>
           <Dropdown
@@ -193,7 +193,7 @@ const Categories = ({ setSearchText, options }) => {
             }}
           >
             <a onClick={(e) => e.preventDefault()}>
-              <Button style={{ marginRight: '20px', backgroundColor: 'orange', color: 'white', border: 'none' }} size='large' icon={<MenuOutlined />}>
+              <Button style={{ marginRight: '20px', backgroundColor: '#FFBF34', color: 'white', border: 'none' }} size='large' icon={<MenuOutlined />}>
               </Button>
             </a>
           </Dropdown>
