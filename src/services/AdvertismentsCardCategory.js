@@ -20,12 +20,15 @@ export const fetchAdvertismentsByCategory = (category, setAdvertisments, setIsLo
 export const fetchAdvertismentsByFilters = (
     category, subcategory, country, region, 
     condition, size, type, wheel, mileage, body, drive,
-    year, transmission, memory, screen_size, brand, setAdvertisments, setIsLoading
+    year, transmission, memory, screen_size, brand, minPrice, maxPrice, currency, setAdvertisments
 ) => {
     let q = query(
         collection(db, 'advertisment'),
-        where('category', '==', category),
     );
+
+    if (category) {
+        q = query(q, where('category', '==', category))
+    }
 
     if (subcategory) {
         q = query(q, where('subcategory', '==', subcategory))
@@ -87,6 +90,18 @@ export const fetchAdvertismentsByFilters = (
         q = query(q, where('region', '==', region));
     }
 
+    if (currency) {
+        q = query(q, where('currency', '==', currency));
+    }
+
+    if (minPrice) {
+        q = query(q, where('price', '>=', minPrice));
+    }
+
+    if (maxPrice) {
+        q = query(q, where('price', '<=', maxPrice));
+    }
+
     const unsubscribe = onSnapshot(q, (snapshot) => {
         const newAdvertisments = snapshot.docs.map((doc) => ({
             id: doc.id,
@@ -94,7 +109,6 @@ export const fetchAdvertismentsByFilters = (
         }));
 
         setAdvertisments(newAdvertisments);
-        setIsLoading(false);
     });
 
     return unsubscribe;

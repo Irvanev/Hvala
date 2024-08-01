@@ -23,6 +23,9 @@ export const CategoryAdvertisments = () => {
     const [condition, setCondition] = useState('');
     const [country, setCountry] = useState('');
     const [region, setRegion] = useState('');
+    const [minPrice, setMinPrice] = useState('');
+    const [maxPrice, setMaxPrice] = useState('');
+    const [currency, setCurrency] = useState('');
 
     const [screen_size, setScreenSize] = useState('');
     const [memory, setMemory] = useState('');
@@ -41,6 +44,18 @@ export const CategoryAdvertisments = () => {
     const [mileage, setMileage] = useState('');
     const [transmission, setTransmission] = useState('');
     const [drive, setDrive] = useState('');
+
+    const handleMinPriceChange = (value) => {
+        setMinPrice(parseInt(value, 10));
+    };
+
+    const handleMaxPriceChange = (value) => {
+        setMaxPrice(parseInt(value, 10));
+    };
+
+    const handleCurrencyChange = (value) => {
+        setCurrency(value);
+    };
 
     const items = [
         {
@@ -309,7 +324,7 @@ export const CategoryAdvertisments = () => {
 
     const applyFilters = () => {
         console.log("Фильтры:", { category, subcategory, country, region, condition, memory, brand, transmission, body, wheel, drive, year, mileage });
-        fetchAdvertismentsByFilters(category, subcategory, country, region, condition, size, type, wheel, mileage, body, drive, year, transmission, memory, screen_size, brand, setAdvertisments, setIsLoading
+        fetchAdvertismentsByFilters(category, subcategory, country, region, condition, size, type, wheel, mileage, body, drive, year, transmission, memory, screen_size, brand, minPrice, maxPrice, currency, setAdvertisments, setIsLoading
         );
         setIsModalOpen(false);
     };
@@ -328,32 +343,76 @@ export const CategoryAdvertisments = () => {
         resetFilters();
     }, [category]);
 
+    const FormClothes = () =>
+        <>
+            <label className='mt-3'>{t('condition')}</label>
+            <Select style={{ width: '100%' }} onChange={setCondition} value={condition}>
+                <Option value="">{t('choice_condition')}</Option>
+                <Option value="new_cond">{t('new_cond')}</Option>
+                <Option value="bu_cond">{t('bu_cond')}</Option>
+            </Select>
+            <label className='mt-3'>{t('type')}</label>
+            <Select style={{ width: '100%' }} onChange={setType} value={type}>
+                <Option value="">{t('choice_type')}</Option>
+                <Option value="outwear">{t('outwear')}</Option>
+                <Option value="hats">{t('hats')}</Option>
+                <Option value="accessories">{t('accessories')}</Option>
+                <Option value="homewear">{t('homewear')}</Option>
+                <Option value="underwear">{t('underwear')}</Option>
+                <Option value="shoes">{t('shoes')}</Option>
+                <Option value="jackets_and_suits">{t('jackets_and_suits')}</Option>
+                <Option value="shirts">{t('shirts')}</Option>
+                <Option value="Steam sweaters_and_hoodies">{t('sweaters_and_hoodies')}</Option>
+                <Option value="Nvidia workwear">{t('workwear')}</Option>
+                <Option value="sportswear">{t('sportswear')}</Option>
+                <Option value="t_shirts_and_polos">{t('t_shirts_and_polos')}</Option>
+                <Option value="pants_and_shorts">{t('pants_and_shorts')}</Option>
+                <Option value="rest">{t('rest')}</Option>
+            </Select>
+            <label className='mt-3'>{t('size')}</label>
+            <Select style={{ width: '100%' }} onChange={setSize} value={size}>
+                <Option value="">{t('choice_size')}</Option>
+                <Option value="XXS">XXS</Option>
+                <Option value="XS">XS</Option>
+                <Option value="S">S</Option>
+                <Option value="M">M</Option>
+                <Option value="L">L</Option>
+                <Option value="XL">XL</Option>
+                <Option value="XXL">XXL</Option>
+                <Option value="XXXL">XXXL</Option>
+                <Option value="4XL">4XL</Option>
+                <Option value="5XL">5XL</Option>
+            </Select>
+        </>
+
     const FormSmartphonesAndTablets = () =>
         <>
-            <label className='mt-3'>Состояние</label>
+            <label className='mt-3'>{t('condition')}</label>
             <Select style={{ width: '100%' }} onChange={setCondition} value={condition}>
-                <Option value="">Выберите состояние</Option>
-                <Option value="new_cond">Новое</Option>
-                <Option value="bu_cond">Б/У</Option>
+                <Option value="">{t('choice_condition')}</Option>
+                <Option value="new_cond">{t('new_cond')}</Option>
+                <Option value="bu_cond">{t('bu_cond')}</Option>
             </Select>
-            <label className='mt-3'>Бренд</label>
+            <label className='mt-3'>{t('brand')}</label>
             <Select style={{ width: '100%' }} onChange={setBrand} value={brand}>
-                <Option value="">Выберите бренд</Option>
+                <Option value="">{t('choice_brand')}</Option>
                 <Option value="Apple">Apple</Option>
                 <Option value="Samsung">Samsung</Option>
             </Select>
-            <label className='mt-3'>Память</label>
+            <label className='mt-3'>{t('memory')}</label>
             <Select style={{ width: '100%' }} onChange={setMemory} value={memory}>
-                <Option value="">Выберите память</Option>
+                <Option value="">{t('choice_memory')}</Option>
                 <Option value="32">32Gb</Option>
                 <Option value="64">64Gb</Option>
                 <Option value="128">128Gb</Option>
                 <Option value="256">256Gb</Option>
                 <Option value="512">512Gb</Option>
             </Select>
-            <label className='mt-3'>Размер экрана</label>
+            <label className='mt-3'>{t('size_screen')}</label>
             <Select style={{ width: '100%' }} onChange={setScreenSize} value={screen_size}>
-                <Option value="">Выберите размер экрана</Option>
+                <Option value="">{t('choice_screen_size')}</Option>
+                <Option value="7">5</Option>
+                <Option value="7">6</Option>
                 <Option value="7">7</Option>
                 <Option value="8">8</Option>
             </Select>
@@ -362,15 +421,15 @@ export const CategoryAdvertisments = () => {
 
     const FormTransport = () =>
         <>
-            <label className='mt-3'>Состояние</label>
+            <label className='mt-3'>{t('condition')}</label>
             <Select style={{ width: '100%' }} onChange={setCondition} value={condition}>
-                <Option value="">Выберите состояние</Option>
+                <Option value="">{t('choice_condition')}</Option>
                 <Option value="condition_new">{t('condition_new')}</Option>
                 <Option value="used">{t('used')}</Option>
             </Select>
-            <label className='mt-3'>{t('choice_mark')}</label>
+            <label className='mt-3'>{t('brand')}</label>
             <Select style={{ width: '100%' }} onChange={setBrand} value={brand}>
-                <Option value="">Выберите бренд</Option>
+                <Option value="">{t('choice_mark')}</Option>
                 <Option value="Audi">Audi</Option>
                 <Option value="BMW">BMW</Option>
                 <Option value="Mercedes-Benz">Mersedes</Option>
@@ -393,7 +452,7 @@ export const CategoryAdvertisments = () => {
                     option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                 }
             >
-                <Option value="">Выберите тип кузова</Option>
+                <Option value="">{t('choice_type_body')}</Option>
                 <Option value="sedan">{t('sedan')}</Option>
                 <Option value="hatchback">{t('hatchback')}</Option>
                 <Option value="station_wagon">{t('station_wagon')}</Option>
@@ -405,12 +464,12 @@ export const CategoryAdvertisments = () => {
                 <Option value="minivan">{t('minivan')}</Option>
                 <Option value="Limousine">{t('Limousine')}</Option>
             </Select>
-            <label className='mt-3'>{t('choice_wheel')}</label>
+            <label className='mt-3'>{t('wheel')}</label>
             <Select value={wheel} onChange={(value) => setWheel(value)}
                 style={{
                     width: '100%',
                 }}>
-                <Option value="">Выберите расположение руля</Option>
+                <Option value="">{t('choice_wheel')}</Option>
                 <Option value="left_hand_drive">{t('left_hand_drive')}</Option>
                 <Option value="right_hand_drive">{t('right_hand_drive')}</Option>
             </Select>
@@ -443,21 +502,21 @@ export const CategoryAdvertisments = () => {
 
     const FormTv = () =>
         <>
-            <label className='mt-3'>Состояние</label>
+            <label className='mt-3'>{t('condition')}</label>
             <Select style={{ width: '100%' }} onChange={setCondition} value={condition}>
-                <Option value="">Выберите состояние</Option>
-                <Option value="new_cond">Новое</Option>
-                <Option value="bu_cond">Б/У</Option>
+                <Option value="">{t('choice_condition')}</Option>
+                <Option value="new_cond">{t('new_cond')}</Option>
+                <Option value="bu_cond">{t('bu_cond')}</Option>
             </Select>
-            <label className='mt-3'>Бренд</label>
+            <label className='mt-3'>{t('brand')}</label>
             <Select style={{ width: '100%' }} onChange={setBrand} value={brand}>
-                <Option value="">Выберите бренд</Option>
+                <Option value="">{t('choice_brand')}</Option>
                 <Option value="Apple">Apple</Option>
                 <Option value="Samsung">Samsung</Option>
             </Select>
-            <label className='mt-3'>Размер экрана</label>
+            <label className='mt-3'>{t('size_screen')}</label>
             <Select style={{ width: '100%' }} onChange={setScreenSize} value={screen_size}>
-                <Option value="">Выберите размер экрана</Option>
+                <Option value="">{t('choice_screen_size')}</Option>
                 <Option value="7">7</Option>
                 <Option value="8">8</Option>
             </Select>
@@ -465,15 +524,15 @@ export const CategoryAdvertisments = () => {
 
     const FormComputers = () =>
         <>
-            <label className='mt-3'>Состояние</label>
+            <label className='mt-3'>{t('condition')}</label>
             <Select style={{ width: '100%' }} onChange={setCondition} value={condition}>
-                <Option value="">Выберите состояние</Option>
-                <Option value="new_cond">Новое</Option>
-                <Option value="bu_cond">Б/У</Option>
+                <Option value="">{t('choice_condition')}</Option>
+                <Option value="new_cond">{t('new_cond')}</Option>
+                <Option value="bu_cond">{t('bu_cond')}</Option>
             </Select>
-            <label className='mt-3'>Бренд</label>
+            <label className='mt-3'>{t('brand')}</label>
             <Select style={{ width: '100%' }} onChange={setBrand} value={brand}>
-                <Option value="">Выберите бренд</Option>
+                <Option value="">{t('choice_brand')}</Option>
                 <Option value="Samsung">Samsung</Option>
                 <Option value="Apple">Apple</Option>
                 <Option value="Xiaomi">Xiaomi</Option>
@@ -485,9 +544,9 @@ export const CategoryAdvertisments = () => {
                 <Option value="Google">Google</Option>
                 <Option value="MSI">MSI</Option>
             </Select>
-            <label className='mt-3'>Тип</label>
+            <label className='mt-3'>{t('type')}</label>
             <Select style={{ width: '100%' }} onChange={setType} value={type}>
-                <Option value="">Выберите тип</Option>
+                <Option value="">{t('choice_type')}</Option>
                 <Option value="laptop">{t('laptop')}</Option>
                 <Option value="stationary_computer">{t('stationary_computer')}</Option>
                 <Option value="micro_computer">{t('micro_computer')}</Option>
@@ -498,15 +557,15 @@ export const CategoryAdvertisments = () => {
 
     const FormComputersAccs = () =>
         <>
-            <label className='mt-3'>Состояние</label>
+            <label className='mt-3'>{t('condition')}</label>
             <Select style={{ width: '100%' }} onChange={setCondition} value={condition}>
-                <Option value="">Выберите состояние</Option>
-                <Option value="new_cond">Новое</Option>
-                <Option value="bu_cond">Б/У</Option>
+                <Option value="">{t('choice_condition')}</Option>
+                <Option value="new_cond">{t('new_cond')}</Option>
+                <Option value="bu_cond">{t('bu_cond')}</Option>
             </Select>
-            <label className='mt-3'>Бренд</label>
+            <label className='mt-3'>{t('brand')}</label>
             <Select style={{ width: '100%' }} onChange={setBrand} value={brand}>
-                <Option value="">Выберите бренд</Option>
+                <Option value="">{t('choice_brand')}</Option>
                 <Option value="Logitech">Logitech</Option>
                 <Option value="Razer">Razer</Option>
                 <Option value="Microsoft">Microsoft</Option>
@@ -523,9 +582,9 @@ export const CategoryAdvertisments = () => {
                 <Option value="Thermaltake">Thermaltake</Option>
                 <Option value="Kingston">Kingston</Option>
             </Select>
-            <label className='mt-3'>Тип</label>
+            <label className='mt-3'>{t('type')}</label>
             <Select style={{ width: '100%' }} onChange={setType} value={type}>
-                <Option value="">Выберите тип</Option>
+                <Option value="">{t('choice_type')}</Option>
                 <Option>{t('type')}</Option>
                 <Option value="mouse">{t('mouse')}</Option>
                 <Option value="keyboard">{t('keyboard')}</Option>
@@ -534,24 +593,50 @@ export const CategoryAdvertisments = () => {
             </Select>
         </>
 
+    const FormVideoGames = () =>
+        <>
+            <label className='mt-3'>{t('condition')}</label>
+            <Select style={{ width: '100%' }} onChange={setCondition} value={condition}>
+                <Option value="">{t('choice_condition')}</Option>
+                <Option value="new_cond">{t('new_cond')}</Option>
+                <Option value="bu_cond">{t('bu_cond')}</Option>
+            </Select>
+            <label className='mt-3'>{t('brand')}</label>
+            <Select style={{ width: '100%' }} onChange={setBrand} value={brand}>
+                <Option value="">{t('choice_brand')}</Option>
+                <Option value="Sony PlayStation">Sony PlayStation</Option>
+                <Option value="Microsoft Xbox">Microsoft Xbox</Option>
+                <Option value="Nintendo">Nintendo</Option>
+                <Option value="Sega">Sega</Option>
+                <Option value="Atari">Atari</Option>
+                <Option value="SNK">SNK</Option>
+                <Option value="Neo Geo">Neo Geo</Option>
+                <Option value="Ouya">Ouya</Option>
+                <Option value="Steam Machine">Steam Machine</Option>
+                <Option value="Nvidia Sheild">Nvidia Sheild</Option>
+                <Option value="Intellivision">Intellivision</Option>
+                <Option value="GameBoy">GameBoy</Option>
+            </Select>
+        </>
+
     const FormEstate = () =>
         <>
-            <label className='mt-3'>Тип</label>
+            <label className='mt-3'>{t('type')}</label>
             <Select style={{ width: '100%' }} onChange={setType} value={type}>
-                <Option value="">Выберите тип</Option>
+                <Option value="">{t('choice_type')}</Option>
                 <Option value="house">{t('house')}</Option>
                 <Option value="garage">{t('garage')}</Option>
                 <Option value="aparment">{t('aparment')}</Option>
                 <Option value="commercial_real_estate">{t('commercial_real_estate')}</Option>
                 <Option value="room">{t('room')}</Option>
             </Select>
-            <label className='mt-3'>Количество комнат</label>
+            <label className='mt-3'>{t('rooms_amount')}</label>
             <Input type="text" value={rooms_amount} onChange={(e) => setRoomsAmount(e.target.value)} />
-            <label className='mt-3'>Площадь</label>
+            <label className='mt-3'>{t('area')}</label>
             <Input type="text" value={area} onChange={(e) => setArea(e.target.value)} />
-            <label className='mt-3'>Владелец или риелтор</label>
+            <label className='mt-3'>{t('owner_rent')}</label>
             <Select style={{ width: '100%' }} onChange={setOwner} value={owner}>
-                <Option value="">Выберите собственика</Option>
+                <Option value="">{t('input_owner_rent')}</Option>
                 <Option value="owner">{t('owner')}</Option>
                 <Option value="realtor">{t('realtor')}</Option>
             </Select>
@@ -559,26 +644,30 @@ export const CategoryAdvertisments = () => {
 
     const FormHomeAppliance = () =>
         <>
-            <label className='mt-3'>Состояние</label>
+            <label className='mt-3'>{t('condition')}</label>
             <Select style={{ width: '100%' }} onChange={setCondition} value={condition}>
-                <Option value="">Выберите состояние</Option>
-                <Option value="new_cond">Новое</Option>
-                <Option value="bu_cond">Б/У</Option>
+                <Option value="">{t('choice_condition')}</Option>
+                <Option value="new_cond">{t('new_cond')}</Option>
+                <Option value="bu_cond">{t('bu_cond')}</Option>
             </Select>
         </>
 
     const FormDefault = () =>
         <>
-            <label className='mt-3'>Состояние</label>
+            <label className='mt-3'>{t('condition')}</label>
             <Select style={{ width: '100%' }} onChange={setCondition} value={condition}>
-                <Option value="">Выберите состояние</Option>
-                <Option value="new_cond">Новое</Option>
-                <Option value="bu_cond">Б/У</Option>
+                <Option value="">{t('choice_condition')}</Option>
+                <Option value="new_cond">{t('new_cond')}</Option>
+                <Option value="bu_cond">{t('bu_cond')}</Option>
             </Select>
         </>
 
     const renderForm = () => {
         switch (subcategory) {
+            case 'mens_clothing':
+            case 'womens_clothing':
+            case 'childrens_clothing':
+                return <FormClothes />;
             case 'phones_and_tablets':
                 return <FormSmartphonesAndTablets />;
             case 'tv':
@@ -587,6 +676,9 @@ export const CategoryAdvertisments = () => {
                 return <FormComputers />;
             case 'computer_accessories':
                 return <FormComputersAccs />
+            case 'game_console':
+            case 'photo_video':
+                return <FormVideoGames />
             case 'auto':
             case 'moto':
             case 'water_transport':
@@ -712,9 +804,28 @@ export const CategoryAdvertisments = () => {
                 <Row>
                     <Col md={3} className=' d-none d-lg-block'>
 
-                        <label className='mt-3'>Страна</label>
+                        <label className='mt-3'>{t('prices')}</label>
+                        <Space style={{ width: '100%' }} align="baseline">
+                            <Select defaultValue="" onChange={handleCurrencyChange} value={currency} style={{ width: 100 }}>
+                                <Select.Option value="rsd">RSD</Select.Option>
+                                <Select.Option value="eur">EUR</Select.Option>
+                            </Select>
+                            <InputNumber
+                                style={{ width: '100%' }}
+                                placeholder={t('minPricePlaceholder')}
+                                value={minPrice}
+                                onChange={handleMinPriceChange}
+                            />
+                            <InputNumber
+                                style={{ width: '100%' }}
+                                placeholder={t('maxPricePlaceholder')}
+                                value={maxPrice}
+                                onChange={handleMaxPriceChange}
+                            />
+                        </Space>
+                        <label className='mt-3'>{t('country')}</label>
                         <Select style={{ width: '100%' }} onChange={value => setCountry(value)} value={country}>
-                            <Option value="">Выберите страну</Option>
+                            <Option value="">{t('choice_country')}</Option>
                             <Option value="serbia">{t('serbia')}</Option>
                             <Option value="montenegro">{t('montenegro')}</Option>
                             <Option value="croatia">{t('croatia')}</Option>
@@ -723,7 +834,7 @@ export const CategoryAdvertisments = () => {
 
                         {country && (
                             <>
-                                <label className='mt-3'>Регион</label>
+                                <label className='mt-3'>{t('region')}</label>
                                 <Select style={{ width: '100%' }} onChange={value => setRegion(value)} value={region}>
                                     {countryRegions[country] ? countryRegions[country].map(region => (
                                         <Option key={region.value} value={region.value}>
@@ -734,9 +845,9 @@ export const CategoryAdvertisments = () => {
                             </>
                         )}
 
-                        <label className='mt-3'>Подкатегория</label>
+                        <label className='mt-3'>{t('subCategory')}</label>
                         <Select style={{ width: '100%' }} onChange={setSubCategory} value={subcategory}>
-                            <Option value="">Выберите подкатегорию</Option>
+                            <Option value="">{t('choice_subcategory')}</Option>
                             {currentSubcategories.map(subcategory => (
                                 <Option key={subcategory.value} value={subcategory.value}>
                                     {subcategory.label}
@@ -748,9 +859,9 @@ export const CategoryAdvertisments = () => {
 
                         <div style={{ display: 'flex', justifyContent: 'space-around' }}>
                             <Button className='mt-3' type='primary' onClick={applyFilters}
-                                style={{ backgroundColor: 'orange', border: 'none' }}>Применить</Button>
+                                style={{ backgroundColor: 'orange', border: 'none' }}>{t('apply')}</Button>
                             <Button className='mt-3' type='default' onClick={resetFilters}
-                                style={{ marginLeft: '10px' }}>Сбросить</Button>
+                                style={{ marginLeft: '10px' }}>{t('reset')}</Button>
                         </div>
                     </Col>
                     {isLoading ? (
@@ -768,20 +879,6 @@ export const CategoryAdvertisments = () => {
                             <Container className="album">
                                 <div className='d-lg-none'>
                                     <div className={styles.container}>
-                                        <div className={styles.sorting}>
-                                            <Dropdown
-                                                menu={{
-                                                    items,
-                                                }}
-                                            >
-                                                <a onClick={(e) => e.preventDefault()}>
-                                                    <Space>
-                                                        Сортировать
-                                                        <DownOutlined />
-                                                    </Space>
-                                                </a>
-                                            </Dropdown>
-                                        </div>
                                         <div className={styles.filters}>
                                             <a onClick={showModal}>
                                                 <Space>
@@ -791,23 +888,28 @@ export const CategoryAdvertisments = () => {
                                             </a>
                                             <Modal title="Фильтры" open={isModalOpen} footer={null} onCancel={handleCancel}>
                                                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                                                    <p>Диапазон цен:</p>
-                                                    <div>
+                                                    <label className='mt-3'>{t('prices')}</label>
+                                                    <Space style={{ width: '100%' }} align="baseline">
+                                                        <Select defaultValue="" onChange={handleCurrencyChange} value={currency} style={{ width: 100 }}>
+                                                            <Select.Option value="rsd">RSD</Select.Option>
+                                                            <Select.Option value="eur">EUR</Select.Option>
+                                                        </Select>
                                                         <InputNumber
-                                                            defaultValue={0}
-                                                            formatter={(value) => `€ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                                                            parser={(value) => value?.replace(/\$\s?|(,*)/g, '')}
-                                                            style={{ marginRight: '20px' }}
+                                                            style={{ width: '100%' }}
+                                                            placeholder={t('minPricePlaceholder')}
+                                                            value={minPrice}
+                                                            onChange={handleMinPriceChange}
                                                         />
                                                         <InputNumber
-                                                            defaultValue={0}
-                                                            formatter={(value) => `€ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                                                            parser={(value) => value?.replace(/\$\s?|(,*)/g, '')}
+                                                            style={{ width: '100%' }}
+                                                            placeholder={t('maxPricePlaceholder')}
+                                                            value={maxPrice}
+                                                            onChange={handleMaxPriceChange}
                                                         />
-                                                    </div>
-                                                    <label className='mt-3'>Страна</label>
+                                                    </Space>
+                                                    <label className='mt-3'>{t('country')}</label>
                                                     <Select style={{ width: '100%' }} onChange={value => setCountry(value)} value={country}>
-                                                        <Option value="">Выберите страну</Option>
+                                                        <Option value="">{t('choice_country')}</Option>
                                                         <Option value="serbia">{t('serbia')}</Option>
                                                         <Option value="montenegro">{t('montenegro')}</Option>
                                                         <Option value="croatia">{t('croatia')}</Option>
@@ -816,7 +918,7 @@ export const CategoryAdvertisments = () => {
 
                                                     {country && (
                                                         <>
-                                                            <label className='mt-3'>Регион</label>
+                                                            <label className='mt-3'>{t('region')}</label>
                                                             <Select style={{ width: '100%' }} onChange={value => setRegion(value)} value={region}>
                                                                 {countryRegions[country] ? countryRegions[country].map(region => (
                                                                     <Option key={region.value} value={region.value}>
@@ -827,9 +929,9 @@ export const CategoryAdvertisments = () => {
                                                         </>
                                                     )}
 
-                                                    <label className='mt-3'>Подкатегория</label>
+                                                    <label className='mt-3'>{t('subCategory')}</label>
                                                     <Select style={{ width: '100%' }} onChange={setSubCategory} value={subcategory}>
-                                                        <Option value="">Выберите подкатегорию</Option>
+                                                        <Option value="">{t('choice_subcategory')}</Option>
                                                         {currentSubcategories.map(subcategory => (
                                                             <Option key={subcategory.value} value={subcategory.value}>
                                                                 {subcategory.label}
@@ -841,9 +943,9 @@ export const CategoryAdvertisments = () => {
 
                                                     <div style={{ display: 'flex', justifyContent: 'space-around' }}>
                                                         <Button className='mt-3' type='primary' onClick={applyFilters}
-                                                            style={{ backgroundColor: 'orange', border: 'none' }}>Применить</Button>
+                                                            style={{ backgroundColor: 'orange', border: 'none' }}>{t('apply')}</Button>
                                                         <Button className='mt-3' type='default' onClick={resetFilters}
-                                                            style={{ marginLeft: '10px' }}>Сбросить</Button>
+                                                            style={{ marginLeft: '10px' }}>{t('reset')}</Button>
                                                     </div>
                                                 </div>
                                             </Modal>

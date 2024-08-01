@@ -339,7 +339,7 @@ const ClothesForm = ({
                 <Form.Item
                     label={t('condition')}
                     name='condition'
-                    rules={[{ required: true, message: 'Please input the price!' }]}
+                    rules={[{ required: true, message: 'Please input the condition!' }]}
                 >
                     <Select value={condition} onChange={(value) => setCondition(value)}>
                         <Option value="new_cond">{t('new_cond')}</Option>
