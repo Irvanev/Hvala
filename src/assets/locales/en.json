@@ -47,6 +47,25 @@
   "maxPricePlaceholder": "Max price",
   "openSelectMenu": "Open this select menu",
   "edit_advertisement": "Editing Advertisement",
+
+"choice_category": "Choose category",
+"choice_subcategory": "Choose subcategory",
+"choice_country": "Choose country",
+"choice_region": "Choose region",
+"choice_type": "Choose type",
+"input_rooms_amount": "Enter number of rooms",
+"input_area": "Enter area",
+"input_owner_rent": "Enter owner or realtor",
+"choice_size": "Choose size",
+"choice_brand": "Choose brand",
+"choice_memory": "Choose memory",
+"choice_screen_size": "Choose screen size",
+"choce_condition": "Choose condition",
+"choice_type_body": "Choose body type",
+
+"apply": "Apply",
+"reset": "Reset",
+
   "enter_color": "Enter color",
   "estate": "Real Estate",
   "electronics": "Electronics",
@@ -255,9 +274,14 @@
 "music_tools": "Musical instruments",
 "computer_games": "Games for PC and consoles",
 
+"prices": "Prices",
 "call": "Call",
 "to_write": "Write",
 
+"serbia" : "Serbia",
+"montenegro": "Montenegro",
+"croatia": "Croatia",
+"bosnia_and_herzegovina": "Bosnia and Herzegovina",
 
 "vojvodina": "Vojvodina",
     "belgrade": "City of Belgrade",
@@ -362,5 +386,7 @@
 "nameInEnglish": "The name must be in English. Please enter the name in English.",
 "nameLength": "The name must contain at least 2 characters. Please enter a name with at least 2 characters.",
 
-"contactUs": "If you have any questions, suggestions or comments, we are always happy to hear from you. Our team is always ready to help you with any questions related to our application. Feel free to contact us by email at any time. We value your opinion and strive to improve our application so that it is as convenient and useful for you as possible. You can also contact us through social networks - we are active on Instagram and Facebook."
+"contactUs": "If you have any questions, suggestions or comments, we are always happy to hear from you. Our team is always ready to help you with any questions related to our application. Feel free to contact us by email at any time. We value your opinion and strive to improve our application so that it is as convenient and useful for you as possible. You can also contact us through social networks - we are active on Instagram and Facebook.",
+
+"privacy_policy": "Privacy Policy"
 }
