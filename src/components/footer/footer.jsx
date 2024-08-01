@@ -8,6 +8,7 @@ import googleLogoSr from '../../assets/rs_google.png';
 import googleLogoEn from '../../assets/en_google.png';
 import appleLogoEn from "../../assets/Download_on_the_App_Store_Badge_US-UK_RGB_blk_092917.svg"
 import appleLogoRu from "../../assets/Download_on_the_App_Store_Badge_RU_RGB_blk_100317.svg"
+import { t } from 'i18next';
 
 export const CustomFooter = () => {
   const { i18n } = useTranslation();
@@ -62,26 +63,26 @@ export const CustomFooter = () => {
             </ul>
           </div>
           <div className={styles.footerCol}>
-            <h4>Category</h4>
+            <h4>{t('category')}</h4>
             <ul>
               <li>
                 <Link to="/advertisments/electronics" style={{ textDecoration: 'none' }}>
-                  <a href="/advertisments/electronics">Electronics</a>
+                  <a href="/advertisments/electronics">{t('electronics')}</a>
                 </Link>
               </li>
               <li>
                 <Link to="/advertisments/estate" style={{ textDecoration: 'none' }}>
-                  <a href="/advertisments/estate">Estate</a>
+                  <a href="/advertisments/estate">{t('estate')}</a>
                 </Link>
               </li>
               <li>
                 <Link to="/advertisments/clothes" style={{ textDecoration: 'none' }}>
-                  <a href="/advertisments/clothes">Clothes</a>
+                  <a href="/advertisments/clothes">{t('clothes')}</a>
                 </Link>
               </li>
               <li>
                 <Link to="/advertisments/rest" style={{ textDecoration: 'none' }}>
-                  <a href="/advertisments/rest">Rest</a>
+                  <a href="/advertisments/rest">{t('rest')}</a>
                 </Link>
               </li>
             </ul>
@@ -103,6 +104,42 @@ export const CustomFooter = () => {
           </div>
         </div>
       </div>
+      <div className="footer-info mt-3">
+        <div className="footer-info-section left">
+          <p>{t('privacy_policy')}</p>
+        </div>
+        <div className="footer-info-section right">
+          <p>2024 ©Hvala</p>
+        </div>
+      </div>
+      <style jsx>{`
+                .footer-info {
+                    background-color: #f8f8f8;
+                    padding: 20px;
+                    display: flex;
+                    justify-content: space-between;
+                }
+
+                .footer-info-section {
+                    width: 45%;
+                }
+
+                .footer-info-section.left {
+                    text-align: left;
+                }
+
+                .footer-info-section.right {
+                    text-align: right;
+                }
+
+                .footer-info-section h4 {
+                    margin-bottom: 10px;
+                }
+
+                .footer-info-section p {
+                    margin: 0;
+                }
+            `}</style>
     </footer>
   )
 }
