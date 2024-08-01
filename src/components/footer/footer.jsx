@@ -106,7 +106,7 @@ export const CustomFooter = () => {
       </div>
       <div className="footer-info mt-3">
         <div className="footer-info-section left">
-          <p>{t('privacy_policy')}</p>
+          <a href="/privacy_policy">{t('privacy_policy')}</a>
         </div>
         <div className="footer-info-section right">
           <p>2024 ©Hvala</p>
