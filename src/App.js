@@ -17,6 +17,7 @@ import SellerProfile from './pages/Profile/SellerProfile';
 import ProfileSettings from './pages/Profile/Settings';
 import Contact from "./pages/contact";
 import EditItem from './pages/EditAdvertisment/EditAdvertismt';
+import { PrivacyPolicy } from './pages/PrivacyPolice/privacy';
 
 
 function App() {
@@ -39,6 +40,7 @@ function App() {
           <Route exact path={"/sign_up"} component={Registration} />
           <Route exact path={"/sign_in"} component={Authorization} />
           <Route exact path={"/advertisments/:category"} component={CategoryAdvertisments} />
+          <Route exact path={"/privacy_policy"} component={PrivacyPolicy} />
           <PrivateRoute exact path={"/settings"} component={ProfileSettings} />
           <PrivateRoute exact path={"/message"} component={Message} />
           <PrivateRoute exact path={"/message/:chatId"} component={Message} />
