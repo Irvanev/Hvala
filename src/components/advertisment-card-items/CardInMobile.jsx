@@ -141,8 +141,12 @@ const CardInMobile = ({ adData, t, index, handleSelect, handleCallClick, userDat
       }
     
       const handleButtonWrite = async () => {
-        const chatId = await createChat();
-        history.push(`/message/${chatId}`);
+        if (from_uid===null) {
+          history.push('/sign_in');
+        } else {
+          const chatId = await createChat();
+          history.push(`/message/${chatId}`);
+        }
       }
 
     return (
@@ -202,14 +206,14 @@ const CardInMobile = ({ adData, t, index, handleSelect, handleCallClick, userDat
                             id="product-phone"
                             onClick={handleCallClick}
                             className="btn d-block flex-grow-1 mb-3"
-                            style={{ backgroundColor: "orange", color: "white" }}
+                            style={{ backgroundColor: "#FFBF34", color: "white" }}
                         >
                             {t('call')}
                         </a>
                         <a
                             id="product-write"
                             className="btn d-block flex-grow-1 mb-3"
-                            style={{ backgroundColor: "orange", color: "white" }}
+                            style={{ backgroundColor: "#FFBF34", color: "white" }}
                             onClick={handleButtonWrite}
                         >
                             {t('to_write')}

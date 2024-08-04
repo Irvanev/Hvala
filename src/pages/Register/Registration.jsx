@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Logotype from "../../assets/logo.png"
+import Logotype from "../../assets/logo_def.png"
 import { auth, db } from "../../config/firebase"
 import { createUserWithEmailAndPassword, sendEmailVerification, onAuthStateChanged, signOut } from "firebase/auth";
 import { doc, setDoc, serverTimestamp, collection, query, where, getDocs } from "firebase/firestore";
@@ -8,6 +8,8 @@ import { MyNavbar } from '../../components/Navbar/Navbar';
 import { Form, Input, Button, Modal } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { NavBarBack } from '../../components/Navbar/NavBarBack';
+
+import styles from "./registration.module.css";
 
 export const Registration = () => {
     const { t } = useTranslation();
@@ -194,10 +196,10 @@ export const Registration = () => {
                                 onChange={e => setConfPassword(e.target.value)} />
                         </Form.Item>
                         <Form.Item>
-                            <p>{t('alreadyRegistered')} <Link to={`/sign_in`}>{t('login')}</Link></p>
+                            <p>{t('alreadyRegistered')} <Link to={`/sign_in`} className={styles.customLink}>{t('login')}</Link></p>
                         </Form.Item>
                         <Form.Item>
-                            <Button size='large' type="primary" htmlType="submit" id="login">{t('register')}</Button>
+                            <button  size='large' htmlType="submit" className={styles.submitButton}>{t('register')}</button>
                         </Form.Item>
                         <Modal title="Подтверждение Email" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
                             <p>{t('confirmEmail')}</p>

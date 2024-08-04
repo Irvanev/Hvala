@@ -70,17 +70,7 @@ export const Profile = () => {
                                                 ))
                                             ) : (
                                                 <div>
-                                                    <Empty
-                                                        image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
-                                                        imageStyle={{
-                                                            height: 60,
-                                                        }}
-                                                        description={
-                                                            <span>Тут будут ваши объявления</span>
-                                                        }
-                                                    >
-                                                        <Button type="primary">Создать объявление</Button>
-                                                    </Empty>
+                                                    
                                                 </div>
                                             )}
                                         </Row>
@@ -101,17 +91,7 @@ export const Profile = () => {
                                                 ))
                                             ) : (
                                                 <div>
-                                                    <Empty
-                                                        image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
-                                                        imageStyle={{
-                                                            height: 60,
-                                                        }}
-                                                        description={
-                                                            <span>Тут будут ваши объявления</span>
-                                                        }
-                                                    >
-                                                        <Button type="primary">Создать объявление</Button>
-                                                    </Empty>
+                                                    
                                                 </div>
                                             )}
                                         </Row>
@@ -145,17 +125,7 @@ export const Profile = () => {
                                             ))
                                         ) : (
                                             <div className={styles.emptyMobile}>
-                                                <Empty
-                                                    image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
-                                                    imageStyle={{
-                                                        height: 60,
-                                                    }}
-                                                    description={
-                                                        <span>Тут будут ваши объявления</span>
-                                                    }
-                                                >
-                                                    <Button type="primary">Создать объявление</Button>
-                                                </Empty>
+                                                
                                             </div>
                                         )}
                                     </Row>

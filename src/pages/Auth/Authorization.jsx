@@ -4,7 +4,7 @@ import { useHistory, Link } from 'react-router-dom';
 import { signInWithEmailAndPassword, setPersistence, browserSessionPersistence, browserLocalPersistence } from 'firebase/auth';
 import { Form, Input, Checkbox, Button } from 'antd';
 import { useTranslation } from 'react-i18next';
-import Logotype from "../../assets/logo.png"
+import Logotype from "../../assets/logo_def.png"
 import { auth } from "../../config/firebase"
 import { MyNavbar } from '../../components/Navbar/Navbar';
 import { NavBarBack } from '../../components/Navbar/NavBarBack';
@@ -89,10 +89,10 @@ export const Authorization = () => {
                                 <Checkbox onChange={onRememberMeChange}>{t('remember_me')}</Checkbox>
                             </Form.Item>
                             <Form.Item>
-                                <p>{t('notRegisteredYet')} <Link to={`/sign_up`}>{t('register')}</Link></p>
+                                <p>{t('notRegisteredYet')} <Link to={`/sign_up`} className={styles.customLink}>{t('register')}</Link></p>
                             </Form.Item>
                             <Form.Item>
-                                <Button className={styles.submitButton} size='large' type="primary" htmlType="submit" id="login">{t('login')}</Button>
+                                <button className={styles.submitButton} size='large' htmlType="submit" id="login">{t('login')}</button>
                             </Form.Item>
                         </Form>
                     </div>

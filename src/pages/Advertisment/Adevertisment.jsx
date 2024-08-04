@@ -13,6 +13,7 @@ import { GlobalOutlined, FilterOutlined, EnvironmentOutlined } from "@ant-design
 import DefaultCardCategory from '../../components/advertisment-card-category/DefaultCardCategory';
 import { CustomFooter } from '../../components/footer/footer';
 import { useTranslation } from 'react-i18next';
+import { show } from 'antd-mobile/es/components/toast/methods';
 
 export const Advertisement = () => {
     const { Option } = Select;
@@ -29,7 +30,7 @@ export const Advertisement = () => {
     const [isModalVisibleFilter, setIsModalVisibleFilter] = useState(false);
 
     const showModal = () => {
-        setIsModalVisibleFilter(true);
+        setIsModalVisible(true);
     };
 
     const handleModalClose = () => {
@@ -824,13 +825,13 @@ export const Advertisement = () => {
 
             <MyNavbar />
             <div className='app d-lg-none'>
-                <FloatButton
-                    icon={<GlobalOutlined />}
-                    style={{ right: 24, bottom: 80, height: '50px', width: '80px' }}
-                    shape='square'
-                    description="Language"
+                <button
                     onClick={showModal}
-                />
+                    className="fixed right-6 bottom-20 h-12 w-24 text-white bg-customColor2 rounded-lg flex items-center justify-center z-50"
+                >
+                    <GlobalOutlined className="text-xl" />
+                    <span className="ml-2">Language</span>
+                </button>
             </div>
             <LanguageModal
                 show={isModalVisible}
@@ -947,7 +948,7 @@ export const Advertisement = () => {
             </Container>
             {loadMoreButtonVisible && (
                 <div className="text-center mt-3">
-                    <button className="btn btn-primary" style={{ border: 'none', backgroundColor: 'orange', color: 'white' }} onClick={loadMoreAdvertisements}>
+                    <button className="btn btn-primary" style={{ border: 'none', backgroundColor: '#FFBF34', color: 'white' }} onClick={loadMoreAdvertisements}>
                         {t("show_more")}
                     </button>
                 </div>

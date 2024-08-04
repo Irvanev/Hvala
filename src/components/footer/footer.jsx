@@ -41,23 +41,13 @@ export const CustomFooter = () => {
             <h4>Hvala</h4>
             <ul>
               <li>
-                <Link to="#" style={{ textDecoration: 'none' }}>
-                  <a href="#">about us</a>
+                <Link to="/help" style={{ textDecoration: 'none' }}>
+                  <a href="/help">{t('help_navbar')}</a>
                 </Link>
               </li>
               <li>
-                <Link to="#" style={{ textDecoration: 'none' }}>
-                  <a href="#">our services</a>
-                </Link>
-              </li>
-              <li>
-                <Link to="#" style={{ textDecoration: 'none' }}>
-                  <a href="#">privacy policy</a>
-                </Link>
-              </li>
-              <li>
-                <Link to="#" style={{ textDecoration: 'none' }}>
-                  <a href="#">affiliate program</a>
+                <Link to="/contacts" style={{ textDecoration: 'none' }}>
+                  <a href="#">{t('contact_navbar')}</a>
                 </Link>
               </li>
             </ul>

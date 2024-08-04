@@ -1,6 +1,6 @@
 import React from "react";
 import { Card, Col, Placeholder } from "react-bootstrap";
-import Logo from "../../assets/logo.png";
+import Logo from "../../assets/logo_def.png";
 
 const DefaultCardCategory = () => {
     return (

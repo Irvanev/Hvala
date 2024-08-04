@@ -168,7 +168,7 @@ const ProfileSettings = () => {
 
                 <Container id="info" className="d-none d-lg-block">
                     <Row>
-                        <Col xs={3} className="profile">
+                        <Col xs={3} className="profile d-flex flex-column align-items-start">
                             <div className="profile-picture my-3" onClick={handleImageClick}>
                                 <Image src={user?.photoUrl || Logo} alt="photoProfile" id="userPhoto" className="mx-auto" />
                             </div>
@@ -204,7 +204,7 @@ const ProfileSettings = () => {
                                     />
                                 </Col>
                                 <Col xs="auto">
-                                    <Button icon={<EditOutlined />} onClick={() => setIsEditingName(!isEditingName)}/>
+                                    <Button icon={<EditOutlined />} onClick={() => setIsEditingName(!isEditingName)} />
                                 </Col>
                             </Row>
                             <h5>Description</h5>
@@ -224,7 +224,7 @@ const ProfileSettings = () => {
                                 </Col>
                             </Row>
                             <Form className="mt-3" onFinish={handleSubmit} style={{ textAlign: "center", border: 'none' }}>
-                                <Button type="primary" htmlType="submit">
+                                <Button type="primary" htmlType="submit" style={{ backgroundColor: '#FFBF34' }}>
                                     {t('save')}
                                 </Button>
                             </Form>
@@ -293,7 +293,7 @@ const ProfileSettings = () => {
                                 </Col>
                             </Row>
                             <Form className="mt-3" onFinish={handleSubmit} style={{ textAlign: "center", border: 'none' }}>
-                                <Button type="primary" htmlType="submit">
+                                <Button type="primary" htmlType="submit" style={{ backgroundColor: '#FFBF34' }}>
                                     {t('save')}
                                 </Button>
                             </Form>

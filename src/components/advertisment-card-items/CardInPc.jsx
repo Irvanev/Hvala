@@ -94,8 +94,12 @@ const CardInPc = ({ adData, t, index, handleSelect, handleCallClick, showModal, 
   }
 
   const handleButtonWrite = async () => {
-    const chatId = await createChat();
-    history.push(`/message/${chatId}`);
+    if (from_uid===null) {
+      history.push('/sign_in');
+    } else {
+      const chatId = await createChat();
+      history.push(`/message/${chatId}`);
+    }
   }
 
 
@@ -158,7 +162,7 @@ const CardInPc = ({ adData, t, index, handleSelect, handleCallClick, showModal, 
   };
 
   const productPhone = {
-    backgroundColor: "orange",
+    backgroundColor: "#FFBF34",
     color: "white",
     border: "none",
   };

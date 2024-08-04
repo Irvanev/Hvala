@@ -80,7 +80,12 @@ const SellerProfile = () => {
   };
 
   const fetchUserMe = async () => {
+    if (!from_uid) {
+      console.log('from_uid is not defined yet');
+      return;
+    }
   
+    console.log('from_uid:', from_uid);
     const userQuery = query(
       collection(db, 'users'),
       where('id', '==', from_uid)
