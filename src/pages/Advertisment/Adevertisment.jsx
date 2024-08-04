@@ -13,6 +13,7 @@ import { GlobalOutlined, FilterOutlined, EnvironmentOutlined } from "@ant-design
 import DefaultCardCategory from '../../components/advertisment-card-category/DefaultCardCategory';
 import { CustomFooter } from '../../components/footer/footer';
 import { useTranslation } from 'react-i18next';
+import { Helmet } from "react-helmet";
 import { show } from 'antd-mobile/es/components/toast/methods';
 
 export const Advertisement = () => {
@@ -808,6 +809,50 @@ export const Advertisement = () => {
     }, []);
 
     return (
+        <>
+    <Helmet>
+        <title>Advertisement Page - Find the Best Deals | Hvala</title>
+        <meta
+          name="description"
+          content="Discover the best advertisements for various categories including estate, transport, clothes, electronics, and more. Find great deals and offers on Hvala."
+        />
+        <meta
+          name="keywords"
+          content="advertisements, estate, transport, clothes, electronics, house goods, building materials, tools, transport goods, home appliance, service, child goods, health and beauty, sport, hobby, relax, rest"
+        />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta
+          property="og:title"
+          content="Advertisement Page - Find the Best Deals | Hvala"
+        />
+        <meta
+          property="og:description"
+          content="Discover the best advertisements for various categories including estate, transport, clothes, electronics, and more. Find great deals and offers on Hvala."
+        />
+        <meta property="og:type" content="website" />
+        <meta
+          property="og:url"
+          content="https://www.yourcompanywebsite.com/advertisement"
+        />
+        <meta
+          property="og:image"
+          content="https://firebasestorage.googleapis.com/v0/b/hvala-2c8a4.appspot.com/o/advertisement.jpg?alt=media&token=example-token"
+        />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta
+          name="twitter:title"
+          content="Advertisement Page - Find the Best Deals | Hvala"
+        />
+        <meta
+          name="twitter:description"
+          content="Discover the best advertisements for various categories including estate, transport, clothes, electronics, and more. Find great deals and offers on Hvala."
+        />
+        <meta
+          name="twitter:image"
+          content="https://firebasestorage.googleapis.com/v0/b/hvala-2c8a4.appspot.com/o/advertisement.jpg?alt=media&token=example-token"
+        />
+    </Helmet>
+    <main>
         <div>
             <style type="text/css">
                 {`
@@ -929,8 +974,8 @@ export const Advertisement = () => {
                     <Result
                         status="500"
                         title="500"
-                        subTitle="Извините, что-то пошло не так."
-                        extra={<Button type="primary" onClick={() => window.location.reload()}>Обновить</Button>}
+                        subTitle={t('sorry_500')}
+                        extra={<Button type="primary" onClick={() => window.location.reload()}>{t('update')}</Button>}
                     />
                 ) : isLoading ? (
                     <Row xs={2} sm={2} md={3} lg={4} className="g-3">
@@ -955,5 +1000,7 @@ export const Advertisement = () => {
             )}
             <CustomFooter />
         </div>
+    </main>
+    </>
     );
 }
