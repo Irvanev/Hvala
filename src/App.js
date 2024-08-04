@@ -7,7 +7,6 @@ import { CardItem } from './pages/AdvertismentCard/CardItem';
 import { Profile } from "./pages/Profile/Profile";
 import { Message } from "./pages/message/Message";
 import { AddItem } from "./pages/AddAdvertisment/AddItem";
-import 'bootstrap/dist/js/bootstrap.bundle.min';
 import { useState } from "react";
 import LanguageModal from './LanguageModal';
 import PrivateRoute from "./components/PrivateRoute";

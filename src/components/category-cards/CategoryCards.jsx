@@ -57,21 +57,21 @@ const CategoryCards = () => {
 
     useEffect(() => {
         setLoadedCategories([
-            { title: t('estate'), image: image1 },
-            { title: t('transport'), image: image2 },
-            { title: t('electronics'), image: image3 },
-            { title: t('clothes'), image: image4 },
-            { title: t('house_goods'), image: image5 },
-            { title: t('building_materials_and_tools'), image: image6 },
-            { title: t('transport_goods'), image: image7 },
-            { title: t('petSupplies'), image: image8 },
-            { title: t('home_appliance'), image: image9 },
-            { title: t('service'), image: image10 },
-            { title: t('child_goods'), image: image11 },
-            { title: t('health_and_beauty'), image: image12 },
-            { title: t('sport'), image: image13 },
-            { title: t('hobby_n_Relax'), image: image14 },
-            { title: t('rest'), image: image15 },
+            { title: t('estate'), image: image1, link: '/advertisments/estate' },
+            { title: t('transport'), image: image2, link: '/advertisments/transport' },
+            { title: t('electronics'), image: image3, link: '/advertisments/electronics' },
+            { title: t('clothes'), image: image4, link: '/advertisments/clothes' },
+            { title: t('house_goods'), image: image5, link: '/advertisments/house_goods' },
+            { title: t('building_materials_and_tools'), image: image6, link: '/advertisments/building_materials_and_tools' },
+            { title: t('transport_goods'), image: image7, link: '/advertisments/transport_goods' },
+            { title: t('petSupplies'), image: image8, link: '/advertisments/petSupplies' },
+            { title: t('home_appliance'), image: image9, link: '/advertisments/home_appliance' },
+            { title: t('service'), image: image10, link: '/advertisments/service' },
+            { title: t('child_goods'), image: image11, link: '/advertisments/child_goods' },
+            { title: t('health_and_beauty'), image: image12, link: '/advertisments/health_and_beauty' },
+            { title: t('sport'), image: image13, link: '/advertisments/sport' },
+            { title: t('hobby_n_Relax'), image: image14, link: '/advertisments/hobby_n_Relax' },
+            { title: t('rest'), image: image15, link: '/advertisments/rest' },
         ]);
     }, [t]);
 
