@@ -3,9 +3,10 @@ import { Link } from 'react-router-dom';
 import { MenuOutlined, MoreOutlined } from '@ant-design/icons';
 import { Dropdown, Button, Modal, Select, InputNumber, AutoComplete } from 'antd';
 import Logo from '../assets/new_logo.png'
-import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 
 const Categories = ({ setSearchText, options }) => {
+  const { t } = useTranslation();
   const { Option } = Select;
 
   const [isModalOpen, setIsModalOpen] = useState(false);

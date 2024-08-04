@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 
 import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css";
@@ -54,6 +54,7 @@ const CustomNextArrow = (props) => {
 const CategoryCards = () => {
 
     const [loadedCategories, setLoadedCategories] = useState([]);
+    const { t } = useTranslation();
 
     useEffect(() => {
         setLoadedCategories([

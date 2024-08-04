@@ -12,10 +12,11 @@ import { FloatButton, Button, Result, Space, Modal, Select, Input, InputNumber }
 import { GlobalOutlined, FilterOutlined, EnvironmentOutlined } from "@ant-design/icons";
 import DefaultCardCategory from '../../components/advertisment-card-category/DefaultCardCategory';
 import { CustomFooter } from '../../components/footer/footer';
-import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 
 export const Advertisement = () => {
     const { Option } = Select;
+    const { t } = useTranslation();
 
     const [isLoading, setIsLoading] = useState(true);
     const [advertisment, setAdvertisement] = useState([]);
