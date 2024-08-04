@@ -974,7 +974,7 @@ export const Advertisement = () => {
                         status="500"
                         title="500"
                         subTitle={t('sorry_500')}
-                        extra={<Button type="primary" onClick={() => window.location.reload()}>Обновить</Button>}
+                        extra={<Button type="primary" onClick={() => window.location.reload()}>{t('update')}</Button>}
                     />
                 ) : isLoading ? (
                     <Row xs={2} sm={2} md={3} lg={4} className="g-3">
