@@ -1,23 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Image } from "react-bootstrap";
-import { Card, Carousel } from 'antd';
 import Logo from "../../assets/logo.png";
 import { MyNavbar } from "../../components/Navbar/Navbar";
 import { NavBarBack } from "../../components/Navbar/NavBarBack";
 import { useParams, useHistory } from "react-router-dom";
 import { collection, query, where, getDocs, addDoc, serverTimestamp } from "firebase/firestore";
 import { db, auth } from "../../config/firebase";
-import { Link } from "react-router-dom";
 import { Rate, Modal, Input, Button, message } from 'antd'
 import { useTranslation } from 'react-i18next';
 import CardAdvertisementHome from "../../components/card-advertisment-home/CardAdvertisementHome";
 
 const SellerProfile = () => {
-  const { i18n } = useTranslation();
+  const { t } = useTranslation();
   const { id } = useParams();
   const [user, setUser] = useState(null);
   const [ads, setAds] = useState([]);
   const history = useHistory();
+  const from_uid = auth.currentUser ? auth.currentUser.uid : null;
+  const [userMe, setUserMe] = useState(null);
 
   useEffect(() => {
     const fetchUserAndAds = async () => {
@@ -79,6 +79,78 @@ const SellerProfile = () => {
     setRating(value);
   };
 
+  const fetchUserMe = async () => {
+  
+    const userQuery = query(
+      collection(db, 'users'),
+      where('id', '==', from_uid)
+    );
+    const userSnapshot = await getDocs(userQuery);
+  
+  
+    if (!userSnapshot.empty) {
+      userSnapshot.forEach((doc) => {
+        setUserMe(doc.data());
+      });
+    } else {
+      console.log('No such user!');
+    }
+  };
+  
+  useEffect(() => {
+    fetchUserMe();
+  }, [from_uid]);
+
+  const fetchUserData = async (userId) => {
+    const userQuery = query(
+      collection(db, 'users'),
+      where('id', '==', userId)
+    );
+    const userSnapshot = await getDocs(userQuery);
+  
+    if (!userSnapshot.empty) {
+      return userSnapshot.docs[0].data();
+    } else {
+      console.log('No such user!');
+      return null;
+    }
+  };
+
+  const createChat = async () => {
+    const userData = await fetchUserData(userId);
+    const chatsQuery = query(
+      collection(db, 'message'),
+      where('from_uid', '==', from_uid),
+      where('to_uid', '==', userId)
+    );
+    const chatsSnapshot = await getDocs(chatsQuery);
+
+    let chatId;
+    if (chatsSnapshot.empty) {
+      const chatDoc = await addDoc(collection(db, 'message'), {
+        from_name: userMe?.name,
+        from_uid: from_uid,
+        from_avatar: userMe?.photoUrl,
+        last_msg: '',
+        last_time: serverTimestamp(),
+        to_avatar: userData?.photoUrl,
+        to_name: userData?.name,
+        to_uid: userId,
+      });
+
+      chatId = chatDoc.id;
+    } else {
+      chatId = chatsSnapshot.docs[0].id;
+    }
+
+    return chatId;
+  };
+
+  const handleButtonWrite = async () => {
+    const chatId = await createChat();
+    history.push(`/message/${chatId}`);
+  };
+
 
   useEffect(() => {
     const fetchFeedbacks = async () => {
@@ -95,10 +167,8 @@ const SellerProfile = () => {
           return { id: doc.id, ...feedback, userName: user?.name };
         })
       );
-
       setFeedbacks(feedbacks);
     };
-
     fetchFeedbacks();
   }, [userId]);
 
@@ -227,7 +297,8 @@ const SellerProfile = () => {
                   <span className="me-2">{rat.toFixed(1) || '0.0'}</span>
                   <Rate disabled defaultValue={rat} />
                 </div>
-                <p onClick={showModalFee}>посмотреть отзывы</p>
+                <p onClick={showModalFee}>{t('show_feedbacks')}</p>
+                <Button type="primary" onClick={handleButtonWrite} style={{ backgroundColor: '#FFBF34' }}>{t('to_write')}</Button>
               </>
             )}
           </Col>
@@ -258,7 +329,8 @@ const SellerProfile = () => {
                   <span className="me-2">{rat.toFixed(1) || '0.0'}</span>
                   <Rate disabled defaultValue={rat} />
                 </div>
-                <p onClick={showModalFee}>посмотреть отзывы</p>
+                <p onClick={showModalFee}>{t('show_feedbacks')}</p>
+                <Button type="primary" onClick={handleButtonWrite} style={{ backgroundColor: '#FFBF34' }}>{t('to_write')}</Button>
                 <Modal title="Отзывы" open={isModalVisible} onCancel={handleCancel} footer={null}>
                   {feedbacks.map((feedback, index) => (
                     <div key={index}>
