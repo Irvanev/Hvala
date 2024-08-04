@@ -973,7 +973,7 @@ export const Advertisement = () => {
                     <Result
                         status="500"
                         title="500"
-                        subTitle="Извините, что-то пошло не так."
+                        subTitle={t('sorry_500')}
                         extra={<Button type="primary" onClick={() => window.location.reload()}>Обновить</Button>}
                     />
                 ) : isLoading ? (
