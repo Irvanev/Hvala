@@ -5,6 +5,8 @@ import { Dropdown, Button, Modal, Select, InputNumber, AutoComplete } from 'antd
 import Logo from '../assets/new_logo.png'
 import { useTranslation } from 'react-i18next';
 
+import banner from "../assets/New_Hvala_2_0.png"
+
 const Categories = ({ setSearchText, options }) => {
   const { t } = useTranslation();
   const { Option } = Select;
@@ -183,9 +185,9 @@ const Categories = ({ setSearchText, options }) => {
         </div>
       </div>
 
-      <div className='d-lg-none mt-3'>
+      <div className='d-lg-none'>
         <div className='logo mb-3' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <img src={Logo} alt='logo' style={{ width: '120px', height: 'auto' }}></img>
+          <img src={banner} alt="Advertisement" className="img-fluid" />
         </div>
         <div className='container mb-3' style={{ display: 'flex', justifyContent: 'space-between' }}>
           <Dropdown

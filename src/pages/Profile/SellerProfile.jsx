@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Image } from "react-bootstrap";
-import Logo from "../../assets/logo.png";
+import Logo from "../../assets/logo_def.png";
 import { MyNavbar } from "../../components/Navbar/Navbar";
 import { NavBarBack } from "../../components/Navbar/NavBarBack";
 import { useParams, useHistory } from "react-router-dom";
@@ -302,7 +302,7 @@ const SellerProfile = () => {
                   <span className="me-2">{rat.toFixed(1) || '0.0'}</span>
                   <Rate disabled defaultValue={rat} />
                 </div>
-                <p onClick={showModalFee}>{t('show_feedbacks')}</p>
+                <p style={{color: '#03989F'}} onClick={showModalFee}>{t('show_feedbacks')}</p>
                 <Button type="primary" onClick={handleButtonWrite} style={{ backgroundColor: '#FFBF34' }}>{t('to_write')}</Button>
               </>
             )}
@@ -334,20 +334,20 @@ const SellerProfile = () => {
                   <span className="me-2">{rat.toFixed(1) || '0.0'}</span>
                   <Rate disabled defaultValue={rat} />
                 </div>
-                <p onClick={showModalFee}>{t('show_feedbacks')}</p>
+                <p style={{color: '#03989F'}} onClick={showModalFee}>{t('show_feedbacks')}</p>
                 <Button type="primary" onClick={handleButtonWrite} style={{ backgroundColor: '#FFBF34' }}>{t('to_write')}</Button>
-                <Modal title="Отзывы" open={isModalVisible} onCancel={handleCancel} footer={null}>
+                <Modal title={t('reviewsForProfile')} open={isModalVisible} onCancel={handleCancel} footer={null}>
                   {feedbacks.map((feedback, index) => (
                     <div key={index}>
                       <h5 className='mt-3'>{new Date(feedback.time_creation?.seconds * 1000).toLocaleDateString()}</h5>
-                      <h5>Комментарий от {feedback.userName}</h5>
+                      <h5>{t('comment_from')} {feedback.userName}</h5>
                       <p>{feedback.description} <Rate disabled defaultValue={feedback.rating} /></p>
                     </div>
                   ))}
 
                   {!isReviewFormVisible && (
                     <Button className='mt-3'
-                      type="primary" onClick={toggleReviewForm}>Оставить отзыв</Button>
+                      type="primary" onClick={toggleReviewForm}>{t('set_feedback')}</Button>
                   )}
 
                   {isReviewFormVisible && (
@@ -357,10 +357,10 @@ const SellerProfile = () => {
                         rows={4}
                         value={reviewText}
                         onChange={handleReviewChange}
-                        placeholder="Введите ваш отзыв здесь..."
+                        placeholder={t('input_feedback')}
                       />
                       <Rate className='mt-3' value={rating} onChange={handleRatingChange} />
-                      <Button type="primary" onClick={submitReview}>Отправить отзыв</Button>
+                      <Button type="primary" onClick={submitReview}>{t('send_feedback')}</Button>
                     </>
                   )}
                 </Modal>

@@ -224,13 +224,14 @@ const CardInMobile = ({ adData, t, index, handleSelect, handleCallClick, userDat
                 <Row className="d-flex justify-content-between align-items-center mt-3">
                     <Col>
                         <Link to={`/seller/${userData?.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                            <h5 className="mb-0">{userData?.name || "User"}</h5>
+                            <h5 style={{color: 'black'}} className="mb-0">{userData?.name || "User"}</h5>
+                            <span style={{color: '#03989F', textDecoration: 'underline'}}>{t('go_to_seller_page')}</span>
                             <div className="d-flex align-items-center">
                                 <span className="me-2">{userData?.rating || userData?.raiting}</span>
                                 <Rate disabled defaultValue={rat} />
                             </div>
                         </Link>
-                        <p onClick={showModalFee}>{t('show_feedbacks')}</p>
+                        <p style={{color: '#03989F'}} onClick={showModalFee}>{t('show_feedbacks')}</p>
 
                         <Modal title="Отзывы" open={isModalVisible} onCancel={handleCancel} footer={null}>
                             {feedbacks.map((feedback, index) => (

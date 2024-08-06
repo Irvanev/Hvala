@@ -29,11 +29,32 @@ export const fetchReviews = async (userId) => {
 
 export const fetchAdvertisements = async (userId) => {
     const advertisementRef = collection(db, 'advertisment');
-    const advertisementQuery = query(advertisementRef, where('from_uid', '==', userId), where('in_archive', '==', false));
+
+    // Проверка наличия поля in_archive
+    const checkFieldExists = async (field) => {
+        const snapshot = await getDocs(advertisementRef);
+        let fieldExists = false;
+        snapshot.forEach(doc => {
+            if (doc.data().hasOwnProperty(field)) {
+                fieldExists = true;
+            }
+        });
+        return fieldExists;
+    };
+
+    const fieldExists = await checkFieldExists('in_archive');
+    let advertisementQuery;
+
+    if (fieldExists) {
+        advertisementQuery = query(advertisementRef, where('from_uid', '==', userId), where('in_archive', '==', false));
+    } else {
+        advertisementQuery = query(advertisementRef, where('from_uid', '==', userId));
+    }
+
     const advertisementSnapshot = await getDocs(advertisementQuery);
-    const advertisements = advertisementSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
+    const advertisements = advertisementSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
     return advertisements;
-}
+};
 
 export const fetchAdvertismentsArchive = async (userId) => {
     const advertisementRef = collection(db, 'advertisment');

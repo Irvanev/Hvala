@@ -4,17 +4,9 @@ import { useTranslation } from 'react-i18next';
 import { auth } from '../../config/firebase';
 import { signOut } from 'firebase/auth';
 
-import { TabBar } from 'antd-mobile';
 import { Avatar, Button, Dropdown, Menu } from 'antd';
 import { DownOutlined, GlobalOutlined } from '@ant-design/icons';
 import { Nav, Navbar, Container } from 'react-bootstrap'
-import {
-    SetOutline,
-    UserOutline,
-    AddOutline,
-    MessageOutline,
-    AppstoreOutline
-} from 'antd-mobile-icons'
 import { MessageOutlined } from '@ant-design/icons';
 import LanguageModal from '../../LanguageModal';
 
@@ -86,13 +78,13 @@ export const MyNavbar = () => {
     return (
         <div>
 
-            <Navbar collapseOnSelect expand="lg" className="bg-body-tertiary d-none d-lg-block" style={{ position: 'fixed', width: '100%', zIndex: '999', top: 0, backgroundColor: '#f8f9fa' }}>
+            <Navbar collapseOnSelect expand="lg" className="d-none d-lg-block" style={{ position: 'fixed', width: '100%', zIndex: '999', top: 0, backgroundColor: '#03989F' }}>
                 <Container>
                     <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                     <Navbar.Collapse id="responsive-navbar-nav">
                         <Nav className="me-auto">
                             <Link to="" style={{ textDecoration: 'none' }} onClick={showModal}>
-                                <Nav.Link href="" style={{ fontSize: '18px' }}><GlobalOutlined /> {t("language")}</Nav.Link>
+                                <Nav.Link href="" style={{ fontSize: '18px', color: '#ffffff' }}><GlobalOutlined /> {t("language")}</Nav.Link>
                             </Link>
 
                             <LanguageModal
@@ -100,23 +92,23 @@ export const MyNavbar = () => {
                                 handleClose={handleModalClose}
                             />
                             <Link to="/" style={{ textDecoration: 'none' }}>
-                                <Nav.Link href="/" style={{ fontSize: '18px' }}>{t("home_navbar")}</Nav.Link>
+                                <Nav.Link href="/" style={{ fontSize: '18px', color: '#ffffff' }}>{t("home_navbar")}</Nav.Link>
                             </Link>
                             <Link to="/help" style={{ textDecoration: 'none' }}>
-                                <Nav.Link href='/help' style={{ fontSize: '18px' }}>{t("help_navbar")}</Nav.Link>
+                                <Nav.Link href='/help' style={{ fontSize: '18px', color: '#ffffff' }}>{t("help_navbar")}</Nav.Link>
                             </Link>
                             <Link to="/contacts" style={{ textDecoration: 'none' }}>
-                                <Nav.Link href="/contacts" style={{ fontSize: '18px' }}>{t("contact_navbar")}</Nav.Link>
+                                <Nav.Link href="/contacts" style={{ fontSize: '18px', color: '#ffffff' }}>{t("contact_navbar")}</Nav.Link>
                             </Link>
                         </Nav>
                         <Nav>
                             <Link to="/message" style={{ textDecoration: 'none' }}>
-                                <Nav.Link href="/message" style={{ fontSize: '18px', padding: '12px' }}><MessageOutlined style={{ fontSize: '25px', padding: '3px' }} /></Nav.Link>
+                                <Nav.Link href="/message" style={{ fontSize: '18px', padding: '12px', color: '#ffffff' }}><MessageOutlined style={{ fontSize: '25px', padding: '3px' }} /></Nav.Link>
                             </Link>
                             {user ? (
                                 <Dropdown overlay={menu}>
                                     <Link to="/profile" style={{ textDecoration: 'none' }}>
-                                        <Nav.Link href="/profile" style={{ fontSize: '18px', padding: '12px' }}>
+                                        <Nav.Link href="/profile" style={{ fontSize: '18px', padding: '12px', color: '#ffffff' }}>
                                             <Avatar size={32} alt={user.name} src={user.photoUrl} style={{ marginRight: '10px' }} />
                                             {user.name}<DownOutlined style={{ fontSize: '12px' }} />
                                         </Nav.Link>
