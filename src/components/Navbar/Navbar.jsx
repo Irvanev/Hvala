@@ -4,17 +4,9 @@ import { useTranslation } from 'react-i18next';
 import { auth } from '../../config/firebase';
 import { signOut } from 'firebase/auth';
 
-import { TabBar } from 'antd-mobile';
 import { Avatar, Button, Dropdown, Menu } from 'antd';
 import { DownOutlined, GlobalOutlined } from '@ant-design/icons';
 import { Nav, Navbar, Container } from 'react-bootstrap'
-import {
-    SetOutline,
-    UserOutline,
-    AddOutline,
-    MessageOutline,
-    AppstoreOutline
-} from 'antd-mobile-icons'
 import { MessageOutlined } from '@ant-design/icons';
 import LanguageModal from '../../LanguageModal';
 

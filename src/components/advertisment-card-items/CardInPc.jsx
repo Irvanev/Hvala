@@ -247,13 +247,13 @@ const CardInPc = ({ adData, t, index, handleSelect, handleCallClick, showModal, 
           <div className="d-flex justify-content-between mt-3">
             <div>
               <Link to={`/seller/${userData?.id}`} style={{ textDecoration: 'none' }}>
-                <h5 className="mb-0">{userData?.name || 'User'}</h5>
+                <h5 style={{color: '#00B2BB'}} className="mb-0">{userData?.name || 'User'}</h5>
               </Link>
               <div className="d-flex align-items-center">
                 <span className="me-2">{userData?.rating || userData?.raiting}</span>
                 <Rate disabled defaultValue={rat} />
               </div>
-              <p onClick={showModalFee}>{t('show_feedbacks')}</p>
+              <p style={{color: '#03989F', cursor: 'pointer'}} onClick={showModalFee}>{t('show_feedbacks')}</p>
 
               <Modal title={t('reviewsForProfile')} open={isModalVisible} onCancel={handleCancel} footer={null}>
                 {feedbacks.map((feedback, index) => (

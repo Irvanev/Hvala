@@ -23,6 +23,7 @@ import image12 from '../../assets/12_health_beauty_goods.png';
 import image13 from '../../assets/13_sport.png';
 import image14 from '../../assets/14_hobby_and_relax.png';
 import image15 from '../../assets/15_rest.png';
+import { arrayUnion } from 'firebase/firestore';
 
 const CustomPrevArrow = (props) => {
     const { className, style, onClick } = props;
@@ -32,7 +33,7 @@ const CustomPrevArrow = (props) => {
             style={{ ...style, display: 'block', background: 'transparent', top: '30%' }}
             onClick={onClick}
         >
-            <CaretLeftOutlined style={{ color: 'orange', fontSize: '24px' }} />
+            <CaretLeftOutlined style={{ color: '#FFBF34', fontSize: '24px' }} />
         </div>
     );
 };
@@ -46,7 +47,7 @@ const CustomNextArrow = (props) => {
             style={{ ...style, display: 'block', background: 'transparent', top: '30%' }}
             onClick={onClick}
         >
-            <CaretRightOutlined style={{ color: 'orange', fontSize: '24px' }} />
+            <CaretRightOutlined style={{ color: '#FFBF34', fontSize: '24px' }} />
         </div>
     );
 };
@@ -84,8 +85,7 @@ const CategoryCards = () => {
         speed: 500,
         autoplay: true,
         autoplaySpeed: 3000,
-        prevArrow: <CustomPrevArrow />,
-        nextArrow: <CustomNextArrow />,
+        arrows: false,
         responsive: [
             {
                 breakpoint: 1024,
@@ -115,24 +115,26 @@ const CategoryCards = () => {
     };
 
     return (
-        <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-            <div style={{ width: '83%' }}>
-                <Slider {...settings} className="custom-carousel">
-                    {loadedCategories.map((category, index) => (
-                        <div key={index}>
-                            <Link to={category.link} style={{ textDecoration: 'none', color: 'black' }}>
-                                <div className="image-container" style={{ padding: '0 10px' }}>
-                                    <div className='cardImage'>
-                                        <img alt={loadedCategories.title} src={category.image} style={{ borderRadius: '10px' }} />
+        <div className='container'>
+            <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+                <div style={{ width: '100%' }}>
+                    <Slider {...settings} className="custom-carousel">
+                        {loadedCategories.map((category, index) => (
+                            <div key={index}>
+                                <Link to={category.link} style={{ textDecoration: 'none', color: 'black' }}>
+                                    <div className="image-container" style={{ padding: '0 10px' }}>
+                                        <div className='cardImage'>
+                                            <img alt={loadedCategories.title} src={category.image} style={{ borderRadius: '10px' }} />
+                                        </div>
+                                        <div className="image-text" style={{ textAlign: 'center' }}>
+                                            {t(category.title)}
+                                        </div>
                                     </div>
-                                    <div className="image-text" style={{ textAlign: 'center' }}>
-                                        {t(category.title)}
-                                    </div>
-                                </div>
-                            </Link>
-                        </div>
-                    ))}
-                </Slider>
+                                </Link>
+                            </div>
+                        ))}
+                    </Slider>
+                </div>
             </div>
         </div>
     );
