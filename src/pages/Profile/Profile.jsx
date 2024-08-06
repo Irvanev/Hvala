@@ -8,7 +8,7 @@ import ProfileCardForPc from '../../components/profile-card/ProfileInfoForPc';
 import { fetchUser, fetchReviews, fetchAdvertisements, fetchAdvertismentsArchive } from '../../services/ProfileService';
 import ProfileInfoForMobile from '../../components/profile-card/ProfileInfoForMobile';
 import ModalForNumberReports from '../../components/profile-card/ModalForNumberReports';
-import { Button, Empty, Tabs, Badge, Space } from 'antd';
+import { Tabs, Badge, Space } from 'antd';
 import { NavBarLogout } from '../../components/Navbar/NavBarLogout';
 import CardAdvertisementProfile from '../../components/profile-card/CardAdvertismentProfile'
 import CardAdvertisementProfileArchive from "../../components/profile-card/CardAdvertismentArchive";
@@ -58,7 +58,7 @@ export const Profile = () => {
                                         tab={
                                             <Space>
                                                 {advertisment.length > 0 && <Badge color="orange" count={advertisment.length} />}
-                                                Мои объявления
+                                                {t('my_ads')}
                                             </Space>
                                         }
                                         key="1"
@@ -79,7 +79,7 @@ export const Profile = () => {
                                         tab={
                                             <Space>
                                                 {advertismentArchive.length > 0 && <Badge color="orange" count={advertismentArchive.length} />}
-                                                Архив
+                                                {t('archive_ads')}
                                             </Space>
                                         }
                                         key="2"
@@ -113,7 +113,7 @@ export const Profile = () => {
                                     tab={
                                         <Space>
                                             {advertisment.length > 0 && <Badge color="orange" count={advertisment.length} />}
-                                            Мои объявления
+                                            {t('my_ads')}
                                         </Space>
                                     }
                                     key="1"
@@ -134,7 +134,7 @@ export const Profile = () => {
                                         tab={
                                             <Space>
                                                 {advertismentArchive.length > 0 && <Badge color="orange" count={advertismentArchive.length} />}
-                                                Архив
+                                                {t('archive_ads')}
                                             </Space>
                                         }
                                         key="2"

@@ -9,6 +9,7 @@ import { BsCardImage } from 'react-icons/bs';
 import { List, Avatar, Image, Input } from 'antd';
 import { SendOutlined, PaperClipOutlined } from '@ant-design/icons';
 import { Button, NavBar } from 'antd-mobile'
+import { useTranslation } from "react-i18next";
 
 import {
     collection,
@@ -24,11 +25,12 @@ import {
     limitToLast
 } from "firebase/firestore";
 import './messages.css';
-import Logo from '../../assets/logo.png';
+import Logo from '../../assets/logo_def.png';
 import { NavBarBack } from "../../components/Navbar/NavBarBack";
 
 
 export const Message = () => {
+    const {t} = useTranslation();
     const history = useHistory();
     const [messages, setMessages] = useState([]);
     const [selectedMessage, setSelectedMessage] = useState(null);
@@ -248,7 +250,7 @@ export const Message = () => {
                         <div className="inbox_people">
                             <div className="headind_srch">
                                 <div className="recent_heading">
-                                    <h4>Сообщения</h4>
+                                    <h4>{t('message_navbar')}</h4>
                                 </div>
                             </div>
                             <div className="inbox_chat">
@@ -385,7 +387,7 @@ export const Message = () => {
             </div>
 
             <div className="d-lg-none">
-                <List className="container" style={{ paddingTop: '3.5rem' }}
+                <List className="container" style={{ paddingTop: '3.5rem', paddingBottom: '3.5rem' }}
                     dataSource={combinedMessages}
                     renderItem={(message, index) => (
                         <List.Item key={index} onClick={() => {

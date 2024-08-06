@@ -78,12 +78,13 @@ export const CustomFooter = () => {
             </ul>
           </div>
           <div className={styles.footerCol}>
-            <h4>follow us</h4>
+            <h4>{t('follow_us')}</h4>
             <div className={styles.socialLinks}>
               <a href="https://www.instagram.com/hvala.app?igsh=ZmJiOWtrbDY1enNm"><FontAwesomeIcon icon={faFacebookF} size="2x" /></a>
               <a href="https://www.facebook.com/profile.php?id=61553691035329&mibextid=ZbWKwL"><FontAwesomeIcon icon={faInstagram} size="2x" /></a>
             </div>
           </div>
+          <div className="container">
           <div className={styles.downloadApps}>
             <a href="https://play.google.com/store/apps/details?id=app.hvala.release" target="_blank" rel="noopener noreferrer">
               <img src={googleLogo} alt="Download on the App Store" style={{ width: '150px', height: '49px', marginRight: '20px' }} />
@@ -91,6 +92,7 @@ export const CustomFooter = () => {
             <a href="https://apps.apple.com/ru/app/hvala/id6475787279" target="_blank" rel="noopener noreferrer">
               <img src={appleLogo} alt="Get it on Google Play" style={{ width: '150px', height: 'auto' }} />
             </a>
+          </div>
           </div>
         </div>
       </div>

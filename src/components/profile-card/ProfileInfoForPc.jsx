@@ -1,6 +1,6 @@
 import React from "react";
 import { Col, Image } from "react-bootstrap";
-import Logo from "../../assets/logo.png"
+import Logo from "../../assets/logo_def.png"
 import { useTranslation } from 'react-i18next';
 import { Rate } from 'antd';
 import styles from './profileInfo.module.css'

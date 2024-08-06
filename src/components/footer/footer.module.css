@@ -96,12 +96,12 @@ ul {
 }
 
 .downloadApps {
-  max-width: 1170px;
-  margin: auto;
+  display: flex;
+  justify-content: center;
 }
 
 @media (max-width: 1000px) {
   .downloadApps {
-    padding-bottom: 120px;
+    padding-bottom: 60px;
   }
 }

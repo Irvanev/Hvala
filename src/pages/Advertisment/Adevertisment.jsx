@@ -875,7 +875,7 @@ export const Advertisement = () => {
                     className="fixed right-6 bottom-20 h-12 w-24 text-white bg-customColor2 rounded-lg flex items-center justify-center z-50"
                 >
                     <GlobalOutlined className="text-xl" />
-                    <span className="ml-2">Language</span>
+                    <span className="ml-2">{t('language')}</span>
                 </button>
             </div>
             <LanguageModal
@@ -963,7 +963,7 @@ export const Advertisement = () => {
 
                     <div style={{ display: 'flex', justifyContent: 'space-around' }}>
                         <Button className='mt-3' type='primary' onClick={applyFilters}
-                            style={{ backgroundColor: 'orange', border: 'none' }}>{t('apply')}</Button>
+                            style={{ backgroundColor: '#FFBF34', border: 'none' }}>{t('apply')}</Button>
                         <Button className='mt-3' type='default' onClick={resetFilters}
                             style={{ marginLeft: '10px' }}>{t('reset')}</Button>
                     </div>

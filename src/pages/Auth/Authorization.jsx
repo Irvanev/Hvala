@@ -66,8 +66,8 @@ export const Authorization = () => {
                                 label={t('email')}
                                 name='email'
                                 rules={[
-                                    { required: true, message: 'Пожалуйста, введите ваш email!' },
-                                    { type: 'email', message: 'Пожалуйста, введите корректный email!' }
+                                    { required: true, message: t('input_email') },
+                                    { type: 'email', message: t('input_correct_email') }
                                 ]}
                             >
                                 <Input type="email" id="email" name='email' placeholder="name@example.com" value={email}
@@ -77,8 +77,8 @@ export const Authorization = () => {
                                 label={t('password')}
                                 name='password'
                                 rules={[
-                                    { required: true, message: 'Пожалуйста, введите ваш пароль!' },
-                                    { min: 6, message: 'Пароль должен содержать минимум 6 символов!' }
+                                    { required: true, message: t('input_password') },
+                                    { min: 6, message: t('input_correct_password') }
                                 ]}
                             >
                                 <Input.Password id="password" name='password' value={password}

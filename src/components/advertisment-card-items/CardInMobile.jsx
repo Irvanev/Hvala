@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Container, Carousel, Row, Col, Button } from 'react-bootstrap';
 import { Link, useHistory } from 'react-router-dom';
 import CharactersForCard from './CharactersForCard';
-import Logo from '../../assets/logo.png'
+import Logo from '../../assets/logo_def.png'
 import { Rate, Breadcrumb, message, Modal, Input, Image } from "antd";
 import { collection, query, where, getDocs, addDoc, serverTimestamp } from "firebase/firestore";
 import { db, auth } from '../../config/firebase'
@@ -73,7 +73,7 @@ const CardInMobile = ({ adData, t, index, handleSelect, handleCallClick, userDat
             const querySnapshot = await getDocs(q);
 
             if (!querySnapshot.empty) {
-                message.error("Вы уже оставили отзыв этому пользователю");
+                message.error(t('error_set_feedback'));
                 return;
             }
 
@@ -88,7 +88,7 @@ const CardInMobile = ({ adData, t, index, handleSelect, handleCallClick, userDat
             setReviewText("");
             setRating(1);
             setIsReviewFormVisible(false);
-            message.success("Отзыв добавлен");
+            message.success(t('success_set_feedback'));
         } catch (e) {
             console.error("Error adding document: ", e);
         }
@@ -230,20 +230,20 @@ const CardInMobile = ({ adData, t, index, handleSelect, handleCallClick, userDat
                                 <Rate disabled defaultValue={rat} />
                             </div>
                         </Link>
-                        <p onClick={showModalFee}>Посмотреть отзывы</p>
+                        <p onClick={showModalFee}>{t('show_feedbacks')}</p>
 
                         <Modal title="Отзывы" open={isModalVisible} onCancel={handleCancel} footer={null}>
                             {feedbacks.map((feedback, index) => (
                                 <div key={index}>
                                     <h5 className='mt-3'>{new Date(feedback.time_creation?.seconds * 1000).toLocaleDateString()}</h5>
-                                    <h5>Комментарий от {feedback.userName}</h5>
+                                    <h5>{t('comment_from')} {feedback.userName}</h5>
                                     <p>{feedback.description} <Rate disabled defaultValue={feedback.rating} /></p>
                                 </div>
                             ))}
 
                             {!isReviewFormVisible && (
                                 <Button className='mt-3'
-                                    type="primary" onClick={toggleReviewForm}>Оставить отзыв</Button>
+                                    type="primary" onClick={toggleReviewForm}>{t('set_feedback')}</Button>
                             )}
 
                             {isReviewFormVisible && (
@@ -253,10 +253,10 @@ const CardInMobile = ({ adData, t, index, handleSelect, handleCallClick, userDat
                                         rows={4}
                                         value={reviewText}
                                         onChange={handleReviewChange}
-                                        placeholder="Введите ваш отзыв здесь..."
+                                        placeholder={t('input_feedback')}
                                     />
                                     <Rate className='mt-3' value={rating} onChange={handleRatingChange} />
-                                    <Button type="primary" onClick={submitReview}>Отправить отзыв</Button>
+                                    <Button type="primary" onClick={submitReview}>{t('send_feedback')}</Button>
                                 </>
                             )}
                         </Modal>

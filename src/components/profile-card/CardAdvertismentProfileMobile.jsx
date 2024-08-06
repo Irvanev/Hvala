@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Card, Col, Carousel, Dropdown, Menu, Popconfirm, } from 'antd';
 import { EditOutlined, EllipsisOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
-import Logo from '../../assets/logo.png';
+import Logo from '../../assets/logo_def.png';
 import { useTranslation } from 'react-i18next';
 import { getConversionRate } from '../../services/AdvertismentsHome/AdvertismentsService';
 import { formatDistanceToNow, format } from 'date-fns';
@@ -12,6 +12,7 @@ import { archivedAdvertisement } from '../../services/ProfileService';
 
 const CardAdvertisementProfileMobile = ({ advertisment, index }) => {
     const { i18n } = useTranslation();
+    const { t } = useTranslation();
     const [conversionRate, setConversionRate] = useState(null);
     const [currency, setCurrency] = useState('');
 
@@ -68,12 +69,12 @@ const CardAdvertisementProfileMobile = ({ advertisment, index }) => {
                                 <Menu>
                                     <Menu.Item key="1">
                                         <Popconfirm
-                                            title="Вы уверены, что хотите опубликовать?"
+                                            title={t('move_to_archive_question')}
                                             onConfirm={() => handleArchive(advertisment.id)}
-                                            okText="Да"
-                                            cancelText="Нет"
+                                            okText={t('yes')}
+                                            cancelText={t('no')}
                                         >
-                                            <a href="#">Переместить в архив</a>
+                                            <a href="#">{t('move_to_archive')}</a>
                                         </Popconfirm>
                                     </Menu.Item>
 

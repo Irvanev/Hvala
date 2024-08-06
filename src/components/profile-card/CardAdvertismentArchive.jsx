@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Card, Col, Carousel, Dropdown, Menu, Popconfirm, } from 'antd';
 import { EditOutlined, EllipsisOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
-import Logo from '../../assets/logo.png';
+import Logo from '../../assets/logo_def.png';
 import { useTranslation } from 'react-i18next';
 import { getConversionRate } from '../../services/AdvertismentsHome/AdvertismentsService';
 import { formatDistanceToNow, format } from 'date-fns';
@@ -12,6 +12,7 @@ import { unarchivedAdvertisement, deleteAdvertisement } from '../../services/Pro
 
 const CardAdvertisementProfileArchive = ({ advertismentArchive, index }) => {
     const { i18n } = useTranslation();
+    const { t } = useTranslation();
     const [conversionRate, setConversionRate] = useState(null);
     const [currency, setCurrency] = useState('');
 
@@ -74,22 +75,22 @@ const CardAdvertisementProfileArchive = ({ advertismentArchive, index }) => {
                                 <Menu>
                                     <Menu.Item key="1">
                                         <Popconfirm
-                                            title="Вы уверены, что хотите опубликовать?"
+                                            title={t('publish_question')}
                                             onConfirm={() => handleUnarchive(advertismentArchive.id)}
-                                            okText="Да"
-                                            cancelText="Нет"
+                                            okText={t('yes')}
+                                            cancelText={t('no')}
                                         >
-                                            <a href="#">Опубликовать</a>
+                                            <a href="#">{t('publish')}</a>
                                         </Popconfirm>
                                     </Menu.Item>
                                     <Menu.Item key="2">
                                         <Popconfirm
-                                            title="Вы уверены, что хотите полнотсью удалить объявление?"
+                                            title={t('delete_question')}
                                             onConfirm={() => handleDelete(advertismentArchive.id)}
-                                            okText="Да"
-                                            cancelText="Нет"
+                                            okText={t('yes')}
+                                            cancelText={t('no')}
                                         >
-                                            <a href="#">Удалить</a>
+                                            <a href="#">{t('delete')}</a>
                                         </Popconfirm>
                                     </Menu.Item>
                                 </Menu>

@@ -4,7 +4,7 @@ import { Container, Row, Col, Carousel } from 'react-bootstrap';
 import CharactersForCard from './CharactersForCard';
 import ModalForNumberPhone from './ModalForNumberPhone';
 import { Link, useHistory } from 'react-router-dom';
-import Logo from "../../assets/logo.png"
+import Logo from "../../assets/logo_def.png"
 import { collection, query, where, getDocs, addDoc, serverTimestamp } from "firebase/firestore";
 import { useEffect, useState } from 'react';
 import { db, auth } from '../../config/firebase'
@@ -134,7 +134,7 @@ const CardInPc = ({ adData, t, index, handleSelect, handleCallClick, showModal, 
       const querySnapshot = await getDocs(q);
 
       if (!querySnapshot.empty) {
-        message.error("Вы уже оставили отзыв этому пользователю");
+        message.error(t('error_set_feedback'));
         return;
       }
 
@@ -149,7 +149,7 @@ const CardInPc = ({ adData, t, index, handleSelect, handleCallClick, showModal, 
       setReviewText("");
       setRating(1);
       setIsReviewFormVisible(false);
-      message.success("Отзыв добавлен");
+      message.success(t('success_set_feedback'));
     } catch (e) {
       console.error("Error adding document: ", e);
     }
@@ -253,20 +253,20 @@ const CardInPc = ({ adData, t, index, handleSelect, handleCallClick, showModal, 
                 <span className="me-2">{userData?.rating || userData?.raiting}</span>
                 <Rate disabled defaultValue={rat} />
               </div>
-              <p onClick={showModalFee}>посмотреть отзывы</p>
+              <p onClick={showModalFee}>{t('show_feedbacks')}</p>
 
               <Modal title={t('reviewsForProfile')} open={isModalVisible} onCancel={handleCancel} footer={null}>
                 {feedbacks.map((feedback, index) => (
                   <div key={index}>
                     <h5 className='mt-3'>{new Date(feedback.time_creation?.seconds * 1000).toLocaleDateString()}</h5>
-                    <h5>Комментарий от {feedback.userName}</h5>
+                    <h5>{t('comment_from')} {feedback.userName}</h5>
                     <p>{feedback.description} <Rate disabled defaultValue={feedback.rating} /></p>
                   </div>
                 ))}
 
                 {!isReviewFormVisible && (
                   <Button className='mt-3'
-                    type="primary" onClick={toggleReviewForm}>Оставить отзыв</Button>
+                    type="primary" onClick={toggleReviewForm}>{t('set_feedback')}</Button>
                 )}
 
                 {isReviewFormVisible && (
@@ -276,10 +276,10 @@ const CardInPc = ({ adData, t, index, handleSelect, handleCallClick, showModal, 
                       rows={4}
                       value={reviewText}
                       onChange={handleReviewChange}
-                      placeholder="Введите ваш отзыв здесь..."
+                      placeholder={t('input_feedback')}
                     />
                     <Rate className='mt-3' value={rating} onChange={handleRatingChange} />
-                    <Button type="primary" onClick={submitReview}>Отправить отзыв</Button>
+                    <Button type="primary" onClick={submitReview}>{t('send_feedback')}</Button>
                   </>
                 )}
               </Modal>

@@ -13,12 +13,12 @@ const LanguageModal = ({ show, handleClose }) => {
     };
 
     const languages = [
-        { key: 'en', name: t('English'), countryCode: 'GB' },
-        { key: 'ru', name: t('Русский'), countryCode: 'RU' },
-        { key: 'sr', name: t('Crnogorski'), countryCode: 'ES' },
+        { key: 'sr', name: t('Srbski'), countryCode: 'RS' },
+        { key: 'sr', name: t('Crnogorski'), countryCode: 'ME' },
         { key: 'sr', name: t('Hrvatski'), countryCode: 'HR' },
         { key: 'sr', name: t('Bosanski'), countryCode: 'BA' },
-        { key: 'sr', name: t('Srbski'), countryCode: 'RS' },
+        { key: 'en', name: t('English'), countryCode: 'GB' },
+        { key: 'ru', name: t('Русский'), countryCode: 'RU' },
       ];
 
     return (

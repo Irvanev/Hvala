@@ -129,13 +129,13 @@ export const Registration = () => {
                             label={t('email')}
                             name="email"
                             rules={[
-                                { required: true, message: 'Пожалуйста, введите ваш email!' },
-                                { type: 'email', message: 'Пожалуйста, введите корректный email!' },
+                                { required: true, message: t('input_email') },
+                                { type: 'email', message: t('input_correct_email') },
                                 () => ({
                                     validator(_, value) {
                                         return checkEmail(value).then(isEmailTaken => {
                                             if (isEmailTaken) {
-                                                return Promise.reject('Email уже занят');
+                                                return Promise.reject(t('email_busy'));
                                             }
                                             return Promise.resolve();
                                         });
@@ -150,12 +150,12 @@ export const Registration = () => {
                             label={t('username')}
                             name="username"
                             rules={[
-                                { required: true, message: 'Пожалуйста, введите ваше имя пользователя!' },
+                                { required: true, message: t('input_username') },
                                 () => ({
                                     validator(_, value) {
                                         return checkUsername(value).then(isUsernameTaken => {
                                             if (isUsernameTaken) {
-                                                return Promise.reject('Имя пользователя уже занято');
+                                                return Promise.reject(t('username_busy'));
                                             }
                                             return Promise.resolve();
                                         });
@@ -170,8 +170,8 @@ export const Registration = () => {
                             label={t('password')}
                             name="password"
                             rules={[
-                                { required: true, message: 'Пожалуйста, введите ваш пароль!' },
-                                { min: 6, message: 'Пароль должен содержать минимум 6 символов!' }
+                                { required: true, message: t('input_password') },
+                                { min: 6, message: t('input_correct_password') }
                             ]}
                         >
                             <Input.Password value={password} autoComplete="new-password"
@@ -181,13 +181,13 @@ export const Registration = () => {
                             label={t('confirmPassword')}
                             name="confirmPassword"
                             rules={[
-                                { required: true, message: 'Пожалуйста, подтвердите ваш пароль!' },
+                                { required: true, message: t('input_password_again') },
                                 ({ getFieldValue }) => ({
                                     validator(_, value) {
                                         if (!value || getFieldValue('password') === value) {
                                             return Promise.resolve();
                                         }
-                                        return Promise.reject(new Error('Пароли не совпадают!'));
+                                        return Promise.reject(new Error(t('passwords_not_match')));
                                     },
                                 }),
                             ]}
@@ -201,7 +201,7 @@ export const Registration = () => {
                         <Form.Item>
                             <button  size='large' htmlType="submit" className={styles.submitButton}>{t('register')}</button>
                         </Form.Item>
-                        <Modal title="Подтверждение Email" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
+                        <Modal title={t('confirming_email')} visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
                             <p>{t('confirmEmail')}</p>
                         </Modal>
                     </Form>

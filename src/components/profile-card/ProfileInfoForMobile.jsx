@@ -1,6 +1,6 @@
 import React from "react";
 import { Col, Image, Row } from "react-bootstrap";
-import Logo from "../../assets/logo.png"
+import Logo from "../../assets/logo_def.png"
 import { Rate } from 'antd';
 import styles from './profileInfo.module.css'
 import { useTranslation } from "react-i18next";
@@ -32,8 +32,8 @@ const ProfileInfoForMobile = ({ user, handleShow }) => {
                     </a>
                 </div>
                 <div className={styles.profileSections}>
-                    <a href="/settings">Настройки</a>
-                    <a href="/message">Сообщения</a>
+                    <a href="/settings">{t('settings')}</a>
+                    <a href="/message">{t('message_navbar')}</a>
                 </div>
             </Col>
         </Row>

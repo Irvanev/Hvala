@@ -92,7 +92,7 @@ export const MyNavbar = () => {
                     <Navbar.Collapse id="responsive-navbar-nav">
                         <Nav className="me-auto">
                             <Link to="" style={{ textDecoration: 'none' }} onClick={showModal}>
-                                <Nav.Link href="" style={{ fontSize: '18px' }}><GlobalOutlined /> {t("Language")}</Nav.Link>
+                                <Nav.Link href="" style={{ fontSize: '18px' }}><GlobalOutlined /> {t("language")}</Nav.Link>
                             </Link>
 
                             <LanguageModal

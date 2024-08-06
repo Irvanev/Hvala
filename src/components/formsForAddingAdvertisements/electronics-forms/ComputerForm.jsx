@@ -408,7 +408,7 @@ const ComputerForm = ({
                     </Form.Item>
 
                 <Form.Item style={{ display: 'flex', justifyContent: 'center' }}>
-                    <Button type="primary" onClick={onSubmit} size='large' style={{ backgroundColor: 'orange', width: '150px' }}>
+                    <Button type="primary" onClick={onSubmit} size='large' style={{ backgroundColor: '#FFBF34', width: '150px' }}>
                         {t('add')}
                     </Button>
                 </Form.Item>
