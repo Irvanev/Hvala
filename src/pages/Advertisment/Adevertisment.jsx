@@ -914,7 +914,7 @@ export const Advertisement = () => {
                         <Modal title="Фильтры" open={isModalVisibleFilter} footer={null} onCancel={handleCancelFilter}>
                             <label className='mt-3'>{t('prices')}</label>
                             <Space style={{ width: '100%' }} align="baseline">
-                                <Select defaultValue="" onChange={handleCurrencyChange} value={currency} style={{ width: 100 }}>
+                                <Select defaultValue={t('currency')} onChange={handleCurrencyChange} style={{ width: 120 }}>
                                     <Select.Option value="rsd">RSD</Select.Option>
                                     <Select.Option value="eur">EUR</Select.Option>
                                 </Select>

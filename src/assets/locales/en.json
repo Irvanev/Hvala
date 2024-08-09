@@ -1,4 +1,5 @@
 {
+"currency": "Currency",
   "cost": "Cost",
   "many_ask_questions": "Frequently Asked Questions",
   "input_message": "Enter your message",

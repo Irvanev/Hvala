@@ -572,7 +572,7 @@ const DefaultForm = ({
     }
 
     const selectAfter = (
-        <Select defaultValue='Валюта' style={{ width: 120 }} onChange={(value) => setCurrency(value)}>
+        <Select defaultValue={t('currency')} style={{ width: 120 }} onChange={(value) => setCurrency(value)}>
             <Option value="eur">€</Option>
             <Option value="rsd">RSD</Option>
         </Select>
