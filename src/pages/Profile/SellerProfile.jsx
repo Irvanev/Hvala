@@ -65,7 +65,11 @@ const SellerProfile = () => {
   const [isReviewFormVisible, setIsReviewFormVisible] = useState(false);
 
   const toggleReviewForm = () => {
-    setIsReviewFormVisible(!isReviewFormVisible);
+    if (from_uid === null) {
+      history.push('/sign_in');
+    } else {
+      setIsReviewFormVisible(!isReviewFormVisible);
+    }
   };
 
   const [reviewText, setReviewText] = useState("");
@@ -84,15 +88,15 @@ const SellerProfile = () => {
       console.log('from_uid is not defined yet');
       return;
     }
-  
+
     console.log('from_uid:', from_uid);
     const userQuery = query(
       collection(db, 'users'),
       where('id', '==', from_uid)
     );
     const userSnapshot = await getDocs(userQuery);
-  
-  
+
+
     if (!userSnapshot.empty) {
       userSnapshot.forEach((doc) => {
         setUserMe(doc.data());
@@ -101,7 +105,7 @@ const SellerProfile = () => {
       console.log('No such user!');
     }
   };
-  
+
   useEffect(() => {
     fetchUserMe();
   }, [from_uid]);
@@ -112,7 +116,7 @@ const SellerProfile = () => {
       where('id', '==', userId)
     );
     const userSnapshot = await getDocs(userQuery);
-  
+
     if (!userSnapshot.empty) {
       return userSnapshot.docs[0].data();
     } else {
@@ -152,9 +156,13 @@ const SellerProfile = () => {
   };
 
   const handleButtonWrite = async () => {
-    const chatId = await createChat();
-    history.push(`/message/${chatId}`);
-  };
+    if (from_uid === null) {
+      history.push('/sign_in');
+    } else {
+      const chatId = await createChat();
+      history.push(`/message/${chatId}`);
+    }
+  }
 
 
   useEffect(() => {
@@ -302,7 +310,7 @@ const SellerProfile = () => {
                   <span className="me-2">{rat.toFixed(1) || '0.0'}</span>
                   <Rate disabled defaultValue={rat} />
                 </div>
-                <p style={{color: '#03989F'}} onClick={showModalFee}>{t('show_feedbacks')}</p>
+                <p style={{ color: '#03989F' }} onClick={showModalFee}>{t('show_feedbacks')}</p>
                 <Button type="primary" onClick={handleButtonWrite} style={{ backgroundColor: '#FFBF34' }}>{t('to_write')}</Button>
               </>
             )}
@@ -334,7 +342,7 @@ const SellerProfile = () => {
                   <span className="me-2">{rat.toFixed(1) || '0.0'}</span>
                   <Rate disabled defaultValue={rat} />
                 </div>
-                <p style={{color: '#03989F'}} onClick={showModalFee}>{t('show_feedbacks')}</p>
+                <p style={{ color: '#03989F' }} onClick={showModalFee}>{t('show_feedbacks')}</p>
                 <Button type="primary" onClick={handleButtonWrite} style={{ backgroundColor: '#FFBF34' }}>{t('to_write')}</Button>
                 <Modal title={t('reviewsForProfile')} open={isModalVisible} onCancel={handleCancel} footer={null}>
                   {feedbacks.map((feedback, index) => (
@@ -346,8 +354,9 @@ const SellerProfile = () => {
                   ))}
 
                   {!isReviewFormVisible && (
-                    <Button className='mt-3'
-                      type="primary" onClick={toggleReviewForm}>{t('set_feedback')}</Button>
+                    <div className="d-flex justify-content-center">
+                      <button className='mt-3' style={{ backgroundColor: '#FFBF34', color: 'white', borderRadius: '5px', height: '30px', width: '100px' }} onClick={toggleReviewForm}>{t('set_feedback')}</button>
+                    </div>
                   )}
 
                   {isReviewFormVisible && (

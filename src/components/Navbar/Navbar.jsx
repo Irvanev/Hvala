@@ -41,7 +41,7 @@ export const MyNavbar = () => {
 
     const getButtonStyle = (path) => {
         return location.pathname === path ? 'text-customColor2' : 'text-customColor3';
-      };
+    };
 
     const handleModalClose = () => {
         setIsModalVisible(false);
@@ -84,7 +84,10 @@ export const MyNavbar = () => {
                     <Navbar.Collapse id="responsive-navbar-nav">
                         <Nav className="me-auto">
                             <Link to="" style={{ textDecoration: 'none' }} onClick={showModal}>
-                                <Nav.Link href="" style={{ fontSize: '18px', color: '#ffffff' }}><GlobalOutlined /> {t("language")}</Nav.Link>
+                                <Nav.Link href="" style={{ fontSize: '18px', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <GlobalOutlined style={{ fontSize: '24px', color: '#FFBF34', marginRight: '8px' }} />
+                                    {t("language")}
+                                </Nav.Link>
                             </Link>
 
                             <LanguageModal

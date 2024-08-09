@@ -1,4 +1,7 @@
 {
+  "cost": "Cost",
+  "many_ask_questions": "Frequently Asked Questions",
+  "input_message": "Enter your message",
   "follow_us": "Follow us",
   "filter": "Filters",
   "show_more": "Load more",

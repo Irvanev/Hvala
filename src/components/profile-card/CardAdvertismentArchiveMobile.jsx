@@ -65,6 +65,15 @@ const CardAdvertisementProfileArchiveMobile = ({ advertismentArchive, index }) =
 
     return (
         <>
+            <style type="text/css">
+                {`
+                @media (max-width: 1000px) {
+                    body {
+                        padding-bottom: 4.5rem;
+                    }
+                }
+                `}
+            </style>
             <Col key={index}>
                 <Card
                     hoverable
@@ -101,8 +110,10 @@ const CardAdvertisementProfileArchiveMobile = ({ advertismentArchive, index }) =
                             <EllipsisOutlined onClick={() => setDropdownVisible(!dropdownVisible)} />
                         </Dropdown>,
                     ]}
-                    style={{ width: '100%', height: '65vh', display: 'flex',
-                    flexDirection: 'column', justifyContent: 'space-between'}}
+                    style={{
+                        width: '100%', height: '65vh', display: 'flex',
+                        flexDirection: 'column', justifyContent: 'space-between'
+                    }}
                     bodyStyle={{ padding: 0, margin: '1vh' }}
                     cover={
                         <Link key={advertismentArchive.id} to={`/advertisment/${advertismentArchive.id}`} style={{ textDecoration: "none", color: 'black' }}>

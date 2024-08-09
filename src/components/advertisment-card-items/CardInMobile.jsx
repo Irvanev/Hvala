@@ -6,6 +6,9 @@ import Logo from '../../assets/logo_def.png'
 import { Rate, Breadcrumb, message, Modal, Input, Image } from "antd";
 import { collection, query, where, getDocs, addDoc, serverTimestamp } from "firebase/firestore";
 import { db, auth } from '../../config/firebase'
+import { HomeOutlined } from '@ant-design/icons';
+
+import { getConversionRate } from '../../services/AdvertismentsHome/AdvertismentsService';
 
 const CardInMobile = ({ adData, t, index, handleSelect, handleCallClick, userData }) => {
 
@@ -15,6 +18,7 @@ const CardInMobile = ({ adData, t, index, handleSelect, handleCallClick, userDat
     const userId = userData?.id
     const from_uid = auth.currentUser ? auth.currentUser.uid : null;
     const [userMe, setUserMe] = useState(null);
+    const [convertedPrice, setConvertedPrice] = useState(null);
 
     const [isModalVisible, setIsModalVisible] = useState(false);
     const showModalFee = () => {
@@ -64,6 +68,27 @@ const CardInMobile = ({ adData, t, index, handleSelect, handleCallClick, userDat
         fetchFeedbacks();
     }, [userId]);
 
+    useEffect(() => {
+        const fetchConversionRate = async () => {
+            if (adData?.currency && adData?.price) {
+                let rate;
+                if (adData.currency === 'eur') {
+                    rate = await getConversionRate('eur');
+                    if (rate) {
+                        setConvertedPrice(adData.price * rate);
+                    }
+                } else if (adData.currency === 'rsd') {
+                    rate = await getConversionRate('eur');
+                    if (rate) {
+                        setConvertedPrice(adData.price / rate);
+                    }
+                }
+            }
+        };
+
+        fetchConversionRate();
+    }, [adData]);
+
     const submitReview = async () => {
         try {
             const me = auth.currentUser ? auth.currentUser.uid : null;
@@ -94,67 +119,67 @@ const CardInMobile = ({ adData, t, index, handleSelect, handleCallClick, userDat
         }
     };
 
-    const fetchUserMe = async () => { 
+    const fetchUserMe = async () => {
         const userQuery = query(
-          collection(db, 'users'),
-          where('id', '==', from_uid)
+            collection(db, 'users'),
+            where('id', '==', from_uid)
         );
         const userSnapshot = await getDocs(userQuery);
-        
+
         if (!userSnapshot.empty) {
-          userSnapshot.forEach((doc) => {
-            setUserMe(doc.data());
-          });
+            userSnapshot.forEach((doc) => {
+                setUserMe(doc.data());
+            });
         } else {
-          console.log('No such user!');
+            console.log('No such user!');
         }
-      }
+    }
 
     const createChat = async () => {
         const chatsQuery = query(
-          collection(db, 'message'),
-          where('from_uid', '==', from_uid),
-          where('to_uid', '==', userId)
+            collection(db, 'message'),
+            where('from_uid', '==', from_uid),
+            where('to_uid', '==', userId)
         );
         const chatsSnapshot = await getDocs(chatsQuery);
-    
+
         let chatId;
         if (chatsSnapshot.empty) {
-          const chatDoc = await addDoc(collection(db, 'message'), {
-            from_name: userMe?.name,
-            from_uid: from_uid,
-            from_avatar: userMe?.photoUrl,
-            last_msg: '',
-            last_time: serverTimestamp(),
-            to_avatar: userData?.photoUrl,
-            to_name: userData?.name,
-            to_uid: userId,
-          });
-          
-    
-          chatId = chatDoc.id;
+            const chatDoc = await addDoc(collection(db, 'message'), {
+                from_name: userMe?.name,
+                from_uid: from_uid,
+                from_avatar: userMe?.photoUrl,
+                last_msg: '',
+                last_time: serverTimestamp(),
+                to_avatar: userData?.photoUrl,
+                to_name: userData?.name,
+                to_uid: userId,
+            });
+
+
+            chatId = chatDoc.id;
         } else {
-          chatId = chatsSnapshot.docs[0].id;
+            chatId = chatsSnapshot.docs[0].id;
         }
-    
+
         return chatId;
-      }
-    
-      const handleButtonWrite = async () => {
-        if (from_uid===null) {
-          history.push('/sign_in');
+    }
+
+    const handleButtonWrite = async () => {
+        if (from_uid === null) {
+            history.push('/sign_in');
         } else {
-          const chatId = await createChat();
-          history.push(`/message/${chatId}`);
+            const chatId = await createChat();
+            history.push(`/message/${chatId}`);
         }
-      }
+    }
 
     return (
         <Container className="d-lg-none">
             <Breadcrumb
                 items={[
                     {
-                        title: <a href="/advertisment">{t('home_navbar')}</a>,
+                        title: <a style={{textDecoration: 'none'}} href="/advertisment"><HomeOutlined /> {t('home_navbar')}</a>,
                     },
                     {
                         title: <a href={`/advertisments/${adData?.category}`}>{t(adData?.category)}</a>,
@@ -198,7 +223,14 @@ const CardInMobile = ({ adData, t, index, handleSelect, handleCallClick, userDat
                         </Col>
                     ))}
                 </Row>
-                <h2 className="product-title mt-3"><strong>{adData?.price + "€"}</strong></h2>
+                <h2 id="product-price">
+                    {adData?.price + (adData.currency === 'eur' ? "€" : " RSD")}
+                    {convertedPrice && (
+                        <span style={{ color: 'gray', fontSize: '24px' }}>
+                            ~{Math.round(convertedPrice)} {adData.currency === 'eur' ? "RSD" : "€"}
+                        </span>
+                    )}
+                </h2>
                 <h5 className="product-title" style={{ color: "grey" }}>{adData?.title}</h5>
                 <Container>
                     <Row className="d-flex justify-content-center align-items-center mt-3">
@@ -224,14 +256,14 @@ const CardInMobile = ({ adData, t, index, handleSelect, handleCallClick, userDat
                 <Row className="d-flex justify-content-between align-items-center mt-3">
                     <Col>
                         <Link to={`/seller/${userData?.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                            <h5 style={{color: 'black'}} className="mb-0">{userData?.name || "User"}</h5>
-                            <span style={{color: '#03989F', textDecoration: 'underline'}}>{t('go_to_seller_page')}</span>
+                            <h5 style={{ color: 'black' }} className="mb-0">{userData?.name || "User"}</h5>
+                            <span style={{ color: '#03989F', textDecoration: 'underline' }}>{t('go_to_seller_page')}</span>
                             <div className="d-flex align-items-center">
                                 <span className="me-2">{userData?.rating || userData?.raiting}</span>
                                 <Rate disabled defaultValue={rat} />
                             </div>
                         </Link>
-                        <p style={{color: '#03989F'}} onClick={showModalFee}>{t('show_feedbacks')}</p>
+                        <p style={{ color: '#03989F' }} onClick={showModalFee}>{t('show_feedbacks')}</p>
 
                         <Modal title="Отзывы" open={isModalVisible} onCancel={handleCancel} footer={null}>
                             {feedbacks.map((feedback, index) => (

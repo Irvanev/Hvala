@@ -176,7 +176,6 @@ const ProfileSettings = () => {
                             <div className="profile-reviews">
                                 <span>{user?.rating.toFixed(1) || '0.0'}</span>
                                 {rat && <Rate disabled defaultValue={rat} />}
-                                <p id="kolRating">{user?.reviewCount || '17'} {t('reviews')}</p>
                             </div>
                         </Col>
                         <Col xs={9}>
@@ -207,7 +206,7 @@ const ProfileSettings = () => {
                                     <Button icon={<EditOutlined />} onClick={() => setIsEditingName(!isEditingName)} />
                                 </Col>
                             </Row>
-                            <h5>Description</h5>
+                            <h5>{t('description')}</h5>
                             <Row>
                                 <Col>
                                     <TextArea
@@ -243,7 +242,6 @@ const ProfileSettings = () => {
                             <div className="profile-reviews">
                                 <span>{user?.rating.toFixed(1) || '0.0'}</span>
                                 {rat && <Rate disabled defaultValue={rat} />}
-                                <p id="kolRating">{user?.reviewCount || '17'} {t('reviews')}</p>
                             </div>
                         </Col>
                     </Row>
@@ -276,7 +274,7 @@ const ProfileSettings = () => {
                                     <Button icon={<EditOutlined />} onClick={() => setIsEditingName(!isEditingName)} />
                                 </Col>
                             </Row>
-                            <h5>Description</h5>
+                            <h5>{t('description')}</h5>
                             <Row>
                                 <Col>
                                     <TextArea

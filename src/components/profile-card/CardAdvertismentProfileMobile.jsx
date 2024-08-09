@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { Card, Col, Carousel, Dropdown, Menu, Popconfirm, } from 'antd';
 import { EditOutlined, EllipsisOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
@@ -11,6 +12,7 @@ import { ru, enUS, sr } from 'date-fns/locale';
 import { archivedAdvertisement } from '../../services/ProfileService';
 
 const CardAdvertisementProfileMobile = ({ advertisment, index }) => {
+    const history = useHistory();
     const { i18n } = useTranslation();
     const { t } = useTranslation();
     const [conversionRate, setConversionRate] = useState(null);
@@ -23,6 +25,10 @@ const CardAdvertisementProfileMobile = ({ advertisment, index }) => {
         await archivedAdvertisement(id);
         setIsArchived(prevState => !prevState);
     };
+
+    const handleEditClick = () => {
+        history.push(`/edit/${advertisment.id}`);
+      };
 
     useEffect(() => {
         setCurrency(advertisment.currency);
@@ -56,14 +62,24 @@ const CardAdvertisementProfileMobile = ({ advertisment, index }) => {
             return format(date, 'd MMMM HH:mm', { locale });
         }
     }
+    
 
     return (
         <>
+            <style type="text/css">
+                {`
+                @media (max-width: 1000px) {
+                    body {
+                        padding-bottom: 4.5rem;
+                    }
+                }
+                `}
+            </style>
             <Col key={index}>
                 <Card
                     hoverable
                     actions={[
-                        <EditOutlined key="edit" />,
+                        <EditOutlined key="edit" onClick={handleEditClick} />,
                         <Dropdown
                             overlay={
                                 <Menu>
@@ -74,7 +90,7 @@ const CardAdvertisementProfileMobile = ({ advertisment, index }) => {
                                             okText={t('yes')}
                                             cancelText={t('no')}
                                         >
-                                            <a href="#">{t('move_to_archive')}</a>
+                                            <a href="#">{t('move_on_archiv')}</a>
                                         </Popconfirm>
                                     </Menu.Item>
 
@@ -86,8 +102,10 @@ const CardAdvertisementProfileMobile = ({ advertisment, index }) => {
                             <EllipsisOutlined onClick={() => setDropdownVisible(!dropdownVisible)} />
                         </Dropdown>,
                     ]}
-                    style={{ width: '100%', height: '57vh', display: 'flex',
-                    flexDirection: 'column', justifyContent: 'space-between'}}
+                    style={{
+                        width: '100%', height: '57vh', display: 'flex',
+                        flexDirection: 'column', justifyContent: 'space-between'
+                    }}
                     bodyStyle={{ padding: 0, margin: '1vh' }}
                     cover={
                         <Link key={advertisment.id} to={`/advertisment/${advertisment.id}`} style={{ textDecoration: "none", color: 'black' }}>

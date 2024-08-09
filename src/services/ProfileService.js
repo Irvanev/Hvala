@@ -29,30 +29,12 @@ export const fetchReviews = async (userId) => {
 
 export const fetchAdvertisements = async (userId) => {
     const advertisementRef = collection(db, 'advertisment');
-
-    // Проверка наличия поля in_archive
-    const checkFieldExists = async (field) => {
-        const snapshot = await getDocs(advertisementRef);
-        let fieldExists = false;
-        snapshot.forEach(doc => {
-            if (doc.data().hasOwnProperty(field)) {
-                fieldExists = true;
-            }
-        });
-        return fieldExists;
-    };
-
-    const fieldExists = await checkFieldExists('in_archive');
-    let advertisementQuery;
-
-    if (fieldExists) {
-        advertisementQuery = query(advertisementRef, where('from_uid', '==', userId), where('in_archive', '==', false));
-    } else {
-        advertisementQuery = query(advertisementRef, where('from_uid', '==', userId));
-    }
-
-    const advertisementSnapshot = await getDocs(advertisementQuery);
-    const advertisements = advertisementSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    const advertisementSnapshot = await getDocs(advertisementRef);
+    
+    const advertisements = advertisementSnapshot.docs
+        .filter(doc => doc.data().from_uid === userId && (!doc.data().hasOwnProperty('in_archive') || doc.data().in_archive === false))
+        .map(doc => ({ id: doc.id, ...doc.data() }));
+    
     return advertisements;
 };
 

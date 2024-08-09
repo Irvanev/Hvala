@@ -1,5 +1,6 @@
 import { Container, Row } from 'react-bootstrap';
 import React, { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 
 import { fetchAdvertismentsSearch, fetchAdvertisments, fetchAdditionalAdvertisements, fetchAdvertismentsByFilters } from '../../services/AdvertismentsHome/AdvertismentsService';
 import { MyNavbar } from '../../components/Navbar/Navbar';
@@ -8,8 +9,8 @@ import CategoryCards from "../../components/category-cards/CategoryCards";
 import CardAdvertisementHome from "../../components/card-advertisment-home/CardAdvertisementHome";
 import LanguageModal from "../../LanguageModal";
 
-import { FloatButton, Button, Result, Space, Modal, Select, Input, InputNumber } from "antd";
-import { GlobalOutlined, FilterOutlined, EnvironmentOutlined } from "@ant-design/icons";
+import { Button, Result, Space, Modal, Select, Input, InputNumber } from "antd";
+import { GlobalOutlined, FilterOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import DefaultCardCategory from '../../components/advertisment-card-category/DefaultCardCategory';
 import { CustomFooter } from '../../components/footer/footer';
 import { useTranslation } from 'react-i18next';
@@ -18,6 +19,7 @@ import { Helmet } from "react-helmet";
 import banner from "../../assets/New_Hvala_2_0.png"
 
 export const Advertisement = () => {
+    const history = useHistory();
     const { Option } = Select;
     const { t } = useTranslation();
 
@@ -809,6 +811,10 @@ export const Advertisement = () => {
         return () => clearTimeout(timer);
     }, []);
 
+    const handleClickHelp = () => {
+        history.push('/help');
+      };
+
     return (
         <>
             <Helmet>
@@ -873,6 +879,15 @@ export const Advertisement = () => {
                         >
                             <GlobalOutlined className="text-xl" />
                             <span className="ml-2">{t('language')}</span>
+                        </button>
+                    </div>
+                    <div className='app d-lg-none'>
+                        <button
+                            onClick={handleClickHelp}
+                            className="fixed left-6 bottom-20 h-12 w-24 text-white bg-customColor2 rounded-lg flex items-center justify-center z-50"
+                        >
+                            <QuestionCircleOutlined className="text-xl" />
+                            <span className="ml-2">{t('help_navbar')}</span>
                         </button>
                     </div>
                     <LanguageModal

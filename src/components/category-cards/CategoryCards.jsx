@@ -85,7 +85,8 @@ const CategoryCards = () => {
         speed: 500,
         autoplay: true,
         autoplaySpeed: 3000,
-        arrows: false,
+        prevArrow: <CustomPrevArrow />,
+        nextArrow: <CustomNextArrow />,
         responsive: [
             {
                 breakpoint: 1024,
@@ -116,9 +117,29 @@ const CategoryCards = () => {
 
     return (
         <div className='container'>
-            <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+            <div className='d-lg-none' style={{ display: 'flex', justifyContent: 'center', width: '90%', margin: '0 auto' }}>
                 <div style={{ width: '100%' }}>
-                    <Slider {...settings} className="custom-carousel">
+                    <Slider {...settings} className="custom-carousel" style={{ margin: '0 auto' }}>
+                        {loadedCategories.map((category, index) => (
+                            <div key={index}>
+                                <Link to={category.link} style={{ textDecoration: 'none', color: 'black' }}>
+                                    <div className="image-container" style={{ padding: '0 10px' }}>
+                                        <div className='cardImage'>
+                                            <img alt={loadedCategories.title} src={category.image} style={{ borderRadius: '10px' }} />
+                                        </div>
+                                        <div className="image-text" style={{ textAlign: 'center' }}>
+                                            {t(category.title)}
+                                        </div>
+                                    </div>
+                                </Link>
+                            </div>
+                        ))}
+                    </Slider>
+                </div>
+            </div>
+            <div className='d-none d-lg-block' style={{ display: 'flex', justifyContent: 'center', width: '100%', margin: '0 auto' }}>
+                <div style={{ width: '100%' }}>
+                    <Slider {...settings} className="custom-carousel" style={{ margin: '0 auto' }}>
                         {loadedCategories.map((category, index) => (
                             <div key={index}>
                                 <Link to={category.link} style={{ textDecoration: 'none', color: 'black' }}>

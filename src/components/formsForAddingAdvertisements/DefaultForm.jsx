@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useRef } from "react";
-import { Form, Input, InputNumber, Button, Select, Image, Upload, AutoComplete } from 'antd';
+import { Form, Input, InputNumber, Button, Select, Image, Upload, AutoComplete, Spin } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { useTranslation } from "react-i18next";
 import { GoogleMap, LoadScript } from '@react-google-maps/api';
@@ -24,7 +24,7 @@ const markerStyle = {
     zIndex: 1,
 };
 
-const MapComponent = ({ coordinates, setCoordinates,setCountry, country, setRegion, region, setLocation, location, mapRef }) => {
+const MapComponent = ({ coordinates, setCoordinates, setCountry, country, setRegion, region, setLocation, location, mapRef }) => {
 
     const countryMappings = {
         'Черногория': 'montenegro',
@@ -133,7 +133,9 @@ const DefaultForm = ({
     condition, setCondition,
     phoneNumber, setPhoneNumber,
     description, setDescription,
-    handleSubmit, handleFileChange
+    handleSubmit, handleFileChange,
+    currency, setCurrency,
+    loading
 }) => {
     const { t } = useTranslation();
     const { Option } = Select;
@@ -219,7 +221,7 @@ const DefaultForm = ({
     //         console.log(value);
     //         const body = JSON.stringify({
     //             input: value,
-                
+
     //             // Add any other parameters as needed
     //         });
 
@@ -271,7 +273,7 @@ const DefaultForm = ({
     //             if (mapRef.current) {
     //                 mapRef.current.panTo(newCoordinates);
     //             }
-                
+
     //             let country = '';
     //             let region = '';
     //             const addressComponents = selectedPlace.address_components;
@@ -569,6 +571,13 @@ const DefaultForm = ({
         setCoordinates(locationValue);
     }
 
+    const selectAfter = (
+        <Select defaultValue='Валюта' style={{ width: 120 }} onChange={(value) => setCurrency(value)}>
+            <Option value="eur">€</Option>
+            <Option value="rsd">RSD</Option>
+        </Select>
+    );
+
 
 
     return (
@@ -584,15 +593,23 @@ const DefaultForm = ({
                     </Form.Item>
                     <Form.Item
                         label={t('price')}
-                        name='price'
-                        rules={[{ required: true, message: 'Please input the price!' }]}
+                        name='prie'
+                        rules={[
+                            { required: true, message: 'Please input the price!' },
+                            {
+                                validator: (_, value) => {
+                                    if (!value || value <= 0) {
+                                        return Promise.reject(new Error('Price must be greater than zero!'));
+                                    }
+                                    if (!currency) {
+                                        return Promise.reject(new Error('Please select a currency!'));
+                                    }
+                                    return Promise.resolve();
+                                }
+                            }
+                        ]}
                     >
-                        <InputNumber
-                            prefix="€"
-                            value={price}
-                            onChange={(value) => setPrice(parseInt(value, 10))}
-                            style={{ width: '100%' }}
-                        />
+                        <InputNumber style={{ width: '100%' }} value={price} addonBefore={selectAfter} onChange={(value) => setPrice(parseInt(value, 10))} defaultValue={1} />
                     </Form.Item>
                     <Form.Item
                         label={t('condition')}
@@ -675,9 +692,11 @@ const DefaultForm = ({
                     </Form.Item>
 
                     <Form.Item style={{ display: 'flex', justifyContent: 'center' }}>
-                        <Button type="primary" onClick={onSubmit} size='large' style={{ backgroundColor: '#FFBF34', width: '150px' }}>
-                            {t('add')}
-                        </Button>
+                        <Spin style={{ color: '#03989F' }} spinning={loading}>
+                            <Button type="primary" onClick={onSubmit} size='large' style={{ backgroundColor: '#FFBF34', width: '150px' }}>
+                                {t('add')}
+                            </Button>
+                        </Spin>
                     </Form.Item>
                 </Form>
             </div>

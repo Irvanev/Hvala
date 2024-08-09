@@ -1,12 +1,10 @@
 import React, { useState } from "react";
 import { Form, Select, Input } from 'antd';
-import { APIProvider, Map, Marker } from '@vis.gl/react-google-maps';
 
 const { Option } = Select;
 
-export const CountryRegion = ({ country, setCountry, region, setRegion, location, setLocation, t }) => {
+export const CountryRegion = ({ country, setCountry, region, setRegion, t }) => {
     const [regions, setRegions] = useState([]);
-    const [coordinates, setCoordinates] = useState({ lat: 22.54992, lng: 0 });
 
     const handleCountryChange = (value) => {
         setCountry(value);
@@ -109,28 +107,6 @@ export const CountryRegion = ({ country, setCountry, region, setRegion, location
                     ))}
                 </Select>
             </Form.Item>
-            <Form.Item label={t('location')}>
-                <Input type="text" value={`${location.lat}, ${location.lng}`} onChange={(e) => setLocation(e.target.value)} />
-            </Form.Item>
-            <APIProvider apiKey='AIzaSyD7K42WP5zjV99GP3xll40eFr_5DaAk3ZU'>
-                <Map
-                    style={{ width: '100%', height: '400px' }}
-                    defaultCenter={{ lat: 22.54992, lng: 0 }}
-                    defaultZoom={3}
-                    gestureHandling={'greedy'}
-                    disableDefaultUI={true}
-                    onClick={(e) => {
-                        const lat = e.lat;
-                        const lng = e.lng;
-                        setCoordinates({ lat, lng });
-                        setLocation({ lat, lng });
-                    }}
-                >
-                    <Marker
-                        position={coordinates}
-                    />
-                </Map>
-            </APIProvider>
         </>
     );
 };

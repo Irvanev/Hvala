@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useRef } from "react";
-import { Form, Input, InputNumber, Button, Select, Image, Upload, AutoComplete } from 'antd';
+import { Form, Input, InputNumber, Button, Select, Image, Upload, AutoComplete, Spin } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { useTranslation } from "react-i18next";
 import { GoogleMap, LoadScript } from '@react-google-maps/api';
@@ -135,7 +135,9 @@ const TvForm = ({
     condition, setCondition,
     phoneNumber, setPhoneNumber,
     description, setDescription,
-    handleSubmit, handleFileChange
+    handleSubmit, handleFileChange,
+    currency, setCurrency,
+    loading
 }) => {
     const { t } = useTranslation();
     const { Option } = Select;
@@ -260,120 +262,133 @@ const TvForm = ({
         }
     };
 
+    const selectAfter = (
+        <Select defaultValue='Валюта' style={{ width: 120 }} onChange={(value) => setCurrency(value)}>
+            <Option value="eur">€</Option>
+            <Option value="rsd">RSD</Option>
+        </Select>
+    );
+
     return (
         <LoadScript googleMapsApiKey="AIzaSyD7K42WP5zjV99GP3xll40eFr_5DaAk3ZU">
-        <div>
-            <Form
-                form={form}
-                className='mt-3'
-                layout="vertical"
-            >
-                <Form.Item
-                    name="title"
-                    label={t('title')}
-                    rules={[{ required: true, message: 'Please input the title!' }]}
+            <div>
+                <Form
+                    form={form}
+                    className='mt-3'
+                    layout="vertical"
                 >
-                    <Input value={title} onChange={(e) => setTitle(e.target.value)} />
-                </Form.Item>
-                <Form.Item label={t('brand')}>
-                    <Select
-                        showSearch
-                        value={brand}
-                        onChange={(value) => setBrand(value)}
-                        optionFilterProp="children"
-                        filterOption={(input, option) =>
-                            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        }
+                    <Form.Item
+                        name="title"
+                        label={t('title')}
+                        rules={[{ required: true, message: 'Please input the title!' }]}
                     >
-                        <Option value="Samsung">Samsung</Option>
-                        <Option value="Apple">LG</Option>
-                        <Option value="Xiaomi">Xiaomi</Option>
-                        <Option value="Huawei">Panasonic</Option>
-                        <Option value="Honor">Philips</Option>
-                    </Select>
-                </Form.Item>
-                <Form.Item label={t('model')}>
-                    <Input type="text" value={model} onChange={(e) => setModel(e.target.value)} />
-                </Form.Item>
-                <Form.Item
-                    label={t('price')}
-                    name='price'
-                    rules={[{ required: true, message: 'Please input the price!' }]}
-                >
-                    <InputNumber
-                        prefix="€"
-                        value={price}
-                        onChange={(value) => setPrice(parseInt(value, 10))}
-                        style={{
-                            width: '100%',
-                        }}
-                    />
-                </Form.Item>
-                <Form.Item label={t('size_screen')}>
-                    <Input type="tel" value={screen_size} onChange={(e) => setScreenSize(e.target.value)} />
-                </Form.Item>
-                <Form.Item
-                    label={t('condition')}
-                    name='condition'
-                    rules={[{ required: true, message: 'Please input the price!' }]}
-                >
-                    <Select value={condition} onChange={(value) => setCondition(value)}>
-                        <Option value="new_cond">{t('new_cond')}</Option>
-                        <Option value="bu_cond">{t('bu_cond')}</Option>
-                    </Select>
-                </Form.Item>
-                <Form.Item label={t('phone_number')}>
-                    <Input type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
-                </Form.Item>
-                <Form.Item label={t('description')}>
-                    <Input.TextArea rows={3} value={description} onChange={(e) => setDescription(e.target.value)} />
-                </Form.Item>
+                        <Input value={title} onChange={(e) => setTitle(e.target.value)} />
+                    </Form.Item>
+                    <Form.Item label={t('brand')}>
+                        <Select
+                            showSearch
+                            value={brand}
+                            onChange={(value) => setBrand(value)}
+                            optionFilterProp="children"
+                            filterOption={(input, option) =>
+                                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                            }
+                        >
+                            <Option value="Samsung">Samsung</Option>
+                            <Option value="Apple">LG</Option>
+                            <Option value="Xiaomi">Xiaomi</Option>
+                            <Option value="Huawei">Panasonic</Option>
+                            <Option value="Honor">Philips</Option>
+                        </Select>
+                    </Form.Item>
+                    <Form.Item label={t('model')}>
+                        <Input type="text" value={model} onChange={(e) => setModel(e.target.value)} />
+                    </Form.Item>
+                    <Form.Item
+                        label={t('price')}
+                        name='prie'
+                        rules={[
+                            { required: true, message: 'Please input the price!' },
+                            {
+                                validator: (_, value) => {
+                                    if (!value || value <= 0) {
+                                        return Promise.reject(new Error('Price must be greater than zero!'));
+                                    }
+                                    if (!currency) {
+                                        return Promise.reject(new Error('Please select a currency!'));
+                                    }
+                                    return Promise.resolve();
+                                }
+                            }
+                        ]}
+                    >
+                        <InputNumber style={{ width: '100%' }} value={price} addonBefore={selectAfter} onChange={(value) => setPrice(parseInt(value, 10))} defaultValue={1} />
+                    </Form.Item>
+                    <Form.Item label={t('size_screen')}>
+                        <Input type="tel" value={screen_size} onChange={(e) => setScreenSize(e.target.value)} />
+                    </Form.Item>
+                    <Form.Item
+                        label={t('condition')}
+                        name='condition'
+                        rules={[{ required: true, message: 'Please input the price!' }]}
+                    >
+                        <Select value={condition} onChange={(value) => setCondition(value)}>
+                            <Option value="new_cond">{t('new_cond')}</Option>
+                            <Option value="bu_cond">{t('bu_cond')}</Option>
+                        </Select>
+                    </Form.Item>
+                    <Form.Item label={t('phone_number')}>
+                        <Input type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
+                    </Form.Item>
+                    <Form.Item label={t('description')}>
+                        <Input.TextArea rows={3} value={description} onChange={(e) => setDescription(e.target.value)} />
+                    </Form.Item>
 
-                <Form.Item label={t('photos')}>
-                    <Upload
-                        multiple
-                        listType="picture-card"
-                        fileList={fileList}
-                        onPreview={handlePreview}
-                        onChange={handleChange}
-                        beforeUpload={file => {
-                            handleFileChange(file);
-                            return false;
-                        }}
-                    >
-                        {fileList.length >= 8 ? null :
-                            <button
-                                style={{
-                                    border: 0,
-                                    background: 'none',
-                                }}
-                                type="button"
-                            >
-                                <PlusOutlined />
-                                <div
+                    <Form.Item label={t('photos')}>
+                        <Upload
+                            multiple
+                            listType="picture-card"
+                            fileList={fileList}
+                            onPreview={handlePreview}
+                            onChange={handleChange}
+                            beforeUpload={file => {
+                                handleFileChange(file);
+                                return false;
+                            }}
+                        >
+                            {fileList.length >= 8 ? null :
+                                <button
                                     style={{
-                                        marginTop: 8,
+                                        border: 0,
+                                        background: 'none',
                                     }}
+                                    type="button"
                                 >
-                                    Upload
-                                </div>
-                            </button>
-                        }
-                    </Upload>
-                    {previewImage && (
-                        <Image
-                            wrapperStyle={{
-                                display: 'none',
-                            }}
-                            preview={{
-                                visible: previewOpen,
-                                onVisibleChange: (visible) => setPreviewOpen(visible),
-                                afterOpenChange: (visible) => !visible && setPreviewImage(''),
-                            }}
-                            src={previewImage}
-                        />
-                    )}
-                </Form.Item>
+                                    <PlusOutlined />
+                                    <div
+                                        style={{
+                                            marginTop: 8,
+                                        }}
+                                    >
+                                        Upload
+                                    </div>
+                                </button>
+                            }
+                        </Upload>
+                        {previewImage && (
+                            <Image
+                                wrapperStyle={{
+                                    display: 'none',
+                                }}
+                                preview={{
+                                    visible: previewOpen,
+                                    onVisibleChange: (visible) => setPreviewOpen(visible),
+                                    afterOpenChange: (visible) => !visible && setPreviewImage(''),
+                                }}
+                                src={previewImage}
+                            />
+                        )}
+                    </Form.Item>
 
                     <Form.Item label={t('coordinates')}>
                         <MapComponent coordinates={coordinates} setCoordinates={setCoordinates} setRegion={setRegion} setCountry={setCountry} setLocation={setLocation} mapRef={mapRef} />
@@ -392,13 +407,15 @@ const TvForm = ({
                         </AutoComplete>
                     </Form.Item>
 
-                <Form.Item style={{ display: 'flex', justifyContent: 'center'}}>
-                    <Button type="primary" onClick={onSubmit} size='large' style={{backgroundColor: '#FFBF34', width: '150px'}}>
-                        {t('add')}
-                    </Button>
-                </Form.Item>
-            </Form>
-        </div>
+                    <Form.Item style={{ display: 'flex', justifyContent: 'center' }}>
+                        <Spin style={{ color: '#03989F' }} spinning={loading}>
+                            <Button type="primary" onClick={onSubmit} size='large' style={{ backgroundColor: '#FFBF34', width: '150px' }}>
+                                {t('add')}
+                            </Button>
+                        </Spin>
+                    </Form.Item>
+                </Form>
+            </div>
         </LoadScript>
     );
 }

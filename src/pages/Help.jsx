@@ -68,7 +68,7 @@ const Help = () => {
 
                 <MyNavbar />
                 <Container className="mt-3">
-                    <h1>Часто задаваемые вопросы</h1>
+                    <h1>{t('many_ask_questions')}</h1>
                     <Accordion alwaysOpen>
                         <Accordion.Item eventKey="0">
                             <Accordion.Header>{t("send_advert_question")}</Accordion.Header>

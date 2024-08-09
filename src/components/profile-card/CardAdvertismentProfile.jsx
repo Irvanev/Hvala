@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { Card, Col, Carousel, Dropdown, Menu, Popconfirm, } from 'antd';
 import { EditOutlined, EllipsisOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
@@ -11,6 +12,7 @@ import { ru, enUS, sr } from 'date-fns/locale';
 import { archivedAdvertisement } from '../../services/ProfileService';
 
 const CardAdvertisementProfile = ({ advertisment, index }) => {
+    const history = useHistory();
     const { i18n } = useTranslation();
     const {t} = useTranslation();
     const [conversionRate, setConversionRate] = useState(null);
@@ -18,6 +20,10 @@ const CardAdvertisementProfile = ({ advertisment, index }) => {
 
     const [dropdownVisible, setDropdownVisible] = useState(false);
     const [isArchived, setIsArchived] = useState(false);
+
+    const handleEditClick = () => {
+        history.push(`/edit/${advertisment.id}`);
+      };
 
     const handleArchive = async (id) => {
         await archivedAdvertisement(id);
@@ -63,7 +69,7 @@ const CardAdvertisementProfile = ({ advertisment, index }) => {
                 <Card
                     hoverable
                     actions={[
-                        <EditOutlined key="edit" />,
+                        <EditOutlined key="edit" onClick={handleEditClick} />,
                         <Dropdown
                             overlay={
                                 <Menu>

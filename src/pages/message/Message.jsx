@@ -373,7 +373,7 @@ export const Message = () => {
                                         style={{ display: 'none' }}
                                         onChange={handleImageUpload}
                                     />
-                                    <input type="text" className="write_msg" placeholder="Type a message"
+                                    <input type="text" className="write_msg" placeholder={t('input_message')}
                                         value={message} onChange={e => setMessage(e.target.value)} />
                                     <button className="msg_send_btn" type="submit">
                                         <FaPaperPlane />
@@ -486,7 +486,7 @@ export const Message = () => {
                             />
                             <PaperClipOutlined className={styles.sendIcon} onClick={() => fileInput.current.click()} />
                             <TextArea className={styles.textInput} rows={1}
-                                placeholder="input message" autoSize={{ minRows: 1, maxRows: 4 }}
+                                placeholder={t('input_message')} autoSize={{ minRows: 1, maxRows: 4 }}
                                 value={message} onChange={e => setMessage(e.target.value)}
                                 onPressEnter={handleSubmit}
                             />

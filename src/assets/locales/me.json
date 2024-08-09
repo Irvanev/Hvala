@@ -1,4 +1,7 @@
 {
+  "cost": "Cijena",
+  "many_ask_questions": "Često postavljana pitanja",
+  "input_message": "Unesite poruku",
   "follow_us": "Pratite nas",
   "language": "Jezik",
   "filter": "Filteri",

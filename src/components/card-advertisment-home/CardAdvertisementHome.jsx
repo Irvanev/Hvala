@@ -74,12 +74,22 @@ const CardAdvertisementHome = ({ advertisment, index }) => {
                                 {advertisment.photoUrls && advertisment.photoUrls.length > 0 ? (
                                     advertisment.photoUrls.map((url, index) => (
                                         <div key={index} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '30vh' }}>
-                                            <img style={{ height: '30vh', width: '100%', objectFit: 'cover' }} alt="example" src={url || Logo} />
+                                            <img
+                                                style={{ height: '30vh', width: '100%', objectFit: 'cover' }}
+                                                alt="example"
+                                                src={url || Logo}
+                                                loading="lazy"
+                                            />
                                         </div>
                                     ))
                                 ) : (
                                     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '30vh' }}>
-                                        <img style={{ height: '30vh', width: '100%', objectFit: 'cover' }} alt="example" src={Logo} />
+                                        <img
+                                            style={{ height: '30vh', width: '100%', objectFit: 'cover' }}
+                                            alt="example"
+                                            src={Logo}
+                                            loading="lazy"
+                                        />
                                     </div>
                                 )}
                             </Carousel>
