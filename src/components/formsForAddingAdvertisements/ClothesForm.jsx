@@ -35,6 +35,8 @@ function getCountryKey(string) {
         } else if (string.includes("Montenegro") || string.includes("Черногория") || string.includes("Црна Гора")) {
             return "montenegro";
         } else if (string.includes("North Macedonia") || string.includes("Мacedonia") || string.includes("Северная Македония") || string.includes("Македония") || string.includes("Северна Македонија")) {
+            return "north_macedonia";
+        } else {
             return "montenegro";
         }
     }
