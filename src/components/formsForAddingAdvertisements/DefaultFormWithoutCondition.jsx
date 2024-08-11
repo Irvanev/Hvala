@@ -4,6 +4,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import { useTranslation } from "react-i18next";
 import { GoogleMap, LoadScript } from '@react-google-maps/api';
 import debounce from 'lodash.debounce';
+import { GeoPoint } from 'firebase/firestore';
 
 const containerStyle = {
     width: '100%',
@@ -34,7 +35,7 @@ function getCountryKey(string) {
         } else if (string.includes("Montenegro") || string.includes("Черногория") || string.includes("Црна Гора")) {
             return "montenegro";
         } else if (string.includes("North Macedonia") || string.includes("Мacedonia") || string.includes("Северная Македония") || string.includes("Македония") || string.includes("Северна Македонија")) {
-            return "north_macedonia";
+            return "montenegro";
         }
 
     }
@@ -210,7 +211,7 @@ function getCountryKey(string) {
         } else if (string.includes("Dubrovnik-Neretva") || string.includes("Дубровачко-Неретванская")) {
             return "dubrovnik_neretva";
         } else {
-            return "unknown_region";
+            return "municipality_budva";
         }
     }
 
@@ -228,7 +229,8 @@ const MapComponent = ({ coordinates, setCoordinates, setCountry, country, setReg
                 lat: newCenter.lat(),
                 lng: newCenter.lng()
             };
-            setCoordinates(newCoordinates);
+            const geoPoint = new GeoPoint(newCoordinates.lat, newCoordinates.lng);
+            setCoordinates(geoPoint);
 
             // Fetch the address using Geocoding API
             const geocoder = new window.google.maps.Geocoder();
@@ -383,7 +385,8 @@ const DefaultFormWithoutCondition = ({
                     lat: parseFloat(latitude),
                     lng: parseFloat(longitude),
                 };
-                setCoordinates(newCoordinates);
+                const geoPoint = new GeoPoint(newCoordinates.lat, newCoordinates.lng);
+                setCoordinates(geoPoint);
                 setLocation(value);
 
                 if (mapRef.current) {
