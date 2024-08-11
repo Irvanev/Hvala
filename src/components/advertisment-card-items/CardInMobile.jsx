@@ -168,6 +168,8 @@ const CardInMobile = ({ adData, t, index, handleSelect, handleCallClick, userDat
     const handleButtonWrite = async () => {
         if (from_uid === null) {
             history.push('/sign_in');
+        } else if (from_uid === userId) {
+            console.log('You cannot write to yourself!');
         } else {
             const chatId = await createChat();
             history.push(`/message/${chatId}`);
@@ -263,10 +265,10 @@ const CardInMobile = ({ adData, t, index, handleSelect, handleCallClick, userDat
                             {t('call')}
                         </a>
                         <a
-                            id="product-write"
-                            className="btn d-block flex-grow-1 mb-3"
-                            style={{ backgroundColor: "#FFBF34", color: "white" }}
-                            onClick={handleButtonWrite}
+                            id="product-phone"
+                            className={`btn d-block mb-3 ${from_uid === userId ? 'disabled' : ''}`}
+                            style={from_uid === userId ? { backgroundColor: "#FFBF34", color: "white", cursor: 'not-allowed', opacity: 0.5 } : { backgroundColor: "#FFBF34", color: "white" }}
+                            onClick={from_uid === userId ? null : handleButtonWrite}
                         >
                             {t('to_write')}
                         </a>

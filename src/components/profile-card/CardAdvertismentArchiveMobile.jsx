@@ -149,7 +149,7 @@ const CardAdvertisementProfileArchiveMobile = ({ advertismentArchive, index }) =
                             overflow: 'hidden',
                             textOverflow: 'ellipsis'
                         }}>
-                            {advertismentArchive.location}
+                            {t(advertismentArchive.country)}, {t(advertismentArchive.region)}
                         </p>
                         <p>{formatDate(advertismentArchive.time_creation)}</p>
                     </Link>

@@ -9,6 +9,7 @@ import { ru, enUS, sr } from 'date-fns/locale';
 
 const CardAdvertisementHome = ({ advertisment, index }) => {
     const { i18n } = useTranslation();
+    const { t } = useTranslation();
     const [conversionRate, setConversionRate] = useState(null);
     const [currency, setCurrency] = useState('');
 
@@ -67,7 +68,7 @@ const CardAdvertisementHome = ({ advertisment, index }) => {
                 <Link key={advertisment.id} to={`/advertisment/${advertisment.id}`} style={{ textDecoration: "none" }}>
                     <Card
                         hoverable
-                        style={{ height: '51vh', width: '100%' }}
+                        style={{ height: '48vh', width: '100%' }}
                         bodyStyle={{ padding: 0, margin: '1vh' }}
                         cover={
                             <Carousel>
@@ -110,7 +111,7 @@ const CardAdvertisementHome = ({ advertisment, index }) => {
                             overflow: 'hidden',
                             textOverflow: 'ellipsis'
                         }}>
-                            {advertisment.location}
+                            {t(advertisment.country)}, {t(advertisment.region)}
                         </p>
                         <p>{formatDate(advertisment.time_creation)}</p>
 
