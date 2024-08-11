@@ -199,10 +199,10 @@ const CardInPc = ({ adData, t, index, handleSelect, handleCallClick, showModal, 
           <Breadcrumb className='mt-3'
             items={[
               {
-                title: <a style={{textDecoration: 'none'}} href="/advertisment"><HomeOutlined /> {t('home_navbar')}</a>,
+                title: <a style={{ textDecoration: 'none' }} href="/advertisment"><HomeOutlined /> {t('home_navbar')}</a>,
               },
               {
-                title: <a style={{textDecoration: 'none'}} href={`/advertisments/${adData?.category}`}>{t(adData?.category)}</a>,
+                title: <a style={{ textDecoration: 'none' }} href={`/advertisments/${adData?.category}`}>{t(adData?.category)}</a>,
               },
               {
                 title: t(adData?.subcategory),
@@ -211,8 +211,28 @@ const CardInPc = ({ adData, t, index, handleSelect, handleCallClick, showModal, 
           />
           <h2 id="product-title">{adData?.title}</h2>
           <Carousel activeIndex={index} onSelect={handleSelect}>
-            {adData?.photoUrls.map((url, index) => (
-              <Carousel.Item key={index}>
+            {adData?.photoUrls.length > 0 ? (
+              adData.photoUrls.map((url, index) => (
+                <Carousel.Item key={index}>
+                  <div
+                    style={{
+                      backgroundColor: "#dcdcdc",
+                      display: "flex",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Image
+                      className="d-block"
+                      style={{ objectFit: 'contain', maxWidth: "100%", height: '400px' }}
+                      onClick={() => handleSelect(index)}
+                      src={url}
+                      alt={`Slide ${index + 1}`}
+                    />
+                  </div>
+                </Carousel.Item>
+              ))
+            ) : (
+              <Carousel.Item>
                 <div
                   style={{
                     backgroundColor: "#dcdcdc",
@@ -223,13 +243,12 @@ const CardInPc = ({ adData, t, index, handleSelect, handleCallClick, showModal, 
                   <Image
                     className="d-block"
                     style={{ objectFit: 'contain', maxWidth: "100%", height: '400px' }}
-                    onClick={() => handleSelect(index)}
-                    src={url}
-                    alt={`Slide ${index + 1}`}
+                    src={Logo}
+                    alt="Logo"
                   />
                 </div>
               </Carousel.Item>
-            ))}
+            )}
           </Carousel>
           <Row className="mt-3">
             {adData?.photoUrls.map((url, index) => (
