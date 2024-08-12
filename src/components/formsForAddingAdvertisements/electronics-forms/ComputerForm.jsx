@@ -138,38 +138,6 @@ function getCountryKey(string) {
             return "sumadija_and_western_serbia";
         } else if (string.includes("Southern and Eastern Serbia") || string.includes("Южно-Банатский")) {
             return "southern_and_eastern_serbia";
-        } else if (string.includes("Kosovo and Metohija") || string.includes("Косово и Метохия")) {
-            return "kosovo_and_metohija";
-        } else if (string.includes("Belgrade") || string.includes("Белград") || string.includes("Београд")) {
-            return "belgrade";
-        } else if (string.includes("Bor") || string.includes("Bor") || string.includes("Борский") || string.includes("Борски")) {
-            return "bor_district";
-        } else if (string.includes("Braničevo District") || string.includes("Braničevo") || string.includes("Браничевский") || string.includes("Браничевски округ")) {
-            return "branicevo_district";
-        } else if (string.includes("Zlatibor District") || string.includes("Zlatibor") || string.includes("Златиборский") || string.includes("Златиборски округ")) {
-            return "zlatibor_district";
-        } else if (string.includes("Kolubara District") || string.includes("Kolubara") || string.includes("Колубарский") || string.includes("Колубарски округ")) {
-            return "kolubara_district";
-        } else if (string.includes("Moravica District") || string.includes("Moravica") || string.includes("Моравичский") || string.includes("Моравички округ")) {
-            return "moravica_district";
-        } else if (string.includes("Nišava District") || string.includes("Nišava") || string.includes("Нишавский") || string.includes("Нишавски округ")) {
-            return "nisava_district";
-        } else if (string.includes("Pirot District") || string.includes("Pirot") || string.includes("Пиротский") || string.includes("Пиротски округ")) {
-            return "pirot_district";
-        } else if (string.includes("Podunavlje District") || string.includes("Podunavlje") || string.includes("Подунайский") || string.includes("Подунавски")) {
-            return "podunavlje_district";
-        } else if (string.includes("Pčinja District") || string.includes("Pčinja") || string.includes("Пчиньский") || string.includes("Пчињски")) {
-            return "pcinja_district";
-        } else if (string.includes("Raška District") || string.includes("Raška") || string.includes("Рашский") || string.includes("Рашки")) {
-            return "raska_district";
-        } else if (string.includes("Rasina District") || string.includes("Rasina") || string.includes("Расинский") || string.includes("Расински")) {
-            return "rasina_district";
-        } else if (string.includes("Toplica District") || string.includes("Toplica") || string.includes("Топличский") || string.includes("Топлички")) {
-            return "toplica_district";
-        } else if (string.includes("Šumadija District") || string.includes("Šumadija") || string.includes("Шумадийский") || string.includes("Шумадијски")) {
-            return "sumadija_district";
-        } else if (string.includes("Jablanica District") || string.includes("Jablanica") || string.includes("Ябланичский") || string.includes("Јабланички")) {
-            return "jablanica_district";
         } else if (string.includes("Zagreb City") || string.includes("Град Загреб")) {
             return "zagreb_city";
         } else if (string.includes("Zagreb County") || string.includes("Загребская")) {
