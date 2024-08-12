@@ -30,7 +30,7 @@ import SelectBrandsForComputers from "../../components/select-brands/SelectBrand
 import SelectTypeForComputer from "../../components/select-types/select-types-electronics/SelectTypesForComputers";
 import SelectBrandsForGameCondole from "../../components/select-brands/SelectBrandsForGameConsole";
 import SelectTypesForClothes from "../../components/select-types/select-types-clothes/SelectTypesForClothes";
-import {NavBarBack} from "../../components/Navbar/NavBarBack";
+import { NavBarBack } from "../../components/Navbar/NavBarBack";
 
 export default function EditItem() {
     const { t } = useTranslation();
@@ -44,6 +44,7 @@ export default function EditItem() {
     const [price, setPrice] = useState('');
     const [description, setDescription] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
+    const [currency, setCurrency] = useState('');
 
     const [condition, setCondition] = useState('');
     const [brand, setBrand] = useState('');
@@ -76,6 +77,7 @@ export default function EditItem() {
         const updatedData = {
             title: title,
             price: price,
+            currency: currency,
             phone: phoneNumber,
             description: description,
             photoUrls: photoUrls,
@@ -389,9 +391,26 @@ export default function EditItem() {
                         setSelectedFiles(data.photoUrls);
                         setTitle(data.title);
                         setPrice(data.price);
-                        setDescription(data.description);
-                        setPhoneNumber(data.phone);
-                        setCondition(data.condition);
+                        setDescription(data?.description);
+                        setPhoneNumber(data?.phone);
+                        setCondition(data?.condition);
+                        setCurrency(data.currency);
+                        setBrand(data?.brand);
+                        setModel(data?.model);
+                        setScreenSize(data?.screen_size);
+                        setMemory(data?.memory);
+                        setOwner(data?.owner);
+                        setType(data?.type);
+                        setArea(data?.area);
+                        setMileage(data?.mileage);
+                        setDrive(data?.drive);
+                        setTransmission(data?.transmission);
+                        setWheel(data?.wheel);
+                        setYear(data?.year);
+                        setBody(data?.body);
+                        setColor(data?.color);
+                        setOwners(data?.owners);
+                        setSize(data?.size);
                         console.log("Document data:", data);
                     } else {
                         setData(null);
@@ -493,9 +512,19 @@ export default function EditItem() {
                             <Form.Label>{t('title')}</Form.Label>
                             <Form.Control type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
                         </FormGroup>
-                        <Form.Group className="mb-3">
-                            <Form.Label>{t('price')}</Form.Label>
-                            <Form.Control type="text" value={price} onChange={(e) => setPrice(parseInt(e.target.value, 10))} />
+                        <Form.Group className="mb-3 d-flex align-items-center">
+                            <Form.Control
+                                type="text"
+                                value={price}
+                                onChange={(e) => setPrice(parseInt(e.target.value, 10))}
+                                placeholder={t('price')}
+                                className="me-2"
+                            />
+                            <Form.Select aria-label="Default select example" value={currency} onChange={(e) => setCurrency(e.target.value)}>
+                                <option>{t('currency')}</option>
+                                <option value="rsd">RSD</option>
+                                <option value="eur">EUR</option>
+                            </Form.Select>
                         </Form.Group>
                         <Form.Group className="mb-3">
                             <Form.Label>{t('phone_number')}</Form.Label>
@@ -558,9 +587,19 @@ export default function EditItem() {
                             <Form.Label>{t('title')}</Form.Label>
                             <Form.Control type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
                         </FormGroup>
-                        <Form.Group className="mb-3">
-                            <Form.Label>{t('price')}</Form.Label>
-                            <Form.Control type="text" value={price} onChange={(e) => setPrice(parseInt(e.target.value, 10))} />
+                        <Form.Group className="mb-3 d-flex align-items-center">
+                            <Form.Control
+                                type="text"
+                                value={price}
+                                onChange={(e) => setPrice(parseInt(e.target.value, 10))}
+                                placeholder={t('price')}
+                                className="me-2"
+                            />
+                            <Form.Select aria-label="Default select example" value={currency} onChange={(e) => setCurrency(e.target.value)}>
+                                <option>{t('currency')}</option>
+                                <option value="rsd">RSD</option>
+                                <option value="eur">EUR</option>
+                            </Form.Select>
                         </Form.Group>
                         <Form.Group className="mb-3">
                             <Form.Label>{t('condition')}</Form.Label>
@@ -603,9 +642,19 @@ export default function EditItem() {
                             <Form.Label>{t('model')}</Form.Label>
                             <Form.Control type="text" value={model} onChange={(e) => setModel(e.target.value)} />
                         </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>{t('price')}</Form.Label>
-                            <Form.Control type="text" value={price} onChange={(e) => setPrice(parseInt(e.target.value, 10))} />
+                        <Form.Group className="mb-3 d-flex align-items-center">
+                            <Form.Control
+                                type="text"
+                                value={price}
+                                onChange={(e) => setPrice(parseInt(e.target.value, 10))}
+                                placeholder={t('price')}
+                                className="me-2"
+                            />
+                            <Form.Select aria-label="Default select example" value={currency} onChange={(e) => setCurrency(e.target.value)}>
+                                <option>{t('currency')}</option>
+                                <option value="rsd">RSD</option>
+                                <option value="eur">EUR</option>
+                            </Form.Select>
                         </Form.Group>
                         <Form.Group className="mb-3">
                             <Form.Label>{t("size_screen")}</Form.Label>
@@ -655,9 +704,19 @@ export default function EditItem() {
                             <Form.Label>{t('brand')}</Form.Label>
                             <Form.Control type="text" value={brand} onChange={(e) => setBrand(e.target.value)} />
                         </FormGroup>
-                        <Form.Group className="mb-3">
-                            <Form.Label>{t('price')}</Form.Label>
-                            <Form.Control type="text" value={price} onChange={(e) => setPrice(parseInt(e.target.value, 10))} />
+                        <Form.Group className="mb-3 d-flex align-items-center">
+                            <Form.Control
+                                type="text"
+                                value={price}
+                                onChange={(e) => setPrice(parseInt(e.target.value, 10))}
+                                placeholder={t('price')}
+                                className="me-2"
+                            />
+                            <Form.Select aria-label="Default select example" value={currency} onChange={(e) => setCurrency(e.target.value)}>
+                                <option>{t('currency')}</option>
+                                <option value="rsd">RSD</option>
+                                <option value="eur">EUR</option>
+                            </Form.Select>
                         </Form.Group>
                         <Form.Group className="mb-3">
                             <Form.Label>{t('condition')}</Form.Label>
@@ -709,9 +768,19 @@ export default function EditItem() {
                             <Form.Label>{t('rooms_amount')}</Form.Label>
                             <Form.Control type="number" value={roomsAmout} onChange={(e) => setRoomsAmount(e.target.value)} />
                         </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>{t('price')}</Form.Label>
-                            <Form.Control type="text" value={price} onChange={(e) => setPrice(parseInt(e.target.value, 10))} />
+                        <Form.Group className="mb-3 d-flex align-items-center">
+                            <Form.Control
+                                type="text"
+                                value={price}
+                                onChange={(e) => setPrice(parseInt(e.target.value, 10))}
+                                placeholder={t('price')}
+                                className="me-2"
+                            />
+                            <Form.Select aria-label="Default select example" value={currency} onChange={(e) => setCurrency(e.target.value)}>
+                                <option>{t('currency')}</option>
+                                <option value="rsd">RSD</option>
+                                <option value="eur">EUR</option>
+                            </Form.Select>
                         </Form.Group>
                         <Form.Group className="mb-3">
                             <Form.Label>{t('area')}</Form.Label>
@@ -760,9 +829,19 @@ export default function EditItem() {
                         <Form.Group className="mb-3">
                             <SelectTypesForComputersAccs type={type} setType={setType} />
                         </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>{t('price')}</Form.Label>
-                            <Form.Control type="text" value={price} onChange={(e) => setPrice(parseInt(e.target.value, 10))} />
+                        <Form.Group className="mb-3 d-flex align-items-center">
+                            <Form.Control
+                                type="text"
+                                value={price}
+                                onChange={(e) => setPrice(parseInt(e.target.value, 10))}
+                                placeholder={t('price')}
+                                className="me-2"
+                            />
+                            <Form.Select aria-label="Default select example" value={currency} onChange={(e) => setCurrency(e.target.value)}>
+                                <option>{t('currency')}</option>
+                                <option value="rsd">RSD</option>
+                                <option value="eur">EUR</option>
+                            </Form.Select>
                         </Form.Group>
                         <Form.Group className="mb-3">
                             <Form.Select aria-label="Default select example" value={condition} onChange={(e) => setCondition(e.target.value)}>
@@ -807,9 +886,19 @@ export default function EditItem() {
                         <Form.Group className="mb-3">
                             <SelectTypeForComputer type={type} setType={setType} />
                         </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>{t('price')}</Form.Label>
-                            <Form.Control type="text" value={price} onChange={(e) => setPrice(parseInt(e.target.value, 10))} />
+                        <Form.Group className="mb-3 d-flex align-items-center">
+                            <Form.Control
+                                type="text"
+                                value={price}
+                                onChange={(e) => setPrice(parseInt(e.target.value, 10))}
+                                placeholder={t('price')}
+                                className="me-2"
+                            />
+                            <Form.Select aria-label="Default select example" value={currency} onChange={(e) => setCurrency(e.target.value)}>
+                                <option>{t('currency')}</option>
+                                <option value="rsd">RSD</option>
+                                <option value="eur">EUR</option>
+                            </Form.Select>
                         </Form.Group>
                         <Form.Group className="mb-3">
                             <Form.Select aria-label="Default select example" value={condition} onChange={(e) => setCondition(e.target.value)}>
@@ -852,9 +941,19 @@ export default function EditItem() {
                             <Form.Label>{t('model')}</Form.Label>
                             <Form.Control type="text" value={model} onChange={(e) => setModel(e.target.value)} />
                         </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>{t('price')}</Form.Label>
-                            <Form.Control type="text" value={price} onChange={(e) => setPrice(parseInt(e.target.value, 10))} />
+                        <Form.Group className="mb-3 d-flex align-items-center">
+                            <Form.Control
+                                type="text"
+                                value={price}
+                                onChange={(e) => setPrice(parseInt(e.target.value, 10))}
+                                placeholder={t('price')}
+                                className="me-2"
+                            />
+                            <Form.Select aria-label="Default select example" value={currency} onChange={(e) => setCurrency(e.target.value)}>
+                                <option>{t('currency')}</option>
+                                <option value="rsd">RSD</option>
+                                <option value="eur">EUR</option>
+                            </Form.Select>
                         </Form.Group>
                         <Form.Group className="mb-3">
                             <Form.Select aria-label="Default select example" value={condition} onChange={(e) => setCondition(e.target.value)}>
@@ -906,9 +1005,19 @@ export default function EditItem() {
                             <Form.Label>{t('model')}</Form.Label>
                             <Form.Control type="text" value={model} onChange={(e) => setModel(e.target.value)} />
                         </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>{t('price')}</Form.Label>
-                            <Form.Control type="text" value={price} onChange={(e) => setPrice(parseInt(e.target.value, 10))} />
+                        <Form.Group className="mb-3 d-flex align-items-center">
+                            <Form.Control
+                                type="text"
+                                value={price}
+                                onChange={(e) => setPrice(parseInt(e.target.value, 10))}
+                                placeholder={t('price')}
+                                className="me-2"
+                            />
+                            <Form.Select aria-label="Default select example" value={currency} onChange={(e) => setCurrency(e.target.value)}>
+                                <option>{t('currency')}</option>
+                                <option value="rsd">RSD</option>
+                                <option value="eur">EUR</option>
+                            </Form.Select>
                         </Form.Group>
                         <Form.Group className="mb-3">
                             <Form.Label>{t("size_screen")}</Form.Label>
@@ -949,9 +1058,19 @@ export default function EditItem() {
                             <Form.Label>{t('type')}</Form.Label>
                             <SelectTypesForClothes type={type} setType={setType} />
                         </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>{t('price')}</Form.Label>
-                            <Form.Control type="text" value={price} onChange={(e) => setPrice(parseInt(e.target.value, 10))} />
+                        <Form.Group className="mb-3 d-flex align-items-center">
+                            <Form.Control
+                                type="text"
+                                value={price}
+                                onChange={(e) => setPrice(parseInt(e.target.value, 10))}
+                                placeholder={t('price')}
+                                className="me-2"
+                            />
+                            <Form.Select aria-label="Default select example" value={currency} onChange={(e) => setCurrency(e.target.value)}>
+                                <option>{t('currency')}</option>
+                                <option value="rsd">RSD</option>
+                                <option value="eur">EUR</option>
+                            </Form.Select>
                         </Form.Group>
                         <Form.Group className="mb-3">
                             <Form.Label>{t('size')}</Form.Label>
@@ -1017,9 +1136,19 @@ export default function EditItem() {
                             <Form.Label>{t('input_model')}</Form.Label>
                             <Form.Control type="text" value={model} onChange={(e) => setModel(e.target.value)} />
                         </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>{t('price')}</Form.Label>
-                            <Form.Control type="text" value={price} onChange={(e) => setPrice(parseInt(e.target.value, 10))} />
+                        <Form.Group className="mb-3 d-flex align-items-center">
+                            <Form.Control
+                                type="text"
+                                value={price}
+                                onChange={(e) => setPrice(parseInt(e.target.value, 10))}
+                                placeholder={t('price')}
+                                className="me-2"
+                            />
+                            <Form.Select aria-label="Default select example" value={currency} onChange={(e) => setCurrency(e.target.value)}>
+                                <option>{t('currency')}</option>
+                                <option value="rsd">RSD</option>
+                                <option value="eur">EUR</option>
+                            </Form.Select>
                         </Form.Group>
                         <Form.Group className="mb-3">
                             <Form.Label>{t('input_year')}</Form.Label>
@@ -1108,9 +1237,19 @@ export default function EditItem() {
                             <Form.Label>{t('title')}</Form.Label>
                             <Form.Control type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
                         </FormGroup>
-                        <Form.Group className="mb-3">
-                            <Form.Label>{t('price')}</Form.Label>
-                            <Form.Control type="text" value={price} onChange={(e) => setPrice(parseInt(e.target.value, 10))} />
+                        <Form.Group className="mb-3 d-flex align-items-center">
+                            <Form.Control
+                                type="text"
+                                value={price}
+                                onChange={(e) => setPrice(parseInt(e.target.value, 10))}
+                                placeholder={t('price')}
+                                className="me-2"
+                            />
+                            <Form.Select aria-label="Default select example" value={currency} onChange={(e) => setCurrency(e.target.value)}>
+                                <option>{t('currency')}</option>
+                                <option value="rsd">RSD</option>
+                                <option value="eur">EUR</option>
+                            </Form.Select>
                         </Form.Group>
                         <Form.Group className="mb-3">
                             <Form.Label>{t('condition')}</Form.Label>
@@ -1143,7 +1282,7 @@ export default function EditItem() {
 
     return (
         <>
-        <style type="text/css">
+            <style type="text/css">
                 {`
                 @media (max-width: 1000px) {
                     body {

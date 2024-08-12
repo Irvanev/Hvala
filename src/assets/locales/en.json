@@ -1,4 +1,5 @@
 {
+  "number_is_not_specified": "Number is not specified",
   "username_is_taken": "This username is already taken",
   "invalid_email_or_password": "Invalid email or password",
   "confirm_email": "Please confirm your email address before logging in.",

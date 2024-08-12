@@ -1,4 +1,5 @@
 {
+  "number_is_not_specified": "Broj nije naveden",
   "username_is_taken": "Korisničko ime je zauzeto",
   "invalid_email_or_password": "Pogrešan email ili lozinka",
   "confirm_email": "Molimo potvrdite vašu email adresu",

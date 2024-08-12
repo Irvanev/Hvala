@@ -1,10 +1,12 @@
 import React from "react";
-import { Modal, Button } from "antd";
+import { Modal } from "antd";
+import { useTranslation } from "react-i18next";
 
 const ModalForNumberPhone = ({adData, showModal, handleCloseModal}) => {
+    const { t } = useTranslation();
     return (
-        <Modal title="Номер телефона" open={showModal} onCancel={handleCloseModal} footer={null}>
-            <h3>{adData?.phone || 'Номер не указан'}</h3>
+        <Modal title={t('phone_number')} open={showModal} onCancel={handleCloseModal} footer={null}>
+            <h3>{adData?.phone || t('number_is_not_specified')}</h3>
         </Modal>
     );
 }

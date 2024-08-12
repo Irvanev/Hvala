@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHistory, useLocation, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { auth } from '../../config/firebase';
 import { signOut } from 'firebase/auth';
+import {db} from '../../config/firebase';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 
 import { Avatar, Button, Dropdown, Menu } from 'antd';
 import { DownOutlined, GlobalOutlined } from '@ant-design/icons';
@@ -15,9 +17,25 @@ export const MyNavbar = () => {
     const history = useHistory();
     const location = useLocation();
     const { pathname } = location;
-    const user = JSON.parse(localStorage.getItem('user'));
+    const user = auth.currentUser;
 
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [userData, setUserData] = useState(null);
+
+    console.log(user);
+
+    useEffect(() => {
+        if (user) {
+            const fetchUserData = async () => {
+                const q = query(collection(db, 'users'), where('id', '==', user.uid));
+                const querySnapshot = await getDocs(q);
+                querySnapshot.forEach((doc) => {
+                    setUserData(doc.data());
+                });
+            };
+            fetchUserData();
+        }
+    }, [user, db]);
 
     const showModal = () => {
         setIsModalVisible(true);
@@ -108,12 +126,12 @@ export const MyNavbar = () => {
                             <Link to="/message" style={{ textDecoration: 'none' }}>
                                 <Nav.Link href="/message" style={{ fontSize: '18px', padding: '12px', color: '#ffffff' }}><MessageOutlined style={{ fontSize: '25px', padding: '3px' }} /></Nav.Link>
                             </Link>
-                            {user ? (
+                            {userData ? (
                                 <Dropdown overlay={menu}>
                                     <Link to="/profile" style={{ textDecoration: 'none' }}>
                                         <Nav.Link href="/profile" style={{ fontSize: '18px', padding: '12px', color: '#ffffff' }}>
-                                            <Avatar size={32} alt={user.name} src={user.photoUrl} style={{ marginRight: '10px' }} />
-                                            {user.name}<DownOutlined style={{ fontSize: '12px' }} />
+                                            <Avatar size={32} alt={user.name} src={userData.photoUrl} style={{ marginRight: '10px' }} />
+                                            {userData.name}<DownOutlined style={{ fontSize: '12px' }} />
                                         </Nav.Link>
                                     </Link>
                                 </Dropdown>
