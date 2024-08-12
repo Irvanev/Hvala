@@ -848,70 +848,68 @@ export const CategoryAdvertisments = () => {
                                             <a onClick={showModal}>
                                                 <Space>
                                                     <FilterOutlined />
-                                                    Фильтры
+                                                    {t('filter')}
                                                 </Space>
                                             </a>
-                                            <Modal title="Фильтры" open={isModalOpen} footer={null} onCancel={handleCancel}>
-                                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                                                    <label className='mt-3'>{t('prices')}</label>
-                                                    <Space style={{ width: '100%' }} align="baseline">
-                                                        <Select defaultValue={t('currency')} onChange={handleCurrencyChange} style={{ width: 120 }}>
-                                                            <Select.Option value="rsd">RSD</Select.Option>
-                                                            <Select.Option value="eur">EUR</Select.Option>
+                                            <Modal title={t('filter')} open={isModalOpen} footer={null} onCancel={handleCancel}>
+                                                <label className='mt-3'>{t('prices')}</label>
+                                                <Space style={{ width: '100%' }} align="baseline">
+                                                    <Select defaultValue={t('currency')} onChange={handleCurrencyChange} style={{ width: 120 }}>
+                                                        <Select.Option value="rsd">RSD</Select.Option>
+                                                        <Select.Option value="eur">EUR</Select.Option>
+                                                    </Select>
+                                                    <InputNumber
+                                                        style={{ width: '100%' }}
+                                                        placeholder={t('minPricePlaceholder')}
+                                                        value={minPrice}
+                                                        onChange={handleMinPriceChange}
+                                                    />
+                                                    <InputNumber
+                                                        style={{ width: '100%' }}
+                                                        placeholder={t('maxPricePlaceholder')}
+                                                        value={maxPrice}
+                                                        onChange={handleMaxPriceChange}
+                                                    />
+                                                </Space>
+                                                <label className='mt-3'>{t('country')}</label>
+                                                <Select style={{ width: '100%' }} onChange={value => setCountry(value)} value={country}>
+                                                    <Option value="">{t('choice_country')}</Option>
+                                                    <Option value="serbia">{t('serbia')}</Option>
+                                                    <Option value="montenegro">{t('montenegro')}</Option>
+                                                    <Option value="croatia">{t('croatia')}</Option>
+                                                    <Option value="bosnia_and_herzegovina">{t('bosnia_and_herzegovina')}</Option>
+                                                </Select>
+
+                                                {country && (
+                                                    <>
+                                                        <label className='mt-3'>{t('region')}</label>
+                                                        <Select style={{ width: '100%' }} onChange={value => setRegion(value)} value={region}>
+                                                            {countryRegions[country] ? countryRegions[country].map(region => (
+                                                                <Option key={region.value} value={region.value}>
+                                                                    {region.label}
+                                                                </Option>
+                                                            )) : null}
                                                         </Select>
-                                                        <InputNumber
-                                                            style={{ width: '100%' }}
-                                                            placeholder={t('minPricePlaceholder')}
-                                                            value={minPrice}
-                                                            onChange={handleMinPriceChange}
-                                                        />
-                                                        <InputNumber
-                                                            style={{ width: '100%' }}
-                                                            placeholder={t('maxPricePlaceholder')}
-                                                            value={maxPrice}
-                                                            onChange={handleMaxPriceChange}
-                                                        />
-                                                    </Space>
-                                                    <label className='mt-3'>{t('country')}</label>
-                                                    <Select style={{ width: '100%' }} onChange={value => setCountry(value)} value={country}>
-                                                        <Option value="">{t('choice_country')}</Option>
-                                                        <Option value="serbia">{t('serbia')}</Option>
-                                                        <Option value="montenegro">{t('montenegro')}</Option>
-                                                        <Option value="croatia">{t('croatia')}</Option>
-                                                        <Option value="bosnia_and_herzegovina">{t('bosnia_and_herzegovina')}</Option>
-                                                    </Select>
+                                                    </>
+                                                )}
 
-                                                    {country && (
-                                                        <>
-                                                            <label className='mt-3'>{t('region')}</label>
-                                                            <Select style={{ width: '100%' }} onChange={value => setRegion(value)} value={region}>
-                                                                {countryRegions[country] ? countryRegions[country].map(region => (
-                                                                    <Option key={region.value} value={region.value}>
-                                                                        {region.label}
-                                                                    </Option>
-                                                                )) : null}
-                                                            </Select>
-                                                        </>
-                                                    )}
+                                                <label className='mt-3'>{t('subCategory')}</label>
+                                                <Select style={{ width: '100%' }} onChange={setSubCategory} value={subcategory}>
+                                                    <Option value="">{t('choice_subcategory')}</Option>
+                                                    {currentSubcategories.map(subcategory => (
+                                                        <Option key={subcategory.value} value={subcategory.value}>
+                                                            {subcategory.label}
+                                                        </Option>
+                                                    ))}
+                                                </Select>
 
-                                                    <label className='mt-3'>{t('subCategory')}</label>
-                                                    <Select style={{ width: '100%' }} onChange={setSubCategory} value={subcategory}>
-                                                        <Option value="">{t('choice_subcategory')}</Option>
-                                                        {currentSubcategories.map(subcategory => (
-                                                            <Option key={subcategory.value} value={subcategory.value}>
-                                                                {subcategory.label}
-                                                            </Option>
-                                                        ))}
-                                                    </Select>
+                                                {renderForm()}
 
-                                                    {renderForm()}
-
-                                                    <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-                                                        <Button className='mt-3' type='primary' onClick={applyFilters}
-                                                            style={{ backgroundColor: 'orange', border: 'none' }}>{t('apply')}</Button>
-                                                        <Button className='mt-3' type='default' onClick={resetFilters}
-                                                            style={{ marginLeft: '10px' }}>{t('reset')}</Button>
-                                                    </div>
+                                                <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+                                                    <Button className='mt-3' type='primary' onClick={applyFilters}
+                                                        style={{ backgroundColor: 'orange', border: 'none' }}>{t('apply')}</Button>
+                                                    <Button className='mt-3' type='default' onClick={resetFilters}
+                                                        style={{ marginLeft: '10px' }}>{t('reset')}</Button>
                                                 </div>
                                             </Modal>
                                         </div>

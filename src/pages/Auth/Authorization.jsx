@@ -37,11 +37,11 @@ export const Authorization = () => {
                 localStorage.setItem('userId', userId);
                 history.push('/profile');
             } else {
-                setLoginError('Пожалуйста, подтвердите свой адрес электронной почты перед входом.');
+                setLoginError(t('confirm_email'));
             }
         } catch (error) {
             if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
-                setLoginError('Неверный логин или пароль.');
+                setLoginError(t('invalid_email_or_password'));
             } else {
                 setLoginError(error.message);
             }

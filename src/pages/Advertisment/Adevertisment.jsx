@@ -813,7 +813,7 @@ export const Advertisement = () => {
 
     const handleClickHelp = () => {
         history.push('/help');
-      };
+    };
 
     return (
         <>
@@ -897,7 +897,7 @@ export const Advertisement = () => {
                     <Categories setSearchText={setSearchText} options={options} />
                     <CategoryCards />
                     <div className='container d-none d-lg-block'>
-                        <img src={banner} alt="Banner" className="img-fluid" style={{borderRadius: '10px'}} />
+                        <img src={banner} alt="Banner" className="img-fluid" style={{ borderRadius: '10px' }} />
                     </div>
                     <div className='container mt-3' style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
                         <Space>
@@ -911,7 +911,7 @@ export const Advertisement = () => {
                                 {t('filter')}
                             </Space>
                         </a>
-                        <Modal title="Фильтры" open={isModalVisibleFilter} footer={null} onCancel={handleCancelFilter}>
+                        <Modal title={t('filter')} open={isModalVisibleFilter} footer={null} onCancel={handleCancelFilter}>
                             <label className='mt-3'>{t('prices')}</label>
                             <Space style={{ width: '100%' }} align="baseline">
                                 <Select defaultValue={t('currency')} onChange={handleCurrencyChange} style={{ width: 120 }}>

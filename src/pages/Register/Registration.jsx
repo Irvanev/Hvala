@@ -58,7 +58,7 @@ export const Registration = () => {
         }
         const isUsernameTaken = await checkUsername(username);
         if (isUsernameTaken) {
-            setLoginError('Имя пользвателя уже занято!');
+            setLoginError(t('username_is_taken'));
             return;
         }
         try {

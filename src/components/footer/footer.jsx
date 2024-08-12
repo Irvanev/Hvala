@@ -53,31 +53,6 @@ export const CustomFooter = () => {
             </ul>
           </div>
           <div className={styles.footerCol}>
-            <h4>{t('category')}</h4>
-            <ul>
-              <li>
-                <Link to="/advertisments/electronics" style={{ textDecoration: 'none' }}>
-                  <a href="/advertisments/electronics">{t('electronics')}</a>
-                </Link>
-              </li>
-              <li>
-                <Link to="/advertisments/estate" style={{ textDecoration: 'none' }}>
-                  <a href="/advertisments/estate">{t('estate')}</a>
-                </Link>
-              </li>
-              <li>
-                <Link to="/advertisments/clothes" style={{ textDecoration: 'none' }}>
-                  <a href="/advertisments/clothes">{t('clothes')}</a>
-                </Link>
-              </li>
-              <li>
-                <Link to="/advertisments/rest" style={{ textDecoration: 'none' }}>
-                  <a href="/advertisments/rest">{t('rest')}</a>
-                </Link>
-              </li>
-            </ul>
-          </div>
-          <div className={styles.footerCol}>
             <h4>{t('follow_us')}</h4>
             <div className={styles.socialLinks}>
               <a href="https://www.instagram.com/hvala.app?igsh=ZmJiOWtrbDY1enNm"><FontAwesomeIcon icon={faFacebookF} size="2x" /></a>
@@ -85,18 +60,18 @@ export const CustomFooter = () => {
             </div>
           </div>
           <div className="container">
-          <div className={styles.downloadApps}>
-            <a href="https://play.google.com/store/apps/details?id=app.hvala.release" target="_blank" rel="noopener noreferrer">
-              <img src={googleLogo} alt="Download on the App Store" style={{ width: '150px', height: '49px', marginRight: '20px' }} />
-            </a>
-            <a href="https://apps.apple.com/ru/app/hvala/id6475787279" target="_blank" rel="noopener noreferrer">
-              <img src={appleLogo} alt="Get it on Google Play" style={{ width: '150px', height: 'auto' }} />
-            </a>
-          </div>
+            <div className={styles.downloadApps}>
+              <a href="https://play.google.com/store/apps/details?id=app.hvala.release" target="_blank" rel="noopener noreferrer">
+                <img src={googleLogo} alt="Download on the App Store" style={{ width: '150px', height: '49px', marginRight: '20px' }} />
+              </a>
+              <a href="https://apps.apple.com/ru/app/hvala/id6475787279" target="_blank" rel="noopener noreferrer">
+                <img src={appleLogo} alt="Get it on Google Play" style={{ width: '150px', height: 'auto' }} />
+              </a>
+            </div>
           </div>
         </div>
       </div>
-      <div className="footer-info mt-3">
+      <div className="footer-info mt-3 d-none d-lg-block">
         <div className="footer-info-section left">
           <a href="/">{t('privacy_policy')}</a>
         </div>
@@ -130,6 +105,11 @@ export const CustomFooter = () => {
 
                 .footer-info-section p {
                     margin: 0;
+                }
+                @media (max-width: 1000px) {
+                  body {
+                      padding-bottom: 4.5rem;
+                  }
                 }
             `}</style>
     </footer>

@@ -1,4 +1,7 @@
 {
+  "username_is_taken": "Korisničko ime je zauzeto",
+  "invalid_email_or_password": "Pogrešan email ili lozinka",
+  "confirm_email": "Molimo potvrdite vašu email adresu",
   "currency": "Valuta",
   "cost": "Cijena",
   "many_ask_questions": "Često postavljana pitanja",
@@ -104,7 +107,10 @@
   "choice_mark": "Izaberite marku",
   "input_model": "Unesite model",
   "choice_condition": "Izaberite stanje",
+  "photos": "Foto",
   "photo": "Foto",
+  "coordinates": "Koordinate",
+  "location_name": "Naziv lokacije",
   "add": "Dodaj",
   "size": "Veličina",
   "outwear": "Vanjska odjeća",

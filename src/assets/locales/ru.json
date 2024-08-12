@@ -1,4 +1,7 @@
 {
+  "username_is_taken": "Это имя пользователя уже занято",
+  "invalid_email_or_password": "Неверный email или пароль",
+  "confirm_email": "Подтвердите ваш email",
   "currency": "Валюта",
   "cost": "Стоимость",
   "many_ask_questions": "Часто задаваемые вопросы",
@@ -147,7 +150,10 @@
   "wheel": "Расположение руля",
   "customs": "Customs",
   "owners": "Количество владельцев",
+  "photos": "Фото",
   "photo": "Фото",
+  "coordinates": "Координаты",
+  "location_name": "Название места",
   "add": "Добавить",
 
   "serbia" : "Сербия",

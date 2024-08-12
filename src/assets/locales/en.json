@@ -1,4 +1,7 @@
 {
+  "username_is_taken": "This username is already taken",
+  "invalid_email_or_password": "Invalid email or password",
+  "confirm_email": "Please confirm your email address before logging in.",
 "currency": "Currency",
   "cost": "Cost",
   "many_ask_questions": "Frequently Asked Questions",
@@ -146,7 +149,10 @@
   "choice_mark": "Choose Brand",
   "input_model": "Enter Model",
   "choice_condition": "Choose Condition",
+  "photos": "Photo",
   "photo": "Photo",
+  "coordinates": "Coordinates",
+  "location_name": "Location Name",
   "add": "Add",
   "size": "Size",
   "outwear": "Outerwear",
