@@ -1,4 +1,5 @@
 {
+  "number_is_not_specified": "Номер телефона не указан",
   "username_is_taken": "Это имя пользователя уже занято",
   "invalid_email_or_password": "Неверный email или пароль",
   "confirm_email": "Подтвердите ваш email",

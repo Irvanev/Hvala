@@ -1,5 +1,6 @@
 import { doc, getDoc, updateDoc, deleteField } from "firebase/firestore";
-import { db, auth } from '../../config/firebase';
+import { db, auth, storage } from '../../config/firebase';
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { useParams } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
 import { useTranslation } from "react-i18next";
@@ -26,15 +27,12 @@ import { GoogleMap, LoadScript } from '@react-google-maps/api';
 import debounce from 'lodash.debounce';
 import { GeoPoint } from 'firebase/firestore';
 import { MapComponent } from "./MapComponent";
-
-import SelectBrandsForMobile from "../../components/select-brands/SelectBrandsForMobile";
-import SelectTypesForComputersAccs from "../../components/select-types/select-types-electronics/SelectTypesForComputersAccs";
-import SelectBrandsForComputersAccs from "../../components/select-brands/SelectBrandsForComputersAccs";
-import SelectBrandsForComputers from "../../components/select-brands/SelectBrandsForComputers";
-import SelectTypeForComputer from "../../components/select-types/select-types-electronics/SelectTypesForComputers";
-import SelectBrandsForGameCondole from "../../components/select-brands/SelectBrandsForGameConsole";
-import SelectTypesForClothes from "../../components/select-types/select-types-clothes/SelectTypesForClothes";
 import { NavBarBack } from "../../components/Navbar/NavBarBack";
+import ClothesForm from "../../components/formsForAddingAdvertisements/ClothesForm"
+import SelectTypesForClothes from "../../components/select-types/select-types-clothes/SelectTypesForClothes";
+
+const { Option } = Select;
+const { TextArea } = Input;
 
 const containerStyle = {
     width: '100%',
@@ -56,198 +54,198 @@ const markerStyle = {
 };
 
 function getCountryKey(string) {
-        if (string.includes("Serbia") || string.includes("Сербия") || string.includes("Србија")) {
-            return "serbia";
-        } else if (string.includes("Croatia") || string.includes("Хорватия") || string.includes("Хрватска")) {
-            return "croatia";
-        } else if (string.includes("Bosnia and Herzegovina") || string.includes("Босния и Герцеговина") || string.includes("Босна и Херцеговина")) {
-            return "bosnia_and_herzegovina";
-        } else if (string.includes("Montenegro") || string.includes("Черногория") || string.includes("Црна Гора")) {
-            return "montenegro";
-        } else if (string.includes("North Macedonia") || string.includes("Мacedonia") || string.includes("Северная Македония") || string.includes("Македония") || string.includes("Северна Македонија")) {
-            return "north_macedonia";
-        } else {
-            return "montenegro";
-        }
-
+    if (string.includes("Serbia") || string.includes("Сербия") || string.includes("Србија")) {
+        return "serbia";
+    } else if (string.includes("Croatia") || string.includes("Хорватия") || string.includes("Хрватска")) {
+        return "croatia";
+    } else if (string.includes("Bosnia and Herzegovina") || string.includes("Босния и Герцеговина") || string.includes("Босна и Херцеговина")) {
+        return "bosnia_and_herzegovina";
+    } else if (string.includes("Montenegro") || string.includes("Черногория") || string.includes("Црна Гора")) {
+        return "montenegro";
+    } else if (string.includes("North Macedonia") || string.includes("Мacedonia") || string.includes("Северная Македония") || string.includes("Македония") || string.includes("Северна Македонија")) {
+        return "north_macedonia";
+    } else {
+        return "montenegro";
     }
 
+}
 
-    function getRegionKey(string) {
-        if (string.includes("Unsko-sanski") || string.includes("Унско-Санский") || string.includes("Уна-Санский") || string.includes("Una-Sana")) {
-            return "una_sana_canton";
-        } else if (string.includes("Posavina") || string.includes("Посавский")) {
-            return "posavina_canton";
-        } else if (string.includes("Tuzla") || string.includes("Тузланский")) {
-            return "tuzla_canton";
-        } else if (string.includes("Zenica-Doboj") || string.includes("Зеничко-Добойский")) {
-            return "zenica_doboj_canton";
-        } else if (string.includes("Bosnian-Podrinje") || string.includes("Боснийско-Подринский")) {
-            return "bosnian_podrinje_canton_gorazde";
-        } else if (string.includes("Central Bosnia") || string.includes("Центрально-Боснийский")) {
-            return "central_bosnia_canton";
-        } else if (string.includes("Herzegovina-Neretva") || string.includes("Герцеговинско-Неретванский")) {
-            return "herzegovina_neretva_canton";
-        } else if (string.includes("West Herzegovina") || string.includes("Западно-Герцеговинский")) {
-            return "west_herzegovina_canton";
-        } else if (string.includes("Sarajevo") || string.includes("Кантон Сараево")) {
-            return "sarajevo_canton";
-        } else if (string.includes("Banja Luka") || string.includes("Баня-Лука")) {
-            return "banja_luka";
-        } else if (string.includes("Bijeljina") || string.includes("Биелина")) {
-            return "bijeljina";
-        } else if (string.includes("Doboj") || string.includes("Добой")) {
-            return "doboj";
-        } else if (string.includes("Prijedor") || string.includes("Прийедор")) {
-            return "prijedor";
-        } else if (string.includes("Istočno Sarajevo") || string.includes("Источно Сараево")) {
-            return "istocno_sarajevo";
-        } else if (string.includes("Trebinje") || string.includes("Требинье")) {
-            return "trebinje";
-        } else if (string.includes("Brčko") || string.includes("Брчко")) {
-            return "brcko";
-        } else if (string.includes("Canton 10") || string.includes("Кантон 10")) {
-            return "canton_10";
-        } else if (string.includes("Podgorica") || string.includes("Подгорица")) {
-            if (string.includes("Municipality")) {
-                return "municipality_podgorica";
-            } else if (string.includes("Capital City") || string.includes("град")) {
-                return "glavni_grad_podgorica";
-            }
-        } else if (string.includes("Danilovgrad") || string.includes("Даниловград")) {
-            return "municipality_danilovgrad";
-        } else if (string.includes("Cetinje") || string.includes("Цетине")) {
-            return "municipality_cetinje";
-        } else if (string.includes("Budva") || string.includes("Будва")) {
-            return "municipality_budva";
-        } else if (string.includes("Bar") || string.includes("Бар")) {
-            return "municipality_bar";
-        } else if (string.includes("Herceg Novi") || string.includes("Герцег-Нови")) {
-            return "municipality_herceg_novi";
-        } else if (string.includes("Kotor") || string.includes("Котор")) {
-            return "municipality_kotor";
-        } else if (string.includes("Tivat") || string.includes("Тиват")) {
-            return "municipality_tivat";
-        } else if (string.includes("Ulcinj") || string.includes("Улцинь")) {
-            return "municipality_ulcinj";
-        } else if (string.includes("Pljevlja") || string.includes("Плевля")) {
-            return "municipality_pljevlja";
-        } else if (string.includes("Bijelo Polje") || string.includes("Бижело Поле")) {
-            return "municipality_bijelo_polje";
-        } else if (string.includes("Zabljak") || string.includes("Жабляк")) {
-            return "municipality_zabljak";
-        } else if (string.includes("Kolasin") || string.includes("Колашин")) {
-            return "municipality_kolasin";
-        } else if (string.includes("Mojkovac") || string.includes("Мойковац")) {
-            return "municipality_mojkovac";
-        } else if (string.includes("Berane") || string.includes("Берне")) {
-            return "municipality_berane";
-        } else if (string.includes("Andrijevica") || string.includes("Андриевица")) {
-            return "municipality_andrijevica";
-        } else if (string.includes("Plav") || string.includes("Плав")) {
-            return "municipality_plav";
-        } else if (string.includes("Rozaje") || string.includes("Рожае")) {
-            return "municipality_rozaje";
-        } else if (string.includes("Niksic") || string.includes("Никшич")) {
-            return "municipality_niksic";
-        } else if (string.includes("Savnik") || string.includes("Шавник")) {
-            return "municipality_savnik";
-        } else if (string.includes("Pluzine") || string.includes("Плужине")) {
-            return "municipality_pluzine";
-        } else if (string.includes("Gusinje") || string.includes("Гусиње")) {
-            return "municipality_gusinje";
-        } else if (string.includes("Petrovac") || string.includes("Петровац")) {
-            return "municipality_petrovac";
-        } else if (string.includes("Tuzi") || string.includes("Тузи")) {
-            return "municipality_tuzi";
-        } else if (string.includes("Vojvodina") || string.includes("Воеводина")) {
-            return "vojvodina";
-        } else if (string.includes("Belgrade") || string.includes("Белград")) {
-            return "belgrade";
-        } else if (string.includes("Šumadija") || string.includes("Шумадийский")) {
-            return "sumadija_and_western_serbia";
-        } else if (string.includes("Southern and Eastern Serbia") || string.includes("Южно-Банатский")) {
-            return "southern_and_eastern_serbia";
-        } else if (string.includes("Kosovo and Metohija") || string.includes("Косово и Метохия")) {
-            return "kosovo_and_metohija";
-        } else if (string.includes("Belgrade") || string.includes("Белград") || string.includes("Београд")) {
-            return "belgrade";
-        } else if (string.includes("Bor") || string.includes("Bor") || string.includes("Борский") || string.includes("Борски")) {
-            return "bor_district";
-        } else if (string.includes("Braničevo District") || string.includes("Braničevo") || string.includes("Браничевский") || string.includes("Браничевски округ")) {
-            return "branicevo_district";
-        } else if (string.includes("Zlatibor District") || string.includes("Zlatibor") || string.includes("Златиборский") || string.includes("Златиборски округ")) {
-            return "zlatibor_district";
-        } else if (string.includes("Kolubara District") || string.includes("Kolubara") || string.includes("Колубарский") || string.includes("Колубарски округ")) {
-            return "kolubara_district";
-        } else if (string.includes("Moravica District") || string.includes("Moravica") || string.includes("Моравичский") || string.includes("Моравички округ")) {
-            return "moravica_district";
-        } else if (string.includes("Nišava District") || string.includes("Nišava") || string.includes("Нишавский") || string.includes("Нишавски округ")) {
-            return "nisava_district";
-        } else if (string.includes("Pirot District") || string.includes("Pirot") || string.includes("Пиротский") || string.includes("Пиротски округ")) {
-            return "pirot_district";
-        } else if (string.includes("Podunavlje District") || string.includes("Podunavlje") || string.includes("Подунайский") || string.includes("Подунавски")) {
-            return "podunavlje_district";
-        } else if (string.includes("Pčinja District") || string.includes("Pčinja") || string.includes("Пчиньский") || string.includes("Пчињски")) {
-            return "pcinja_district";
-        } else if (string.includes("Raška District") || string.includes("Raška") || string.includes("Рашский") || string.includes("Рашки")) {
-            return "raska_district";
-        } else if (string.includes("Rasina District") || string.includes("Rasina") || string.includes("Расинский") || string.includes("Расински")) {
-            return "rasina_district";
-        } else if (string.includes("Toplica District") || string.includes("Toplica") || string.includes("Топличский") || string.includes("Топлички")) {
-            return "toplica_district";
-        } else if (string.includes("Šumadija District") || string.includes("Šumadija") || string.includes("Шумадийский") || string.includes("Шумадијски")) {
-            return "sumadija_district";
-        } else if (string.includes("Jablanica District") || string.includes("Jablanica") || string.includes("Ябланичский") || string.includes("Јабланички")) {
-            return "jablanica_district";
-        } else if (string.includes("Zagreb City") || string.includes("Град Загреб")) {
-            return "zagreb_city";
-        } else if (string.includes("Zagreb County") || string.includes("Загребская")) {
-            return "zagreb_county";
-        } else if (string.includes("Split-Dalmatia") || string.includes("Сплитско-Далматинская")) {
-            return "split_dalmatia";
-        } else if (string.includes("Istria") || string.includes("Истарская")) {
-            return "istria";
-        } else if (string.includes("Primorje-Gorski Kotar") || string.includes("Приморско-Горанская")) {
-            return "primorje_gorski_kotar";
-        } else if (string.includes("Lika-Senj") || string.includes("Лика-Сень")) {
-            return "lika_senj";
-        } else if (string.includes("Virovitica-Podravina") || string.includes("Вировитицко-Подравская")) {
-            return "virovitica_podravina";
-        } else if (string.includes("Požega-Slavonia") || string.includes("Пожешко-Славонская")) {
-            return "pozega_slavonia";
-        } else if (string.includes("Brod-Posavina") || string.includes("Бродско-Посавская")) {
-            return "brod_posavina";
-        } else if (string.includes("Zadar") || string.includes("Задар")) {
-            return "zadar";
-        } else if (string.includes("Osijek-Baranja") || string.includes("Осиечко-Бараньская")) {
-            return "osijek_baranja";
-        } else if (string.includes("Sisak-Moslavina") || string.includes("Сисачко-Мославинская")) {
-            return "sisak_moslavina";
-        } else if (string.includes("Koprivnica-Križevci") || string.includes("Копривницко-Крижевечка")) {
-            return "koprivnica_krizevci";
-        } else if (string.includes("Bjelovar-Bilogora") || string.includes("Бьеловарско-Билогорская")) {
-            return "bjelovar_bilogora";
-        } else if (string.includes("Karlovac") || string.includes("Карловацкая")) {
-            return "karlovac";
-        } else if (string.includes("Varaždin") || string.includes("Вараждинская")) {
-            return "varazdin";
-        } else if (string.includes("Krapina-Zagorje") || string.includes("Крапинско-Загорская")) {
-            return "krapina_zagorje";
-        } else if (string.includes("Međimurje") || string.includes("Меджимурская")) {
-            return "medimurje";
-        } else if (string.includes("Šibenik-Knin") || string.includes("Шибенско-Книнская")) {
-            return "sibenik_knin";
-        } else if (string.includes("Vukovar-Srijem") || string.includes("Вуковарско-Сремская")) {
-            return "vukovar_srijem";
-        } else if (string.includes("Dubrovnik-Neretva") || string.includes("Дубровачко-Неретванская")) {
-            return "dubrovnik_neretva";
-        } else {
-            return "municipality_budva";
+
+function getRegionKey(string) {
+    if (string.includes("Unsko-sanski") || string.includes("Унско-Санский") || string.includes("Уна-Санский") || string.includes("Una-Sana")) {
+        return "una_sana_canton";
+    } else if (string.includes("Posavina") || string.includes("Посавский")) {
+        return "posavina_canton";
+    } else if (string.includes("Tuzla") || string.includes("Тузланский")) {
+        return "tuzla_canton";
+    } else if (string.includes("Zenica-Doboj") || string.includes("Зеничко-Добойский")) {
+        return "zenica_doboj_canton";
+    } else if (string.includes("Bosnian-Podrinje") || string.includes("Боснийско-Подринский")) {
+        return "bosnian_podrinje_canton_gorazde";
+    } else if (string.includes("Central Bosnia") || string.includes("Центрально-Боснийский")) {
+        return "central_bosnia_canton";
+    } else if (string.includes("Herzegovina-Neretva") || string.includes("Герцеговинско-Неретванский")) {
+        return "herzegovina_neretva_canton";
+    } else if (string.includes("West Herzegovina") || string.includes("Западно-Герцеговинский")) {
+        return "west_herzegovina_canton";
+    } else if (string.includes("Sarajevo") || string.includes("Кантон Сараево")) {
+        return "sarajevo_canton";
+    } else if (string.includes("Banja Luka") || string.includes("Баня-Лука")) {
+        return "banja_luka";
+    } else if (string.includes("Bijeljina") || string.includes("Биелина")) {
+        return "bijeljina";
+    } else if (string.includes("Doboj") || string.includes("Добой")) {
+        return "doboj";
+    } else if (string.includes("Prijedor") || string.includes("Прийедор")) {
+        return "prijedor";
+    } else if (string.includes("Istočno Sarajevo") || string.includes("Источно Сараево")) {
+        return "istocno_sarajevo";
+    } else if (string.includes("Trebinje") || string.includes("Требинье")) {
+        return "trebinje";
+    } else if (string.includes("Brčko") || string.includes("Брчко")) {
+        return "brcko";
+    } else if (string.includes("Canton 10") || string.includes("Кантон 10")) {
+        return "canton_10";
+    } else if (string.includes("Podgorica") || string.includes("Подгорица")) {
+        if (string.includes("Municipality")) {
+            return "municipality_podgorica";
+        } else if (string.includes("Capital City") || string.includes("град")) {
+            return "glavni_grad_podgorica";
         }
+    } else if (string.includes("Danilovgrad") || string.includes("Даниловград")) {
+        return "municipality_danilovgrad";
+    } else if (string.includes("Cetinje") || string.includes("Цетине")) {
+        return "municipality_cetinje";
+    } else if (string.includes("Budva") || string.includes("Будва")) {
+        return "municipality_budva";
+    } else if (string.includes("Bar") || string.includes("Бар")) {
+        return "municipality_bar";
+    } else if (string.includes("Herceg Novi") || string.includes("Герцег-Нови")) {
+        return "municipality_herceg_novi";
+    } else if (string.includes("Kotor") || string.includes("Котор")) {
+        return "municipality_kotor";
+    } else if (string.includes("Tivat") || string.includes("Тиват")) {
+        return "municipality_tivat";
+    } else if (string.includes("Ulcinj") || string.includes("Улцинь")) {
+        return "municipality_ulcinj";
+    } else if (string.includes("Pljevlja") || string.includes("Плевля")) {
+        return "municipality_pljevlja";
+    } else if (string.includes("Bijelo Polje") || string.includes("Бижело Поле")) {
+        return "municipality_bijelo_polje";
+    } else if (string.includes("Zabljak") || string.includes("Жабляк")) {
+        return "municipality_zabljak";
+    } else if (string.includes("Kolasin") || string.includes("Колашин")) {
+        return "municipality_kolasin";
+    } else if (string.includes("Mojkovac") || string.includes("Мойковац")) {
+        return "municipality_mojkovac";
+    } else if (string.includes("Berane") || string.includes("Берне")) {
+        return "municipality_berane";
+    } else if (string.includes("Andrijevica") || string.includes("Андриевица")) {
+        return "municipality_andrijevica";
+    } else if (string.includes("Plav") || string.includes("Плав")) {
+        return "municipality_plav";
+    } else if (string.includes("Rozaje") || string.includes("Рожае")) {
+        return "municipality_rozaje";
+    } else if (string.includes("Niksic") || string.includes("Никшич")) {
+        return "municipality_niksic";
+    } else if (string.includes("Savnik") || string.includes("Шавник")) {
+        return "municipality_savnik";
+    } else if (string.includes("Pluzine") || string.includes("Плужине")) {
+        return "municipality_pluzine";
+    } else if (string.includes("Gusinje") || string.includes("Гусиње")) {
+        return "municipality_gusinje";
+    } else if (string.includes("Petrovac") || string.includes("Петровац")) {
+        return "municipality_petrovac";
+    } else if (string.includes("Tuzi") || string.includes("Тузи")) {
+        return "municipality_tuzi";
+    } else if (string.includes("Vojvodina") || string.includes("Воеводина")) {
+        return "vojvodina";
+    } else if (string.includes("Belgrade") || string.includes("Белград")) {
+        return "belgrade";
+    } else if (string.includes("Šumadija") || string.includes("Шумадийский")) {
+        return "sumadija_and_western_serbia";
+    } else if (string.includes("Southern and Eastern Serbia") || string.includes("Южно-Банатский")) {
+        return "southern_and_eastern_serbia";
+    } else if (string.includes("Kosovo and Metohija") || string.includes("Косово и Метохия")) {
+        return "kosovo_and_metohija";
+    } else if (string.includes("Belgrade") || string.includes("Белград") || string.includes("Београд")) {
+        return "belgrade";
+    } else if (string.includes("Bor") || string.includes("Bor") || string.includes("Борский") || string.includes("Борски")) {
+        return "bor_district";
+    } else if (string.includes("Braničevo District") || string.includes("Braničevo") || string.includes("Браничевский") || string.includes("Браничевски округ")) {
+        return "branicevo_district";
+    } else if (string.includes("Zlatibor District") || string.includes("Zlatibor") || string.includes("Златиборский") || string.includes("Златиборски округ")) {
+        return "zlatibor_district";
+    } else if (string.includes("Kolubara District") || string.includes("Kolubara") || string.includes("Колубарский") || string.includes("Колубарски округ")) {
+        return "kolubara_district";
+    } else if (string.includes("Moravica District") || string.includes("Moravica") || string.includes("Моравичский") || string.includes("Моравички округ")) {
+        return "moravica_district";
+    } else if (string.includes("Nišava District") || string.includes("Nišava") || string.includes("Нишавский") || string.includes("Нишавски округ")) {
+        return "nisava_district";
+    } else if (string.includes("Pirot District") || string.includes("Pirot") || string.includes("Пиротский") || string.includes("Пиротски округ")) {
+        return "pirot_district";
+    } else if (string.includes("Podunavlje District") || string.includes("Podunavlje") || string.includes("Подунайский") || string.includes("Подунавски")) {
+        return "podunavlje_district";
+    } else if (string.includes("Pčinja District") || string.includes("Pčinja") || string.includes("Пчиньский") || string.includes("Пчињски")) {
+        return "pcinja_district";
+    } else if (string.includes("Raška District") || string.includes("Raška") || string.includes("Рашский") || string.includes("Рашки")) {
+        return "raska_district";
+    } else if (string.includes("Rasina District") || string.includes("Rasina") || string.includes("Расинский") || string.includes("Расински")) {
+        return "rasina_district";
+    } else if (string.includes("Toplica District") || string.includes("Toplica") || string.includes("Топличский") || string.includes("Топлички")) {
+        return "toplica_district";
+    } else if (string.includes("Šumadija District") || string.includes("Šumadija") || string.includes("Шумадийский") || string.includes("Шумадијски")) {
+        return "sumadija_district";
+    } else if (string.includes("Jablanica District") || string.includes("Jablanica") || string.includes("Ябланичский") || string.includes("Јабланички")) {
+        return "jablanica_district";
+    } else if (string.includes("Zagreb City") || string.includes("Град Загреб")) {
+        return "zagreb_city";
+    } else if (string.includes("Zagreb County") || string.includes("Загребская")) {
+        return "zagreb_county";
+    } else if (string.includes("Split-Dalmatia") || string.includes("Сплитско-Далматинская")) {
+        return "split_dalmatia";
+    } else if (string.includes("Istria") || string.includes("Истарская")) {
+        return "istria";
+    } else if (string.includes("Primorje-Gorski Kotar") || string.includes("Приморско-Горанская")) {
+        return "primorje_gorski_kotar";
+    } else if (string.includes("Lika-Senj") || string.includes("Лика-Сень")) {
+        return "lika_senj";
+    } else if (string.includes("Virovitica-Podravina") || string.includes("Вировитицко-Подравская")) {
+        return "virovitica_podravina";
+    } else if (string.includes("Požega-Slavonia") || string.includes("Пожешко-Славонская")) {
+        return "pozega_slavonia";
+    } else if (string.includes("Brod-Posavina") || string.includes("Бродско-Посавская")) {
+        return "brod_posavina";
+    } else if (string.includes("Zadar") || string.includes("Задар")) {
+        return "zadar";
+    } else if (string.includes("Osijek-Baranja") || string.includes("Осиечко-Бараньская")) {
+        return "osijek_baranja";
+    } else if (string.includes("Sisak-Moslavina") || string.includes("Сисачко-Мославинская")) {
+        return "sisak_moslavina";
+    } else if (string.includes("Koprivnica-Križevci") || string.includes("Копривницко-Крижевечка")) {
+        return "koprivnica_krizevci";
+    } else if (string.includes("Bjelovar-Bilogora") || string.includes("Бьеловарско-Билогорская")) {
+        return "bjelovar_bilogora";
+    } else if (string.includes("Karlovac") || string.includes("Карловацкая")) {
+        return "karlovac";
+    } else if (string.includes("Varaždin") || string.includes("Вараждинская")) {
+        return "varazdin";
+    } else if (string.includes("Krapina-Zagorje") || string.includes("Крапинско-Загорская")) {
+        return "krapina_zagorje";
+    } else if (string.includes("Međimurje") || string.includes("Меджимурская")) {
+        return "medimurje";
+    } else if (string.includes("Šibenik-Knin") || string.includes("Шибенско-Книнская")) {
+        return "sibenik_knin";
+    } else if (string.includes("Vukovar-Srijem") || string.includes("Вуковарско-Сремская")) {
+        return "vukovar_srijem";
+    } else if (string.includes("Dubrovnik-Neretva") || string.includes("Дубровачко-Неретванская")) {
+        return "dubrovnik_neretva";
+    } else {
+        return "municipality_budva";
     }
+}
 
-    
+
 
 
 function EditItem() {
@@ -291,6 +289,10 @@ function EditItem() {
     const [country, setCountry] = useState('');
     const [region, setRegion] = useState('');
     const [options, setOptions] = useState([]);
+
+    const handleFileChange = (file) => {
+        setSelectedFiles((prev) => [...prev, file]);
+    }
 
     const fetchSuggestions = async (value) => {
         try {
@@ -405,6 +407,28 @@ function EditItem() {
         e.preventDefault();
 
         const docRef = doc(db, "advertisment", id);
+
+        const fileUrls = await Promise.all(
+            photoUrls.map(async (file) => {
+                const storageRef = ref(storage, 'advertisment/' + file.name);
+                const uploadTask = uploadBytesResumable(storageRef, file);
+
+                return new Promise((resolve, reject) => {
+                    uploadTask.on('state_changed',
+                        (snapshot) => {
+                        },
+                        (error) => {
+                            reject(error);
+                        },
+                        () => {
+                            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                                resolve(downloadURL);
+                            });
+                        }
+                    );
+                });
+            })
+        );
 
         const updatedData = {
             title: title,
@@ -806,811 +830,94 @@ function EditItem() {
 
     const getForm = () => {
         switch (subcategory) {
-            case 'computer_services':
-            case 'education':
-            case 'handyman':
-            case 'beauty_and_health':
-            case 'transportation':
-            case 'repair_and_construction':
-            case 'business_services':
-            case 'cleaning':
-            case 'automotive_services':
-            case 'appliance_repair':
-            case 'event_planning':
-            case 'photography_and_videography':
-            case 'custom_manufacturing':
-            case 'pet_care':
-            case 'car_seats':
-            case 'health_and_care':
-            case 'toys_and_games':
-            case 'strollers':
-            case 'feeding_and_nutrition':
-            case 'bathing':
-            case 'nursery':
-            case 'diapers_and_potties':
-            case 'baby_monitors':
-            case 'maternity_products':
-            case 'schoold_supplies':
-            case 'makeup':
-            case 'manicure_and_pedicure':
-            case 'healthcare_products':
-            case 'perfume':
-            case 'skincare':
-            case 'haircare':
-            case 'tattoos_and_tatooing':
-            case 'tanning_and_sunbeds':
-            case 'personal_hygiene_products':
-
-
-                return (
-                    <>
-                        <Form.Item className="mb-3">
-                            <Form.Label>{t('title')}</Form.Label>
-                            <Form.Control type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
-                        </Form.Item>
-                        <Form.Group className="mb-3 d-flex align-items-center">
-                            <Form.Control
-                                type="text"
-                                value={price}
-                                onChange={(e) => setPrice(parseInt(e.target.value, 10))}
-                                placeholder={t('price')}
-                                className="me-2"
-                            />
-                            <Form.Select aria-label="Default select example" value={currency} onChange={(e) => setCurrency(e.target.value)}>
-                                <option>{t('currency')}</option>
-                                <option value="rsd">RSD</option>
-                                <option value="eur">EUR</option>
-                            </Form.Select>
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>{t('phone_number')}</Form.Label>
-                            <Form.Control type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
-                        </Form.Group>
-                        <Form.Form.Item className="mb-3" controlId="exampleForm.ControlTextarea1">
-                            <Form.Label>{t('description')}</Form.Label>
-                            <Form.Control as="textarea" rows={3} value={description} onChange={(e) => setDescription(e.target.value)} />
-                        </Form.Form.Item>
-                        <div className="d-grid gap-2">
-                            <Button onClick={handleSubmit} variant="primary" size="lg">
-                                {t('add')}
-                            </Button>
-                        </div>
-
-                    </>
-                )
-
-            case 'furniture':
-            case 'lighting':
-            case 'dishes':
-            case 'garden_equipment':
-            case 'domestic_cleaning':
-            case 'kitchen_equipment':
-            case 'tools':
-            case 'building_materials':
-            case 'heating_and_ventilation':
-            case 'plumbing':
-            case 'electrics':
-            case 'windows':
-            case 'doors':
-            case 'spares':
-            case 'tires_and_wheels':
-            case 'accessories_and_tools':
-            case 'sports_protections':
-            case 'bicycles':
-            case 'scooters':
-            case 'skateboards':
-            case 'hoverboards_and_electric_scooters':
-            case 'ball_games':
-            case 'hunting_and_fishing':
-            case 'tourism_and_outdoor_recreation':
-            case 'billiards_and_bowling':
-            case 'tennis_and_badminton':
-            case 'exercise_equipment_and_fitness':
-            case 'sports_nutrition':
-            case 'water_sports':
-            case 'sapboards':
-            case 'table_games':
-            case 'computer_games':
-            case 'books_n_magazines':
-            case 'tickets':
-            case 'collections':
-            case 'art_materials':
-            case 'music':
-            case 'music_tools':
-                return (
-                    <>
-                        <Form.Item className="mb-3">
-                            <Form.Label>{t('title')}</Form.Label>
-                            <Form.Control type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
-                        </Form.Item>
-                        <Form.Group className="mb-3 d-flex align-items-center">
-                            <Form.Control
-                                type="text"
-                                value={price}
-                                onChange={(e) => setPrice(parseInt(e.target.value, 10))}
-                                placeholder={t('price')}
-                                className="me-2"
-                            />
-                            <Form.Select aria-label="Default select example" value={currency} onChange={(e) => setCurrency(e.target.value)}>
-                                <option>{t('currency')}</option>
-                                <option value="rsd">RSD</option>
-                                <option value="eur">EUR</option>
-                            </Form.Select>
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>{t('condition')}</Form.Label>
-                            <Form.Select aria-label="Default select example" value={condition} onChange={(e) => setCondition(e.target.value)}>
-                                <option>{t('condition')}</option>
-                                <option value="new_cond">Новое</option>
-                                <option value="bu_cond">Б/У</option>
-                            </Form.Select>
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>{t('phone_number')}</Form.Label>
-                            <Form.Control type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
-                        </Form.Group>
-                        <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
-                            <Form.Label>{t('description')}</Form.Label>
-                            <Form.Control as="textarea" rows={3} value={description} onChange={(e) => setDescription(e.target.value)} />
-                        </Form.Group>
-                        <div className="d-grid gap-2">
-                            <Button onClick={handleSubmit} variant="primary" size="lg">
-                                {t('add')}
-                            </Button>
-                        </div>
-                    </>
-                )
-            case 'phones_and_tablets':
-                return (
-                    <>
-                        <Form.Item className="mb-3">
-                            <Form.Label>{t('title')}</Form.Label>
-                            <Form.Control
-                                type="text"
-                                value={title}
-                                onChange={(e) => setTitle(e.target.value)}
-                            />
-                        </Form.Item>
-                        <Form.Group className="mb-3">
-                            <SelectBrandsForMobile brand={brand} setBrand={setBrand} />
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>{t('model')}</Form.Label>
-                            <Form.Control type="text" value={model} onChange={(e) => setModel(e.target.value)} />
-                        </Form.Group>
-                        <Form.Group className="mb-3 d-flex align-items-center">
-                            <Form.Control
-                                type="text"
-                                value={price}
-                                onChange={(e) => setPrice(parseInt(e.target.value, 10))}
-                                placeholder={t('price')}
-                                className="me-2"
-                            />
-                            <Form.Select aria-label="Default select example" value={currency} onChange={(e) => setCurrency(e.target.value)}>
-                                <option>{t('currency')}</option>
-                                <option value="rsd">RSD</option>
-                                <option value="eur">EUR</option>
-                            </Form.Select>
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>{t("size_screen")}</Form.Label>
-                            <Form.Control type="number" placeholder="6.7" value={screen_size} onChange={(e) => setScreenSize(e.target.value)} />
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>{t('memory')}</Form.Label>
-                            <Form.Control type="number" value={memory} onChange={(e) => setMemory(e.target.value)} />
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Select aria-label="Default select example" value={condition} onChange={(e) => setCondition(e.target.value)}>
-                                <option>{t('condition')}</option>
-                                <option value="new_cond">{t('new_cond')}</option>
-                                <option value="bu_cond">{t('bu_cond')}</option>
-                            </Form.Select>
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>{t('phone_number')}</Form.Label>
-                            <Form.Control type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
-                        </Form.Group>
-                        <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
-                            <Form.Label>{t('description')}</Form.Label>
-                            <Form.Control as="textarea" rows={3} value={description} onChange={(e) => setDescription(e.target.value)} />
-                        </Form.Group>
-                        <div className="d-grid gap-2">
-                            <Button onClick={handleSubmit} variant="primary" size="lg">
-                                {t('add')}
-                            </Button>
-                        </div>
-                    </>
-                )
-
-            case 'refrigerators':
-            case 'washing_machines':
-            case 'vacuum_cleaners':
-            case 'stoves_and_ovens':
-            case 'sewing_equipment':
-            case 'food_preparation':
-            case 'dishwasher':
-                return (
-                    <>
-                        <Form.Item className="mb-3">
-                            <Form.Label>{t('title')}</Form.Label>
-                            <Form.Control type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
-                        </Form.Item>
-                        <Form.Item className="mb-3">
-                            <Form.Label>{t('brand')}</Form.Label>
-                            <Form.Control type="text" value={brand} onChange={(e) => setBrand(e.target.value)} />
-                        </Form.Item>
-                        <Form.Group className="mb-3 d-flex align-items-center">
-                            <Form.Control
-                                type="text"
-                                value={price}
-                                onChange={(e) => setPrice(parseInt(e.target.value, 10))}
-                                placeholder={t('price')}
-                                className="me-2"
-                            />
-                            <Form.Select aria-label="Default select example" value={currency} onChange={(e) => setCurrency(e.target.value)}>
-                                <option>{t('currency')}</option>
-                                <option value="rsd">RSD</option>
-                                <option value="eur">EUR</option>
-                            </Form.Select>
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>{t('condition')}</Form.Label>
-                            <Form.Select aria-label="Default select example" value={condition} onChange={(e) => setCondition(e.target.value)}>
-                                <option>{t('condition')}</option>
-                                <option value="new_cond">Новое</option>
-                                <option value="bu_cond">Б/У</option>
-                            </Form.Select>
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>{t('phone_number')}</Form.Label>
-                            <Form.Control type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
-                        </Form.Group>
-                        <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
-                            <Form.Label>{t('description')}</Form.Label>
-                            <Form.Control as="textarea" rows={3} value={description} onChange={(e) => setDescription(e.target.value)} />
-                        </Form.Group>
-                        <div className="d-grid gap-2">
-                            <Button onClick={handleSubmit} variant="primary" size="lg">
-                                {t('add')}
-                            </Button>
-                        </div>
-                    </>
-                )
-
-            case 'sale_estate':
-            case 'rent_estate':
-                return (
-                    <>
-                        <Form.Item className="mb-3">
-                            <Form.Label>{t('title')}</Form.Label>
-                            <Form.Control
-                                type="text"
-                                value={title}
-                                onChange={(e) => setTitle(e.target.value)}
-                            />
-                        </Form.Item>
-                        <Form.Group className="mb-3">
-                            <Form.Select aria-label="Default select example" value={type} onChange={(e) => setType(e.target.value)}>
-                                <option>{t('type')}</option>
-                                <option value="house">{t('house')}</option>
-                                <option value="garage">{t('garage')}</option>
-                                <option value="aparment">{t('aparment')}</option>
-                                <option value="commercial_real_estate">{t('commercial_real_estate')}</option>
-                                <option value="room">{t('room')}</option>
-                            </Form.Select>
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>{t('rooms_amount')}</Form.Label>
-                            <Form.Control type="number" value={roomsAmout} onChange={(e) => setRoomsAmount(e.target.value)} />
-                        </Form.Group>
-                        <Form.Group className="mb-3 d-flex align-items-center">
-                            <Form.Control
-                                type="text"
-                                value={price}
-                                onChange={(e) => setPrice(parseInt(e.target.value, 10))}
-                                placeholder={t('price')}
-                                className="me-2"
-                            />
-                            <Form.Select aria-label="Default select example" value={currency} onChange={(e) => setCurrency(e.target.value)}>
-                                <option>{t('currency')}</option>
-                                <option value="rsd">RSD</option>
-                                <option value="eur">EUR</option>
-                            </Form.Select>
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>{t('area')}</Form.Label>
-                            <Form.Control type="number" value={area} onChange={(e) => setArea(e.target.value)} />
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Select aria-label="Default select example" value={owner} onChange={(e) => setOwner(e.target.value)}>
-                                <option>{t('owner_rent')}</option>
-                                <option value="owner">{t('owner')}</option>
-                                <option value="realtor">{t('realtor')}</option>
-                            </Form.Select>
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>{t('phone_number')}</Form.Label>
-                            <Form.Control type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
-                        </Form.Group>
-                        <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1" value={description} onChange={(e) => setDescription(e.target.value)}>
-                            <Form.Label>{t('description')}</Form.Label>
-                            <Form.Control as="textarea" rows={3} />
-                        </Form.Group>
-                        <div className="d-grid gap-2">
-                            <Button onClick={handleSubmit} variant="primary" size="lg">
-                                {t('add')}
-                            </Button>
-                        </div>
-                    </>
-                )
-            case 'computer_accessories':
-                return (
-                    <>
-                        <Form.Item className="mb-3">
-                            <Form.Label>{t('title')}</Form.Label>
-                            <Form.Control
-                                type="text"
-                                value={title}
-                                onChange={(e) => setTitle(e.target.value)}
-                            />
-                        </Form.Item>
-                        <Form.Group className="mb-3">
-                            <SelectBrandsForComputersAccs brand={brand} setBrand={setBrand} />
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>{t('model')}</Form.Label>
-                            <Form.Control type="text" value={model} onChange={(e) => setModel(e.target.value)} />
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <SelectTypesForComputersAccs type={type} setType={setType} />
-                        </Form.Group>
-                        <Form.Group className="mb-3 d-flex align-items-center">
-                            <Form.Control
-                                type="text"
-                                value={price}
-                                onChange={(e) => setPrice(parseInt(e.target.value, 10))}
-                                placeholder={t('price')}
-                                className="me-2"
-                            />
-                            <Form.Select aria-label="Default select example" value={currency} onChange={(e) => setCurrency(e.target.value)}>
-                                <option>{t('currency')}</option>
-                                <option value="rsd">RSD</option>
-                                <option value="eur">EUR</option>
-                            </Form.Select>
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Select aria-label="Default select example" value={condition} onChange={(e) => setCondition(e.target.value)}>
-                                <option>{t('condition')}</option>
-                                <option value="new_cond">{t('new_cond')}</option>
-                                <option value="bu_cond">{t('bu_cond')}</option>
-                            </Form.Select>
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>{t('phone_number')}</Form.Label>
-                            <Form.Control type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
-                        </Form.Group>
-                        <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1" value={description} onChange={(e) => setDescription(e.target.value)}>
-                            <Form.Label>{t('description')}</Form.Label>
-                            <Form.Control as="textarea" rows={3} />
-                        </Form.Group>
-                        <div className="d-grid gap-2">
-                            <Button onClick={handleSubmit} variant="primary" size="lg">
-                                {t('add')}
-                            </Button>
-                        </div>
-                    </>
-                )
-            case 'computers':
-                return (
-                    <>
-                        <Form.Item className="mb-3">
-                            <Form.Label>{t('title')}</Form.Label>
-                            <Form.Control
-                                type="text"
-                                value={title}
-                                onChange={(e) => setTitle(e.target.value)}
-                            />
-                        </Form.Item>
-                        <Form.Group className="mb-3">
-                            <SelectBrandsForComputers brand={brand} setBrand={setBrand} />
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>{t('model')}</Form.Label>
-                            <Form.Control type="text" value={model} onChange={(e) => setModel(e.target.value)} />
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <SelectTypeForComputer type={type} setType={setType} />
-                        </Form.Group>
-                        <Form.Group className="mb-3 d-flex align-items-center">
-                            <Form.Control
-                                type="text"
-                                value={price}
-                                onChange={(e) => setPrice(parseInt(e.target.value, 10))}
-                                placeholder={t('price')}
-                                className="me-2"
-                            />
-                            <Form.Select aria-label="Default select example" value={currency} onChange={(e) => setCurrency(e.target.value)}>
-                                <option>{t('currency')}</option>
-                                <option value="rsd">RSD</option>
-                                <option value="eur">EUR</option>
-                            </Form.Select>
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Select aria-label="Default select example" value={condition} onChange={(e) => setCondition(e.target.value)}>
-                                <option>{t('condition')}</option>
-                                <option value="new_cond">{t('new_cond')}</option>
-                                <option value="bu_cond">{t('bu_cond')}</option>
-                            </Form.Select>
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>{t('phone_number')}</Form.Label>
-                            <Form.Control type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
-                        </Form.Group>
-                        <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1" value={description} onChange={(e) => setDescription(e.target.value)}>
-                            <Form.Label>{t('description')}</Form.Label>
-                            <Form.Control as="textarea" rows={3} />
-                        </Form.Group>
-                        <div className="d-grid gap-2">
-                            <Button onClick={handleSubmit} variant="primary" size="lg">
-                                {t('add')}
-                            </Button>
-                        </div>
-                    </>
-                )
-            case 'game_console':
-            case 'photo_video':
-                return (
-                    <>
-                        <Form.Item className="mb-3">
-                            <Form.Label>{t('title')}</Form.Label>
-                            <Form.Control
-                                type="text"
-                                value={title}
-                                onChange={(e) => setTitle(e.target.value)}
-                            />
-                        </Form.Item>
-                        <Form.Group className="mb-3">
-                            <SelectBrandsForGameCondole brand={brand} setBrand={setBrand} />
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>{t('model')}</Form.Label>
-                            <Form.Control type="text" value={model} onChange={(e) => setModel(e.target.value)} />
-                        </Form.Group>
-                        <Form.Group className="mb-3 d-flex align-items-center">
-                            <Form.Control
-                                type="text"
-                                value={price}
-                                onChange={(e) => setPrice(parseInt(e.target.value, 10))}
-                                placeholder={t('price')}
-                                className="me-2"
-                            />
-                            <Form.Select aria-label="Default select example" value={currency} onChange={(e) => setCurrency(e.target.value)}>
-                                <option>{t('currency')}</option>
-                                <option value="rsd">RSD</option>
-                                <option value="eur">EUR</option>
-                            </Form.Select>
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Select aria-label="Default select example" value={condition} onChange={(e) => setCondition(e.target.value)}>
-                                <option>{t('condition')}</option>
-                                <option value="new_cond">{t('new_cond')}</option>
-                                <option value="bu_cond">{t('bu_cond')}</option>
-                            </Form.Select>
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>{t('phone_number')}</Form.Label>
-                            <Form.Control type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
-                        </Form.Group>
-                        <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1" value={description} onChange={(e) => setDescription(e.target.value)}>
-                            <Form.Label>{t('description')}</Form.Label>
-                            <Form.Control as="textarea" rows={3} />
-                        </Form.Group>
-                        <div className="d-grid gap-2">
-                            <Button onClick={handleSubmit} variant="primary" size="lg">
-                                {t('add')}
-                            </Button>
-                        </div>
-                    </>
-                )
-            case 'tv':
-                return (
-                    <>
-                        <Form.Item className="mb-3">
-                            <Form.Label>{t('title')}</Form.Label>
-                            <Form.Control
-                                type="text"
-                                value={title}
-                                onChange={(e) => setTitle(e.target.value)}
-                            />
-                        </Form.Item>
-                        <Form.Group className="mb-3">
-                            <Form.Select aria-label="Default select example" value={brand} onChange={(e) => setBrand(e.target.value)}>
-                                <option>{t('brand')}</option>
-                                <option value="Samsung">Samsung</option>
-                                <option value="Apple">Apple</option>
-                                <option value="Xiaomi">Xiaomi</option>
-                                <option value="Huawei">Huawei</option>
-                                <option value="Honor">Honor</option>
-                                <option value="HTC">HTC</option>
-                                <option value="Oppo">Oppo</option>
-                                <option value="Realme">Realme</option>
-                            </Form.Select>
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>{t('model')}</Form.Label>
-                            <Form.Control type="text" value={model} onChange={(e) => setModel(e.target.value)} />
-                        </Form.Group>
-                        <Form.Group className="mb-3 d-flex align-items-center">
-                            <Form.Control
-                                type="text"
-                                value={price}
-                                onChange={(e) => setPrice(parseInt(e.target.value, 10))}
-                                placeholder={t('price')}
-                                className="me-2"
-                            />
-                            <Form.Select aria-label="Default select example" value={currency} onChange={(e) => setCurrency(e.target.value)}>
-                                <option>{t('currency')}</option>
-                                <option value="rsd">RSD</option>
-                                <option value="eur">EUR</option>
-                            </Form.Select>
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>{t("size_screen")}</Form.Label>
-                            <Form.Control type="number" placeholder="6.7" value={screen_size} onChange={(e) => setScreenSize(e.target.value)} />
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Select aria-label="Default select example" value={condition} onChange={(e) => setCondition(e.target.value)}>
-                                <option>{t('new_cond')}</option>
-                                <option value="new_cond">{t('condition')}</option>
-                                <option value="bu_cond">{t('bu_cond')}</option>
-                            </Form.Select>
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>{t('phone_number')}</Form.Label>
-                            <Form.Control type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
-                        </Form.Group>
-                        <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1" value={description} onChange={(e) => setDescription(e.target.value)}>
-                            <Form.Label>{t('description')}</Form.Label>
-                            <Form.Control as="textarea" rows={3} />
-                        </Form.Group>
-                        <div className="d-grid gap-2">
-                            <Button onClick={handleSubmit} variant="primary" size="lg">
-                                {t('add')}
-                            </Button>
-                        </div>
-                    </>
-                )
             case 'mens_clothing':
             case 'womens_clothing':
             case 'childrens_clothing':
                 return (
                     <>
-                        <Form.Item className="mb-3">
-                            <Form.Label>{t('title')}</Form.Label>
-                            <Form.Control type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
-                        </Form.Item>
-                        <Form.Group className="mb-3">
-                            <Form.Label>{t('type')}</Form.Label>
-                            <SelectTypesForClothes type={type} setType={setType} />
-                        </Form.Group>
-                        <Form.Group className="mb-3 d-flex align-items-center">
-                            <Form.Control
-                                type="text"
-                                value={price}
-                                onChange={(e) => setPrice(parseInt(e.target.value, 10))}
-                                placeholder={t('price')}
-                                className="me-2"
-                            />
-                            <Form.Select aria-label="Default select example" value={currency} onChange={(e) => setCurrency(e.target.value)}>
-                                <option>{t('currency')}</option>
-                                <option value="rsd">RSD</option>
-                                <option value="eur">EUR</option>
-                            </Form.Select>
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>{t('size')}</Form.Label>
-                            <Form.Select aria-label="Default select example" value={size} onChange={(e) => setSize(e.target.value)}>
-                                <option>{t('size')}</option>
-                                <option value="XXS">XXS</option>
-                                <option value="XS">XS</option>
-                                <option value="S">S</option>
-                                <option value="M">M</option>
-                                <option value="L">L</option>
-                                <option value="XL">XL</option>
-                                <option value="XXL">XXL</option>
-                                <option value="XXXL">XXXL</option>
-                                <option value="4XL">4XL</option>
-                                <option value="5XL">5XL</option>
-                            </Form.Select>
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>{t('brand')}</Form.Label>
-                            <Form.Control type="text" value={brand} onChange={(e) => setBrand(e.target.value)} />
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>{t('condition')}</Form.Label>
-                            <Form.Select aria-label="Default select example" value={condition} onChange={(e) => setCondition(e.target.value)}>
-                                <option>{t('condition')}</option>
-                                <option value="new_cond">Новое</option>
-                                <option value="bu_cond">Б/У</option>
-                            </Form.Select>
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>{t('phone_number')}</Form.Label>
-                            <Form.Control type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
-                        </Form.Group>
-                        <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
-                            <Form.Label>{t('description')}</Form.Label>
-                            <Form.Control as="textarea" rows={3} value={description} onChange={(e) => setDescription(e.target.value)} />
-                        </Form.Group>
-                        <div className="d-grid gap-2">
-                            <Button onClick={handleSubmit} variant="primary" size="lg">
-                                {t('add')}
-                            </Button>
-                        </div>
-                    </>
-                )
-            case 'auto':
-            case 'moto':
-            case 'water_transport':
-                return (
-                    <>
-                        <Form.Item className="mb-3">
-                            <Form.Label>{t('title')}</Form.Label>
-                            <Form.Control type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
-                        </Form.Item>
-                        <Form.Group className="mb-3">
-                            <Form.Select aria-label="Default select example" value={brand} onChange={(e) => setBrand(e.target.value)}>
-                                <option>{t('choice_mark')}</option>
-                                <option value="Audi">Audi</option>
-                                <option value="BMW">BMW</option>
-                                <option value="Mersedes">Mersedes</option>
-                            </Form.Select>
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>{t('input_model')}</Form.Label>
-                            <Form.Control type="text" value={model} onChange={(e) => setModel(e.target.value)} />
-                        </Form.Group>
-                        <Form.Group className="mb-3 d-flex align-items-center">
-                            <Form.Control
-                                type="text"
-                                value={price}
-                                onChange={(e) => setPrice(parseInt(e.target.value, 10))}
-                                placeholder={t('price')}
-                                className="me-2"
-                            />
-                            <Form.Select aria-label="Default select example" value={currency} onChange={(e) => setCurrency(e.target.value)}>
-                                <option>{t('currency')}</option>
-                                <option value="rsd">RSD</option>
-                                <option value="eur">EUR</option>
-                            </Form.Select>
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>{t('input_year')}</Form.Label>
-                            <Form.Control type="number" value={year} onChange={(e) => setYear(e.target.value)} placeholder="2020" />
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>{t('input_meleage')}</Form.Label>
-                            <Form.Control type="number" value={mileage} onChange={(e) => setMileage(e.target.value)} />
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Select aria-label="Default select example" value={body} onChange={(e) => setBody(e.target.value)}>
-                                <option>{t('choice_body')}</option>
-                                <option value="sedan">{t('sedan')}</option>
-                                <option value="hatchback">{t('hatchback')}</option>
-                                <option value="station_wagon">{t('station_wagon')}</option>
-                                <option value="coupe">{t('coupe')}</option>
-                                <option value="convertible">{t('convertible')}</option>
-                                <option value="crossover">{t('crossover')}</option>
-                                <option value="Внедорsuv_sport_utility_vehicleожник">{t('Внедорsuv_sport_utility_vehicleожник')}</option>
-                                <option value="pickup_truck">{t('pickup_truck')}</option>
-                                <option value="minivan">{t('minivan')}</option>
-                                <option value="Limousine">{t('Limousine')}</option>
-                            </Form.Select>
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>{t('enter_color')}</Form.Label>
-                            <Form.Control type="text" value={color} onChange={(e) => setColor(e.target.value)} />
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Select aria-label="Default select example" value={transmission} onChange={(e) => setTransmission(e.target.value)}>
-                                <option>{t('choce_transmission')}</option>
-                                <option value="manual_t">{t('manual_t')}</option>
-                                <option value="auto_t">{t('auto_t')}</option>
-                                <option value="semi_auto_t">{t('semi_auto_t')}</option>
-                                <option value="dual_clutch_t">{t('dual_clutch_t')}</option>
-                                <option value="continuously_t">{t('continuously_t')}</option>
-                            </Form.Select>
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Select aria-label="Default select example" value={drive} onChange={(e) => setDrive(e.target.value)}>
-                                <option>{t('choice_drive')}</option>
-                                <option value="fwd">{t('fwd')}</option>
-                                <option value="rwd">{t('rwd')}</option>
-                                <option value="awd">{t('awd')}</option>
-                                <option value="four_wd">{t('four_wd')}</option>
-                            </Form.Select>
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Select aria-label="Default select example" value={wheel} onChange={(e) => setWheel(e.target.value)}>
-                                <option>{t('choice_wheel')}</option>
-                                <option value="left_hand_drive">{t('left_hand_drive')}</option>
-                                <option value="right_hand_drive">{t('right_hand_drive')}</option>
-                            </Form.Select>
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Select aria-label="Default select example" value={condition} onChange={(e) => setCondition(e.target.value)}>
-                                <option>{t('choice_condition')}</option>
-                                <option value="condition_new">{t('condition_new')}</option>
-                                <option value="used">{t('used')}</option>
-                            </Form.Select>
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>{t('choice_customs')}</Form.Label>
-                            <Form.Control type="number" value={owners} onChange={(e) => setOwners(e.target.value)} />
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>{t('phone_number')}</Form.Label>
-                            <Form.Control type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
-                        </Form.Group>
-                        <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
-                            <Form.Label>{t('description')}</Form.Label>
-                            <Form.Control as="textarea" rows={3} value={description} onChange={(e) => setDescription(e.target.value)} />
-                        </Form.Group>
-                        <div className="d-grid gap-2">
-                            <Button onClick={handleSubmit} variant="primary" size="lg">
-                                {t('add')}
-                            </Button>
-                        </div>
-                    </>
-                )
+                        <LoadScript googleMapsApiKey="AIzaSyD7K42WP5zjV99GP3xll40eFr_5DaAk3ZU">
+                            <Form.Item className="mb-3">
+                                <label>{t('title')}</label>
+                                <Input type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
+                            </Form.Item>
+                            <Form.Item className="mb-3">
+                                <label>{t('type')}</label>
+                                <SelectTypesForClothes type={type} setType={setType} />
+                            </Form.Item>
+                            <Form.Item className="mb-3 d-flex align-items-center">
+                                <Input
+                                    type="text"
+                                    value={price}
+                                    onChange={(e) => setPrice(parseInt(e.target.value, 10))}
+                                    placeholder={t('price')}
+                                    className="me-2"
+                                />
+                                <Select value={currency} onChange={(value) => setCurrency(value)}>
+                                    <Option value="">{t('currency')}</Option>
+                                    <Option value="rsd">RSD</Option>
+                                    <Option value="eur">EUR</Option>
+                                </Select>
+                            </Form.Item>
+                            <Form.Item className="mb-3">
+                                <label>{t('size')}</label>
+                                <Select value={size} onChange={(value) => setSize(value)}>
+                                    <Option value="">{t('size')}</Option>
+                                    <Option value="XXS">XXS</Option>
+                                    <Option value="XS">XS</Option>
+                                    <Option value="S">S</Option>
+                                    <Option value="M">M</Option>
+                                    <Option value="L">L</Option>
+                                    <Option value="XL">XL</Option>
+                                    <Option value="XXL">XXL</Option>
+                                    <Option value="XXXL">XXXL</Option>
+                                    <Option value="4XL">4XL</Option>
+                                    <Option value="5XL">5XL</Option>
+                                </Select>
+                            </Form.Item>
+                            <Form.Item className="mb-3">
+                                <label>{t('brand')}</label>
+                                <Input type="text" value={brand} onChange={(e) => setBrand(e.target.value)} />
+                            </Form.Item>
+                            <Form.Item className="mb-3">
+                                <label>{t('condition')}</label>
+                                <Select value={condition} onChange={(value) => setCondition(value)}>
+                                    <Option value="">{t('condition')}</Option>
+                                    <Option value="new_cond">Новое</Option>
+                                    <Option value="bu_cond">Б/У</Option>
+                                </Select>
+                            </Form.Item>
+                            <Form.Item className="mb-3">
+                                <label>{t('phone_number')}</label>
+                                <Input type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
+                            </Form.Item>
+                            <Form.Item className="mb-3">
+                                <label>{t('description')}</label>
+                                <TextArea rows={3} value={description} onChange={(e) => setDescription(e.target.value)} />
+                            </Form.Item>
+                            <Form.Item label={t('Coordinates')}>
+                                <MapComponent coordinates={coordinates} setCoordinates={setCoordinates} setRegion={setRegion} setCountry={setCountry} setLocation={setLocation} mapRef={mapRef} />
+                            </Form.Item>
 
-            case 'rest':
-                return (
-                    <>
-                        <Form.Item className="mb-3">
-                            <Form.Label>{t('title')}</Form.Label>
-                            <Form.Control type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
-                        </Form.Item>
-                        <Form.Group className="mb-3 d-flex align-items-center">
-                            <Form.Control
-                                type="text"
-                                value={price}
-                                onChange={(e) => setPrice(parseInt(e.target.value, 10))}
-                                placeholder={t('price')}
-                                className="me-2"
-                            />
-                            <Form.Select aria-label="Default select example" value={currency} onChange={(e) => setCurrency(e.target.value)}>
-                                <option>{t('currency')}</option>
-                                <option value="rsd">RSD</option>
-                                <option value="eur">EUR</option>
-                            </Form.Select>
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>{t('condition')}</Form.Label>
-                            <Form.Select aria-label="Default select example" value={condition} onChange={(e) => setCondition(e.target.value)}>
-                                <option>{t('condition')}</option>
-                                <option value="new_cond">Новое</option>
-                                <option value="bu_cond">Б/У</option>
-                            </Form.Select>
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>{t('phone_number')}</Form.Label>
-                            <Form.Control type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
-                        </Form.Group>
-                        <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
-                            <Form.Label>{t('description')}</Form.Label>
-                            <Form.Control as="textarea" rows={3} value={description} onChange={(e) => setDescription(e.target.value)} />
-                        </Form.Group>
-                        <div className="d-grid gap-2">
-                            <Button onClick={handleSubmit} variant="primary" size="lg">
-                                {t('add')}
-                            </Button>
-                        </div>
+                            <Form.Item label={t('Location')}>
+                                <AutoComplete
+                                    options={options}
+                                    onSearch={debounceFetchSuggestions}
+                                    onSelect={handleSelect}
+                                    placeholder="Search location"
+                                    value={location} // Set the value to the selected location name
+                                    onChange={(value) => setLocation(value)} // Handle input changes
+                                >
+                                    <Input />
+                                </AutoComplete>
+                            </Form.Item>
+                            <div className="d-grid gap-2">
+                                <Button onClick={handleSubmit} type="primary" size="large">
+                                    {t('add')}
+                                </Button>
+                            </div>
+                        </LoadScript>
                     </>
                 )
-
             default:
                 return null;
         }
@@ -1654,13 +961,13 @@ function EditItem() {
                         {getForm()}
 
                         <Form.Item label={t('Coordinates')}>
-                            <MapComponent 
-                                coordinates={coordinates} 
-                                setCoordinates={setCoordinates} 
-                                setRegion={setRegion} 
-                                setCountry={setCountry} 
-                                setLocation={setLocation} 
-                                mapRef={mapRef} 
+                            <MapComponent
+                                coordinates={coordinates}
+                                setCoordinates={setCoordinates}
+                                setRegion={setRegion}
+                                setCountry={setCountry}
+                                setLocation={setLocation}
+                                mapRef={mapRef}
                             />
                         </Form.Item>
 
