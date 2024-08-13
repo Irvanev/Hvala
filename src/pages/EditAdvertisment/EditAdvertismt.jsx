@@ -1,10 +1,7 @@
-import React from 'react'
-import { useState, useEffect } from 'react';
 import { doc, getDoc, updateDoc, deleteField } from "firebase/firestore";
 import { db, auth } from '../../config/firebase';
 import { useParams } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
-import { Form, Container, FormGroup, Button } from "react-bootstrap"
 import { useTranslation } from "react-i18next";
 import { MyNavbar } from "../../components/Navbar/Navbar";
 import CategorySelect from '../../pages/EditAdvertisment/CategorySelect';
@@ -22,6 +19,13 @@ import ChildGoods from './ChildGoods';
 import Estate from './Estate';
 import Transport from './Transport';
 import { message } from 'antd';
+import React, { useState, useCallback, useRef, useEffect } from "react";
+import { Form, Input, AutoComplete, Button, Layout, Select } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
+import { GoogleMap, LoadScript } from '@react-google-maps/api';
+import debounce from 'lodash.debounce';
+import { GeoPoint } from 'firebase/firestore';
+import { MapComponent } from "./MapComponent";
 
 import SelectBrandsForMobile from "../../components/select-brands/SelectBrandsForMobile";
 import SelectTypesForComputersAccs from "../../components/select-types/select-types-electronics/SelectTypesForComputersAccs";
@@ -32,7 +36,221 @@ import SelectBrandsForGameCondole from "../../components/select-brands/SelectBra
 import SelectTypesForClothes from "../../components/select-types/select-types-clothes/SelectTypesForClothes";
 import { NavBarBack } from "../../components/Navbar/NavBarBack";
 
-export default function EditItem() {
+const containerStyle = {
+    width: '100%',
+    height: '400px',
+    position: 'relative'
+};
+
+const center = {
+    lat: -3.745,
+    lng: -38.523
+};
+
+const markerStyle = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -100%)',
+    zIndex: 1,
+};
+
+function getCountryKey(string) {
+        if (string.includes("Serbia") || string.includes("Сербия") || string.includes("Србија")) {
+            return "serbia";
+        } else if (string.includes("Croatia") || string.includes("Хорватия") || string.includes("Хрватска")) {
+            return "croatia";
+        } else if (string.includes("Bosnia and Herzegovina") || string.includes("Босния и Герцеговина") || string.includes("Босна и Херцеговина")) {
+            return "bosnia_and_herzegovina";
+        } else if (string.includes("Montenegro") || string.includes("Черногория") || string.includes("Црна Гора")) {
+            return "montenegro";
+        } else if (string.includes("North Macedonia") || string.includes("Мacedonia") || string.includes("Северная Македония") || string.includes("Македония") || string.includes("Северна Македонија")) {
+            return "north_macedonia";
+        } else {
+            return "montenegro";
+        }
+
+    }
+
+
+    function getRegionKey(string) {
+        if (string.includes("Unsko-sanski") || string.includes("Унско-Санский") || string.includes("Уна-Санский") || string.includes("Una-Sana")) {
+            return "una_sana_canton";
+        } else if (string.includes("Posavina") || string.includes("Посавский")) {
+            return "posavina_canton";
+        } else if (string.includes("Tuzla") || string.includes("Тузланский")) {
+            return "tuzla_canton";
+        } else if (string.includes("Zenica-Doboj") || string.includes("Зеничко-Добойский")) {
+            return "zenica_doboj_canton";
+        } else if (string.includes("Bosnian-Podrinje") || string.includes("Боснийско-Подринский")) {
+            return "bosnian_podrinje_canton_gorazde";
+        } else if (string.includes("Central Bosnia") || string.includes("Центрально-Боснийский")) {
+            return "central_bosnia_canton";
+        } else if (string.includes("Herzegovina-Neretva") || string.includes("Герцеговинско-Неретванский")) {
+            return "herzegovina_neretva_canton";
+        } else if (string.includes("West Herzegovina") || string.includes("Западно-Герцеговинский")) {
+            return "west_herzegovina_canton";
+        } else if (string.includes("Sarajevo") || string.includes("Кантон Сараево")) {
+            return "sarajevo_canton";
+        } else if (string.includes("Banja Luka") || string.includes("Баня-Лука")) {
+            return "banja_luka";
+        } else if (string.includes("Bijeljina") || string.includes("Биелина")) {
+            return "bijeljina";
+        } else if (string.includes("Doboj") || string.includes("Добой")) {
+            return "doboj";
+        } else if (string.includes("Prijedor") || string.includes("Прийедор")) {
+            return "prijedor";
+        } else if (string.includes("Istočno Sarajevo") || string.includes("Источно Сараево")) {
+            return "istocno_sarajevo";
+        } else if (string.includes("Trebinje") || string.includes("Требинье")) {
+            return "trebinje";
+        } else if (string.includes("Brčko") || string.includes("Брчко")) {
+            return "brcko";
+        } else if (string.includes("Canton 10") || string.includes("Кантон 10")) {
+            return "canton_10";
+        } else if (string.includes("Podgorica") || string.includes("Подгорица")) {
+            if (string.includes("Municipality")) {
+                return "municipality_podgorica";
+            } else if (string.includes("Capital City") || string.includes("град")) {
+                return "glavni_grad_podgorica";
+            }
+        } else if (string.includes("Danilovgrad") || string.includes("Даниловград")) {
+            return "municipality_danilovgrad";
+        } else if (string.includes("Cetinje") || string.includes("Цетине")) {
+            return "municipality_cetinje";
+        } else if (string.includes("Budva") || string.includes("Будва")) {
+            return "municipality_budva";
+        } else if (string.includes("Bar") || string.includes("Бар")) {
+            return "municipality_bar";
+        } else if (string.includes("Herceg Novi") || string.includes("Герцег-Нови")) {
+            return "municipality_herceg_novi";
+        } else if (string.includes("Kotor") || string.includes("Котор")) {
+            return "municipality_kotor";
+        } else if (string.includes("Tivat") || string.includes("Тиват")) {
+            return "municipality_tivat";
+        } else if (string.includes("Ulcinj") || string.includes("Улцинь")) {
+            return "municipality_ulcinj";
+        } else if (string.includes("Pljevlja") || string.includes("Плевля")) {
+            return "municipality_pljevlja";
+        } else if (string.includes("Bijelo Polje") || string.includes("Бижело Поле")) {
+            return "municipality_bijelo_polje";
+        } else if (string.includes("Zabljak") || string.includes("Жабляк")) {
+            return "municipality_zabljak";
+        } else if (string.includes("Kolasin") || string.includes("Колашин")) {
+            return "municipality_kolasin";
+        } else if (string.includes("Mojkovac") || string.includes("Мойковац")) {
+            return "municipality_mojkovac";
+        } else if (string.includes("Berane") || string.includes("Берне")) {
+            return "municipality_berane";
+        } else if (string.includes("Andrijevica") || string.includes("Андриевица")) {
+            return "municipality_andrijevica";
+        } else if (string.includes("Plav") || string.includes("Плав")) {
+            return "municipality_plav";
+        } else if (string.includes("Rozaje") || string.includes("Рожае")) {
+            return "municipality_rozaje";
+        } else if (string.includes("Niksic") || string.includes("Никшич")) {
+            return "municipality_niksic";
+        } else if (string.includes("Savnik") || string.includes("Шавник")) {
+            return "municipality_savnik";
+        } else if (string.includes("Pluzine") || string.includes("Плужине")) {
+            return "municipality_pluzine";
+        } else if (string.includes("Gusinje") || string.includes("Гусиње")) {
+            return "municipality_gusinje";
+        } else if (string.includes("Petrovac") || string.includes("Петровац")) {
+            return "municipality_petrovac";
+        } else if (string.includes("Tuzi") || string.includes("Тузи")) {
+            return "municipality_tuzi";
+        } else if (string.includes("Vojvodina") || string.includes("Воеводина")) {
+            return "vojvodina";
+        } else if (string.includes("Belgrade") || string.includes("Белград")) {
+            return "belgrade";
+        } else if (string.includes("Šumadija") || string.includes("Шумадийский")) {
+            return "sumadija_and_western_serbia";
+        } else if (string.includes("Southern and Eastern Serbia") || string.includes("Южно-Банатский")) {
+            return "southern_and_eastern_serbia";
+        } else if (string.includes("Kosovo and Metohija") || string.includes("Косово и Метохия")) {
+            return "kosovo_and_metohija";
+        } else if (string.includes("Belgrade") || string.includes("Белград") || string.includes("Београд")) {
+            return "belgrade";
+        } else if (string.includes("Bor") || string.includes("Bor") || string.includes("Борский") || string.includes("Борски")) {
+            return "bor_district";
+        } else if (string.includes("Braničevo District") || string.includes("Braničevo") || string.includes("Браничевский") || string.includes("Браничевски округ")) {
+            return "branicevo_district";
+        } else if (string.includes("Zlatibor District") || string.includes("Zlatibor") || string.includes("Златиборский") || string.includes("Златиборски округ")) {
+            return "zlatibor_district";
+        } else if (string.includes("Kolubara District") || string.includes("Kolubara") || string.includes("Колубарский") || string.includes("Колубарски округ")) {
+            return "kolubara_district";
+        } else if (string.includes("Moravica District") || string.includes("Moravica") || string.includes("Моравичский") || string.includes("Моравички округ")) {
+            return "moravica_district";
+        } else if (string.includes("Nišava District") || string.includes("Nišava") || string.includes("Нишавский") || string.includes("Нишавски округ")) {
+            return "nisava_district";
+        } else if (string.includes("Pirot District") || string.includes("Pirot") || string.includes("Пиротский") || string.includes("Пиротски округ")) {
+            return "pirot_district";
+        } else if (string.includes("Podunavlje District") || string.includes("Podunavlje") || string.includes("Подунайский") || string.includes("Подунавски")) {
+            return "podunavlje_district";
+        } else if (string.includes("Pčinja District") || string.includes("Pčinja") || string.includes("Пчиньский") || string.includes("Пчињски")) {
+            return "pcinja_district";
+        } else if (string.includes("Raška District") || string.includes("Raška") || string.includes("Рашский") || string.includes("Рашки")) {
+            return "raska_district";
+        } else if (string.includes("Rasina District") || string.includes("Rasina") || string.includes("Расинский") || string.includes("Расински")) {
+            return "rasina_district";
+        } else if (string.includes("Toplica District") || string.includes("Toplica") || string.includes("Топличский") || string.includes("Топлички")) {
+            return "toplica_district";
+        } else if (string.includes("Šumadija District") || string.includes("Šumadija") || string.includes("Шумадийский") || string.includes("Шумадијски")) {
+            return "sumadija_district";
+        } else if (string.includes("Jablanica District") || string.includes("Jablanica") || string.includes("Ябланичский") || string.includes("Јабланички")) {
+            return "jablanica_district";
+        } else if (string.includes("Zagreb City") || string.includes("Град Загреб")) {
+            return "zagreb_city";
+        } else if (string.includes("Zagreb County") || string.includes("Загребская")) {
+            return "zagreb_county";
+        } else if (string.includes("Split-Dalmatia") || string.includes("Сплитско-Далматинская")) {
+            return "split_dalmatia";
+        } else if (string.includes("Istria") || string.includes("Истарская")) {
+            return "istria";
+        } else if (string.includes("Primorje-Gorski Kotar") || string.includes("Приморско-Горанская")) {
+            return "primorje_gorski_kotar";
+        } else if (string.includes("Lika-Senj") || string.includes("Лика-Сень")) {
+            return "lika_senj";
+        } else if (string.includes("Virovitica-Podravina") || string.includes("Вировитицко-Подравская")) {
+            return "virovitica_podravina";
+        } else if (string.includes("Požega-Slavonia") || string.includes("Пожешко-Славонская")) {
+            return "pozega_slavonia";
+        } else if (string.includes("Brod-Posavina") || string.includes("Бродско-Посавская")) {
+            return "brod_posavina";
+        } else if (string.includes("Zadar") || string.includes("Задар")) {
+            return "zadar";
+        } else if (string.includes("Osijek-Baranja") || string.includes("Осиечко-Бараньская")) {
+            return "osijek_baranja";
+        } else if (string.includes("Sisak-Moslavina") || string.includes("Сисачко-Мославинская")) {
+            return "sisak_moslavina";
+        } else if (string.includes("Koprivnica-Križevci") || string.includes("Копривницко-Крижевечка")) {
+            return "koprivnica_krizevci";
+        } else if (string.includes("Bjelovar-Bilogora") || string.includes("Бьеловарско-Билогорская")) {
+            return "bjelovar_bilogora";
+        } else if (string.includes("Karlovac") || string.includes("Карловацкая")) {
+            return "karlovac";
+        } else if (string.includes("Varaždin") || string.includes("Вараждинская")) {
+            return "varazdin";
+        } else if (string.includes("Krapina-Zagorje") || string.includes("Крапинско-Загорская")) {
+            return "krapina_zagorje";
+        } else if (string.includes("Međimurje") || string.includes("Меджимурская")) {
+            return "medimurje";
+        } else if (string.includes("Šibenik-Knin") || string.includes("Шибенско-Книнская")) {
+            return "sibenik_knin";
+        } else if (string.includes("Vukovar-Srijem") || string.includes("Вуковарско-Сремская")) {
+            return "vukovar_srijem";
+        } else if (string.includes("Dubrovnik-Neretva") || string.includes("Дубровачко-Неретванская")) {
+            return "dubrovnik_neretva";
+        } else {
+            return "municipality_budva";
+        }
+    }
+
+    
+
+
+function EditItem() {
     const { t } = useTranslation();
     const history = useHistory();
     const { id } = useParams();
@@ -68,6 +286,120 @@ export default function EditItem() {
     const [color, setColor] = useState('');
     const [owners, setOwners] = useState(''); // кол-во владельцев
 
+    const [coordinates, setCoordinates] = useState('');
+    const [location, setLocation] = useState('');
+    const [country, setCountry] = useState('');
+    const [region, setRegion] = useState('');
+    const [options, setOptions] = useState([]);
+
+    const fetchSuggestions = async (value) => {
+        try {
+            const apiKey = 'AIzaSyD7K42WP5zjV99GP3xll40eFr_5DaAk3ZU';
+            const url = "https://places.googleapis.com/v1/places:searchText";
+            const headers = {
+                'Content-Type': 'application/json',
+                'X-Goog-Api-Key': apiKey,
+                'X-Goog-FieldMask': 'places.*',
+            };
+            const body = JSON.stringify({ textQuery: value });
+
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: headers,
+                body: body,
+            });
+
+            console.log(response);
+            console.log("HI-THERE");
+
+            if (response.status === 200) {
+                const data = await response.json();
+                const places = data.places;
+                if (places && places.length > 0) {
+                    setOptions(places.map(place => ({
+                        label: place.formattedAddress,  // Extract text from displayName object
+                        value: place.formattedAddress,
+                        address_components: place.addressComponents,
+                        f: place.location
+                    })));
+                } else {
+                    console.log("No places found");
+                }
+            } else {
+                throw new Error("Failed to fetch suggestions: ${response.statusText}");
+            }
+        } catch (e) {
+            console.log("Error: ", e);
+        }
+    };
+
+    const debounceFetchSuggestions = debounce(fetchSuggestions, 300);
+
+    const mapRef = useRef(null);
+
+    const handleSelect = async (value) => {
+        console.log(value);
+        console.log("HERE");
+        const selectedPlace = options.find(option => option.value === value);
+
+        if (selectedPlace) {
+            const longitude = selectedPlace.f.longitude;
+            const latitude = selectedPlace.f.latitude;
+
+            if (latitude !== undefined && longitude !== undefined) {
+                const newCoordinates = {
+                    lat: parseFloat(latitude),
+                    lng: parseFloat(longitude),
+                };
+                const geoPoint = new GeoPoint(newCoordinates.lat(), newCoordinates.lng());
+                setCoordinates(geoPoint);
+                setLocation(value);
+
+                if (mapRef.current) {
+                    mapRef.current.panTo(newCoordinates);
+                }
+                console.log(latitude, longitude);
+
+                const geocoder = new window.google.maps.Geocoder();
+                geocoder.geocode({ location: newCoordinates }, (results, status) => {
+                    if (status === 'OK' && results.length > 0) {
+                        const addressComponents = results[0].address_components;
+                        let country = '';
+                        let region = '';
+
+                        addressComponents.forEach(component => {
+                            if (component.types.includes('country')) {
+                                country = component.long_name;
+                            }
+                            if (component.types.includes('administrative_area_level_1')) {
+                                region = component.long_name;
+                            }
+                            if (region === '' && component.types.includes('locality')) {
+                                region = component.long_name
+                            }
+                        });
+
+                        setCountry(getCountryKey(country));
+                        setRegion(getRegionKey(region));
+
+                        console.log('Address Components:', addressComponents);
+                        console.log('Country:', country);
+                        console.log('Region:', region);
+                        console.log('Selected Value:', value);
+                        console.log('New Coordinates:', newCoordinates);
+                        console.log('----');
+                    } else {
+                        console.error('Geocoder failed due to: ' + status);
+                    }
+                });
+            } else {
+                console.error('Invalid coordinates received:', selectedPlace);
+            }
+        } else {
+            console.error('Selected place not found:', value);
+        }
+    };
+
     const handleSubmit = async (e) => {
 
         e.preventDefault();
@@ -101,6 +433,8 @@ export default function EditItem() {
             roomsAmout: roomsAmout,
             type: type,
             area: area,
+            location: location,
+            coordinates: coordinates,
         };
 
         try {
@@ -411,6 +745,8 @@ export default function EditItem() {
                         setColor(data?.color);
                         setOwners(data?.owners);
                         setSize(data?.size);
+                        setLocation(data.location);
+                        setCoordinates(data.coordinates);
                         console.log("Document data:", data);
                     } else {
                         setData(null);
@@ -508,10 +844,10 @@ export default function EditItem() {
 
                 return (
                     <>
-                        <FormGroup className="mb-3">
+                        <Form.Item className="mb-3">
                             <Form.Label>{t('title')}</Form.Label>
                             <Form.Control type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
-                        </FormGroup>
+                        </Form.Item>
                         <Form.Group className="mb-3 d-flex align-items-center">
                             <Form.Control
                                 type="text"
@@ -530,10 +866,10 @@ export default function EditItem() {
                             <Form.Label>{t('phone_number')}</Form.Label>
                             <Form.Control type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
                         </Form.Group>
-                        <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
+                        <Form.Form.Item className="mb-3" controlId="exampleForm.ControlTextarea1">
                             <Form.Label>{t('description')}</Form.Label>
                             <Form.Control as="textarea" rows={3} value={description} onChange={(e) => setDescription(e.target.value)} />
-                        </Form.Group>
+                        </Form.Form.Item>
                         <div className="d-grid gap-2">
                             <Button onClick={handleSubmit} variant="primary" size="lg">
                                 {t('add')}
@@ -583,10 +919,10 @@ export default function EditItem() {
             case 'music_tools':
                 return (
                     <>
-                        <FormGroup className="mb-3">
+                        <Form.Item className="mb-3">
                             <Form.Label>{t('title')}</Form.Label>
                             <Form.Control type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
-                        </FormGroup>
+                        </Form.Item>
                         <Form.Group className="mb-3 d-flex align-items-center">
                             <Form.Control
                                 type="text"
@@ -627,14 +963,14 @@ export default function EditItem() {
             case 'phones_and_tablets':
                 return (
                     <>
-                        <FormGroup className="mb-3">
+                        <Form.Item className="mb-3">
                             <Form.Label>{t('title')}</Form.Label>
                             <Form.Control
                                 type="text"
                                 value={title}
                                 onChange={(e) => setTitle(e.target.value)}
                             />
-                        </FormGroup>
+                        </Form.Item>
                         <Form.Group className="mb-3">
                             <SelectBrandsForMobile brand={brand} setBrand={setBrand} />
                         </Form.Group>
@@ -696,14 +1032,14 @@ export default function EditItem() {
             case 'dishwasher':
                 return (
                     <>
-                        <FormGroup className="mb-3">
+                        <Form.Item className="mb-3">
                             <Form.Label>{t('title')}</Form.Label>
                             <Form.Control type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
-                        </FormGroup>
-                        <FormGroup className="mb-3">
+                        </Form.Item>
+                        <Form.Item className="mb-3">
                             <Form.Label>{t('brand')}</Form.Label>
                             <Form.Control type="text" value={brand} onChange={(e) => setBrand(e.target.value)} />
-                        </FormGroup>
+                        </Form.Item>
                         <Form.Group className="mb-3 d-flex align-items-center">
                             <Form.Control
                                 type="text"
@@ -746,14 +1082,14 @@ export default function EditItem() {
             case 'rent_estate':
                 return (
                     <>
-                        <FormGroup className="mb-3">
+                        <Form.Item className="mb-3">
                             <Form.Label>{t('title')}</Form.Label>
                             <Form.Control
                                 type="text"
                                 value={title}
                                 onChange={(e) => setTitle(e.target.value)}
                             />
-                        </FormGroup>
+                        </Form.Item>
                         <Form.Group className="mb-3">
                             <Form.Select aria-label="Default select example" value={type} onChange={(e) => setType(e.target.value)}>
                                 <option>{t('type')}</option>
@@ -811,14 +1147,14 @@ export default function EditItem() {
             case 'computer_accessories':
                 return (
                     <>
-                        <FormGroup className="mb-3">
+                        <Form.Item className="mb-3">
                             <Form.Label>{t('title')}</Form.Label>
                             <Form.Control
                                 type="text"
                                 value={title}
                                 onChange={(e) => setTitle(e.target.value)}
                             />
-                        </FormGroup>
+                        </Form.Item>
                         <Form.Group className="mb-3">
                             <SelectBrandsForComputersAccs brand={brand} setBrand={setBrand} />
                         </Form.Group>
@@ -868,14 +1204,14 @@ export default function EditItem() {
             case 'computers':
                 return (
                     <>
-                        <FormGroup className="mb-3">
+                        <Form.Item className="mb-3">
                             <Form.Label>{t('title')}</Form.Label>
                             <Form.Control
                                 type="text"
                                 value={title}
                                 onChange={(e) => setTitle(e.target.value)}
                             />
-                        </FormGroup>
+                        </Form.Item>
                         <Form.Group className="mb-3">
                             <SelectBrandsForComputers brand={brand} setBrand={setBrand} />
                         </Form.Group>
@@ -926,14 +1262,14 @@ export default function EditItem() {
             case 'photo_video':
                 return (
                     <>
-                        <FormGroup className="mb-3">
+                        <Form.Item className="mb-3">
                             <Form.Label>{t('title')}</Form.Label>
                             <Form.Control
                                 type="text"
                                 value={title}
                                 onChange={(e) => setTitle(e.target.value)}
                             />
-                        </FormGroup>
+                        </Form.Item>
                         <Form.Group className="mb-3">
                             <SelectBrandsForGameCondole brand={brand} setBrand={setBrand} />
                         </Form.Group>
@@ -980,14 +1316,14 @@ export default function EditItem() {
             case 'tv':
                 return (
                     <>
-                        <FormGroup className="mb-3">
+                        <Form.Item className="mb-3">
                             <Form.Label>{t('title')}</Form.Label>
                             <Form.Control
                                 type="text"
                                 value={title}
                                 onChange={(e) => setTitle(e.target.value)}
                             />
-                        </FormGroup>
+                        </Form.Item>
                         <Form.Group className="mb-3">
                             <Form.Select aria-label="Default select example" value={brand} onChange={(e) => setBrand(e.target.value)}>
                                 <option>{t('brand')}</option>
@@ -1050,10 +1386,10 @@ export default function EditItem() {
             case 'childrens_clothing':
                 return (
                     <>
-                        <FormGroup className="mb-3">
+                        <Form.Item className="mb-3">
                             <Form.Label>{t('title')}</Form.Label>
                             <Form.Control type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
-                        </FormGroup>
+                        </Form.Item>
                         <Form.Group className="mb-3">
                             <Form.Label>{t('type')}</Form.Label>
                             <SelectTypesForClothes type={type} setType={setType} />
@@ -1120,10 +1456,10 @@ export default function EditItem() {
             case 'water_transport':
                 return (
                     <>
-                        <FormGroup className="mb-3">
+                        <Form.Item className="mb-3">
                             <Form.Label>{t('title')}</Form.Label>
                             <Form.Control type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
-                        </FormGroup>
+                        </Form.Item>
                         <Form.Group className="mb-3">
                             <Form.Select aria-label="Default select example" value={brand} onChange={(e) => setBrand(e.target.value)}>
                                 <option>{t('choice_mark')}</option>
@@ -1233,10 +1569,10 @@ export default function EditItem() {
             case 'rest':
                 return (
                     <>
-                        <FormGroup className="mb-3">
+                        <Form.Item className="mb-3">
                             <Form.Label>{t('title')}</Form.Label>
                             <Form.Control type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
-                        </FormGroup>
+                        </Form.Item>
                         <Form.Group className="mb-3 d-flex align-items-center">
                             <Form.Control
                                 type="text"
@@ -1295,16 +1631,56 @@ export default function EditItem() {
 
             <NavBarBack />
             {data && ( // Если data не null, отобразите форму
-                <Container className="mt-3">
-                    <h3>{t('edit_advertisement')}</h3>
-                    <CategorySelect handleCategoryChange={handleCategoryChange} category={category} t={t} />
+                <Layout style={{ padding: '0 24px', minHeight: '100vh' }}>
 
-                    <Form.Select className="mb-3" aria-label="Default select example" onChange={handleSubcategoryChange} value={subcategory}>
-                        {getSubcategories()}
-                    </Form.Select>
-                    {getForm()}
-                </Container>
+                    <div style={{ padding: '24px', flex: 1 }}>
+                        <h3>{t('edit_advertisement')}</h3>
+                        <CategorySelect handleCategoryChange={handleCategoryChange} category={category} t={t} />
+
+                        <Form.Item
+                            label={t('Subcategory')}
+                            name="subcategory"
+                        >
+                            <Select
+                                className="mb-3"
+                                onChange={handleSubcategoryChange}
+                                value={subcategory}
+                                aria-label="Default select example"
+                            >
+                                {getSubcategories()}
+                            </Select>
+                        </Form.Item>
+
+                        {getForm()}
+
+                        <Form.Item label={t('Coordinates')}>
+                            <MapComponent 
+                                coordinates={coordinates} 
+                                setCoordinates={setCoordinates} 
+                                setRegion={setRegion} 
+                                setCountry={setCountry} 
+                                setLocation={setLocation} 
+                                mapRef={mapRef} 
+                            />
+                        </Form.Item>
+
+                        <Form.Item label={t('Location')}>
+                            <AutoComplete
+                                options={options}
+                                onSearch={debounceFetchSuggestions}
+                                onSelect={handleSelect}
+                                placeholder="Search location"
+                                value={location} // Set the value to the selected location name
+                                onChange={(value) => setLocation(value)} // Handle input changes
+                            >
+                                <Input />
+                            </AutoComplete>
+                        </Form.Item>
+                    </div>
+                </Layout>
             )}
         </>
     )
 }
+
+export default EditItem;
