@@ -78,7 +78,9 @@ const CardAdvertisementProfileArchiveMobile = ({ advertismentArchive, index }) =
                 <Card
                     hoverable
                     actions={[
-                        <EditOutlined key="edit" />,
+                        <a href={`/edit/${advertismentArchive.id}`}>
+                            <EditOutlined key="edit" />
+                        </a>,
                         <Dropdown
                             overlay={
                                 <Menu>

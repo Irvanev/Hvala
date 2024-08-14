@@ -14,7 +14,7 @@ import { archivedAdvertisement } from '../../services/ProfileService';
 const CardAdvertisementProfile = ({ advertisment, index }) => {
     const history = useHistory();
     const { i18n } = useTranslation();
-    const {t} = useTranslation();
+    const { t } = useTranslation();
     const [conversionRate, setConversionRate] = useState(null);
     const [currency, setCurrency] = useState('');
 
@@ -23,7 +23,7 @@ const CardAdvertisementProfile = ({ advertisment, index }) => {
 
     const handleEditClick = () => {
         history.push(`/edit/${advertisment.id}`);
-      };
+    };
 
     const handleArchive = async (id) => {
         await archivedAdvertisement(id);
@@ -65,11 +65,13 @@ const CardAdvertisementProfile = ({ advertisment, index }) => {
 
     return (
         <>
-            <Col key={index} style={{paddingBottom: '50px'}}>
+            <Col key={index} style={{ paddingBottom: '50px' }}>
                 <Card
                     hoverable
                     actions={[
-                        <EditOutlined key="edit" onClick={handleEditClick} />,
+                        <a href={`/edit/${advertisment.id}`}>
+                            <EditOutlined key="edit" />
+                        </a>,
                         <Dropdown
                             overlay={
                                 <Menu>
@@ -92,8 +94,10 @@ const CardAdvertisementProfile = ({ advertisment, index }) => {
                             <EllipsisOutlined onClick={() => setDropdownVisible(!dropdownVisible)} />
                         </Dropdown>,
                     ]}
-                    style={{ width: '100%', height: '57vh', display: 'flex',
-                    flexDirection: 'column', justifyContent: 'space-between'}}
+                    style={{
+                        width: '100%', height: '57vh', display: 'flex',
+                        flexDirection: 'column', justifyContent: 'space-between'
+                    }}
                     bodyStyle={{ padding: 0, margin: '1vh' }}
                     cover={
                         <Link key={advertisment.id} to={`/advertisment/${advertisment.id}`} style={{ textDecoration: "none", color: 'black' }}>

@@ -3,7 +3,7 @@ import { useHistory, useLocation, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { auth } from '../../config/firebase';
 import { signOut } from 'firebase/auth';
-import {db} from '../../config/firebase';
+import { db } from '../../config/firebase';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 
 import { Avatar, Button, Dropdown, Menu } from 'antd';
@@ -138,11 +138,9 @@ export const MyNavbar = () => {
                                     <Nav.Link href="/sign_in" style={{ fontSize: '18px', padding: '12px' }}>{t("auth")}</Nav.Link>
                                 </Link>
                             )}
-                            <Link to="/addItem" style={{ textDecoration: 'none' }}>
-                                <Nav.Link href="/addItem" >
-                                    <Button style={{ backgroundColor: '#FFBF34', color: 'white', border: 'none' }} size='large'>{t("addItem_navbar")}</Button>
-                                </Nav.Link>
-                            </Link>
+                            <Nav.Link href="/addItem" >
+                                <Button style={{ backgroundColor: '#FFBF34', color: 'white', border: 'none' }} size='large'>{t("addItem_navbar")}</Button>
+                            </Nav.Link>
                         </Nav>
                     </Navbar.Collapse>
                 </Container>
@@ -166,12 +164,16 @@ export const MyNavbar = () => {
                             <span class={`text-sm text-customColor3  group-hover:text-customColor2 ${getButtonStyle('/settings')}`}>{t("settings")}</span>
                         </button>
 
+
                         <button onClick={handleAddItemClick} type="button" class="inline-flex flex-col items-center justify-center px-5 group">
-                            <svg class={`w-6 h-6 ${getButtonStyle('/addItem')}`} aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7 7V5" />
-                            </svg>
-                            <span class={`text-sm text-customColor3  group-hover:text-customColor2 ${getButtonStyle('/addItem')}`}>{t("addItem_navbar")}</span>
+                            <a href=''>
+                                <svg class={`w-6 h-6 ${getButtonStyle('/addItem')}`} aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7 7V5" />
+                                </svg>
+                                <span class={`text-sm text-customColor3  group-hover:text-customColor2 ${getButtonStyle('/addItem')}`}>{t("addItem_navbar")}</span>
+                            </a>
                         </button>
+
 
                         <button onClick={handleMessageClick} type="button" class="inline-flex flex-col items-center justify-center px-5 group">
                             <svg class={`w-6 h-6 ${getButtonStyle('/message')}`} aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
@@ -192,6 +194,6 @@ export const MyNavbar = () => {
 
             </div>
 
-        </div>
+        </div >
     );
 }
