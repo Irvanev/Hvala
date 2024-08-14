@@ -1,16 +1,24 @@
 import React from 'react'
+import { Select } from 'antd';
 
-export default function BuildingMaterial({t}) {
+const { Option } = Select;
+
+export default function BuildingMaterial({ handleSubCategoryChange, subcategory, t }) {
     return (
-        <>
-            <option>{t('choce_subcategory')}</option>
-            <option value="tools">{t('tools')}</option>
-            <option value="building_materials">{t('building_materials')}</option>
-            <option value="heating_and_ventilation"> {t('heating_and_ventilation')}</option>
-            <option value="plumbing"> {t('plumbing')}</option>
-            <option value="electrics"> {t('electrics')}</option>
-            <option value="windows"> {t('windows')}</option>
-            <option value="doors"> {t('doors')}</option>
-        </>
+        <Select
+            className="mb-3"
+            aria-label="Default select example"
+            onChange={handleSubCategoryChange}
+            value={subcategory}
+            style={{ width: '100%' }}
+        >
+            <Option value="tools">{t('tools')}</Option>
+            <Option value="building_materials">{t('building_materials')}</Option>
+            <Option value="heating_and_ventilation">{t('heating_and_ventilation')}</Option>
+            <Option value="plumbing">{t('plumbing')}</Option>
+            <Option value="electrics">{t('electrics')}</Option>
+            <Option value="windows">{t('windows')}</Option>
+            <Option value="doors">{t('doors')}</Option>
+        </Select>
     )
 }

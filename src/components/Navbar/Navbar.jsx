@@ -22,8 +22,6 @@ export const MyNavbar = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [userData, setUserData] = useState(null);
 
-    console.log(user);
-
     useEffect(() => {
         if (user) {
             const fetchUserData = async () => {

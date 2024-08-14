@@ -10,7 +10,6 @@ const CategorySelect = ({ handleCategoryChange, category }) => {
     return (
         <div>
             <Select
-                className="mb-3"
                 aria-label="Default select example"
                 onChange={handleCategoryChange}
                 value={category}

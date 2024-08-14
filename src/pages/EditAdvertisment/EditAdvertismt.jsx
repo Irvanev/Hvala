@@ -1,6 +1,5 @@
 import { doc, getDoc, updateDoc, deleteField } from "firebase/firestore";
-import { db, auth, storage } from '../../config/firebase';
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { db, auth } from '../../config/firebase';
 import { useParams } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
 import { useTranslation } from "react-i18next";
@@ -20,38 +19,20 @@ import ChildGoods from './ChildGoods';
 import Estate from './Estate';
 import Transport from './Transport';
 import { message } from 'antd';
-import React, { useState, useCallback, useRef, useEffect } from "react";
-import { Form, Input, AutoComplete, Button, Layout, Select } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
-import { GoogleMap, LoadScript } from '@react-google-maps/api';
+import React, { useState, useRef, useEffect } from "react";
+import { Form, Input, AutoComplete, Button, Select, InputNumber, Spin } from 'antd';
+import { LoadScript } from '@react-google-maps/api';
 import debounce from 'lodash.debounce';
 import { GeoPoint } from 'firebase/firestore';
 import { MapComponent } from "./MapComponent";
 import { NavBarBack } from "../../components/Navbar/NavBarBack";
-import ClothesForm from "../../components/formsForAddingAdvertisements/ClothesForm"
 import SelectTypesForClothes from "../../components/select-types/select-types-clothes/SelectTypesForClothes";
+import PhotoUpload from "./PhotoUpload";
+import SaveButton from "./SaveButton";
 
 const { Option } = Select;
 const { TextArea } = Input;
 
-const containerStyle = {
-    width: '100%',
-    height: '400px',
-    position: 'relative'
-};
-
-const center = {
-    lat: -3.745,
-    lng: -38.523
-};
-
-const markerStyle = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -100%)',
-    zIndex: 1,
-};
 
 function getCountryKey(string) {
     if (string.includes("Serbia") || string.includes("Сербия") || string.includes("Србија")) {
@@ -252,15 +233,16 @@ function EditItem() {
     const { t } = useTranslation();
     const history = useHistory();
     const { id } = useParams();
+    const [loading, setLoading] = useState(false);
     const [data, setData] = useState(null);
     const [category, setCategory] = useState('');
     const [subcategory, setSubcategory] = useState('');
-    const [photoUrls, setSelectedFiles] = useState([]);
     const [title, setTitle] = useState('');
     const [price, setPrice] = useState('');
     const [description, setDescription] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
     const [currency, setCurrency] = useState('');
+    const [photoUrls, setPhotoUrls] = useState([]);
 
     const [condition, setCondition] = useState('');
     const [brand, setBrand] = useState('');
@@ -290,9 +272,12 @@ function EditItem() {
     const [region, setRegion] = useState('');
     const [options, setOptions] = useState([]);
 
-    const handleFileChange = (file) => {
-        setSelectedFiles((prev) => [...prev, file]);
-    }
+    const selectAfter = (
+        <Select defaultValue={t('currency')} value={currency} style={{ width: 120 }} onChange={(value) => setCurrency(value)}>
+            <Option value="eur">€</Option>
+            <Option value="rsd">RSD</Option>
+        </Select>
+    );
 
     const fetchSuggestions = async (value) => {
         try {
@@ -406,33 +391,19 @@ function EditItem() {
         }
     };
 
+    const handlePhotoUrlsChange = (newPhotoUrls) => {
+        setPhotoUrls(newPhotoUrls);
+    };
+
+
     const handleSubmit = async (e) => {
+        setLoading(true);
 
         e.preventDefault();
 
+        const validPhotoUrls = photoUrls.filter(url => url !== undefined);
+
         const docRef = doc(db, "advertisment", id);
-
-        const fileUrls = await Promise.all(
-            photoUrls.map(async (file) => {
-                const storageRef = ref(storage, 'advertisment/' + file.name);
-                const uploadTask = uploadBytesResumable(storageRef, file);
-
-                return new Promise((resolve, reject) => {
-                    uploadTask.on('state_changed',
-                        (snapshot) => {
-                        },
-                        (error) => {
-                            reject(error);
-                        },
-                        () => {
-                            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                                resolve(downloadURL);
-                            });
-                        }
-                    );
-                });
-            })
-        );
 
         const updatedData = {
             title: title,
@@ -440,7 +411,7 @@ function EditItem() {
             currency: currency,
             phone: phoneNumber,
             description: description,
-            photoUrls: photoUrls,
+            photoUrls: validPhotoUrls,
             category: category,
             subcategory: subcategory,
             condition: condition,
@@ -463,6 +434,8 @@ function EditItem() {
             area: area,
             location: location,
             coordinates: coordinates,
+            country: country,
+            region: region
         };
 
         try {
@@ -729,6 +702,7 @@ function EditItem() {
 
             else {
                 await updateDoc(docRef, updatedData);
+                setLoading(false);
             }
 
             console.log("Document successfully updated!");
@@ -748,11 +722,11 @@ function EditItem() {
                     const data = docSnap.data();
                     if (auth.currentUser && auth.currentUser.uid === data.from_uid) {
                         setData(data);
-                        setCategory(data.category);
-                        setSubcategory(data.subcategory);
-                        setSelectedFiles(data.photoUrls);
-                        setTitle(data.title);
-                        setPrice(data.price);
+                        setPhotoUrls(data?.photoUrls || [])
+                        setCategory(data?.category);
+                        setSubcategory(data?.subcategory);
+                        setTitle(data?.title);
+                        setPrice(data?.price);
                         setDescription(data?.description);
                         setPhoneNumber(data?.phone);
                         setCondition(data?.condition);
@@ -773,8 +747,8 @@ function EditItem() {
                         setColor(data?.color);
                         setOwners(data?.owners);
                         setSize(data?.size);
-                        setLocation(data.location);
-                        setCoordinates(data.coordinates);
+                        setLocation(data?.location);
+                        setCoordinates(data?.coordinates);
                         console.log("Document data:", data);
                     } else {
                         setData(null);
@@ -791,44 +765,45 @@ function EditItem() {
         fetchData();
     }, [id]);
 
-    const handleCategoryChange = (e) => {
-        setCategory(e.target.value);
+    const handleCategoryChange = (value) => {
+        setCategory(value);
+        setSubcategory('')
     }
 
-    const handleSubcategoryChange = (e) => {
-        setSubcategory(e.target.value);
+    const handleSubcategoryChange = (value) => {
+        setSubcategory(value);
     }
 
     const getSubcategories = () => {
         switch (category) {
             case 'building_materials_and_tools':
-                return (<BuildingMaterial t={t} />);
+                return (<BuildingMaterial t={t} subcategory={subcategory} handleSubCategoryChange={handleSubcategoryChange} />);
             case 'clothes':
-                return (<Clothes t={t} />);
+                return (<Clothes t={t} subcategory={subcategory} handleSubCategoryChange={handleSubcategoryChange} />);
             case 'electronics':
-                return (<Electronics t={t} />);
+                return (<Electronics t={t} subcategory={subcategory} handleSubCategoryChange={handleSubcategoryChange} />);
             case 'house_goods':
-                return (<HouseGoods t={t} />);
+                return (<HouseGoods t={t} subcategory={subcategory} handleSubCategoryChange={handleSubcategoryChange} />);
             case 'transport_goods':
-                return (<TransportGoods t={t} />);
+                return (<TransportGoods t={t} subcategory={subcategory} handleSubCategoryChange={handleSubcategoryChange} />);
             case 'home_appliance':
-                return (<HomeAppliance t={t} />);
+                return (<HomeAppliance t={t} subcategory={subcategory} handleSubCategoryChange={handleSubcategoryChange} />);
             case 'service':
-                return (<Service t={t} />);
+                return (<Service t={t} subcategory={subcategory} handleSubCategoryChange={handleSubcategoryChange} />);
             case 'health_and_beauty':
-                return (<HealthBeauty t={t} />);
+                return (<HealthBeauty t={t} subcategory={subcategory} handleSubCategoryChange={handleSubcategoryChange} />);
             case 'sport':
-                return (<Sport t={t} />);
+                return (<Sport t={t} subcategory={subcategory} handleSubCategoryChange={handleSubcategoryChange} />);
             case 'hobby_n_Relax':
-                return (<HobbyRelax t={t} />);
+                return (<HobbyRelax t={t} subcategory={subcategory} handleSubCategoryChange={handleSubcategoryChange} />);
             case 'child_goods':
-                return (<ChildGoods t={t} />);
+                return (<ChildGoods t={t} subcategory={subcategory} handleSubCategoryChange={handleSubcategoryChange} />);
             case 'estate':
-                return (<Estate t={t} />);
+                return (<Estate t={t} subcategory={subcategory} handleSubCategoryChange={handleSubcategoryChange} />);
             case 'transport':
-                return (<Transport t={t} />);
+                return (<Transport t={t} subcategory={subcategory} handleSubCategoryChange={handleSubcategoryChange} />);
             default:
-                return <option>{t('choce_subcategory')}</option>;
+                return <Option>{t('choce_subcategory')}</Option>;
         }
     }
 
@@ -844,26 +819,36 @@ function EditItem() {
                                 <label>{t('title')}</label>
                                 <Input type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
                             </Form.Item>
-                            <Form.Item className="mb-3">
-                                <label>{t('type')}</label>
+                            <Form.Item
+                                className="mb-3"
+                                label={t('type')}
+                            >
                                 <SelectTypesForClothes type={type} setType={setType} />
                             </Form.Item>
-                            <Form.Item className="mb-3 d-flex align-items-center">
-                                <Input
-                                    type="text"
-                                    value={price}
-                                    onChange={(e) => setPrice(parseInt(e.target.value, 10))}
-                                    placeholder={t('price')}
-                                    className="me-2"
-                                />
-                                <Select value={currency} onChange={(value) => setCurrency(value)}>
-                                    <Option value="">{t('currency')}</Option>
-                                    <Option value="rsd">RSD</Option>
-                                    <Option value="eur">EUR</Option>
-                                </Select>
+                            <Form.Item
+                                label={t('price')}
+                                name='prie'
+                                rules={[
+                                    { required: true, message: 'Please input the price!' },
+                                    {
+                                        validator: (_, value) => {
+                                            if (!value || value <= 0) {
+                                                return Promise.reject(new Error('Price must be greater than zero!'));
+                                            }
+                                            if (!currency) {
+                                                return Promise.reject(new Error('Please select a currency!'));
+                                            }
+                                            return Promise.resolve();
+                                        }
+                                    }
+                                ]}
+                            >
+                                <InputNumber style={{ width: '100%' }} defaultValue={price} addonBefore={selectAfter} onChange={(value) => setPrice(parseInt(value, 10))} />
                             </Form.Item>
-                            <Form.Item className="mb-3">
-                                <label>{t('size')}</label>
+                            <Form.Item
+                                className="mb-3"
+                                label={t('size')}
+                            >
                                 <Select value={size} onChange={(value) => setSize(value)}>
                                     <Option value="">{t('size')}</Option>
                                     <Option value="XXS">XXS</Option>
@@ -878,49 +863,1010 @@ function EditItem() {
                                     <Option value="5XL">5XL</Option>
                                 </Select>
                             </Form.Item>
-                            <Form.Item className="mb-3">
-                                <label>{t('brand')}</label>
+                            <Form.Item
+                                className="mb-3"
+                                label={t('brand')}
+                            >
                                 <Input type="text" value={brand} onChange={(e) => setBrand(e.target.value)} />
                             </Form.Item>
-                            <Form.Item className="mb-3">
-                                <label>{t('condition')}</label>
+                            <Form.Item
+                                className="mb-3"
+                                label={t('condition')}
+                            >
                                 <Select value={condition} onChange={(value) => setCondition(value)}>
-                                    <Option value="">{t('condition')}</Option>
-                                    <Option value="new_cond">Новое</Option>
-                                    <Option value="bu_cond">Б/У</Option>
+                                    <Option value="new_cond">{t('new_cond')}</Option>
+                                    <Option value="bu_cond">{t('bu_cond')}</Option>
                                 </Select>
                             </Form.Item>
-                            <Form.Item className="mb-3">
-                                <label>{t('phone_number')}</label>
+                            <Form.Item
+                                className="mb-3"
+                                label={t('phone_number')}
+                            >
                                 <Input type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
                             </Form.Item>
-                            <Form.Item className="mb-3">
-                                <label>{t('description')}</label>
+                            <Form.Item
+                                className="mb-3"
+                                label={t('description')}
+                            >
                                 <TextArea rows={3} value={description} onChange={(e) => setDescription(e.target.value)} />
                             </Form.Item>
-                            <Form.Item label={t('Coordinates')}>
-                                <MapComponent coordinates={coordinates} setCoordinates={setCoordinates} setRegion={setRegion} setCountry={setCountry} setLocation={setLocation} mapRef={mapRef} />
+                            <Form.Item
+                                className="mb-3"
+                                label={t('photos')}
+                            >
+                                <PhotoUpload data={{ photoUrls }} onPhotoUrlsChange={handlePhotoUrlsChange} />
                             </Form.Item>
-
-                            <Form.Item label={t('Location')}>
-                                <AutoComplete
-                                    options={options}
-                                    onSearch={debounceFetchSuggestions}
-                                    onSelect={handleSelect}
-                                    placeholder="Search location"
-                                    value={location} // Set the value to the selected location name
-                                    onChange={(value) => setLocation(value)} // Handle input changes
-                                >
-                                    <Input />
-                                </AutoComplete>
-                            </Form.Item>
-                            <div className="d-grid gap-2">
-                                <Button onClick={handleSubmit} type="primary" size="large">
-                                    {t('add')}
-                                </Button>
-                            </div>
                         </LoadScript>
                     </>
+                )
+            case 'auto':
+            case 'moto':
+            case 'water_transport':
+                return (
+                    <Form
+                        className='mt-3'
+                        layout="vertical"
+                    >
+                        <Form.Item
+                            className="mb-3"
+                            label={t('title')}
+                        >
+                            <Input type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
+                        </Form.Item>
+                        <Form.Item label={t('choice_mark')}>
+                            <Select
+                                showSearch
+                                value={brand}
+                                onChange={(value) => setBrand(value)}
+                                optionFilterProp="children"
+                                filterOption={(input, option) =>
+                                    option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                }
+                            >
+                                <Option value="Audi">Audi</Option>
+                                <Option value="BMW">BMW</Option>
+                                <Option value="Mersedes">Mersedes</Option>
+                                <Option value="Porshe">Porshe</Option>
+                                <Option value="Volvo">Volvo</Option>
+                                <Option value="Volkswagen">Volkswagen</Option>
+                                <Option value="Ford">Ford</Option>
+                            </Select>
+                        </Form.Item>
+                        <Form.Item label={t('input_model')}>
+                            <Input type="tel" value={model} onChange={(e) => setModel(e.target.value)} />
+                        </Form.Item>
+                        <Form.Item
+                            label={t('price')}
+                            name='prie'
+                            rules={[
+                                { required: true, message: 'Please input the price!' },
+                                {
+                                    validator: (_, value) => {
+                                        if (!value || value <= 0) {
+                                            return Promise.reject(new Error('Price must be greater than zero!'));
+                                        }
+                                        if (!currency) {
+                                            return Promise.reject(new Error('Please select a currency!'));
+                                        }
+                                        return Promise.resolve();
+                                    }
+                                }
+                            ]}
+                        >
+                            <InputNumber style={{ width: '100%' }} value={price} addonBefore={selectAfter} onChange={(value) => setPrice(parseInt(value, 10))}  />
+                        </Form.Item>
+                        <Form.Item label={t('input_year')}>
+                            <Input type="text" value={year} onChange={(e) => setYear(e.target.value)} />
+                        </Form.Item>
+                        <Form.Item label={t('input_meleage')}>
+                            <Input type="text" value={mileage} onChange={(e) => setMileage(e.target.value)} />
+                        </Form.Item>
+                        <Form.Item label={t('choice_body')}>
+                            <Select
+                                showSearch
+                                value={body}
+                                onChange={(value) => setBody(value)}
+                                optionFilterProp="children"
+                                filterOption={(input, option) =>
+                                    option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                }
+                            >
+                                <Option value="sedan">{t('sedan')}</Option>
+                                <Option value="hatchback">{t('hatchback')}</Option>
+                                <Option value="station_wagon">{t('station_wagon')}</Option>
+                                <Option value="coupe">{t('coupe')}</Option>
+                                <Option value="convertible">{t('convertible')}</Option>
+                                <Option value="crossover">{t('crossover')}</Option>
+                                <Option value="suv_sport_utility_vehicle">{t('suv_sport_utility_vehicle')}</Option>
+                                <Option value="pickup_truck">{t('pickup_truck')}</Option>
+                                <Option value="minivan">{t('minivan')}</Option>
+                                <Option value="Limousine">{t('Limousine')}</Option>
+                            </Select>
+                        </Form.Item>
+                        <Form.Item label={t('enter_color')}>
+                            <Input type="text" value={color} onChange={(e) => setColor(e.target.value)} />
+                        </Form.Item>
+                        <Form.Item label={t('choce_transmission')}>
+                            <Select value={transmission} onChange={(value) => setTransmission(value)}>
+                                <Option value="manual_t">{t('manual_t')}</Option>
+                                <Option value="auto_t">{t('auto_t')}</Option>
+                                <Option value="semi_auto_t">{t('semi_auto_t')}</Option>
+                                <Option value="dual_clutch_t">{t('dual_clutch_t')}</Option>
+                                <Option value="continuously_t">{t('continuously_t')}</Option>
+                            </Select>
+                        </Form.Item>
+                        <Form.Item label={t('choice_drive')}>
+                            <Select value={drive} onChange={(value) => setDrive(value)}>
+                                <Option value="fwd">{t('fwd')}</Option>
+                                <Option value="rwd">{t('rwd')}</Option>
+                                <Option value="awd">{t('awd')}</Option>
+                                <Option value="four_wd">{t('four_wd')}</Option>
+                            </Select>
+                        </Form.Item>
+                        <Form.Item label={t('choice_wheel')}>
+                            <Select value={wheel} onChange={(value) => setWheel(value)}>
+                                <Option value="left_hand_drive">{t('left_hand_drive')}</Option>
+                                <Option value="right_hand_drive">{t('right_hand_drive')}</Option>
+                            </Select>
+                        </Form.Item>
+                        <Form.Item
+                            label={t('choice_condition')}
+                            name='condition'
+                            rules={[{ required: true, message: 'Please input the price!' }]}
+                        >
+                            <Select value={condition} onChange={(value) => setCondition(value)}>
+                                <Option value="condition_new">{t('condition_new')}</Option>
+                                <Option value="used">{t('used')}</Option>
+                            </Select>
+                        </Form.Item>
+                        <Form.Item label={t('choice_customs')}>
+                            <Input type="text" value={owners} onChange={(e) => setOwners(e.target.value)} />
+                        </Form.Item>
+                        <Form.Item label={t('phone_number')}>
+                            <Input type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
+                        </Form.Item>
+                        <Form.Item label={t('description')}>
+                            <Input.TextArea rows={3} value={description} onChange={(e) => setDescription(e.target.value)} />
+                        </Form.Item>
+                        <Form.Item
+                            className="mb-3"
+                            label={t('photos')}
+                        >
+                            <PhotoUpload data={{ photoUrls }} onPhotoUrlsChange={handlePhotoUrlsChange} />
+                        </Form.Item>
+
+                    </Form>
+                )
+            case 'phones_and_tablets':
+                return (
+                    <Form
+                        className='mt-3'
+                        layout="vertical"
+                    >
+                        <Form.Item
+                            className="mb-3"
+                            label={t('title')}
+                        >
+                            <Input type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
+                        </Form.Item>
+                        <Form.Item label={t('brand')}>
+                            <Select
+                                showSearch
+                                value={brand}
+                                onChange={(value) => setBrand(value)}
+                                optionFilterProp="children"
+                                filterOption={(input, option) =>
+                                    option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                }
+                            >
+                                <Option value="Samsung">Samsung</Option>
+                                <Option value="Apple">Apple</Option>
+                                <Option value="Xiaomi">Xiaomi</Option>
+                                <Option value="Huawei">Huawei</Option>
+                                <Option value="Honor">Honor</Option>
+                                <Option value="HTC">HTC</Option>
+                                <Option value="Oppo">Oppo</Option>
+                                <Option value="Realme">Realme</Option>
+                                <Option value="Nokia">Nokia</Option>
+                                <Option value="OnePlus">OnePlus</Option>
+                                <Option value="Acer">Acer</Option>
+                                <Option value="Alcatel">Alcatel</Option>
+                                <Option value="Asus">Asus</Option>
+                                <Option value="LG">LG</Option>
+                                <Option value="Meizu">Meizu</Option>
+                                <Option value="Google">Google</Option>
+                                <Option value="Oppo">Oppo</Option>
+                            </Select>
+                        </Form.Item>
+                        <Form.Item label={t('model')}>
+                            <Input type="text" value={model} onChange={(e) => setModel(e.target.value)} />
+                        </Form.Item>
+                        <Form.Item
+                            label={t('price')}
+                            name='prie'
+                            rules={[
+                                { required: true, message: 'Please input the price!' },
+                                {
+                                    validator: (_, value) => {
+                                        if (!value || value <= 0) {
+                                            return Promise.reject(new Error('Price must be greater than zero!'));
+                                        }
+                                        if (!currency) {
+                                            return Promise.reject(new Error('Please select a currency!'));
+                                        }
+                                        return Promise.resolve();
+                                    }
+                                }
+                            ]}
+                        >
+                            <InputNumber style={{ width: '100%' }} defaultValue={price} addonBefore={selectAfter} onChange={(value) => setPrice(parseInt(value, 10))} />
+                        </Form.Item>
+                        <Form.Item label={t('size_screen')}>
+                            <Input type="text" value={screen_size} onChange={(e) => setScreenSize(e.target.value)} />
+                        </Form.Item>
+                        <Form.Item label={t('memory')}>
+                            <Input type="text" value={memory} onChange={(e) => setMemory(e.target.value)} />
+                        </Form.Item>
+                        <Form.Item
+                            label={t('condition')}
+                            name='condition'
+                            rules={[{ required: true, message: 'Please input the price!' }]}
+                        >
+                            <Select value={condition} onChange={(value) => setCondition(value)}>
+                                <Option value="new_cond">{t('new_cond')}</Option>
+                                <Option value="bu_cond">{t('bu_cond')}</Option>
+                            </Select>
+                        </Form.Item>
+                        <Form.Item label={t('phone_number')}>
+                            <Input type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
+                        </Form.Item>
+                        <Form.Item label={t('description')}>
+                            <Input.TextArea rows={3} value={description} onChange={(e) => setDescription(e.target.value)} />
+                        </Form.Item>
+                        <Form.Item
+                            className="mb-3"
+                            label={t('photos')}
+                        >
+                            <PhotoUpload data={{ photoUrls }} onPhotoUrlsChange={handlePhotoUrlsChange} />
+                        </Form.Item>
+                    </Form>
+                )
+            case 'tv':
+                return (
+                    <Form
+                        className='mt-3'
+                        layout="vertical"
+                    >
+                        <Form.Item
+                            className="mb-3"
+                            label={t('title')}
+                        >
+                            <Input type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
+                        </Form.Item>
+                        <Form.Item label={t('brand')}>
+                            <Select
+                                showSearch
+                                value={brand}
+                                onChange={(value) => setBrand(value)}
+                                optionFilterProp="children"
+                                filterOption={(input, option) =>
+                                    option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                }
+                            >
+                                <Option value="Samsung">Samsung</Option>
+                                <Option value="Apple">LG</Option>
+                                <Option value="Xiaomi">Xiaomi</Option>
+                                <Option value="Huawei">Panasonic</Option>
+                                <Option value="Honor">Philips</Option>
+                            </Select>
+                        </Form.Item>
+                        <Form.Item label={t('model')}>
+                            <Input type="text" value={model} onChange={(e) => setModel(e.target.value)} />
+                        </Form.Item>
+                        <Form.Item
+                            label={t('price')}
+                            name='prie'
+                            rules={[
+                                { required: true, message: 'Please input the price!' },
+                                {
+                                    validator: (_, value) => {
+                                        if (!value || value <= 0) {
+                                            return Promise.reject(new Error('Price must be greater than zero!'));
+                                        }
+                                        if (!currency) {
+                                            return Promise.reject(new Error('Please select a currency!'));
+                                        }
+                                        return Promise.resolve();
+                                    }
+                                }
+                            ]}
+                        >
+                            <InputNumber style={{ width: '100%' }} defaultValue={price} addonBefore={selectAfter} onChange={(value) => setPrice(parseInt(value, 10))}  />
+                        </Form.Item>
+                        <Form.Item label={t('size_screen')}>
+                            <Input type="tel" value={screen_size} onChange={(e) => setScreenSize(e.target.value)} />
+                        </Form.Item>
+                        <Form.Item
+                            label={t('condition')}
+                            name='condition'
+                            rules={[{ required: true, message: 'Please input the price!' }]}
+                        >
+                            <Select value={condition} onChange={(value) => setCondition(value)}>
+                                <Option value="new_cond">{t('new_cond')}</Option>
+                                <Option value="bu_cond">{t('bu_cond')}</Option>
+                            </Select>
+                        </Form.Item>
+                        <Form.Item label={t('phone_number')}>
+                            <Input type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
+                        </Form.Item>
+                        <Form.Item label={t('description')}>
+                            <Input.TextArea rows={3} value={description} onChange={(e) => setDescription(e.target.value)} />
+                        </Form.Item>
+                        <Form.Item
+                            className="mb-3"
+                            label={t('photos')}
+                        >
+                            <PhotoUpload data={{ photoUrls }} onPhotoUrlsChange={handlePhotoUrlsChange} />
+                        </Form.Item>
+                    </Form>
+                )
+            case 'game_console':
+                return (
+                    <Form
+                        className='mt-3'
+                        layout="vertical"
+                    >
+                        <Form.Item
+                            className="mb-3"
+                            label={t('title')}
+                        >
+                            <Input type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
+                        </Form.Item>
+                        <Form.Item label={t('brand')}>
+                            <Select
+                                showSearch
+                                value={brand}
+                                onChange={(value) => setBrand(value)}
+                                optionFilterProp="children"
+                                filterOption={(input, option) =>
+                                    option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                }
+                            >
+                                <Option value="Sony PlayStation">Sony PlayStation</Option>
+                                <Option value="Microsoft Xbox">Microsoft Xbox</Option>
+                                <Option value="Nintendo">Nintendo</Option>
+                                <Option value="Sega">Sega</Option>
+                                <Option value="Atari">Atari</Option>
+                                <Option value="SNK">SNK</Option>
+                                <Option value="Neo Geo">Neo Geo</Option>
+                                <Option value="Ouya">Ouya</Option>
+                                <Option value="Steam Machine">Steam Machine</Option>
+                                <Option value="Nvidia Sheild">Nvidia Sheild</Option>
+                                <Option value="Intellivision">Intellivision</Option>
+                                <Option value="GameBoy">GameBoy</Option>
+                            </Select>
+                        </Form.Item>
+                        <Form.Item label={t('model')}>
+                            <Input type="text" value={model} onChange={(e) => setModel(e.target.value)} />
+                        </Form.Item>
+                        <Form.Item
+                            label={t('price')}
+                            name='prie'
+                            rules={[
+                                { required: true, message: 'Please input the price!' },
+                                {
+                                    validator: (_, value) => {
+                                        if (!value || value <= 0) {
+                                            return Promise.reject(new Error('Price must be greater than zero!'));
+                                        }
+                                        if (!currency) {
+                                            return Promise.reject(new Error('Please select a currency!'));
+                                        }
+                                        return Promise.resolve();
+                                    }
+                                }
+                            ]}
+                        >
+                            <InputNumber style={{ width: '100%' }} defaultValue={price} addonBefore={selectAfter} onChange={(value) => setPrice(parseInt(value, 10))}  />
+                        </Form.Item>
+                        <Form.Item
+                            label={t('condition')}
+                            name='condition'
+                            rules={[{ required: true, message: 'Please input the price!' }]}
+                        >
+                            <Select value={condition} onChange={(value) => setCondition(value)}>
+                                <Option value="new_cond">{t('new_cond')}</Option>
+                                <Option value="bu_cond">{t('bu_cond')}</Option>
+                            </Select>
+                        </Form.Item>
+                        <Form.Item label={t('phone_number')}>
+                            <Input type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
+                        </Form.Item>
+                        <Form.Item label={t('description')}>
+                            <Input.TextArea rows={3} value={description} onChange={(e) => setDescription(e.target.value)} />
+                        </Form.Item>
+                        <Form.Item
+                            className="mb-3"
+                            label={t('photos')}
+                        >
+                            <PhotoUpload data={{ photoUrls }} onPhotoUrlsChange={handlePhotoUrlsChange} />
+                        </Form.Item>
+                    </Form>
+                )
+            case 'photo_video':
+                return (
+                    <Form
+                        className='mt-3'
+                        layout="vertical"
+                    >
+                        <Form.Item
+                            className="mb-3"
+                            label={t('title')}
+                        >
+                            <Input type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
+                        </Form.Item>
+                        <Form.Item label={t('brand')}>
+                            <Select
+                                showSearch
+                                value={brand}
+                                onChange={(value) => setBrand(value)}
+                                optionFilterProp="children"
+                                filterOption={(input, option) =>
+                                    option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                }
+                            >
+                                <Option value="Canon">Canon</Option>
+                                <Option value="Sony">Sony</Option>
+                                <Option value="Nikon">Nikon</Option>
+                                <Option value="Tamron">Tamron</Option>
+                                <Option value="Fujifilm">Fujifilm</Option>
+                                <Option value="Panasonic">Panasonic</Option>
+                                <Option value="Olympus">Olympus</Option>
+
+                            </Select>
+                        </Form.Item>
+                        <Form.Item label={t('model')}>
+                            <Input type="text" value={model} onChange={(e) => setModel(e.target.value)} />
+                        </Form.Item>
+                        <Form.Item
+                            label={t('price')}
+                            name='prie'
+                            rules={[
+                                { required: true, message: 'Please input the price!' },
+                                {
+                                    validator: (_, value) => {
+                                        if (!value || value <= 0) {
+                                            return Promise.reject(new Error('Price must be greater than zero!'));
+                                        }
+                                        if (!currency) {
+                                            return Promise.reject(new Error('Please select a currency!'));
+                                        }
+                                        return Promise.resolve();
+                                    }
+                                }
+                            ]}
+                        >
+                            <InputNumber style={{ width: '100%' }} defaultValue={price} addonBefore={selectAfter} onChange={(value) => setPrice(parseInt(value, 10))}  />
+                        </Form.Item>
+                        <Form.Item
+                            label={t('condition')}
+                            name='condition'
+                            rules={[{ required: true, message: 'Please input the price!' }]}
+                        >
+                            <Select value={condition} onChange={(value) => setCondition(value)}>
+                                <Option value="new_cond">{t('new_cond')}</Option>
+                                <Option value="bu_cond">{t('bu_cond')}</Option>
+                            </Select>
+                        </Form.Item>
+                        <Form.Item label={t('phone_number')}>
+                            <Input type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
+                        </Form.Item>
+                        <Form.Item label={t('description')}>
+                            <Input.TextArea rows={3} value={description} onChange={(e) => setDescription(e.target.value)} />
+                        </Form.Item>
+                        <Form.Item
+                            className="mb-3"
+                            label={t('photos')}
+                        >
+                            <PhotoUpload data={{ photoUrls }} onPhotoUrlsChange={handlePhotoUrlsChange} />
+                        </Form.Item>
+                    </Form>
+                )
+            case 'computers':
+                return (
+                    <Form
+                        className='mt-3'
+                        layout="vertical"
+                    >
+
+                        <Form.Item
+                            className="mb-3"
+                            label={t('title')}
+                        >
+                            <Input type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
+                        </Form.Item>
+                        <Form.Item label={t('brand')}>
+                            <Select
+                                showSearch
+                                value={brand}
+                                onChange={(value) => setBrand(value)}
+                                optionFilterProp="children"
+                                filterOption={(input, option) =>
+                                    option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                }
+                            >
+                                <Option value="Samsung">Samsung</Option>
+                                <Option value="Apple">Apple</Option>
+                                <Option value="Xiaomi">Xiaomi</Option>
+                                <Option value="Huawei">Huawei</Option>
+                                <Option value="Honor">Honor</Option>
+                                <Option value="Acer">Acer</Option>
+                                <Option value="Asus">Asus</Option>
+                                <Option value="LG">LG</Option>
+                                <Option value="Google">Google</Option>
+                                <Option value="MSI">MSI</Option>
+                            </Select>
+                        </Form.Item>
+                        <Form.Item label={t('model')}>
+                            <Input type="text" value={model} onChange={(e) => setModel(e.target.value)} />
+                        </Form.Item>
+                        <Form.Item label={t('type')}>
+                            <Select value={type} onChange={(value) => setType(value)}>
+                                <Option value="laptop">{t('laptop')}</Option>
+                                <Option value="stationary_computer">{t('stationary_computer')}</Option>
+                                <Option value="micro_computer">{t('micro_computer')}</Option>
+                                <Option value="monoblock">{t('monoblock')}</Option>
+                            </Select>
+                        </Form.Item>
+                        <Form.Item
+                            label={t('price')}
+                            name='prie'
+                            rules={[
+                                { required: true, message: 'Please input the price!' },
+                                {
+                                    validator: (_, value) => {
+                                        if (!value || value <= 0) {
+                                            return Promise.reject(new Error('Price must be greater than zero!'));
+                                        }
+                                        if (!currency) {
+                                            return Promise.reject(new Error('Please select a currency!'));
+                                        }
+                                        return Promise.resolve();
+                                    }
+                                }
+                            ]}
+                        >
+                            <InputNumber style={{ width: '100%' }} defaultValue={price} addonBefore={selectAfter} onChange={(value) => setPrice(parseInt(value, 10))}  />
+                        </Form.Item>
+                        <Form.Item
+                            label={t('condition')}
+                            name='condition'
+                            rules={[{ required: true, message: 'Please input the price!' }]}
+                        >
+                            <Select value={condition} onChange={(value) => setCondition(value)}>
+                                <Option value="new_cond">{t('new_cond')}</Option>
+                                <Option value="bu_cond">{t('bu_cond')}</Option>
+                            </Select>
+                        </Form.Item>
+                        <Form.Item label={t('phone_number')}>
+                            <Input type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
+                        </Form.Item>
+                        <Form.Item label={t('description')}>
+                            <Input.TextArea rows={3} value={description} onChange={(e) => setDescription(e.target.value)} />
+                        </Form.Item>
+                        <Form.Item
+                            className="mb-3"
+                            label={t('photos')}
+                        >
+                            <PhotoUpload data={{ photoUrls }} onPhotoUrlsChange={handlePhotoUrlsChange} />
+                        </Form.Item>
+                    </Form>
+                )
+            case 'computer_accessories':
+                return (
+                    <Form
+                        className='mt-3'
+                        layout="vertical"
+                    >
+                        <Form.Item
+                            className="mb-3"
+                            label={t('title')}
+                        >
+                            <Input type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
+                        </Form.Item>
+                        <Form.Item label={t('brand')}>
+                            <Select
+                                showSearch
+                                value={brand}
+                                onChange={(value) => setBrand(value)}
+                                optionFilterProp="children"
+                                filterOption={(input, option) =>
+                                    option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                }
+                            >
+                                <Option value="Logitech">Logitech</Option>
+                                <Option value="Razer">Razer</Option>
+                                <Option value="Microsoft">Microsoft</Option>
+                                <Option value="Corsair">Corsair</Option>
+                                <Option value="SteelSeries">SteelSeries</Option>
+                                <Option value="HyperX">HyperX</Option>
+                                <Option value="Asus">Asus</Option>
+                                <Option value="HP">HP</Option>
+                                <Option value="Dell">Dell</Option>
+                                <Option value="MSI">MSI</Option>
+                                <Option value="Lenovo">Lenovo</Option>
+                                <Option value="Acer">Acer</Option>
+                                <Option value="Apple">Apple</Option>
+                                <Option value="Thermaltake">Thermaltake</Option>
+                                <Option value="Kingston">Kingston</Option>
+                            </Select>
+                        </Form.Item>
+                        <Form.Item label={t('model')}>
+                            <Input type="text" value={model} onChange={(e) => setModel(e.target.value)} />
+                        </Form.Item>
+                        <Form.Item label={t('type')}>
+                            <Select value={type} onChange={(value) => setType(value)}>
+                                <Option>{t('type')}</Option>
+                                <Option value="mouse">{t('mouse')}</Option>
+                                <Option value="keyboard">{t('keyboard')}</Option>
+                                <Option value="headphones">{t('headphones')}</Option>
+                                <Option value="monitor">{t('monitor')}</Option>
+                            </Select>
+                        </Form.Item>
+                        <Form.Item
+                            label={t('price')}
+                            name='prie'
+                            rules={[
+                                { required: true, message: 'Please input the price!' },
+                                {
+                                    validator: (_, value) => {
+                                        if (!value || value <= 0) {
+                                            return Promise.reject(new Error('Price must be greater than zero!'));
+                                        }
+                                        if (!currency) {
+                                            return Promise.reject(new Error('Please select a currency!'));
+                                        }
+                                        return Promise.resolve();
+                                    }
+                                }
+                            ]}
+                        >
+                            <InputNumber style={{ width: '100%' }} defaultValue={price} addonBefore={selectAfter} onChange={(value) => setPrice(parseInt(value, 10))}  />
+                        </Form.Item>
+                        <Form.Item
+                            label={t('condition')}
+                            name='condition'
+                            rules={[{ required: true, message: 'Please input the price!' }]}
+                        >
+                            <Select value={condition} onChange={(value) => setCondition(value)}>
+                                <Option value="new_cond">{t('new_cond')}</Option>
+                                <Option value="bu_cond">{t('bu_cond')}</Option>
+                            </Select>
+                        </Form.Item>
+                        <Form.Item label={t('phone_number')}>
+                            <Input type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
+                        </Form.Item>
+                        <Form.Item label={t('description')}>
+                            <Input.TextArea rows={3} value={description} onChange={(e) => setDescription(e.target.value)} />
+                        </Form.Item>
+                        <Form.Item
+                            className="mb-3"
+                            label={t('photos')}
+                        >
+                            <PhotoUpload data={{ photoUrls }} onPhotoUrlsChange={handlePhotoUrlsChange} />
+                        </Form.Item>
+                    </Form>
+                )
+            case 'rent_estate':
+            case 'sale_estate':
+                return (
+                    <Form
+                        className='mt-3'
+                        layout="vertical"
+                    >
+                        <Form.Item
+                            className="mb-3"
+                            label={t('title')}
+                        >
+                            <Input type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
+                        </Form.Item>
+                        <Form.Item
+                            label={t('type')}
+                            name="type"
+                            rules={[{ required: true, message: 'Please input the type!' }]}
+                        >
+                            <Select aria-label="Default select example" value={type} onChange={(value) => setType(value)}>
+                                <Option value="house">{t('house')}</Option>
+                                <Option value="garage">{t('garage')}</Option>
+                                <Option value="aparment">{t('aparment')}</Option>
+                                <Option value="commercial_real_estate">{t('commercial_real_estate')}</Option>
+                                <Option value="room">{t('room')}</Option>
+                            </Select>
+                        </Form.Item>
+                        <Form.Item
+                            label={t('price')}
+                            name='prie'
+                            rules={[
+                                { required: true, message: 'Please input the price!' },
+                                {
+                                    validator: (_, value) => {
+                                        if (!value || value <= 0) {
+                                            return Promise.reject(new Error('Price must be greater than zero!'));
+                                        }
+                                        if (!currency) {
+                                            return Promise.reject(new Error('Please select a currency!'));
+                                        }
+                                        return Promise.resolve();
+                                    }
+                                }
+                            ]}
+                        >
+                            <InputNumber style={{ width: '100%' }} value={price} addonBefore={selectAfter} onChange={(value) => setPrice(parseInt(value, 10))}  />
+                        </Form.Item>
+                        <Form.Item label={t('rooms_amount')}>
+                            <Input type="text" value={roomsAmout} onChange={(e) => setRoomsAmount(e.target.value)} />
+                        </Form.Item>
+                        <Form.Item label={t('area')}>
+                            <Input type="text" value={area} onChange={(e) => setArea(e.target.value)} />
+                        </Form.Item>
+                        <Form.Item
+                            label={t('owner_rent')}
+                        >
+                            <Select aria-label="Default select example" value={owner} onChange={(value) => setOwner(value)}>
+                                <Option value="owner">{t('owner')}</Option>
+                                <Option value="realtor">{t('realtor')}</Option>
+                            </Select>
+                        </Form.Item>
+                        <Form.Item label={t('phone_number')}>
+                            <Input type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
+                        </Form.Item>
+                        <Form.Item label={t('description')}>
+                            <Input.TextArea rows={3} value={description} onChange={(e) => setDescription(e.target.value)} />
+                        </Form.Item>
+                        <Form.Item
+                            className="mb-3"
+                            label={t('photos')}
+                        >
+                            <PhotoUpload data={{ photoUrls }} onPhotoUrlsChange={handlePhotoUrlsChange} />
+                        </Form.Item>
+                    </Form>
+                )
+            case 'refrigerators':
+            case 'washing_machines':
+            case 'vacuum_cleaners':
+            case 'stoves_and_ovens':
+            case 'sewing_equipment':
+            case 'food_preparation':
+            case 'dishwasher':
+                return (
+                    <Form
+                        className='mt-3'
+                        layout="vertical"
+                    >
+                        <Form.Item
+                            className="mb-3"
+                            label={t('title')}
+                        >
+                            <Input type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
+                        </Form.Item>
+                        <Form.Item label={t('brand')}>
+                            <Input type='text' value={brand} onChange={(e) => setBrand(e.target.value)} />
+                        </Form.Item>
+                        <Form.Item
+                            label={t('price')}
+                            name='prie'
+                            rules={[
+                                { required: true, message: 'Please input the price!' },
+                                {
+                                    validator: (_, value) => {
+                                        if (!value || value <= 0) {
+                                            return Promise.reject(new Error('Price must be greater than zero!'));
+                                        }
+                                        if (!currency) {
+                                            return Promise.reject(new Error('Please select a currency!'));
+                                        }
+                                        return Promise.resolve();
+                                    }
+                                }
+                            ]}
+                        >
+                            <InputNumber style={{ width: '100%' }} defaultValue={price} addonBefore={selectAfter} onChange={(value) => setPrice(parseInt(value, 10))}  />
+                        </Form.Item>
+                        <Form.Item
+                            label={t('condition')}
+                            name='condition'
+                            rules={[{ required: true, message: 'Please input the price!' }]}
+                        >
+                            <Select value={condition} onChange={(value) => setCondition(value)}>
+                                <Option value="new_cond">{t('new_cond')}</Option>
+                                <Option value="bu_cond">{t('bu_cond')}</Option>
+                            </Select>
+                        </Form.Item>
+                        <Form.Item label={t('phone_number')}>
+                            <Input type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
+                        </Form.Item>
+                        <Form.Item label={t('description')}>
+                            <Input.TextArea rows={3} value={description} onChange={(e) => setDescription(e.target.value)} />
+                        </Form.Item>
+                        <Form.Item
+                            className="mb-3"
+                            label={t('photos')}
+                        >
+                            <PhotoUpload data={{ photoUrls }} onPhotoUrlsChange={handlePhotoUrlsChange} />
+                        </Form.Item>
+                    </Form>
+                )
+            case 'furniture':
+            case 'lighting':
+            case 'dishes':
+            case 'garden_equipment':
+            case 'domestic_cleaning':
+            case 'kitchen_equipment':
+            case 'other_cat':
+            case 'tools':
+            case 'building_materials':
+            case 'heating_and_ventilation':
+            case 'plumbing':
+            case 'electrics':
+            case 'windows':
+            case 'doors':
+            case 'spares':
+            case 'tires_and_wheels':
+            case 'accessories_and_tools':
+            case 'sports_protections':
+            case 'bicycles':
+            case 'scooters':
+            case 'skateboards':
+            case 'hoverboards_and_electric_scooters':
+            case 'ball_games':
+            case 'hunting_and_fishing':
+            case 'tourism_and_outdoor_recreation':
+            case 'billiards_and_bowling':
+            case 'tennis_and_badminton':
+            case 'exercise_equipment_and_fitness':
+            case 'sports_nutrition':
+            case 'water_sports':
+            case 'sapboards':
+            case 'table_games':
+            case 'computer_games':
+            case 'books_n_magazines':
+            case 'tickets':
+            case 'collections':
+            case 'art_materials':
+            case 'music':
+            case 'music_tools':
+                return (
+                    <Form
+                        className='mt-3'
+                        layout="vertical">
+                        <Form.Item
+                            className="mb-3"
+                            label={t('title')}
+                        >
+                            <Input type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
+                        </Form.Item>
+                        <Form.Item
+                            label={t('price')}
+                            name='prie'
+                            rules={[
+                                { required: true, message: 'Please input the price!' },
+                                {
+                                    validator: (_, value) => {
+                                        if (!value || value <= 0) {
+                                            return Promise.reject(new Error('Price must be greater than zero!'));
+                                        }
+                                        if (!currency) {
+                                            return Promise.reject(new Error('Please select a currency!'));
+                                        }
+                                        return Promise.resolve();
+                                    }
+                                }
+                            ]}
+                        >
+                            <InputNumber style={{ width: '100%' }} defaultValue={price} addonBefore={selectAfter} onChange={(value) => setPrice(parseInt(value, 10))}  />
+                        </Form.Item>
+                        <Form.Item
+                            label={t('condition')}
+                            name='condition'
+                            rules={[{ required: true, message: 'Please input the condition!' }]}
+                        >
+                            <Select value={condition} onChange={(value) => setCondition(value)}>
+                                <Option value="new_cond">{t('new_cond')}</Option>
+                                <Option value="bu_cond">{t('bu_cond')}</Option>
+                            </Select>
+                        </Form.Item>
+                        <Form.Item label={t('phone_number')}>
+                            <Input type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
+                        </Form.Item>
+                        <Form.Item label={t('description')}>
+                            <Input.TextArea rows={3} value={description} onChange={(e) => setDescription(e.target.value)} />
+                        </Form.Item>
+                        <Form.Item
+                            className="mb-3"
+                            label={t('photos')}
+                        >
+                            <PhotoUpload data={{ photoUrls }} onPhotoUrlsChange={handlePhotoUrlsChange} />
+                        </Form.Item>
+                    </Form>
+                )
+            case 'education':
+            case 'handyman':
+            case 'beauty_and_health':
+            case 'transportation':
+            case 'repair_and_construction':
+            case 'computer_services':
+            case 'business_services':
+            case 'cleaning':
+            case 'automotive_services':
+            case 'appliance_repair':
+            case 'event_planning':
+            case 'photography_and_videography':
+            case 'custom_manufacturing':
+            case 'pet_care':
+            case 'car_seats':
+            case 'health_and_care':
+            case 'toys_and_games':
+            case 'strollers':
+            case 'feeding_and_nutrition':
+            case 'bathing':
+            case 'nursery':
+            case 'diapers_and_potties':
+            case 'baby_monitors':
+            case 'maternity_products':
+            case 'schoold_supplies':
+            case 'makeup':
+            case 'manicure_and_pedicure':
+            case 'healthcare_products':
+            case 'perfume':
+            case 'skincare':
+            case 'haircare':
+            case 'tattoos_and_tatooing':
+            case 'tanning_and_sunbeds':
+            case 'personal_hygiene_products':
+                return (
+                    <Form
+                        className='mt-3'
+                        layout="vertical"
+                    >
+                        <Form.Item
+                            className="mb-3"
+                            label={t('title')}
+                        >
+                            <Input type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
+                        </Form.Item>
+                        <Form.Item
+                            label={t('price')}
+                            name='prie'
+                            rules={[
+                                { required: true, message: 'Please input the price!' },
+                                {
+                                    validator: (_, value) => {
+                                        if (!value || value <= 0) {
+                                            return Promise.reject(new Error('Price must be greater than zero!'));
+                                        }
+                                        if (!currency) {
+                                            return Promise.reject(new Error('Please select a currency!'));
+                                        }
+                                        return Promise.resolve();
+                                    }
+                                }
+                            ]}
+                        >
+                            <InputNumber style={{ width: '100%' }} defaultValue={price} addonBefore={selectAfter} onChange={(value) => setPrice(parseInt(value, 10))}  />
+                        </Form.Item>
+                        <Form.Item label={t('phone_number')}>
+                            <Input type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
+                        </Form.Item>
+                        <Form.Item label={t('description')}>
+                            <Input.TextArea rows={3} value={description} onChange={(e) => setDescription(e.target.value)} />
+                        </Form.Item>
+                        <Form.Item
+                            className="mb-3"
+                            label={t('photos')}
+                        >
+                            <PhotoUpload data={{ photoUrls }} onPhotoUrlsChange={handlePhotoUrlsChange} />
+                        </Form.Item>
+                    </Form>
                 )
             default:
                 return null;
@@ -934,6 +1880,12 @@ function EditItem() {
                 @media (max-width: 1000px) {
                     body {
                         padding-bottom: 4.5rem;
+                        padding-top: 3.5rem;
+                    }
+                }
+                @media (min-width: 1000px) {
+                    body {
+                        padding-top: 4.5rem;
                     }
                 }
                 `}
@@ -941,54 +1893,52 @@ function EditItem() {
             <MyNavbar />
 
             <NavBarBack />
-            {data && ( // Если data не null, отобразите форму
-                <Layout style={{ padding: '0 24px', minHeight: '100vh' }}>
+            {data && (
 
-                    <div style={{ padding: '24px', flex: 1 }}>
-                        <h3>{t('edit_advertisement')}</h3>
+                <Form
+                    className='mt-3 container'
+                    layout="vertical"
+                >
+                    <h3>{t('edit_advertisement')}</h3>
+                    <Form.Item
+                        label={t('category')}
+                        name="category"
+                    >
                         <CategorySelect handleCategoryChange={handleCategoryChange} category={category} t={t} />
+                    </Form.Item>
 
-                        <Form.Item
-                            label={t('Subcategory')}
-                            name="subcategory"
+                    <Form.Item
+                        label={t('Subcategory')}
+                        name="subcategory"
+                    >
+                        {getSubcategories()}
+                    </Form.Item>
+                    {getForm()}
+                    <Form.Item label={t('Coordinates')}>
+                        <MapComponent
+                            coordinates={coordinates}
+                            setCoordinates={setCoordinates}
+                            setRegion={setRegion}
+                            setCountry={setCountry}
+                            setLocation={setLocation}
+                            mapRef={mapRef}
+                        />
+                    </Form.Item>
+
+                    <Form.Item label={t('Location')}>
+                        <AutoComplete
+                            options={options}
+                            onSearch={debounceFetchSuggestions}
+                            onSelect={handleSelect}
+                            placeholder="Search location"
+                            value={location}
+                            onChange={(value) => setLocation(value)}
                         >
-                            <Select
-                                className="mb-3"
-                                onChange={handleSubcategoryChange}
-                                value={subcategory}
-                                aria-label="Default select example"
-                            >
-                                {getSubcategories()}
-                            </Select>
-                        </Form.Item>
-                        <Form.Item label={t('Coordinates')}>
-                            <MapComponent
-                                coordinates={coordinates}
-                                setCoordinates={setCoordinates}
-                                setRegion={setRegion}
-                                setCountry={setCountry}
-                                setLocation={setLocation}
-                                mapRef={mapRef}
-                            />
-                        </Form.Item>
-
-                        <Form.Item label={t('Location')}>
-                            <AutoComplete
-                                options={options}
-                                onSearch={debounceFetchSuggestions}
-                                onSelect={handleSelect}
-                                placeholder="Search location"
-                                value={location} // Set the value to the selected location name
-                                onChange={(value) => setLocation(value)} // Handle input changes
-                            >
-                                <Input />
-                            </AutoComplete>
-                        </Form.Item>
-                        {getForm()}
-
-                        
-                    </div>
-                </Layout>
+                            <Input />
+                        </AutoComplete>
+                    </Form.Item>
+                    <SaveButton loading={loading} handleSubmit={handleSubmit} t={t} />
+                </Form>
             )}
         </>
     )

@@ -1,11 +1,20 @@
 import React from 'react'
+import { Select } from 'antd';
 
-export default function Estate({t}) {
+const { Option } = Select;
+
+export default function Estate({ handleSubCategoryChange, subcategory, t }) {
     return (
-        <>
-            <option>{t('choce_subcategory')}</option>
-            <option value="sale_estate">{t('sale_estate')}</option>
-            <option value="rent_estate">{t('rent_estate')}</option>
-        </>
+        <Select
+            className="mb-3"
+            aria-label="Default select example"
+            onChange={handleSubCategoryChange}
+            value={subcategory}
+            style={{ width: '100%' }}
+        >
+            <Option>{t('choce_subcategory')}</Option>
+            <Option value="sale_estate">{t('sale_estate')}</Option>
+            <Option value="rent_estate">{t('rent_estate')}</Option>
+        </Select>
     )
 }

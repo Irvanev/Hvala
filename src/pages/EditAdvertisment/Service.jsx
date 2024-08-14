@@ -1,23 +1,32 @@
 import React from 'react'
+import { Select } from 'antd';
 
-export default function Service({ t }) {
+const { Option } = Select;
+
+export default function Service({ handleSubCategoryChange, subcategory, t }) {
     return (
-        <>
-            <option>{t('choce_subcategory')}</option>
-            <option value="education">{t('education')}</option>
-            <option value="handyman">{t('handyman')}</option>
-            <option value="beauty_and_health"> {t('beauty_and_health')}</option>
-            <option value="transportation"> {t('transportation')}</option>
-            <option value="repair_and_construction"> {t('repair_and_construction')}</option>
-            <option value="computer_services"> {t('computer_services')}</option>
-            <option value="business_services"> {t('business_services')}</option>
-            <option value="cleaning"> {t('cleaning')}</option>
-            <option value="automotive_services"> {t('automotive_services')}</option>
-            <option value="appliance_repair"> {t('appliance_repair')}</option>
-            <option value="event_planning"> {t('event_planning')}</option>
-            <option value="photography_and_videography"> {t('photography_and_videography')}</option>
-            <option value="custom_manufacturing"> {t('custom_manufacturing')}</option>
-            <option value="pet_care"> {t('pet_care')}</option>
-        </>
+        <Select
+            className="mb-3"
+            aria-label="Default select example"
+            onChange={handleSubCategoryChange}
+            value={subcategory}
+            style={{ width: '100%' }}
+        >
+            <Option>{t('choce_subcategory')}</Option>
+            <Option value="education">{t('education')}</Option>
+            <Option value="handyman">{t('handyman')}</Option>
+            <Option value="beauty_and_health"> {t('beauty_and_health')}</Option>
+            <Option value="transportation"> {t('transportation')}</Option>
+            <Option value="repair_and_construction"> {t('repair_and_construction')}</Option>
+            <Option value="computer_services"> {t('computer_services')}</Option>
+            <Option value="business_services"> {t('business_services')}</Option>
+            <Option value="cleaning"> {t('cleaning')}</Option>
+            <Option value="automotive_services"> {t('automotive_services')}</Option>
+            <Option value="appliance_repair"> {t('appliance_repair')}</Option>
+            <Option value="event_planning"> {t('event_planning')}</Option>
+            <Option value="photography_and_videography"> {t('photography_and_videography')}</Option>
+            <Option value="custom_manufacturing"> {t('custom_manufacturing')}</Option>
+            <Option value="pet_care"> {t('pet_care')}</Option>
+        </Select>
     )
 }
