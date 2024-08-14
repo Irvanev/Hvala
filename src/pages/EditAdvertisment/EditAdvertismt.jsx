@@ -392,10 +392,14 @@ function EditItem() {
                         console.log('----');
                     } else {
                         console.error('Geocoder failed due to: ' + status);
+                        setCountry(getCountryKey(country));
+                        setRegion(getRegionKey(region));
                     }
                 });
             } else {
                 console.error('Invalid coordinates received:', selectedPlace);
+                setCountry(getCountryKey(country));
+                setRegion(getRegionKey(region));
             }
         } else {
             console.error('Selected place not found:', value);

@@ -288,9 +288,13 @@ export const MapComponent = ({ coordinates, setCoordinates, setCountry, setRegio
                     } else {
                         console.log("NOT OK");
                         setLocation('No results found');
+                        setCountry(getCountryKey(country));
+                        setRegion(getRegionKey(region));
                     }
                 } else {
-                    setLocation('Geocoder failed due to: ' + status);
+                    setLocation(location);
+                    setCountry(getCountryKey(country));
+                    setRegion(getRegionKey(region));
                 }
             });
         }
