@@ -286,13 +286,16 @@ export const MapComponent = ({ coordinates, setCoordinates, setCountry, setRegio
                         setCountry(getCountryKey(country));
                         setRegion(getRegionKey(region));
                     } else {
+                        let country = '';
+                        let region = '';
+
                         console.log("NOT OK");
-                        setLocation('No results found');
                         setCountry(getCountryKey(country));
                         setRegion(getRegionKey(region));
                     }
                 } else {
-                    setLocation(location);
+                    let country = '';
+                    let region = '';
                     setCountry(getCountryKey(country));
                     setRegion(getRegionKey(region));
                 }
