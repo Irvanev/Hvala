@@ -21,6 +21,11 @@ const markerStyle = {
     zIndex: 1,
 };
 
+const defaultCenter = {
+    lat: 0,
+    lng: 0
+};
+
 function getCountryKey(string) {
         if (string.includes("Serbia") || string.includes("Сербия") || string.includes("Србија")) {
             return "serbia";
@@ -213,50 +218,42 @@ function getCountryKey(string) {
         }
     }
 
-    
+const getLatLng = (geoPoint) => ({
+    lat: geoPoint._lat,
+    lng: geoPoint._long
+});
 
-    
-
-export const MapComponent = ({ coordinates, setCoordinates,setCountry, country, setRegion, region, setLocation, location, mapRef }) => {
-
-    const countryMappings = {
-        'Черногория': 'montenegro',
-        'Црна Гора': 'montenegro',
-        'Crna Gora': 'montenegro',
-        'Montenegro': 'montenegro',
-        'Сербия': 'serbia',
-        'Србија': 'serbia',
-        'Srbija': 'serbia',
-        'Serbia': 'serbia',
-        'Хорватия': 'croatia',
-        'Хрватска': 'croatia',
-        'Hrvatska': 'croatia',
-        'Croatia': 'croatia',
-        'Босния и Герцеговина': 'bosnia_and_herzegovina',
-        'Босна и Херцеговина': 'bosnia_and_herzegovina',
-        'Bosna i Hercegovina': 'bosnia_and_herzegovina',
-        'Bosnia and Herzegovina': 'bosnia_and_herzegovina'
-    };
-
-
+export const MapComponent = ({ coordinates, setCoordinates, setCountry, setRegion, setLocation, mapRef }) => {
 
     const onLoad = useCallback((map) => {
         mapRef.current = map;
-        map.panTo(coordinates);
+
+        const latLng = coordinates ? getLatLng(coordinates) : defaultCenter;
+        if (latLng.lat && latLng.lng) {
+            console.log("Pan to:", latLng);
+            map.panTo(latLng);
+        } else {
+            console.error("Invalid coordinates:", latLng);
+            map.panTo(defaultCenter);
+        }
     }, [coordinates]);
 
     const onDragEnd = async () => {
         if (mapRef.current) {
             const newCenter = mapRef.current.getCenter();
             const newCoordinates = {
-            lat: newCenter.lat(),
-            lng: newCenter.lng()
-        };
+                lat: newCenter.lat(),
+                lng: newCenter.lng()
+            };
 
-        const geoPoint = new GeoPoint(newCenter.lat(), newCenter.lng());
+            // Validate new coordinates
+            if (isNaN(newCoordinates.lat) || isNaN(newCoordinates.lng)) {
+                console.error("Invalid coordinates from map:", newCoordinates);
+                return;
+            }
 
-        // Save the LatLng object
-        setCoordinates(geoPoint); // Save LatLng object
+            const geoPoint = new GeoPoint(newCoordinates.lat, newCoordinates.lng);
+            setCoordinates(geoPoint);
 
             // Fetch the address using Geocoding API
             const geocoder = new window.google.maps.Geocoder();
@@ -282,12 +279,12 @@ export const MapComponent = ({ coordinates, setCoordinates,setCountry, country, 
                             region = addressComponents[2]?.long_name || '';
                         }
 
-                        console.log(country);
-                        console.log(region);
-
+                        console.log(getCountryKey(country));
+                        console.log(getRegionKey(region));
+                        console.log(coordinates);
                         setLocation(formattedAddress);
                         setCountry(getCountryKey(country));
-                        //setRegion(getRegionKey(region)); !TODO
+                        setRegion(getRegionKey(region));
                     } else {
                         console.log("NOT OK");
                         setLocation('No results found');
@@ -299,21 +296,22 @@ export const MapComponent = ({ coordinates, setCoordinates,setCountry, country, 
         }
     };
 
-
     return (
-        <div style={containerStyle}>
-            <GoogleMap
-                mapContainerStyle={{ width: '100%', height: '100%' }}
-                center={coordinates}
-                zoom={10}
-                onLoad={onLoad}
-                onDragEnd={onDragEnd}
-            />
-            <img
-                src="https://maps.google.com/mapfiles/ms/icons/red-dot.png"
-                alt="marker"
-                style={markerStyle}
-            />
-        </div>
+        <LoadScript googleMapsApiKey="AIzaSyD7K42WP5zjV99GP3xll40eFr_5DaAk3ZU">
+            <div style={containerStyle}>
+                <GoogleMap
+                    mapContainerStyle={{ width: '100%', height: '100%' }}
+                    center={getLatLng(coordinates) || defaultCenter}
+                    zoom={10}
+                    onLoad={onLoad}
+                    onDragEnd={onDragEnd}
+                />
+                <img
+                    src="https://maps.google.com/mapfiles/ms/icons/red-dot.png"
+                    alt="marker"
+                    style={markerStyle}
+                />
+            </div>
+        </LoadScript>
     );
 };

@@ -353,7 +353,7 @@ function EditItem() {
                     lat: parseFloat(latitude),
                     lng: parseFloat(longitude),
                 };
-                const geoPoint = new GeoPoint(newCoordinates.lat(), newCoordinates.lng());
+                const geoPoint = new GeoPoint(newCoordinates.lat, newCoordinates.lng);
                 setCoordinates(geoPoint);
                 setLocation(value);
 
@@ -957,9 +957,6 @@ function EditItem() {
                                 {getSubcategories()}
                             </Select>
                         </Form.Item>
-
-                        {getForm()}
-
                         <Form.Item label={t('Coordinates')}>
                             <MapComponent
                                 coordinates={coordinates}
@@ -983,6 +980,9 @@ function EditItem() {
                                 <Input />
                             </AutoComplete>
                         </Form.Item>
+                        {getForm()}
+
+                        
                     </div>
                 </Layout>
             )}
