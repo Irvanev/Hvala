@@ -71,14 +71,6 @@ export const CustomFooter = () => {
           </div>
         </div>
       </div>
-      <div className="footer-info mt-3 d-none d-lg-block">
-        <div className="footer-info-section left">
-          <a href="/">{t('privacy_policy')}</a>
-        </div>
-        <div className="footer-info-section right">
-          <p>2024 ©Hvala</p>
-        </div>
-      </div>
       <style jsx>{`
                 .footer-info {
                     background-color: #f8f8f8;

@@ -354,8 +354,9 @@ const SellerProfile = () => {
                   ))}
 
                   {!isReviewFormVisible && (
-                    <div className="d-flex justify-content-center">
-                      <button className='mt-3' style={{ backgroundColor: '#FFBF34', color: 'white', borderRadius: '5px', height: '30px', width: '100px' }} onClick={toggleReviewForm}>{t('set_feedback')}</button>
+                    <div className='d-flex justify-content-center'>
+                      <Button className='mt-3'
+                        style={{ backgroundColor: '#FFBF34', border: 'none', color: 'white' }} onClick={toggleReviewForm}>{t('set_feedback')}</Button>
                     </div>
                   )}
 
@@ -369,7 +370,10 @@ const SellerProfile = () => {
                         placeholder={t('input_feedback')}
                       />
                       <Rate className='mt-3' value={rating} onChange={handleRatingChange} />
-                      <Button type="primary" onClick={submitReview}>{t('send_feedback')}</Button>
+                      <div className='d-flex justify-content-center'>
+                        <Button className='mt-3'
+                          style={{ backgroundColor: '#FFBF34', border: 'none', color: 'white' }} onClick={submitReview}>{t('send_feedback')}</Button>
+                      </div>
                     </>
                   )}
                 </Modal>

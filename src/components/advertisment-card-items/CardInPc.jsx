@@ -326,10 +326,11 @@ const CardInPc = ({ adData, t, index, handleSelect, handleCallClick, showModal, 
                   ))}
 
                   {!isReviewFormVisible && (
-                    <Button className='mt-3'
-                      type="primary" onClick={toggleReviewForm}>{t('set_feedback')}</Button>
+                    <div className='d-flex justify-content-center'>
+                      <Button className='mt-3'
+                        style={{ backgroundColor: '#FFBF34', border: 'none', color: 'white' }} onClick={toggleReviewForm}>{t('set_feedback')}</Button>
+                    </div>
                   )}
-
                   {isReviewFormVisible && (
                     <>
                       <Input.TextArea
