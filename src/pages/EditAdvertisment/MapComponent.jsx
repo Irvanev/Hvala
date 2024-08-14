@@ -282,6 +282,7 @@ export const MapComponent = ({ coordinates, setCoordinates, setCountry, setRegio
                         console.log(getCountryKey(country));
                         console.log(getRegionKey(region));
                         console.log(coordinates);
+                        console.log(formattedAddress);
                         setLocation(formattedAddress);
                         setCountry(getCountryKey(country));
                         setRegion(getRegionKey(region));
