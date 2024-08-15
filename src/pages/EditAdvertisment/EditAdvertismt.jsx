@@ -406,6 +406,7 @@ function EditItem() {
         const docRef = doc(db, "advertisment", id);
 
         const updatedData = {
+            from_uid: auth.currentUser.uid,
             title: title,
             price: price,
             currency: currency,
@@ -698,12 +699,15 @@ function EditItem() {
                     screen_size: deleteField(),
                     memory: deleteField(),
                 });
+
             }
 
             else {
                 await updateDoc(docRef, updatedData);
                 setLoading(false);
             }
+            const localStorageKey = `advertisment_${id}`;
+            localStorage.setItem(localStorageKey, JSON.stringify(updatedData));
 
             console.log("Document successfully updated!");
             history.push('/profile');
@@ -712,58 +716,165 @@ function EditItem() {
         }
     }
 
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //         try {
+    //             const docRef = doc(db, "advertisment", id);
+    //             const docSnap = await getDoc(docRef);
+
+    //             if (docSnap.exists()) {
+    //                 const data = docSnap.data();
+    //                 if (auth.currentUser && auth.currentUser.uid === data.from_uid) {
+    //                     setData(data);
+    //                     setPhotoUrls(data?.photoUrls || [])
+    //                     setCategory(data?.category||"");
+    //                     setSubcategory(data?.subcategory||"");
+    //                     setTitle(data?.title||"");
+    //                     setPrice(data?.price||"");
+    //                     setDescription(data?.description||"");
+    //                     setPhoneNumber(data?.phone||"");
+    //                     setCondition(data?.condition||"");
+    //                     setCurrency(data.currency||"");
+    //                     setBrand(data?.brand||"");
+    //                     setModel(data?.model||"");
+    //                     setScreenSize(data?.screen_size||"");
+    //                     setMemory(data?.memory||"");
+    //                     setOwner(data?.owner||"");
+    //                     setType(data?.type||"");
+    //                     setArea(data?.area||"");
+    //                     setMileage(data?.mileage||"");
+    //                     setDrive(data?.drive||"");
+    //                     setTransmission(data?.transmission||"");
+    //                     setWheel(data?.wheel||"");
+    //                     setYear(data?.year||"");
+    //                     setBody(data?.body||"");
+    //                     setColor(data?.color||"");
+    //                     setOwners(data?.owners||"");
+    //                     setSize(data?.size||"");
+    //                     setLocation(data?.location||"");
+    //                     setCoordinates(data?.coordinates||"");
+    //                     console.log("Document data:", data);
+    //                     console.log("FETCHING");
+    //                 } else {
+    //                     setData(null);
+    //                     message.error('Объявление принадлежит не этому пользвателю');
+    //                     console.log("FETCHING");
+    //                 }
+    //             } else {
+    //                 console.log("No such document!");
+    //                 console.log("FETCHING");
+    //             }
+    //         } catch (error) {
+    //             console.error('Ошибка при получении данных:', error);
+    //             console.log("FETCHING");
+    //         }
+    //     };
+
+    //     fetchData();
+    //     console.log("FETCHING--");
+    // }, [id]);
+
     useEffect(() => {
-        const fetchData = async () => {
-            try {
+    const fetchData = async () => {
+        try {
+            const localStorageKey = `advertisment_${id}`;
+            const cachedData = localStorage.getItem(localStorageKey);
+            if (cachedData) {
+                const data = JSON.parse(cachedData);
+                console.log(data.from_uid);
+                console.log(auth.currentUser.uid);
+                if (auth.currentUser && auth.currentUser.uid === data.from_uid) {
+                    setData(data);
+                    setPhotoUrls(data?.photoUrls || []);
+                    setCategory(data?.category || "");
+                    setSubcategory(data?.subcategory || "");
+                    setTitle(data?.title || "");
+                    setPrice(data?.price || "");
+                    setDescription(data?.description || "");
+                    setPhoneNumber(data?.phone || "");
+                    setCondition(data?.condition || "");
+                    setCurrency(data.currency || "");
+                    setBrand(data?.brand || "");
+                    setModel(data?.model || "");
+                    setScreenSize(data?.screen_size || "");
+                    setMemory(data?.memory || "");
+                    setOwner(data?.owner || "");
+                    setType(data?.type || "");
+                    setArea(data?.area || "");
+                    setMileage(data?.mileage || "");
+                    setDrive(data?.drive || "");
+                    setTransmission(data?.transmission || "");
+                    setWheel(data?.wheel || "");
+                    setYear(data?.year || "");
+                    setBody(data?.body || "");
+                    setColor(data?.color || "");
+                    setOwners(data?.owners || "");
+                    setSize(data?.size || "");
+                    setLocation(data?.location || "");
+                    setCoordinates(data?.coordinates || "");
+                    console.log("Document data from cache:", data);
+                } else {
+                    setData(null);
+                    message.error('Объявление принадлежит не этому пользователю');
+                    console.log("FETCHING from cache");
+                }
+            } else {
                 const docRef = doc(db, "advertisment", id);
                 const docSnap = await getDoc(docRef);
 
                 if (docSnap.exists()) {
                     const data = docSnap.data();
                     if (auth.currentUser && auth.currentUser.uid === data.from_uid) {
+                        localStorage.setItem(localStorageKey, JSON.stringify(data));
                         setData(data);
-                        setPhotoUrls(data?.photoUrls || [])
-                        setCategory(data?.category||"");
-                        setSubcategory(data?.subcategory||"");
-                        setTitle(data?.title||"");
-                        setPrice(data?.price||"");
-                        setDescription(data?.description||"");
-                        setPhoneNumber(data?.phone||"");
-                        setCondition(data?.condition||"");
-                        setCurrency(data.currency||"");
-                        setBrand(data?.brand||"");
-                        setModel(data?.model||"");
-                        setScreenSize(data?.screen_size||"");
-                        setMemory(data?.memory||"");
-                        setOwner(data?.owner||"");
-                        setType(data?.type||"");
-                        setArea(data?.area||"");
-                        setMileage(data?.mileage||"");
-                        setDrive(data?.drive||"");
-                        setTransmission(data?.transmission||"");
-                        setWheel(data?.wheel||"");
-                        setYear(data?.year||"");
-                        setBody(data?.body||"");
-                        setColor(data?.color||"");
-                        setOwners(data?.owners||"");
-                        setSize(data?.size||"");
-                        setLocation(data?.location||"");
-                        setCoordinates(data?.coordinates||"");
-                        console.log("Document data:", data);
+                        setPhotoUrls(data?.photoUrls || []);
+                        setCategory(data?.category || "");
+                        setSubcategory(data?.subcategory || "");
+                        setTitle(data?.title || "");
+                        setPrice(data?.price || "");
+                        setDescription(data?.description || "");
+                        setPhoneNumber(data?.phone || "");
+                        setCondition(data?.condition || "");
+                        setCurrency(data.currency || "");
+                        setBrand(data?.brand || "");
+                        setModel(data?.model || "");
+                        setScreenSize(data?.screen_size || "");
+                        setMemory(data?.memory || "");
+                        setOwner(data?.owner || "");
+                        setType(data?.type || "");
+                        setArea(data?.area || "");
+                        setMileage(data?.mileage || "");
+                        setDrive(data?.drive || "");
+                        setTransmission(data?.transmission || "");
+                        setWheel(data?.wheel || "");
+                        setYear(data?.year || "");
+                        setBody(data?.body || "");
+                        setColor(data?.color || "");
+                        setOwners(data?.owners || "");
+                        setSize(data?.size || "");
+                        setLocation(data?.location || "");
+                        setCoordinates(data?.coordinates || "");
+                        console.log("Document data from DB:", data);
                     } else {
                         setData(null);
-                        message.error('Объявление принадлежит не этому пользвателю');
+                        message.error('Объявление принадлежит не этому пользователю');
+                        console.log("FETCHING from DB");
                     }
                 } else {
                     console.log("No such document!");
+                    console.log("FETCHING from DB");
                 }
-            } catch (error) {
-                console.error('Ошибка при получении данных:', error);
             }
-        };
+        } catch (error) {
+            console.error('Ошибка при получении данных:', error);
+            console.log("FETCHING error");
+        }
+    };
 
-        fetchData();
-    }, [id]);
+    fetchData();
+    console.log("FETCHING initiated");
+}, [id]);
+
 
     const handleCategoryChange = (value) => {
         setCategory(value);

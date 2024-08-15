@@ -22,8 +22,8 @@ const markerStyle = {
 };
 
 const defaultCenter = {
-    lat: 0,
-    lng: 0
+    lat: -3.745,
+    lng: -38.523
 };
 
 function getCountryKey(string) {
@@ -227,8 +227,13 @@ export const MapComponent = ({ coordinates, setCoordinates, setCountry, setRegio
 
     const onLoad = useCallback((map) => {
         mapRef.current = map;
-
-        const latLng = coordinates ? getLatLng(coordinates) : defaultCenter;
+        const modCoordinates = {
+            lat: coordinates.latitude,
+            lng: coordinates.longitude
+        }
+        const latLng = modCoordinates ? modCoordinates : defaultCenter;
+        console.log(modCoordinates);
+        console.log(coordinates);
         if (latLng.lat && latLng.lng) {
             console.log("Pan to:", latLng);
             map.panTo(latLng);
@@ -305,7 +310,7 @@ export const MapComponent = ({ coordinates, setCoordinates, setCountry, setRegio
     };
 
     return (
-        <LoadScript googleMapsApiKey="AIzaSyD7K42WP5zjV99GP3xll40eFr_5DaAk3ZU">
+        <LoadScript async googleMapsApiKey="AIzaSyD7K42WP5zjV99GP3xll40eFr_5DaAk3ZU">
             <div style={containerStyle}>
                 <GoogleMap
                     mapContainerStyle={{ width: '100%', height: '100%' }}
