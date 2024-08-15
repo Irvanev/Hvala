@@ -29,9 +29,13 @@ export const fetchReviews = async (userId) => {
 
 export const fetchAdvertisements = async (userId) => {
     const advertisementRef = collection(db, 'advertisment');
-    const q = query(advertisementRef, where('from_uid', '==', userId), where('in_archive', '==', false));
-    const advertisementSnapshot = await getDocs(q);
-    const advertisements = advertisementSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const initialQuery = query(advertisementRef, where('from_uid', '==', userId));
+    const initialSnapshot = await getDocs(initialQuery);
+
+    const advertisements = initialSnapshot.docs
+        .map(doc => ({ id: doc.id, ...doc.data() }))
+        .filter(ad => !ad.hasOwnProperty('in_archive') || ad.in_archive === false);
+
     return advertisements;
 };
 
