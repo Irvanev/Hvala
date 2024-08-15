@@ -21,13 +21,10 @@ const CardAdvertisementProfile = ({ advertisment, index }) => {
     const [dropdownVisible, setDropdownVisible] = useState(false);
     const [isArchived, setIsArchived] = useState(false);
 
-    const handleEditClick = () => {
-        history.push(`/edit/${advertisment.id}`);
-    };
-
     const handleArchive = async (id) => {
         await archivedAdvertisement(id);
         setIsArchived(prevState => !prevState);
+        window.location.reload();
     };
 
     useEffect(() => {

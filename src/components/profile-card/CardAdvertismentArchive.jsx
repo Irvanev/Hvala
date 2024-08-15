@@ -23,11 +23,13 @@ const CardAdvertisementProfileArchive = ({ advertismentArchive, index }) => {
     const handleUnarchive = async (id) => {
         await unarchivedAdvertisement(id);
         setIsUnarchived(prevState => !prevState);
+        window.location.reload();
     };
 
     const handleDelete = async (id) => {
         await deleteAdvertisement(id);
         setDeleteAdvertisment(prevState => !prevState);
+        window.location.reload();
     };
 
     useEffect(() => {

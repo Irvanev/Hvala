@@ -24,11 +24,8 @@ const CardAdvertisementProfileMobile = ({ advertisment, index }) => {
     const handleArchive = async (id) => {
         await archivedAdvertisement(id);
         setIsArchived(prevState => !prevState);
+        window.location.reload();
     };
-
-    const handleEditClick = () => {
-        history.push(`/edit/${advertisment.id}`);
-      };
 
     useEffect(() => {
         setCurrency(advertisment.currency);

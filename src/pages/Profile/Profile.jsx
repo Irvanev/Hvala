@@ -32,16 +32,42 @@ export const Profile = () => {
         const fetchData = async () => {
             const userId = localStorage.getItem('userId');
             const user = await fetchUser(userId);
+            setUser(user);
+        };
+
+        fetchData();
+    }, []); // Выполняется один раз при монтировании компонента
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const userId = localStorage.getItem('userId');
             const { reviews, feedbackCount } = await fetchReviews(userId);
-            const advertisements = await fetchAdvertisements(userId);
-            const archive = await fetchAdvertismentsArchive(userId);
-            setUser({ ...user, reviewCount: feedbackCount });
             setReviews(reviews);
+            setUser(prevUser => ({ ...prevUser, reviewCount: feedbackCount }));
+        };
+
+        fetchData();
+    }, []); // Выполняется один раз при монтировании компонента
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const userId = localStorage.getItem('userId');
+            const advertisements = await fetchAdvertisements(userId);
             setAdvertisements(advertisements);
+        };
+
+        fetchData();
+    }, []); // Выполняется один раз при монтировании компонента
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const userId = localStorage.getItem('userId');
+            const archive = await fetchAdvertismentsArchive(userId);
             setAdvertisementsArchive(archive);
         };
+
         fetchData();
-    }, [advertisment]);
+    }, []);
 
     return (
         <div>
@@ -66,7 +92,7 @@ export const Profile = () => {
                                         <Row xs={2} sm={2} md={3} lg={3} className="g-3" id="cardAds">
                                             {advertisment.length > 0 ? (
                                                 advertisment.map((advertisment, index) => (
-                                                    <CardAdvertisementProfile key={index} advertisment={advertisment} />
+                                                    <CardAdvertisementProfile key={index} advertisment={advertisment} setAdvertisements={setAdvertisements} />
                                                 ))
                                             ) : (
                                                 <div>
