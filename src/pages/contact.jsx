@@ -110,14 +110,14 @@ const Contact = () => {
             justifyContent: "center",
           }}
         >
-          <a href="https://www.instagram.com/hvala.app?igsh=ZmJiOWtrbDY1enNm">
+          <a href="https://www.instagram.com/hvala.app?igsh=ZmJiOWtrbDY1enNm" target="_blank" rel="noopener noreferrer">
             <Image
               src={Instagram}
               alt="Instagram"
               style={{ height: "50px", width: "50px", marginRight: "10px" }}
             />
           </a>
-          <a href="https://www.facebook.com/profile.php?id=61553691035329&mibextid=ZbWKwL">
+          <a href="https://www.facebook.com/profile.php?id=61553691035329&mibextid=ZbWKwL" target="_blank" rel="noopener noreferrer">
             <Image
               src={Facebook}
               alt="Facebook"

@@ -55,8 +55,8 @@ export const CustomFooter = () => {
           <div className={styles.footerCol}>
             <h4>{t('follow_us')}</h4>
             <div className={styles.socialLinks}>
-              <a href="https://www.instagram.com/hvala.app?igsh=ZmJiOWtrbDY1enNm"><FontAwesomeIcon icon={faFacebookF} size="2x" /></a>
-              <a href="https://www.facebook.com/profile.php?id=61553691035329&mibextid=ZbWKwL"><FontAwesomeIcon icon={faInstagram} size="2x" /></a>
+              <a href="https://www.facebook.com/profile.php?id=61553691035329&mibextid=ZbWKwL" target="_blank" rel="noopener noreferrer"><FontAwesomeIcon icon={faFacebookF} size="2x" /></a>
+              <a href="https://www.instagram.com/hvala.app?igsh=ZmJiOWtrbDY1enNm" target="_blank" rel="noopener noreferrer"><FontAwesomeIcon icon={faInstagram} size="2x" /></a>
             </div>
           </div>
           <div className="container">
