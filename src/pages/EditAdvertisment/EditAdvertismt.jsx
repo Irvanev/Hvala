@@ -824,8 +824,7 @@ function EditItem() {
 
                 if (docSnap.exists()) {
                     const data = docSnap.data();
-                    if (auth.currentUser && auth.currentUser.uid === data.from_uid) {
-                        localStorage.setItem(localStorageKey, JSON.stringify(data));
+                    localStorage.setItem(localStorageKey, JSON.stringify(data));
                         setData(data);
                         setPhotoUrls(data?.photoUrls || []);
                         setCategory(data?.category || "");
@@ -855,11 +854,42 @@ function EditItem() {
                         setLocation(data?.location || "");
                         setCoordinates(data?.coordinates || "");
                         console.log("Document data from DB:", data);
-                    } else {
-                        setData(null);
-                        message.error('Объявление принадлежит не этому пользователю');
-                        console.log("FETCHING from DB");
-                    }
+                    // if (auth.currentUser && auth.currentUser.uid === data.from_uid) {
+                    //     localStorage.setItem(localStorageKey, JSON.stringify(data));
+                    //     setData(data);
+                    //     setPhotoUrls(data?.photoUrls || []);
+                    //     setCategory(data?.category || "");
+                    //     setSubcategory(data?.subcategory || "");
+                    //     setTitle(data?.title || "");
+                    //     setPrice(data?.price || "");
+                    //     setDescription(data?.description || "");
+                    //     setPhoneNumber(data?.phone || "");
+                    //     setCondition(data?.condition || "");
+                    //     setCurrency(data.currency || "");
+                    //     setBrand(data?.brand || "");
+                    //     setModel(data?.model || "");
+                    //     setScreenSize(data?.screen_size || "");
+                    //     setMemory(data?.memory || "");
+                    //     setOwner(data?.owner || "");
+                    //     setType(data?.type || "");
+                    //     setArea(data?.area || "");
+                    //     setMileage(data?.mileage || "");
+                    //     setDrive(data?.drive || "");
+                    //     setTransmission(data?.transmission || "");
+                    //     setWheel(data?.wheel || "");
+                    //     setYear(data?.year || "");
+                    //     setBody(data?.body || "");
+                    //     setColor(data?.color || "");
+                    //     setOwners(data?.owners || "");
+                    //     setSize(data?.size || "");
+                    //     setLocation(data?.location || "");
+                    //     setCoordinates(data?.coordinates || "");
+                    //     console.log("Document data from DB:", data);
+                    // } else {
+                    //     setData(null);
+                    //     message.error('Объявление принадлежит не этому пользователю');
+                    //     console.log("FETCHING from DB");
+                    // }
                 } else {
                     console.log("No such document!");
                     console.log("FETCHING from DB");

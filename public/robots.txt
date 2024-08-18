@@ -3,4 +3,4 @@ Disallow: /admin/
 Disallow: /login/
 Disallow: /register/
 
-Sitemap: https://hvala-web.web.app/sitemap.xml
+Sitemap: https://hvala.app/sitemap.xml
