@@ -406,7 +406,6 @@ function EditItem() {
         const docRef = doc(db, "advertisment", id);
 
         const updatedData = {
-            from_uid: auth.currentUser.uid,
             title: title,
             price: price,
             currency: currency,
@@ -435,13 +434,14 @@ function EditItem() {
             area: area,
             location: location,
             coordinates: coordinates,
-            country: country,
-            region: region
+            //country: country, !TODO
+            //region: region !TODO
         };
 
         try {
             // Если категория является услугой, удалите поле condition !TODO
-            if (subcategory === 'education' || subcategory === 'handyman' ||
+            if (subcategory === 'transfer' || subcategory === 'taxi' ||
+                subcategory === 'education' || subcategory === 'handyman' ||
                 subcategory === 'beauty_and_health' || subcategory === 'transportation' ||
                 subcategory === 'repair_and_construction' || subcategory === 'computer_services' ||
                 subcategory === 'business_services' || subcategory === 'cleaning' ||
@@ -699,15 +699,12 @@ function EditItem() {
                     screen_size: deleteField(),
                     memory: deleteField(),
                 });
-
             }
 
             else {
                 await updateDoc(docRef, updatedData);
                 setLoading(false);
             }
-            const localStorageKey = `advertisment_${id}`;
-            localStorage.setItem(localStorageKey, JSON.stringify(updatedData));
 
             console.log("Document successfully updated!");
             history.push('/profile');
@@ -716,76 +713,55 @@ function EditItem() {
         }
     }
 
-    // useEffect(() => {
-    //     const fetchData = async () => {
-    //         try {
-    //             const docRef = doc(db, "advertisment", id);
-    //             const docSnap = await getDoc(docRef);
-
-    //             if (docSnap.exists()) {
-    //                 const data = docSnap.data();
-    //                 if (auth.currentUser && auth.currentUser.uid === data.from_uid) {
-    //                     setData(data);
-    //                     setPhotoUrls(data?.photoUrls || [])
-    //                     setCategory(data?.category||"");
-    //                     setSubcategory(data?.subcategory||"");
-    //                     setTitle(data?.title||"");
-    //                     setPrice(data?.price||"");
-    //                     setDescription(data?.description||"");
-    //                     setPhoneNumber(data?.phone||"");
-    //                     setCondition(data?.condition||"");
-    //                     setCurrency(data.currency||"");
-    //                     setBrand(data?.brand||"");
-    //                     setModel(data?.model||"");
-    //                     setScreenSize(data?.screen_size||"");
-    //                     setMemory(data?.memory||"");
-    //                     setOwner(data?.owner||"");
-    //                     setType(data?.type||"");
-    //                     setArea(data?.area||"");
-    //                     setMileage(data?.mileage||"");
-    //                     setDrive(data?.drive||"");
-    //                     setTransmission(data?.transmission||"");
-    //                     setWheel(data?.wheel||"");
-    //                     setYear(data?.year||"");
-    //                     setBody(data?.body||"");
-    //                     setColor(data?.color||"");
-    //                     setOwners(data?.owners||"");
-    //                     setSize(data?.size||"");
-    //                     setLocation(data?.location||"");
-    //                     setCoordinates(data?.coordinates||"");
-    //                     console.log("Document data:", data);
-    //                     console.log("FETCHING");
-    //                 } else {
-    //                     setData(null);
-    //                     message.error('Объявление принадлежит не этому пользвателю');
-    //                     console.log("FETCHING");
-    //                 }
-    //             } else {
-    //                 console.log("No such document!");
-    //                 console.log("FETCHING");
-    //             }
-    //         } catch (error) {
-    //             console.error('Ошибка при получении данных:', error);
-    //             console.log("FETCHING");
-    //         }
-    //     };
-
-    //     fetchData();
-    //     console.log("FETCHING--");
-    // }, [id]);
-
     useEffect(() => {
-    const fetchData = async () => {
-        try {
-            const localStorageKey = `advertisment_${id}`;
-            const cachedData = localStorage.getItem(localStorageKey);
-            if (cachedData) {
-                const data = JSON.parse(cachedData);
-                console.log(data.from_uid);
-                console.log(auth.currentUser.uid);
-                if (auth.currentUser && auth.currentUser.uid === data.from_uid) {
+        const fetchData = async () => {
+            try {
+                const docRef = doc(db, "advertisment", id);
+                const docSnap = await getDoc(docRef);
+
+                // if (docSnap.exists()) { !TODO
+                //     const data = docSnap.data();
+                //     if (auth.currentUser && auth.currentUser.uid === data.from_uid) {
+                //         setData(data);
+                //         setPhotoUrls(data?.photoUrls || []);
+                //         setCategory(data?.category || "");
+                //         setSubcategory(data?.subcategory || "");
+                //         setTitle(data?.title || "");
+                //         setPrice(data?.price || "");
+                //         setDescription(data?.description || "");
+                //         setPhoneNumber(data?.phone || "");
+                //         setCondition(data?.condition || "");
+                //         setCurrency(data.currency || "");
+                //         setBrand(data?.brand || "");
+                //         setModel(data?.model || "");
+                //         setScreenSize(data?.screen_size || "");
+                //         setMemory(data?.memory || "");
+                //         setOwner(data?.owner || "");
+                //         setType(data?.type || "");
+                //         setArea(data?.area || "");
+                //         setMileage(data?.mileage || "");
+                //         setDrive(data?.drive || "");
+                //         setTransmission(data?.transmission || "");
+                //         setWheel(data?.wheel || "");
+                //         setYear(data?.year || "");
+                //         setBody(data?.body || "");
+                //         setColor(data?.color || "");
+                //         setOwners(data?.owners || "");
+                //         setSize(data?.size || "");
+                //         setLocation(data?.location || "");
+                //         setCoordinates(data?.coordinates || "");
+                //     } else {
+                //         setData(null);
+                //         message.error('Объявление принадлежит не этому пользователю');
+                //     }
+                // } else {
+                //     console.log("No such document!");
+                // }
+
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
                     setData(data);
-                    setPhotoUrls(data?.photoUrls || []);
+                    setPhotoUrls(data?.photoUrls || [])
                     setCategory(data?.category || "");
                     setSubcategory(data?.subcategory || "");
                     setTitle(data?.title || "");
@@ -812,69 +788,18 @@ function EditItem() {
                     setSize(data?.size || "");
                     setLocation(data?.location || "");
                     setCoordinates(data?.coordinates || "");
-                    console.log("Document data from cache:", data);
-                } else {
-                    setData(null);
-                    message.error('Объявление принадлежит не этому пользователю');
-                    console.log("FETCHING from cache");
-                }
-            } else {
-                const docRef = doc(db, "advertisment", id);
-                const docSnap = await getDoc(docRef);
+                    console.log("Document data:", data);
 
-                if (docSnap.exists()) {
-                    const data = docSnap.data();
-                    if (auth.currentUser && auth.currentUser.uid === data.from_uid) {
-                        localStorage.setItem(localStorageKey, JSON.stringify(data));
-                        setData(data);
-                        setPhotoUrls(data?.photoUrls || []);
-                        setCategory(data?.category || "");
-                        setSubcategory(data?.subcategory || "");
-                        setTitle(data?.title || "");
-                        setPrice(data?.price || "");
-                        setDescription(data?.description || "");
-                        setPhoneNumber(data?.phone || "");
-                        setCondition(data?.condition || "");
-                        setCurrency(data.currency || "");
-                        setBrand(data?.brand || "");
-                        setModel(data?.model || "");
-                        setScreenSize(data?.screen_size || "");
-                        setMemory(data?.memory || "");
-                        setOwner(data?.owner || "");
-                        setType(data?.type || "");
-                        setArea(data?.area || "");
-                        setMileage(data?.mileage || "");
-                        setDrive(data?.drive || "");
-                        setTransmission(data?.transmission || "");
-                        setWheel(data?.wheel || "");
-                        setYear(data?.year || "");
-                        setBody(data?.body || "");
-                        setColor(data?.color || "");
-                        setOwners(data?.owners || "");
-                        setSize(data?.size || "");
-                        setLocation(data?.location || "");
-                        setCoordinates(data?.coordinates || "");
-                        console.log("Document data from DB:", data);
-                    } else {
-                        setData(null);
-                        message.error('Объявление принадлежит не этому пользователю');
-                        console.log("FETCHING from DB");
-                    }
                 } else {
                     console.log("No such document!");
-                    console.log("FETCHING from DB");
                 }
+            } catch (error) {
+                console.error('Ошибка при получении данных:', error);
             }
-        } catch (error) {
-            console.error('Ошибка при получении данных:', error);
-            console.log("FETCHING error");
-        }
-    };
+        };
 
-    fetchData();
-    console.log("FETCHING initiated");
-}, [id]);
-
+        fetchData();
+    }, [id]);
 
     const handleCategoryChange = (value) => {
         setCategory(value);
@@ -1064,7 +989,7 @@ function EditItem() {
                                 }
                             ]}
                         >
-                            <InputNumber style={{ width: '100%' }} value={price} addonBefore={selectAfter} onChange={(value) => setPrice(parseInt(value, 10))}  />
+                            <InputNumber style={{ width: '100%' }} value={price} addonBefore={selectAfter} onChange={(value) => setPrice(parseInt(value, 10))} />
                         </Form.Item>
                         <Form.Item label={t('input_year')}>
                             <Input type="text" value={year} onChange={(e) => setYear(e.target.value)} />
@@ -1292,7 +1217,7 @@ function EditItem() {
                                 }
                             ]}
                         >
-                            <InputNumber style={{ width: '100%' }} defaultValue={price} addonBefore={selectAfter} onChange={(value) => setPrice(parseInt(value, 10))}  />
+                            <InputNumber style={{ width: '100%' }} defaultValue={price} addonBefore={selectAfter} onChange={(value) => setPrice(parseInt(value, 10))} />
                         </Form.Item>
                         <Form.Item label={t('size_screen')}>
                             <Input type="tel" value={screen_size} onChange={(e) => setScreenSize(e.target.value)} />
@@ -1378,7 +1303,7 @@ function EditItem() {
                                 }
                             ]}
                         >
-                            <InputNumber style={{ width: '100%' }} defaultValue={price} addonBefore={selectAfter} onChange={(value) => setPrice(parseInt(value, 10))}  />
+                            <InputNumber style={{ width: '100%' }} defaultValue={price} addonBefore={selectAfter} onChange={(value) => setPrice(parseInt(value, 10))} />
                         </Form.Item>
                         <Form.Item
                             label={t('condition')}
@@ -1457,7 +1382,7 @@ function EditItem() {
                                 }
                             ]}
                         >
-                            <InputNumber style={{ width: '100%' }} defaultValue={price} addonBefore={selectAfter} onChange={(value) => setPrice(parseInt(value, 10))}  />
+                            <InputNumber style={{ width: '100%' }} defaultValue={price} addonBefore={selectAfter} onChange={(value) => setPrice(parseInt(value, 10))} />
                         </Form.Item>
                         <Form.Item
                             label={t('condition')}
@@ -1547,7 +1472,7 @@ function EditItem() {
                                 }
                             ]}
                         >
-                            <InputNumber style={{ width: '100%' }} defaultValue={price} addonBefore={selectAfter} onChange={(value) => setPrice(parseInt(value, 10))}  />
+                            <InputNumber style={{ width: '100%' }} defaultValue={price} addonBefore={selectAfter} onChange={(value) => setPrice(parseInt(value, 10))} />
                         </Form.Item>
                         <Form.Item
                             label={t('condition')}
@@ -1642,7 +1567,7 @@ function EditItem() {
                                 }
                             ]}
                         >
-                            <InputNumber style={{ width: '100%' }} defaultValue={price} addonBefore={selectAfter} onChange={(value) => setPrice(parseInt(value, 10))}  />
+                            <InputNumber style={{ width: '100%' }} defaultValue={price} addonBefore={selectAfter} onChange={(value) => setPrice(parseInt(value, 10))} />
                         </Form.Item>
                         <Form.Item
                             label={t('condition')}
@@ -1712,7 +1637,7 @@ function EditItem() {
                                 }
                             ]}
                         >
-                            <InputNumber style={{ width: '100%' }} value={price} addonBefore={selectAfter} onChange={(value) => setPrice(parseInt(value, 10))}  />
+                            <InputNumber style={{ width: '100%' }} value={price} addonBefore={selectAfter} onChange={(value) => setPrice(parseInt(value, 10))} />
                         </Form.Item>
                         <Form.Item label={t('rooms_amount')}>
                             <Input type="text" value={roomsAmout} onChange={(e) => setRoomsAmount(e.target.value)} />
@@ -1781,7 +1706,7 @@ function EditItem() {
                                 }
                             ]}
                         >
-                            <InputNumber style={{ width: '100%' }} defaultValue={price} addonBefore={selectAfter} onChange={(value) => setPrice(parseInt(value, 10))}  />
+                            <InputNumber style={{ width: '100%' }} defaultValue={price} addonBefore={selectAfter} onChange={(value) => setPrice(parseInt(value, 10))} />
                         </Form.Item>
                         <Form.Item
                             label={t('condition')}
@@ -1874,7 +1799,7 @@ function EditItem() {
                                 }
                             ]}
                         >
-                            <InputNumber style={{ width: '100%' }} defaultValue={price} addonBefore={selectAfter} onChange={(value) => setPrice(parseInt(value, 10))}  />
+                            <InputNumber style={{ width: '100%' }} defaultValue={price} addonBefore={selectAfter} onChange={(value) => setPrice(parseInt(value, 10))} />
                         </Form.Item>
                         <Form.Item
                             label={t('condition')}
@@ -1901,6 +1826,8 @@ function EditItem() {
                     </Form>
                 )
             case 'education':
+            case 'taxi':
+            case 'transfer':
             case 'handyman':
             case 'beauty_and_health':
             case 'transportation':
@@ -1963,7 +1890,7 @@ function EditItem() {
                                 }
                             ]}
                         >
-                            <InputNumber style={{ width: '100%' }} defaultValue={price} addonBefore={selectAfter} onChange={(value) => setPrice(parseInt(value, 10))}  />
+                            <InputNumber style={{ width: '100%' }} defaultValue={price} addonBefore={selectAfter} onChange={(value) => setPrice(parseInt(value, 10))} />
                         </Form.Item>
                         <Form.Item label={t('phone_number')}>
                             <Input type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />

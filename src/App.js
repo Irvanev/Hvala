@@ -43,7 +43,7 @@ function App() {
           <PrivateRoute exact path={"/settings"} component={ProfileSettings} />
           <PrivateRoute exact path={"/message"} component={Message} />
           <PrivateRoute exact path={"/message/:chatId"} component={Message} />
-          <PrivateRoute exact path={"/edit/:id"} component={EditItem} />
+          <Route exact path={"/edit/:id"} component={EditItem} />
           <PrivateRoute exact path={"/addItem"} component={AddItem} />
           <PrivateRoute path={"/profile"} component={Profile} />
           <Redirect from="/" to="/advertisment" />

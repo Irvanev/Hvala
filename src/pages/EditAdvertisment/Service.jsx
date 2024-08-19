@@ -17,6 +17,8 @@ export default function Service({ handleSubCategoryChange, subcategory, t }) {
             <Option value="handyman">{t('handyman')}</Option>
             <Option value="beauty_and_health"> {t('beauty_and_health')}</Option>
             <Option value="transportation"> {t('transportation')}</Option>
+            <Option value="taxi"> {t('taxi')}</Option>
+            <Option value="transfer"> {t('transfer')}</Option>
             <Option value="repair_and_construction"> {t('repair_and_construction')}</Option>
             <Option value="computer_services"> {t('computer_services')}</Option>
             <Option value="business_services"> {t('business_services')}</Option>
