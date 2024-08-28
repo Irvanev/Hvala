@@ -597,11 +597,9 @@ const SellerProfile = () => {
                 <CustomDropdown categories={categories} onCategorySelect={handleCategorySelect} />
               </div>
               <Row xs={2} sm={2} className="g-3" id="cardAds">
-                {user &&
-                  ads &&
-                  ads.map((advertisment, index) => (
-                    <CardAdvertisementHome key={index} advertisment={advertisment} />
-                  ))}
+                {filteredAds.map((advertisment, index) => (
+                  <CardAdvertisementHome key={index} advertisment={advertisment} />
+                ))}
               </Row>
             </Container>
           </Col>
