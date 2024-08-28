@@ -71,6 +71,7 @@ export const Registration = () => {
             await setDoc(doc(db, 'users', user.uid), {
                 addtime: serverTimestamp(),
                 role: "user",
+                link: user.uid,
                 fcmtoken: "",
                 location: "",
                 photoUrl: "",

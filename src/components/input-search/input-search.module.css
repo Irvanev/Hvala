@@ -1,0 +1,31 @@
+.input {
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border: 1px solid #03989F;
+    padding: 0 10px;
+    transition: 0.3s;
+    
+}
+
+.input:focus {
+    border-color: #00B2BB;
+    box-shadow: 0px 0px 1px #00B2BB;
+    outline: none;
+}
+
+.button {
+    width: 100px;
+    height: 40px;
+    background-color: #03989F;
+    color: white;
+    border: none;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    font-size: 16px;
+    transition: 0.3s;
+}
+
+.button:hover {
+    background-color: #00B2BB;
+    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.1);
+}

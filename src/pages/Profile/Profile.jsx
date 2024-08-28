@@ -14,9 +14,9 @@ import CardAdvertisementProfile from '../../components/profile-card/CardAdvertis
 import CardAdvertisementProfileArchive from "../../components/profile-card/CardAdvertismentArchive";
 import CardAdvertisementProfileMobile from "../../components/profile-card/CardAdvertismentProfileMobile";
 import CardAdvertisementProfileArchiveMobile from "../../components/profile-card/CardAdvertismentArchiveMobile";
+import { auth } from "../../config/firebase";
 
 export const Profile = () => {
-    const { i18n } = useTranslation();
     const { t } = useTranslation();
     const [user, setUser] = useState(null);
     const [show, setShow] = useState(false);
@@ -27,43 +27,59 @@ export const Profile = () => {
     const [advertismentArchive, setAdvertisementsArchive] = useState([]);
     const { TabPane } = Tabs;
 
+    const userId = auth.currentUser;
+
+    console.log(userId);
+
 
     useEffect(() => {
         const fetchData = async () => {
-            const userId = localStorage.getItem('userId');
-            const user = await fetchUser(userId);
-            setUser(user);
+            const currentUser = auth.currentUser;
+            if (currentUser) {
+                const userId = currentUser.uid;
+                const user = await fetchUser(userId);
+                setUser(user);
+            }
         };
 
         fetchData();
-    }, []); // Выполняется один раз при монтировании компонента
+    }, []);
 
     useEffect(() => {
         const fetchData = async () => {
-            const userId = localStorage.getItem('userId');
-            const { reviews, feedbackCount } = await fetchReviews(userId);
-            setReviews(reviews);
-            setUser(prevUser => ({ ...prevUser, reviewCount: feedbackCount }));
+            const currentUser = auth.currentUser;
+            if (currentUser) {
+                const userId = currentUser.uid;
+                const { reviews, feedbackCount } = await fetchReviews(userId);
+                setReviews(reviews);
+                setUser(prevUser => ({ ...prevUser, reviewCount: feedbackCount }));
+            }
         };
 
         fetchData();
-    }, []); // Выполняется один раз при монтировании компонента
+    }, []);
 
     useEffect(() => {
         const fetchData = async () => {
-            const userId = localStorage.getItem('userId');
-            const advertisements = await fetchAdvertisements(userId);
-            setAdvertisements(advertisements);
+            const currentUser = auth.currentUser;
+            if (currentUser) {
+                const userId = currentUser.uid;
+                const advertisements = await fetchAdvertisements(userId);
+                setAdvertisements(advertisements);
+            }
         };
 
         fetchData();
-    }, []); // Выполняется один раз при монтировании компонента
+    }, []);
 
     useEffect(() => {
         const fetchData = async () => {
-            const userId = localStorage.getItem('userId');
-            const archive = await fetchAdvertismentsArchive(userId);
-            setAdvertisementsArchive(archive);
+            const currentUser = auth.currentUser;
+            if (currentUser) {
+                const userId = currentUser.uid;
+                const archive = await fetchAdvertismentsArchive(userId);
+                setAdvertisementsArchive(archive);
+            }
         };
 
         fetchData();

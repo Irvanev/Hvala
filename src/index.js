@@ -10,24 +10,22 @@ import ru from "./assets/locales/ru.json";
 import sr from "./assets/locales/me.json";
 
 i18n
-    .use(initReactI18next)
-    .init({
-        resources: {
-            en: { translation: en },
-            ru: { translation: ru },
-            sr: { translation: sr }
-        },
-        lng: localStorage.getItem('i18nextLng') || 'en',
-        fallbackLng: "en",
-        interpolation: {
-            escapeValue: false
-        }
-    });
+  .use(initReactI18next)
+  .init({
+    resources: {
+      en: { translation: en },
+      ru: { translation: ru },
+      sr: { translation: sr }
+    },
+    lng: localStorage.getItem('i18nextLng') || 'en',
+    fallbackLng: "en",
+    interpolation: {
+      escapeValue: false
+    }
+  });
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
+  <App />
 );
 reportWebVitals();

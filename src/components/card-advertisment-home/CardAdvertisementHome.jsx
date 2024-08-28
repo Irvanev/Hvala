@@ -64,7 +64,7 @@ const CardAdvertisementHome = ({ advertisment, index }) => {
 
     return (
         <>
-            <Col key={index} className='d-none d-lg-block'>
+            <Col key={index} className='d-none d-lg-block mt-3'>
                 <Link key={advertisment.id} to={`/advertisment/${advertisment.id}`} style={{ textDecoration: "none" }}>
                     <Card
                         hoverable
@@ -79,7 +79,6 @@ const CardAdvertisementHome = ({ advertisment, index }) => {
                                                 style={{ height: '30vh', width: '100%', objectFit: 'cover' }}
                                                 alt="example"
                                                 src={url || Logo}
-                                                loading="lazy"
                                             />
                                         </div>
                                     ))
@@ -89,7 +88,6 @@ const CardAdvertisementHome = ({ advertisment, index }) => {
                                             style={{ height: '30vh', width: '100%', objectFit: 'cover' }}
                                             alt="example"
                                             src={Logo}
-                                            loading="lazy"
                                         />
                                     </div>
                                 )}
