@@ -5,6 +5,7 @@ import CharactersForCard from './CharactersForCard';
 import ModalForNumberPhone from './ModalForNumberPhone';
 import { Link, useHistory } from 'react-router-dom';
 import Logo from "../../assets/logo_def.png"
+import person from "../../assets/person2.jpg"
 import { collection, query, where, getDocs, addDoc, serverTimestamp } from "firebase/firestore";
 import { useEffect, useState } from 'react';
 import { db, auth } from '../../config/firebase'
@@ -306,7 +307,7 @@ const CardInPc = ({ adData, t, index, handleSelect, handleCallClick, showModal, 
             ></div>
             <div className="d-flex justify-content-between mt-3">
               <div>
-                <Link to={`/seller/${userData?.id}`} style={{ textDecoration: 'none' }}>
+                <Link to={`/seller/${userData?.role === 'seller' ? userData.link : userData.id}`} style={{ textDecoration: 'none' }}>
                   <h5 style={{ color: '#00B2BB' }} className="mb-0">{userData?.name || 'User'}</h5>
                   <span style={{ textDecoration: 'underline', color: '#03989F' }}>{t('go_to_seller_page')}</span>
                 </Link>
@@ -349,7 +350,7 @@ const CardInPc = ({ adData, t, index, handleSelect, handleCallClick, showModal, 
               </div>
               <Link to={`/seller/${userData?.id}`} style={{ textDecoration: 'none' }}>
                 <img
-                  src={userData?.photoUrl || Logo}
+                  src={userData?.photoUrl || person}
                   alt="Seller Image"
                   className="rounded-circle"
                   style={profileImage}

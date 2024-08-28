@@ -3,6 +3,7 @@ import { Container, Carousel, Row, Col, Button } from 'react-bootstrap';
 import { Link, useHistory } from 'react-router-dom';
 import CharactersForCard from './CharactersForCard';
 import Logo from '../../assets/logo_def.png'
+import person from "../../assets/person2.jpg"
 import { Rate, Breadcrumb, message, Modal, Input, Image } from "antd";
 import { collection, query, where, getDocs, addDoc, serverTimestamp } from "firebase/firestore";
 import { db, auth } from '../../config/firebase'
@@ -321,7 +322,7 @@ const CardInMobile = ({ adData, t, index, handleSelect, handleCallClick, userDat
                     </Col>
                     <Col className="d-flex justify-content-end">
                         <Image
-                            src={userData?.photoUrl || Logo}
+                            src={userData?.photoUrl || person}
                             alt="Seller Image"
                             roundedCircle
                             style={{ width: "60px", height: "60px" }}

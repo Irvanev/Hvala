@@ -1,30 +1,16 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom';
-import { MenuOutlined, MoreOutlined } from '@ant-design/icons';
-import { Dropdown, Button, Modal, Select, InputNumber, AutoComplete } from 'antd';
+import { MenuOutlined } from '@ant-design/icons';
+import { Dropdown, Button, Select, Input } from 'antd';
 import Logo from '../assets/new_logo.png'
 import { useTranslation } from 'react-i18next';
 
 import banner from "../assets/New_Hvala_2_0.png"
 
-const Categories = ({ setSearchText, options }) => {
+const Categories = () => {
   const { t } = useTranslation();
   const { Option } = Select;
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const showModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleCancel = () => {
-    setIsModalOpen(false);
-  };
-
-  const [inputValue, setInputValue] = useState('');
-
-  const filteredOptions = options.filter(option =>
-    option.value.toLowerCase().includes(inputValue.toLowerCase())
-  );
+  const { Search } = Input;
 
   const items = [
     {
@@ -158,26 +144,14 @@ const Categories = ({ setSearchText, options }) => {
               <img src={Logo} alt='logo' style={{ width: '100px', height: 'auto' }}></img>
             </a>
           </div>
-          <AutoComplete
-            options={filteredOptions}
-            style={{ width: 1000 }}
-            size='large'
-            onSelect={value => setSearchText(value)}
-            onSearch={value => setInputValue(value)}
-            onKeyDown={event => {
-              if (event.key === 'Enter') {
-                setSearchText(inputValue);
-              }
-            }}
-            placeholder={t('search')}
-          />
+          <Search className='mr-5' size='large' placeholder="input search loading default" />
           <Dropdown
             menu={{
               items,
             }}
           >
             <a onClick={(e) => e.preventDefault()}>
-              <Button style={{ marginRight: '20px', backgroundColor: '#FFBF34', color: 'white', border: 'none' }} size='large' icon={<MenuOutlined />}>
+              <Button style={{ backgroundColor: '#FFBF34', color: 'white', border: 'none' }} size='large' icon={<MenuOutlined />}>
                 {t('category')}
               </Button>
             </a>
@@ -200,19 +174,7 @@ const Categories = ({ setSearchText, options }) => {
               </Button>
             </a>
           </Dropdown>
-          <AutoComplete
-            options={filteredOptions}
-            style={{ width: 400 }}
-            size='large'
-            onSelect={value => setSearchText(value)}
-            onSearch={value => setInputValue(value)}
-            onKeyDown={event => {
-              if (event.key === 'Enter') {
-                setSearchText(inputValue);
-              }
-            }}
-            placeholder="input search text"
-          />
+          <Search size='large' placeholder="input search loading default" />
         </div>
         <div className='container'>
         </div>

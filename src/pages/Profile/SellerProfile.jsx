@@ -1,14 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Image } from "react-bootstrap";
-import Logo from "../../assets/logo_def.png";
+import Logo from "../../assets/person2.jpg";
 import { MyNavbar } from "../../components/Navbar/Navbar";
-import { NavBarBack } from "../../components/Navbar/NavBarBack";
+import { NavBarShare } from "../../components/Navbar/NavBarShare";
 import { useParams, useHistory } from "react-router-dom";
 import { collection, query, where, getDocs, addDoc, serverTimestamp } from "firebase/firestore";
 import { db, auth } from "../../config/firebase";
-import { Rate, Modal, Input, Button, message } from 'antd'
+import { Rate, Modal, Input, Button, message, Card } from 'antd'
 import { useTranslation } from 'react-i18next';
 import CardAdvertisementHome from "../../components/card-advertisment-home/CardAdvertisementHome";
+
+import OrangeButton from "../../components/buttons/orange-button/OrangeButton";
+import BlueButton from "../../components/buttons/blue-button/BlueButton";
+import InputSearch from "../../components/input-search/InputSearch";
+import CustomDropdown from "../../components/dropdown/CustomDropdown";
+import { FacebookOutlined, GlobalOutlined, InstagramOutlined, MailOutlined } from "@ant-design/icons";
+
+import sellerBanner from "../../assets/sellerBanner.jpg"
 
 const SellerProfile = () => {
   const { t } = useTranslation();
@@ -19,9 +27,30 @@ const SellerProfile = () => {
   const from_uid = auth.currentUser ? auth.currentUser.uid : null;
   const [userMe, setUserMe] = useState(null);
 
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState('');
+
+  const [sellerId, setSellerId] = useState(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const qUser = query(collection(db, "users"), where("link", "==", id));
+      const userSnapshot = await getDocs(qUser);
+
+      if (!userSnapshot.empty) {
+        const userData = userSnapshot.docs[0].data();
+        setSellerId(userData.id);
+      } else {
+        console.log("No such user!");
+      }
+    };
+
+    fetchUser();
+  }, []);
+
   useEffect(() => {
     const fetchUserAndAds = async () => {
-      const qUser = query(collection(db, "users"), where("id", "==", id));
+      const qUser = query(collection(db, "users"), where("id", "==", sellerId));
       const userSnapshot = await getDocs(qUser);
       if (!userSnapshot.empty) {
         setUser(userSnapshot.docs[0].data());
@@ -31,19 +60,31 @@ const SellerProfile = () => {
 
       const qAds = query(
         collection(db, "advertisment"),
-        where("from_uid", "==", id)
+        where("from_uid", "==", sellerId)
         // ,where("in_arhive", "==", false),
       );
       const adsSnapshot = await getDocs(qAds);
       if (!adsSnapshot.empty) {
-        setAds(adsSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
+        const adsData = adsSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+        setAds(adsData);
+        const categoriesData = adsSnapshot.docs.map((doc) => doc.data().category);
+        const uniqueCategories = [...new Set(categoriesData)]; // Удаление дубликатов
+        setCategories(uniqueCategories);
       } else {
         console.log("No such ads!");
       }
     };
 
     fetchUserAndAds();
-  }, [id]);
+  }, [sellerId]);
+
+  const handleCategorySelect = (category) => {
+    setSelectedCategory(category);
+  };
+
+  const filteredAds = selectedCategory
+    ? ads.filter((ad) => ad.category === selectedCategory)
+    : ads;
 
 
   const aStyle = {
@@ -61,6 +102,8 @@ const SellerProfile = () => {
   const handleCancel = () => {
     setIsModalVisible(false);
   };
+
+  console.log(rat)
 
   const [isReviewFormVisible, setIsReviewFormVisible] = useState(false);
 
@@ -89,7 +132,6 @@ const SellerProfile = () => {
       return;
     }
 
-    console.log('from_uid:', from_uid);
     const userQuery = query(
       collection(db, 'users'),
       where('id', '==', from_uid)
@@ -108,12 +150,12 @@ const SellerProfile = () => {
 
   useEffect(() => {
     fetchUserMe();
-  }, [from_uid]);
+  }, [sellerId]);
 
-  const fetchUserData = async (userId) => {
+  const fetchUserData = async (sellerId) => {
     const userQuery = query(
       collection(db, 'users'),
-      where('id', '==', userId)
+      where('id', '==', sellerId)
     );
     const userSnapshot = await getDocs(userQuery);
 
@@ -130,7 +172,7 @@ const SellerProfile = () => {
     const chatsQuery = query(
       collection(db, 'message'),
       where('from_uid', '==', from_uid),
-      where('to_uid', '==', userId)
+      where('to_uid', '==', sellerId)
     );
     const chatsSnapshot = await getDocs(chatsQuery);
 
@@ -144,7 +186,7 @@ const SellerProfile = () => {
         last_time: serverTimestamp(),
         to_avatar: userData?.photoUrl,
         to_name: userData?.name,
-        to_uid: userId,
+        to_uid: sellerId,
       });
 
       chatId = chatDoc.id;
@@ -158,7 +200,11 @@ const SellerProfile = () => {
   const handleButtonWrite = async () => {
     if (from_uid === null) {
       history.push('/sign_in');
-    } else {
+    } else if
+      (from_uid === sellerId) {
+      message.error("Вы не можете написать самому себе");
+    }
+    else {
       const chatId = await createChat();
       history.push(`/message/${chatId}`);
     }
@@ -167,7 +213,7 @@ const SellerProfile = () => {
 
   useEffect(() => {
     const fetchFeedbacks = async () => {
-      const q = query(collection(db, "feedback"), where("to_uid", "==", userId));
+      const q = query(collection(db, "feedback"), where("to_uid", "==", sellerId));
       const querySnapshot = await getDocs(q);
 
       const feedbacks = await Promise.all(
@@ -183,14 +229,13 @@ const SellerProfile = () => {
       setFeedbacks(feedbacks);
     };
     fetchFeedbacks();
-  }, [userId]);
+  }, [sellerId]);
 
   const submitReview = async () => {
     try {
       const me = auth.currentUser ? auth.currentUser.uid : null;
 
-      // Проверьте, существует ли уже отзыв от этого пользователя
-      const q = query(collection(db, "feedback"), where("from_uid", "==", me), where("to_uid", "==", userId));
+      const q = query(collection(db, "feedback"), where("from_uid", "==", me), where("to_uid", "==", sellerId));
       const querySnapshot = await getDocs(q);
 
       if (!querySnapshot.empty) {
@@ -201,7 +246,7 @@ const SellerProfile = () => {
       await addDoc(collection(db, "feedback"), {
         description: reviewText,
         rating: rating,
-        to_uid: userId,
+        to_uid: sellerId,
         time_creation: serverTimestamp(),
         from_uid: me
       });
@@ -214,6 +259,19 @@ const SellerProfile = () => {
       console.error("Error adding document: ", e);
     }
   };
+
+  const handleButtonCall = () => {
+    if (!user.phone) {
+      message.error("Пользователь не указал номер телефона");
+      return;
+    }
+    if (from_uid === null) {
+      history.push('/sign_in');
+    } else {
+      window.open(`tel:${user.phone}`);
+      message.success(`tel:${user.phone}`);
+    }
+  }
 
   return (
     <div>
@@ -241,9 +299,6 @@ const SellerProfile = () => {
                         height: 150px;
                         object-fit: cover;
                       }
-                      .card {
-                        height: 320px;
-                        }
                   }
                   @media (min-width: 1000px) {
                     body {
@@ -285,65 +340,172 @@ const SellerProfile = () => {
 
       <MyNavbar />
 
-      <NavBarBack />
+      <NavBarShare />
 
-      <Container id="info" className="d-none d-lg-block mt-3">
-        <Row>
-          <Col xs={3} className="profile">
-            <div className="profile-picture">
-              {user && (
-                <Image
+      <div id="info" className="container d-none d-lg-block mt-3">
+        {(user?.role === 'seller' || user?.role === 'admin') && (
+          <div style={{ position: 'relative' }}>
+            <img style={{ borderRadius: '10px', width: '100%', maxHeight: '500px' }} src={user.bannerUrl || sellerBanner} alt="User Banner" />
+            {user && (
+              <img
+                src={user.photoUrl || Logo}
+                alt="photoProfile"
+                id="userPhoto"
+                style={{
+                  position: 'absolute',
+                  bottom: '-5rem',
+                  left: '4rem',
+                  borderRadius: '50%',
+                  border: '3px solid white',
+                  width: '200px',
+                  height: '200px'
+                }}
+              />
+            )}
+          </div>
+        )}
+        <div className="flex">
+          <div className={`w-1/4 profile ${(user?.role === 'seller' || user?.role === 'admin') ? 'mt-5' : ''}`}>
+            <div className="profile-picture d-flex justify-center">
+              {user?.role === 'user' && (
+                <img
                   src={user.photoUrl || Logo}
                   alt="photoProfile"
                   id="userPhoto"
+                  style={{
+                    borderRadius: '50%',
+                    border: '3px solid white',
+                    width: '200px',
+                    height: '200px'
+                  }}
                 />
               )}
             </div>
             {user && (
-              <h2 className="profile-name" id="userName">
-                {user.name}
-              </h2>
+              <>
+                <h2 className={`profile-name d-flex justify-center ${(user?.role === 'seller' || user?.role === 'admin') ? 'mt-5' : ''}`} id="userName">
+                  {user.name || 'User'}
+                </h2>
+              </>
             )}
             {user && (
               <>
-                <div className="profile-reviews">
+                <div className="profile-reviews d-flex justify-center">
                   <span className="me-2">{rat.toFixed(1) || '0.0'}</span>
                   <Rate disabled defaultValue={rat} />
                 </div>
-                <p style={{ color: '#03989F' }} onClick={showModalFee}>{t('show_feedbacks')}</p>
-                <Button type="primary" onClick={handleButtonWrite} style={{ backgroundColor: '#FFBF34' }}>{t('to_write')}</Button>
+                <p className="d-flex justify-center" style={{ color: '#03989F' }} onClick={showModalFee}>{t('show_feedbacks')}</p>
+                <div className="d-flex justify-center">
+                  <OrangeButton width='50%' height='40px' onClick={handleButtonWrite} title={t('to_write')} />
+                  <BlueButton width='50%' height='40px' onClick={handleButtonCall} title={t('call')} />
+                </div>
               </>
             )}
-          </Col>
-          <Col xs={9}>
-            <Container className="album mt-3">
-              <Row xs={2} sm={2} md={3} lg={4} className="g-3" id="cardAds">
-                {user &&
-                  ads &&
-                  ads.map((advertisment, index) => (
-                    <CardAdvertisementHome key={index} advertisment={advertisment} />
-                  ))}
+            {user && (
+              <Card title={(user.role === 'seller' || user.role === 'admin') ? t('contact_navbar') : t('description')} className="mt-3">
+                <p style={{ fontSize: '16px' }}>
+                  {user.description || t('welcome_description')}
+                </p>
+                {(user?.role === 'seller' || user?.role === 'admin') && (
+                  <>
+                    {user?.instagram ? (
+                      <>
+                        <a style={{ textDecoration: 'none', color: '#00B2BB', fontSize: '16px' }} href={user.instagram}>
+                          <InstagramOutlined /> Instagram
+                        </a><br></br>
+                      </>
+                    ) : (
+                      <p style={{ fontSize: '16px', color: '#00B2BB' }}>
+                        <InstagramOutlined /> {t('there_will_be_my_instagram')}
+                      </p>
+                    )}
+                    {user?.facebook ? (
+                      <>
+                        <a style={{ textDecoration: 'none', color: '#00B2BB', fontSize: '16px' }} href={user.facebook}>
+                          <FacebookOutlined /> Facebook
+                        </a><br></br>
+                      </>
+                    ) : (
+                      <p style={{ fontSize: '16px', color: '#00B2BB' }}>
+                        <FacebookOutlined /> {t('there_will_be_my_facebook')}
+                      </p>
+                    )}
+                    {user?.site ? (
+                      <a style={{ textDecoration: 'none', color: '#00B2BB', fontSize: '16px' }} href={user.site}>
+                        <GlobalOutlined /> Site
+                      </a>
+                    ) : (
+                      <p style={{ fontSize: '16px', color: '#00B2BB' }}>
+                        <GlobalOutlined /> {t('there_will_be_my_site')}
+                      </p>
+                    )}
+                    {user?.emailProfile && (
+                      <p style={{ fontSize: '16px' }}>
+                        <MailOutlined /> {user.emailProfile}
+                      </p>
+                    )}
+                  </>
+                )}
+              </Card>
+            )}
+          </div>
+          <div className="w-3/4">
+            <div className="container album mt-3">
+              <div className="d-flex align-items-center mt-3 mb-3">
+                <CustomDropdown categories={categories} onCategorySelect={handleCategorySelect} />
+                <InputSearch placeholder={t('search')} width='100%' height='40px' />
+              </div>
+              <Row xs={2} sm={2} md={3} lg={3} className="g-3" id="cardAds">
+                {filteredAds.map((advertisment, index) => (
+                  <CardAdvertisementHome key={index} advertisment={advertisment} />
+                ))}
               </Row>
-            </Container>
-          </Col>
-        </Row>
-      </Container>
+            </div>
+          </div>
+        </div>
+      </div>
 
-      <Container className="d-lg-none">
+      <div className="container d-lg-none">
+        {(user?.role === 'seller' || user?.role === 'admin') && (
+          <div style={{ position: 'relative' }}>
+            <img style={{ borderRadius: '10px', width: '100%' }} src={user.bannerUrl || sellerBanner} alt="User Banner" />
+            {user && (
+              <img
+                src={user.photoUrl || Logo}
+                alt="photoProfile"
+                id="userPhoto"
+                style={{
+                  position: 'absolute',
+                  bottom: '-3rem',
+                  left: '0.5rem',
+                  borderRadius: '50%',
+                  border: '3px solid white',
+                  width: '100px',
+                  height: '100px'
+                }}
+              />
+            )}
+          </div>
+        )}
         <Row className="text-center">
           <Col>
             <div className="profile-picture my-3">
-              <Image src={user?.photoUrl || Logo} alt="photoProfile" id="userPhoto" className="mx-auto" />
+              {user?.role === 'seller' || user?.role === 'admin' && (
+                <Image src={user?.photoUrl || Logo} alt="photoProfile" id="userPhoto" className="mx-auto" />
+              )}
             </div>
-            <h2 className="profile-name" id="userName">{user?.name}</h2>
             {user && (
               <>
+                <h2 className="profile-name" id="userName">{user?.name}</h2>
                 <div className="profile-reviews">
                   <span className="me-2">{rat.toFixed(1) || '0.0'}</span>
                   <Rate disabled defaultValue={rat} />
                 </div>
                 <p style={{ color: '#03989F' }} onClick={showModalFee}>{t('show_feedbacks')}</p>
-                <Button type="primary" onClick={handleButtonWrite} style={{ backgroundColor: '#FFBF34' }}>{t('to_write')}</Button>
+                <div className="d-flex justify-between">
+                  <OrangeButton width='100%' height='40px' onClick={handleButtonWrite} title={t('to_write')} />
+                  <BlueButton width='100%' height='40px' onClick={handleButtonCall} title={t('call')} />
+                </div>
                 <Modal title={t('reviewsForProfile')} open={isModalVisible} onCancel={handleCancel} footer={null}>
                   {feedbacks.map((feedback, index) => (
                     <div key={index}>
@@ -379,14 +541,61 @@ const SellerProfile = () => {
                 </Modal>
               </>
             )}
-            <p>{user?.description}</p>
-            <div className="profile-sections">
-            </div>
           </Col>
+          {user && (
+            <Card title={(user.role === 'seller' || user.role === 'admin') ? t('contact_navbar') : t('description')} className="mt-3">
+              <p style={{ fontSize: '16px' }}>
+                {user.description || t('welcome_description')}
+              </p>
+              {(user?.role === 'seller' || user?.role === 'admin') && (
+                <>
+                  {user?.instagram ? (
+                    <>
+                      <a style={{ textDecoration: 'none', color: '#00B2BB', fontSize: '16px' }} href={user.instagram}>
+                        <InstagramOutlined /> Instagram
+                      </a><br></br>
+                    </>
+                  ) : (
+                    <p style={{ fontSize: '16px', color: '#00B2BB' }}>
+                      <InstagramOutlined /> {t('there_will_be_my_instagram')}
+                    </p>
+                  )}
+                  {user?.facebook ? (
+                    <>
+                      <a style={{ textDecoration: 'none', color: '#00B2BB', fontSize: '16px' }} href={user.facebook}>
+                        <FacebookOutlined /> Facebook
+                      </a><br></br>
+                    </>
+                  ) : (
+                    <p style={{ fontSize: '16px', color: '#00B2BB' }}>
+                      <FacebookOutlined /> {t('there_will_be_my_facebook')}
+                    </p>
+                  )}
+                  {user?.site ? (
+                    <a style={{ textDecoration: 'none', color: '#00B2BB', fontSize: '16px' }} href={user.site}>
+                      <GlobalOutlined /> Site
+                    </a>
+                  ) : (
+                    <p style={{ fontSize: '16px', color: '#00B2BB' }}>
+                      <GlobalOutlined /> {t('there_will_be_my_site')}
+                    </p>
+                  )}
+                  {user?.emailProfile && (
+                    <p style={{ fontSize: '16px' }}>
+                      <MailOutlined /> {user.emailProfile}
+                    </p>
+                  )}
+                </>
+              )}
+            </Card>
+          )}
         </Row>
         <Row>
           <Col>
             <Container className="album mt-3">
+              <div className="d-flex justify-center mt-3 mb-3">
+                <CustomDropdown categories={categories} onCategorySelect={handleCategorySelect} />
+              </div>
               <Row xs={2} sm={2} className="g-3" id="cardAds">
                 {user &&
                   ads &&
@@ -397,7 +606,7 @@ const SellerProfile = () => {
             </Container>
           </Col>
         </Row>
-      </Container>
+      </div>
     </div>
   );
 };

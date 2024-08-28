@@ -25,7 +25,7 @@ import {
     limitToLast
 } from "firebase/firestore";
 import './messages.css';
-import Logo from '../../assets/logo_def.png';
+import Logo from '../../assets/person5.jpg';
 import { NavBarBack } from "../../components/Navbar/NavBarBack";
 
 
