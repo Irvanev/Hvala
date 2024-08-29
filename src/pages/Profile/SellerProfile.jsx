@@ -60,15 +60,15 @@ const SellerProfile = () => {
 
       const qAds = query(
         collection(db, "advertisment"),
-        where("from_uid", "==", sellerId)
-        // ,where("in_arhive", "==", false),
+        where("from_uid", "==", sellerId),
+        where('in_archive', '==', false)
       );
       const adsSnapshot = await getDocs(qAds);
       if (!adsSnapshot.empty) {
         const adsData = adsSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
         setAds(adsData);
         const categoriesData = adsSnapshot.docs.map((doc) => doc.data().category);
-        const uniqueCategories = [...new Set(categoriesData)]; // Удаление дубликатов
+        const uniqueCategories = [...new Set(categoriesData)];
         setCategories(uniqueCategories);
       } else {
         console.log("No such ads!");

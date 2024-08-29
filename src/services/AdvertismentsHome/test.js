@@ -37,6 +37,7 @@ export const fetchAdvertisments = async (
         q = query(
             advertismentsCollection,
             orderBy("time_creation", "desc"),
+            where("in_archive", "==", false),
             ...conditions,
             startAfter(lastVisible),
             limit(20)
@@ -45,6 +46,7 @@ export const fetchAdvertisments = async (
         q = query(
             advertismentsCollection,
             orderBy("time_creation", "desc"),
+            where("in_archive", "==", false),
             ...conditions,
             limit(20)
         );

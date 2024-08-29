@@ -2,7 +2,11 @@ import { db } from '../config/firebase';
 import { collection, query, where, onSnapshot } from 'firebase/firestore';
 
 export const fetchAdvertismentsByCategory = (category, setAdvertisments, setIsLoading) => {
-    const q = query(collection(db, 'advertisment'), where('category', '==', category));
+    const q = query(
+        collection(db, 'advertisment'),
+        where('category', '==', category),
+        where('in_archive', '==', false)
+    );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
         const newAdvertisments = snapshot.docs.map((doc) => ({
@@ -18,12 +22,13 @@ export const fetchAdvertismentsByCategory = (category, setAdvertisments, setIsLo
 };
 
 export const fetchAdvertismentsByFilters = (
-    category, subcategory, country, region, 
+    category, subcategory, country, region,
     condition, size, type, wheel, mileage, body, drive,
     year, transmission, memory, screen_size, brand, minPrice, maxPrice, currency, setAdvertisments
 ) => {
     let q = query(
         collection(db, 'advertisment'),
+        where('in_archive', '==', false)
     );
 
     if (category) {

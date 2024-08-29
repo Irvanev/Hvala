@@ -33,6 +33,8 @@ import DefaultForm from "../../components/formsForAddingAdvertisements/DefaultFo
 import DefaultFormWithoutCondition from "../../components/formsForAddingAdvertisements/DefaultFormWithoutCondition";
 import HomeApplianceForm from "../../components/formsForAddingAdvertisements/HomeApplianceForm";
 
+import imageCompression from 'browser-image-compression';
+
 import { Spin } from 'antd';
 
 export const AddItem = () => {
@@ -98,14 +100,31 @@ export const AddItem = () => {
     const handleSubmit = async () => {
         setLoading(true);
 
+        const compressImage = async (file) => {
+            const options = {
+                maxSizeMB: 1, // Максимальный размер файла в мегабайтах
+                maxWidthOrHeight: 1920, // Максимальная ширина или высота
+                useWebWorker: true // Использовать Web Worker для сжатия
+            };
+            try {
+                const compressedFile = await imageCompression(file, options);
+                return compressedFile;
+            } catch (error) {
+                console.error("Ошибка при сжатии изображения:", error);
+                throw error;
+            }
+        };
+        
         const fileUrls = await Promise.all(
             photoUrls.map(async (file) => {
-                const storageRef = ref(storage, 'advertisment/' + file.name);
-                const uploadTask = uploadBytesResumable(storageRef, file);
-
+                const compressedFile = await compressImage(file);
+                const storageRef = ref(storage, 'advertisment/' + compressedFile.name);
+                const uploadTask = uploadBytesResumable(storageRef, compressedFile);
+        
                 return new Promise((resolve, reject) => {
                     uploadTask.on('state_changed',
                         (snapshot) => {
+                            // Вы можете добавить код для отслеживания прогресса загрузки здесь
                         },
                         (error) => {
                             reject(error);
@@ -141,6 +160,7 @@ export const AddItem = () => {
                     coordinates: coordinates,
                     time_creation: serverTimestamp(),
                     photoUrls: fileUrls,
+                    in_archive: false,
                 };
                 break;
 
@@ -172,6 +192,7 @@ export const AddItem = () => {
                     availability: "available",
                     photoUrls: fileUrls,
                     time_creation: serverTimestamp(),
+                    in_archive: false,
                 };
                 break;
 
@@ -197,6 +218,7 @@ export const AddItem = () => {
                     availability: "available",
                     photoUrls: fileUrls,
                     time_creation: serverTimestamp(),
+                    in_archive: false,
                 }
                 break;
 
@@ -222,6 +244,7 @@ export const AddItem = () => {
                     availability: "available",
                     photoUrls: fileUrls,
                     time_creation: serverTimestamp(),
+                    in_archive: false,
                 };
                 break;
 
@@ -247,6 +270,7 @@ export const AddItem = () => {
                     availability: "available",
                     photoUrls: fileUrls,
                     time_creation: serverTimestamp(),
+                    in_archive: false,
                 };
                 break;
 
@@ -271,6 +295,7 @@ export const AddItem = () => {
                     coordinates: coordinates,
                     time_creation: serverTimestamp(),
                     photoUrls: fileUrls,
+                    in_archive: false,
                 }
                 break;
 
@@ -306,6 +331,7 @@ export const AddItem = () => {
                     availability: "available", // !TODO
                     photoUrls: fileUrls,
                     time_creation: serverTimestamp(),
+                    in_archive: false,
                 };
                 break;
 
@@ -334,6 +360,7 @@ export const AddItem = () => {
                     coordinates: coordinates,
                     time_creation: serverTimestamp(),
                     photoUrls: fileUrls,
+                    in_archive: false,
                 };
                 break;
 
@@ -361,6 +388,7 @@ export const AddItem = () => {
                     coordinates: coordinates,
                     time_creation: serverTimestamp(),
                     photoUrls: fileUrls,
+                    in_archive: false,
                 }
                 break;
 
@@ -390,6 +418,7 @@ export const AddItem = () => {
                     coordinates: coordinates,
                     time_creation: serverTimestamp(),
                     photoUrls: fileUrls,
+                    in_archive: false,
                 }
                 break;
 
@@ -451,6 +480,7 @@ export const AddItem = () => {
                     coordinates: coordinates,
                     time_creation: serverTimestamp(),
                     photoUrls: fileUrls,
+                    in_archive: false,
                 }
                 break;
 
@@ -505,6 +535,7 @@ export const AddItem = () => {
                     coordinates: coordinates,
                     time_creation: serverTimestamp(),
                     photoUrls: fileUrls,
+                    in_archive: false,
                 }
                 break;
 
