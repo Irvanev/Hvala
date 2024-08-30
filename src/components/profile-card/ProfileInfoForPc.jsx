@@ -2,7 +2,7 @@ import React from "react";
 import { Col, Image } from "react-bootstrap";
 import Logo from "../../assets/person2.jpg"
 import { useTranslation } from 'react-i18next';
-import { Rate } from 'antd';
+import { Rate, Flex } from 'antd';
 import styles from './profileInfo.module.css'
 
 const ProfileInfoForPc = ({ user, handleShow }) => {
@@ -23,8 +23,12 @@ const ProfileInfoForPc = ({ user, handleShow }) => {
             </div>
             <h2 className="profile-name" id="userName">{user?.name || 'Name'}</h2>
             <div className="profile-reviews d-flex align-items-center">
-                <span className="me-2">{user?.rating.toFixed(1) || '0.0'}</span>
-                {rat && <Rate disabled defaultValue={rat} />}
+                {user && (
+                    <Flex gap="middle" className="d-flex justify-center">
+                        {user?.rating !== 0 ? <span>{user.rating.toFixed(1)}</span> : null}
+                        <Rate disabled defaultValue={user.rating} />
+                    </Flex>
+                )}
             </div>
             <a onClick={handleShow} style={{ cursor: 'pointer' }}>
                 <p >{getReviewText(user?.reviewCount || 0)}</p>

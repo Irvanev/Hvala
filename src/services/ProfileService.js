@@ -2,16 +2,13 @@ import { collection, query, where, getDocs, doc, updateDoc, deleteDoc } from "fi
 import { db } from "../config/firebase";
 
 export const fetchUser = async (userId) => {
-    let user = JSON.parse(localStorage.getItem('user'));
-    if (!user) {
-        const usersRef = collection(db, 'users');
-        const q = query(usersRef, where('id', '==', userId));
-        const querySnapshot = await getDocs(q);
-        querySnapshot.forEach((doc) => {
-            user = doc.data();
-            localStorage.setItem('user', JSON.stringify(user));
-        });
-    }
+    const usersRef = collection(db, 'users');
+    const q = query(usersRef, where('id', '==', userId));
+    const querySnapshot = await getDocs(q);
+    let user = null;
+    querySnapshot.forEach((doc) => {
+        user = doc.data();
+    });
     return user;
 }
 

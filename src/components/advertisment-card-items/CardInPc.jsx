@@ -6,7 +6,7 @@ import ModalForNumberPhone from './ModalForNumberPhone';
 import { Link, useHistory } from 'react-router-dom';
 import Logo from "../../assets/logo_def.png"
 import person from "../../assets/person2.jpg"
-import { collection, query, where, getDocs, addDoc, serverTimestamp } from "firebase/firestore";
+import { collection, query, where, getDocs, addDoc, serverTimestamp, updateDoc } from "firebase/firestore";
 import { useEffect, useState } from 'react';
 import { db, auth } from '../../config/firebase'
 import { Modal, Input, Button, message, Breadcrumb, Rate, Image } from "antd";
@@ -16,7 +16,7 @@ import { getConversionRate } from '../../services/AdvertismentsHome/Advertisment
 
 
 
-const CardInPc = ({ adData, t, index, handleSelect, handleCallClick, showModal, handleCloseModal, userData, fromUid }) => {
+const CardInPc = ({ adData, t, index, handleSelect, handleCallClick, showModal, handleCloseModal, userData }) => {
 
   const [feedbacks, setFeedbacks] = useState([]);
   const rat = userData?.rating || userData?.raiting;
@@ -157,7 +157,6 @@ const CardInPc = ({ adData, t, index, handleSelect, handleCallClick, showModal, 
     try {
       const me = auth.currentUser ? auth.currentUser.uid : null;
 
-      // Проверьте, существует ли уже отзыв от этого пользователя
       const q = query(collection(db, "feedback"), where("from_uid", "==", me), where("to_uid", "==", userId));
       const querySnapshot = await getDocs(q);
 
@@ -174,10 +173,35 @@ const CardInPc = ({ adData, t, index, handleSelect, handleCallClick, showModal, 
         from_uid: me
       });
 
+      // Получить все отзывы для продавца
+      const feedbackQuery = query(collection(db, "feedback"), where("to_uid", "==", userId));
+      const feedbackSnapshot = await getDocs(feedbackQuery);
+
+      // Вычислить средний рейтинг
+      let totalRating = 0;
+      feedbackSnapshot.forEach((doc) => {
+        totalRating += doc.data().rating;
+      });
+      const averageRating = totalRating / feedbackSnapshot.size;
+
+      // Обновить рейтинг продавца
+      const sellerCollectionRef = collection(db, "users");
+      const queryUser = query(sellerCollectionRef, where("id", "==", userId));
+
+      const querySnapshotUser = await getDocs(queryUser);
+      querySnapshotUser.forEach(async (doc) => {
+        await updateDoc(doc.ref, {
+          rating: averageRating
+        });
+      });
+
       setReviewText("");
       setRating(1);
       setIsReviewFormVisible(false);
       message.success(t('success_set_feedback'));
+      setTimeout(() => {
+        window.location.reload();
+      }, 500);
     } catch (e) {
       console.error("Error adding document: ", e);
     }
@@ -307,7 +331,7 @@ const CardInPc = ({ adData, t, index, handleSelect, handleCallClick, showModal, 
             ></div>
             <div className="d-flex justify-content-between mt-3">
               <div>
-                <Link to={`/seller/${userData?.role === 'seller' ? userData.link : userData.id}`} style={{ textDecoration: 'none' }}>
+                <Link to={`/seller/${userData.link}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                   <h5 style={{ color: '#00B2BB' }} className="mb-0">{userData?.name || 'User'}</h5>
                   <span style={{ textDecoration: 'underline', color: '#03989F' }}>{t('go_to_seller_page')}</span>
                 </Link>
@@ -332,6 +356,7 @@ const CardInPc = ({ adData, t, index, handleSelect, handleCallClick, showModal, 
                         style={{ backgroundColor: '#FFBF34', border: 'none', color: 'white' }} onClick={toggleReviewForm}>{t('set_feedback')}</Button>
                     </div>
                   )}
+
                   {isReviewFormVisible && (
                     <>
                       <Input.TextArea
@@ -342,7 +367,10 @@ const CardInPc = ({ adData, t, index, handleSelect, handleCallClick, showModal, 
                         placeholder={t('input_feedback')}
                       />
                       <Rate className='mt-3' value={rating} onChange={handleRatingChange} />
-                      <Button type="primary" onClick={submitReview}>{t('send_feedback')}</Button>
+                      <div className='d-flex justify-content-center'>
+                        <Button className='mt-3'
+                          style={{ backgroundColor: '#FFBF34', border: 'none', color: 'white' }} onClick={submitReview}>{t('send_feedback')}</Button>
+                      </div>
                     </>
                   )}
                 </Modal>

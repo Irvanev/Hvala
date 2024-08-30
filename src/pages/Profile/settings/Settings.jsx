@@ -172,6 +172,14 @@ const Settings = () => {
 
     return (
         <>
+        <style type="text/css">
+                {`
+                  @media (max-width: 1000px) {
+                      body {
+                          padding-bottom: 3.5rem;
+                      }
+                `}
+            </style>
             <NavBarBack />
             <MyNavbar />
             <div className='container'>

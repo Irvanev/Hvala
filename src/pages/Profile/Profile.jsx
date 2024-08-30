@@ -27,10 +27,6 @@ export const Profile = () => {
     const [advertismentArchive, setAdvertisementsArchive] = useState([]);
     const { TabPane } = Tabs;
 
-    const userId = auth.currentUser;
-
-    console.log(userId);
-
 
     useEffect(() => {
         const fetchData = async () => {
@@ -112,7 +108,7 @@ export const Profile = () => {
                                                 ))
                                             ) : (
                                                 <div>
-                                                    
+
                                                 </div>
                                             )}
                                         </Row>
@@ -133,7 +129,7 @@ export const Profile = () => {
                                                 ))
                                             ) : (
                                                 <div>
-                                                    
+
                                                 </div>
                                             )}
                                         </Row>
@@ -167,20 +163,20 @@ export const Profile = () => {
                                             ))
                                         ) : (
                                             <div className={styles.emptyMobile}>
-                                                
+
                                             </div>
                                         )}
                                     </Row>
                                 </TabPane>
                                 <TabPane
-                                        tab={
-                                            <Space>
-                                                {advertismentArchive.length > 0 && <Badge color="orange" count={advertismentArchive.length} />}
-                                                {t('archive_ads')}
-                                            </Space>
-                                        }
-                                        key="2"
-                                    >
+                                    tab={
+                                        <Space>
+                                            {advertismentArchive.length > 0 && <Badge color="orange" count={advertismentArchive.length} />}
+                                            {t('archive_ads')}
+                                        </Space>
+                                    }
+                                    key="2"
+                                >
                                     <Row xs={2} sm={2} md={3} lg={4} className="g-3" id="cardAds">
                                         {(advertismentArchive.map((advertismentArchive, index) => (
                                             <CardAdvertisementProfileArchiveMobile key={index} advertismentArchive={advertismentArchive} />

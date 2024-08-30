@@ -5,7 +5,7 @@ import CharactersForCard from './CharactersForCard';
 import Logo from '../../assets/logo_def.png'
 import person from "../../assets/person2.jpg"
 import { Rate, Breadcrumb, message, Modal, Input, Image } from "antd";
-import { collection, query, where, getDocs, addDoc, serverTimestamp } from "firebase/firestore";
+import { collection, query, where, getDocs, addDoc, serverTimestamp, updateDoc } from "firebase/firestore";
 import { db, auth } from '../../config/firebase'
 import { HomeOutlined } from '@ant-design/icons';
 
@@ -94,7 +94,6 @@ const CardInMobile = ({ adData, t, index, handleSelect, handleCallClick, userDat
         try {
             const me = auth.currentUser ? auth.currentUser.uid : null;
 
-            // Проверьте, существует ли уже отзыв от этого пользователя
             const q = query(collection(db, "feedback"), where("from_uid", "==", me), where("to_uid", "==", userId));
             const querySnapshot = await getDocs(q);
 
@@ -111,10 +110,35 @@ const CardInMobile = ({ adData, t, index, handleSelect, handleCallClick, userDat
                 from_uid: me
             });
 
+            // Получить все отзывы для продавца
+            const feedbackQuery = query(collection(db, "feedback"), where("to_uid", "==", userId));
+            const feedbackSnapshot = await getDocs(feedbackQuery);
+
+            // Вычислить средний рейтинг
+            let totalRating = 0;
+            feedbackSnapshot.forEach((doc) => {
+                totalRating += doc.data().rating;
+            });
+            const averageRating = totalRating / feedbackSnapshot.size;
+
+            // Обновить рейтинг продавца
+            const sellerCollectionRef = collection(db, "users");
+            const queryUser = query(sellerCollectionRef, where("id", "==", userId));
+
+            const querySnapshotUser = await getDocs(queryUser);
+            querySnapshotUser.forEach(async (doc) => {
+                await updateDoc(doc.ref, {
+                    rating: averageRating
+                });
+            });
+
             setReviewText("");
             setRating(1);
             setIsReviewFormVisible(false);
             message.success(t('success_set_feedback'));
+            setTimeout(() => {
+                window.location.reload();
+            }, 500);
         } catch (e) {
             console.error("Error adding document: ", e);
         }
@@ -176,6 +200,8 @@ const CardInMobile = ({ adData, t, index, handleSelect, handleCallClick, userDat
             history.push(`/message/${chatId}`);
         }
     }
+
+    console.log('link', userData.link);
 
     return (
         <Container className="d-lg-none">
@@ -278,7 +304,7 @@ const CardInMobile = ({ adData, t, index, handleSelect, handleCallClick, userDat
                 <CharactersForCard adData={adData} t={t} />
                 <Row className="d-flex justify-content-between align-items-center mt-3">
                     <Col>
-                        <Link to={`/seller/${userData?.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                        <Link to={`/seller/${userData.link}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                             <h5 style={{ color: 'black' }} className="mb-0">{userData?.name || "User"}</h5>
                             <span style={{ color: '#03989F', textDecoration: 'underline' }}>{t('go_to_seller_page')}</span>
                             <div className="d-flex align-items-center">
@@ -288,7 +314,7 @@ const CardInMobile = ({ adData, t, index, handleSelect, handleCallClick, userDat
                         </Link>
                         <p style={{ color: '#03989F' }} onClick={showModalFee}>{t('show_feedbacks')}</p>
 
-                        <Modal title="Отзывы" open={isModalVisible} onCancel={handleCancel} footer={null}>
+                        <Modal title={t('reviewsForProfile')} open={isModalVisible} onCancel={handleCancel} footer={null}>
                             {feedbacks.map((feedback, index) => (
                                 <div key={index}>
                                     <h5 className='mt-3'>{new Date(feedback.time_creation?.seconds * 1000).toLocaleDateString()}</h5>
@@ -314,7 +340,10 @@ const CardInMobile = ({ adData, t, index, handleSelect, handleCallClick, userDat
                                         placeholder={t('input_feedback')}
                                     />
                                     <Rate className='mt-3' value={rating} onChange={handleRatingChange} />
-                                    <Button type="primary" onClick={submitReview}>{t('send_feedback')}</Button>
+                                    <div className='d-flex justify-content-center'>
+                                        <Button className='mt-3'
+                                            style={{ backgroundColor: '#FFBF34', border: 'none', color: 'white' }} onClick={submitReview}>{t('send_feedback')}</Button>
+                                    </div>
                                 </>
                             )}
                         </Modal>

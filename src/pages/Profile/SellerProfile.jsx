@@ -4,9 +4,9 @@ import Logo from "../../assets/person2.jpg";
 import { MyNavbar } from "../../components/Navbar/Navbar";
 import { NavBarShare } from "../../components/Navbar/NavBarShare";
 import { useParams, useHistory } from "react-router-dom";
-import { collection, query, where, getDocs, addDoc, serverTimestamp } from "firebase/firestore";
+import { collection, query, where, getDocs, addDoc, serverTimestamp, doc, updateDoc } from "firebase/firestore";
 import { db, auth } from "../../config/firebase";
-import { Rate, Modal, Input, Button, message, Card } from 'antd'
+import { Rate, Modal, Input, Button, message, Card, Flex } from 'antd'
 import { useTranslation } from 'react-i18next';
 import CardAdvertisementHome from "../../components/card-advertisment-home/CardAdvertisementHome";
 
@@ -239,7 +239,7 @@ const SellerProfile = () => {
       const querySnapshot = await getDocs(q);
 
       if (!querySnapshot.empty) {
-        message.error("Вы уже оставили отзыв этому пользователю");
+        message.error(t('error_set_feedback'));
         return;
       }
 
@@ -251,10 +251,35 @@ const SellerProfile = () => {
         from_uid: me
       });
 
+      // Получить все отзывы для продавца
+      const feedbackQuery = query(collection(db, "feedback"), where("to_uid", "==", sellerId));
+      const feedbackSnapshot = await getDocs(feedbackQuery);
+
+      // Вычислить средний рейтинг
+      let totalRating = 0;
+      feedbackSnapshot.forEach((doc) => {
+        totalRating += doc.data().rating;
+      });
+      const averageRating = totalRating / feedbackSnapshot.size;
+
+      // Обновить рейтинг продавца
+      const sellerCollectionRef = collection(db, "users");
+      const queryUser = query(sellerCollectionRef, where("id", "==", sellerId));
+
+      const querySnapshotUser = await getDocs(queryUser);
+      querySnapshotUser.forEach(async (doc) => {
+        await updateDoc(doc.ref, {
+          rating: averageRating
+        });
+      });
+
       setReviewText("");
       setRating(1);
       setIsReviewFormVisible(false);
-      message.success("Отзыв добавлен");
+      message.success(t('success_set_feedback'));
+      setTimeout(() => {
+        window.location.reload();
+      }, 500);
     } catch (e) {
       console.error("Error adding document: ", e);
     }
@@ -262,7 +287,7 @@ const SellerProfile = () => {
 
   const handleButtonCall = () => {
     if (!user.phone) {
-      message.error("Пользователь не указал номер телефона");
+      message.error(t('number_is_not_specified'));
       return;
     }
     if (from_uid === null) {
@@ -345,7 +370,7 @@ const SellerProfile = () => {
       <div id="info" className="container d-none d-lg-block mt-3">
         {(user?.role === 'seller' || user?.role === 'admin') && (
           <div style={{ position: 'relative' }}>
-            <img style={{ borderRadius: '10px', width: '100%', maxHeight: '500px' }} src={user.bannerUrl || sellerBanner} alt="User Banner" />
+            <img style={{ borderRadius: '10px', width: '100%', maxHeight: '500px', objectFit: 'cover' }} src={user.bannerUrl || sellerBanner} alt="User Banner" />
             {user && (
               <img
                 src={user.photoUrl || Logo}
@@ -357,8 +382,8 @@ const SellerProfile = () => {
                   left: '4rem',
                   borderRadius: '50%',
                   border: '3px solid white',
-                  width: '200px',
-                  height: '200px'
+                  width: '12.5em',
+                  height: '12.5em'
                 }}
               />
             )}
@@ -391,8 +416,10 @@ const SellerProfile = () => {
             {user && (
               <>
                 <div className="profile-reviews d-flex justify-center">
-                  <span className="me-2">{rat.toFixed(1) || '0.0'}</span>
-                  <Rate disabled defaultValue={rat} />
+                  <Flex gap="middle" className="d-flex justify-center">
+                    {user?.rating !== 0 ? <span>{user.rating.toFixed(1)}</span> : null}
+                    <Rate disabled defaultValue={user.rating} />
+                  </Flex>
                 </div>
                 <p className="d-flex justify-center" style={{ color: '#03989F' }} onClick={showModalFee}>{t('show_feedbacks')}</p>
                 <div className="d-flex justify-center">
@@ -410,7 +437,7 @@ const SellerProfile = () => {
                   <>
                     {user?.instagram ? (
                       <>
-                        <a style={{ textDecoration: 'none', color: '#00B2BB', fontSize: '16px' }} href={user.instagram}>
+                        <a target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', color: '#00B2BB', fontSize: '16px' }} href={user.instagram}>
                           <InstagramOutlined /> Instagram
                         </a><br></br>
                       </>
@@ -421,7 +448,7 @@ const SellerProfile = () => {
                     )}
                     {user?.facebook ? (
                       <>
-                        <a style={{ textDecoration: 'none', color: '#00B2BB', fontSize: '16px' }} href={user.facebook}>
+                        <a target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', color: '#00B2BB', fontSize: '16px' }} href={user.facebook}>
                           <FacebookOutlined /> Facebook
                         </a><br></br>
                       </>
@@ -431,7 +458,7 @@ const SellerProfile = () => {
                       </p>
                     )}
                     {user?.site ? (
-                      <a style={{ textDecoration: 'none', color: '#00B2BB', fontSize: '16px' }} href={user.site}>
+                      <a target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', color: '#00B2BB', fontSize: '16px' }} href={user.site}>
                         <GlobalOutlined /> Site
                       </a>
                     ) : (
@@ -468,7 +495,7 @@ const SellerProfile = () => {
       <div className="container d-lg-none">
         {(user?.role === 'seller' || user?.role === 'admin') && (
           <div style={{ position: 'relative' }}>
-            <img style={{ borderRadius: '10px', width: '100%' }} src={user.bannerUrl || sellerBanner} alt="User Banner" />
+            <img style={{ borderRadius: '10px', width: '100%', objectFit: 'cover' }} src={user.bannerUrl || sellerBanner} alt="User Banner" />
             {user && (
               <img
                 src={user.photoUrl || Logo}
@@ -498,8 +525,10 @@ const SellerProfile = () => {
               <>
                 <h2 className="profile-name" id="userName">{user?.name}</h2>
                 <div className="profile-reviews">
-                  <span className="me-2">{rat.toFixed(1) || '0.0'}</span>
-                  <Rate disabled defaultValue={rat} />
+                  <Flex gap="middle" className="d-flex justify-center">
+                    {user?.rating !== 0 ? <span>{user.rating.toFixed(1)}</span> : null}
+                    <Rate disabled defaultValue={user.rating} />
+                  </Flex>
                 </div>
                 <p style={{ color: '#03989F' }} onClick={showModalFee}>{t('show_feedbacks')}</p>
                 <div className="d-flex justify-between">
@@ -551,28 +580,28 @@ const SellerProfile = () => {
                 <>
                   {user?.instagram ? (
                     <>
-                      <a style={{ textDecoration: 'none', color: '#00B2BB', fontSize: '16px' }} href={user.instagram}>
+                      <a target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', color: '#00B2BB', fontSize: '16px' }} href={user.instagram}>
                         <InstagramOutlined /> Instagram
                       </a><br></br>
                     </>
                   ) : (
-                    <p style={{ fontSize: '16px', color: '#00B2BB' }}>
+                    <p target="_blank" rel="noopener noreferrer" style={{ fontSize: '16px', color: '#00B2BB' }}>
                       <InstagramOutlined /> {t('there_will_be_my_instagram')}
                     </p>
                   )}
                   {user?.facebook ? (
                     <>
-                      <a style={{ textDecoration: 'none', color: '#00B2BB', fontSize: '16px' }} href={user.facebook}>
+                      <a target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', color: '#00B2BB', fontSize: '16px' }} href={user.facebook}>
                         <FacebookOutlined /> Facebook
                       </a><br></br>
                     </>
                   ) : (
-                    <p style={{ fontSize: '16px', color: '#00B2BB' }}>
+                    <p target="_blank" rel="noopener noreferrer" style={{ fontSize: '16px', color: '#00B2BB' }}>
                       <FacebookOutlined /> {t('there_will_be_my_facebook')}
                     </p>
                   )}
                   {user?.site ? (
-                    <a style={{ textDecoration: 'none', color: '#00B2BB', fontSize: '16px' }} href={user.site}>
+                    <a target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', color: '#00B2BB', fontSize: '16px' }} href={user.site}>
                       <GlobalOutlined /> Site
                     </a>
                   ) : (
