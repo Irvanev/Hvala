@@ -17,7 +17,6 @@
     background-color: #FFBF34;
     color: white;
     border: none;
-    margin-bottom: 50px;
     border-radius: 10px;
 }
 
@@ -26,6 +25,7 @@
 }
 
 .customLink {
+    text-decoration: none;
     color: #03989F;
 }
 

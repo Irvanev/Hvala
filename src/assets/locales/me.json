@@ -1,4 +1,7 @@
 {
+  "forgot_password_sent": "Poruka sa uputstvima za oporavak lozinke poslata je na vašu email adresu",
+  "forgot_password": "Zaboravili ste lozinku?",
+  "recovery_password": "Oporavak lozinke",
   "edit_profile": "Uredi profil",
   "archive_adsv": "Arhivirani oglasi",
   "current_ads": "Trenutni oglasi",

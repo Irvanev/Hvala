@@ -1,4 +1,7 @@
 { 
+  "forgot_password_sent": "Письмо для восстановления пароля отправлено на ваш email!",
+  "forgot_password": "Забыли пароль?",
+  "recovery_password": "Восстановление пароля",
   "edit_profile": "Изменить профиль",
   "archive_adsv": "Объявления в архиве",
   "current_ads": "Актуальные объявления",

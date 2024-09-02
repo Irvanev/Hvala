@@ -1,4 +1,7 @@
 {
+  "forgot_password_sent": "A link to reset your password has been sent to your email",
+  "forgot_password": "Forgot password",
+  "recovery_password": "Password recovery",
   "edit_profile": "Edit Profile",
   "archive_adsv": "Archive Ads",
   "current_ads": "Current Ads",

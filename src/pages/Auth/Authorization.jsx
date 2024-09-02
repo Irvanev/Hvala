@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import styles from './authorizations.module.css'
 import { useHistory, Link } from 'react-router-dom';
-import { signInWithEmailAndPassword, setPersistence, browserSessionPersistence, browserLocalPersistence } from 'firebase/auth';
-import { Form, Input, Checkbox, Button } from 'antd';
+import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
+import { Form, Input, Flex, Modal, Spin, message } from 'antd';
 import { useTranslation } from 'react-i18next';
 import Logotype from "../../assets/logo_def.png"
 import { auth } from "../../config/firebase"
@@ -13,22 +13,17 @@ export const Authorization = () => {
     const { t } = useTranslation();
     const history = useHistory();
 
-    const [rememberMe, setRememberMe] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loginError, setLoginError] = useState('');
-
-    const onRememberMeChange = (e) => {
-        setRememberMe(e.target.checked);
-    };
-
+    const [resetError, setResetError] = useState('');
+    const [resetMessage, setResetMessage] = useState('');
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const handleSubmit = async (values) => {
         const { email, password } = values;
         try {
-            const persistence = rememberMe ? browserLocalPersistence : browserSessionPersistence;
-            await setPersistence(auth, persistence);
-
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
 
@@ -46,6 +41,27 @@ export const Authorization = () => {
                 setLoginError(error.message);
             }
         }
+    };
+
+    const handlePasswordReset = async () => {
+        setLoading(true);
+        try {
+            await sendPasswordResetEmail(auth, email);
+            message.success(t('forgot_password_sent'));
+            setIsModalVisible(false);
+        } catch (error) {
+            setResetError(error.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const showModal = () => {
+        setIsModalVisible(true);
+    };
+
+    const handleCancel = () => {
+        setIsModalVisible(false);
     };
 
     return (
@@ -85,11 +101,13 @@ export const Authorization = () => {
                                     onChange={e => setPassword(e.target.value)} />
                             </Form.Item>
                             {loginError && <p style={{ color: 'red' }}>{loginError}</p>}
-                            <Form.Item name="saveSession" valuePropName="checked">
-                                <Checkbox onChange={onRememberMeChange}>{t('remember_me')}</Checkbox>
-                            </Form.Item>
                             <Form.Item>
-                                <p>{t('notRegisteredYet')} <Link to={`/sign_up`} className={styles.customLink}>{t('register')}</Link></p>
+                                <Flex justify="space-between" align="center">
+                                    <Form.Item name="remember" valuePropName="checked" noStyle>
+                                        <p>{t('notRegisteredYet')} <Link to={`/sign_up`} className={styles.customLink}>{t('register')}</Link></p>
+                                    </Form.Item>
+                                    <p><a className={styles.customLink} onClick={showModal} href="#">{t('forgot_password')}</a></p>
+                                </Flex>
                             </Form.Item>
                             <Form.Item>
                                 <button className={styles.submitButton} size='large' htmlType="submit" id="login">{t('login')}</button>
@@ -98,6 +116,23 @@ export const Authorization = () => {
                     </div>
                 </div>
             </div>
+            <Modal title={t('recovery_password')} visible={isModalVisible} onCancel={handleCancel} footer={null}>
+                <Form layout="vertical" onFinish={handlePasswordReset}>
+                    <Form.Item
+                        label="Email"
+                        name="resetEmail"
+                        rules={[
+                            { required: true, message: 'Пожалуйста, введите ваш email' },
+                            { type: 'email', message: 'Пожалуйста, введите корректный email' }
+                        ]}
+                    >
+                        <Input type="email" value={email} onChange={e => setEmail(e.target.value)} />
+                    </Form.Item>
+                    <Form.Item>
+                        <button disabled={loading} className={styles.submitButton} size='large' htmlType="submit">{loading ? <Spin /> : t('send')}</button>
+                    </Form.Item>
+                </Form>
+            </Modal>
         </div>
     );
 }
