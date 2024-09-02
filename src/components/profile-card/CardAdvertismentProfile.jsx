@@ -9,7 +9,7 @@ import { getConversionRate } from '../../services/AdvertismentsHome/Advertisment
 import { formatDistanceToNow, format } from 'date-fns';
 import { ru, enUS, sr } from 'date-fns/locale';
 
-import { archivedAdvertisement } from '../../services/ProfileService';
+import { archivedAdvertisement } from '../../services/profile/Profile';
 
 const CardAdvertisementProfile = ({ advertisment, index }) => {
     const history = useHistory();
@@ -92,7 +92,7 @@ const CardAdvertisementProfile = ({ advertisment, index }) => {
                         </Dropdown>,
                     ]}
                     style={{
-                        width: '100%', height: '57vh', display: 'flex',
+                        width: '100%', height: '29rem', display: 'flex',
                         flexDirection: 'column', justifyContent: 'space-between'
                     }}
                     bodyStyle={{ padding: 0, margin: '1vh' }}
@@ -101,13 +101,13 @@ const CardAdvertisementProfile = ({ advertisment, index }) => {
                             <Carousel>
                                 {advertisment.photoUrls && advertisment.photoUrls.length > 0 ? (
                                     advertisment.photoUrls.map((url, index) => (
-                                        <div key={index} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '30vh' }}>
-                                            <img style={{ height: '30vh', width: '100%', objectFit: 'cover' }} alt="example" src={url || Logo} />
+                                        <div key={index} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '12rem' }}>
+                                            <img style={{ height: '12rem', width: '100%', objectFit: 'cover' }} alt="example" src={url || Logo} />
                                         </div>
                                     ))
                                 ) : (
-                                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '30vh' }}>
-                                        <img style={{ height: '30vh', width: '100%', objectFit: 'cover' }} alt="example" src={Logo} />
+                                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '12rem' }}>
+                                        <img style={{ height: '12rem', width: '100%', objectFit: 'cover' }} alt="example" src={Logo} />
                                     </div>
                                 )}
                             </Carousel>

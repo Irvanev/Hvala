@@ -17,6 +17,7 @@ import Contact from "./pages/contact";
 import EditItem from './pages/EditAdvertisment/EditAdvertismt';
 import { PrivacyPolicy } from './pages/PrivacyPolice/privacy';
 import TestAdvertisment from './pages/Advertisment/TestAdvertisement';
+import MyProfile from './pages/Profile/my-profile/MyProfile';
 
 
 function App() {
@@ -44,9 +45,8 @@ function App() {
           <PrivateRoute exact path={"/message"} component={Message} />
           <PrivateRoute exact path={"/message/:chatId"} component={Message} />
           <Route exact path={"/edit/:id"} component={EditItem} />
-          <Route exact path={"/test"} component={TestAdvertisment} />
           <PrivateRoute exact path={"/addItem"} component={AddItem} />
-          <PrivateRoute path={"/profile"} component={Profile} />
+          <PrivateRoute path={"/profile"} component={MyProfile} />
         </Switch>
       </Router>
     </div>
