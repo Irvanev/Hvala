@@ -18,6 +18,7 @@ import { Spin } from "antd";
 import { GlobalOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 
 import { fetchAdvertisments, resizeImageFromUrl } from "../../services/AdvertismentsHome/test";
+import { Helmet } from "react-helmet";
 
 const TestAdvertisment = () => {
 
@@ -424,6 +425,48 @@ const TestAdvertisment = () => {
 
     return (
         <>
+            <Helmet>
+                <title>Advertisement Page - Find the Best Deals | Hvala</title>
+                <meta
+                    name="description"
+                    content="Discover the best advertisements for various categories including estate, transport, clothes, electronics, and more. Find great deals and offers on Hvala."
+                />
+                <meta
+                    name="keywords"
+                    content="advertisements, estate, transport, clothes, electronics, house goods, building materials, tools, transport goods, home appliance, service, child goods, health and beauty, sport, hobby, relax, rest"
+                />
+                <meta name="viewport" content="width=device-width, initial-scale=1" />
+                <meta
+                    property="og:title"
+                    content="Advertisement Page - Find the Best Deals | Hvala"
+                />
+                <meta
+                    property="og:description"
+                    content="Discover the best advertisements for various categories including estate, transport, clothes, electronics, and more. Find great deals and offers on Hvala."
+                />
+                <meta property="og:type" content="website" />
+                <meta
+                    property="og:url"
+                    content="https://www.yourcompanywebsite.com/advertisement"
+                />
+                <meta
+                    property="og:image"
+                    content="https://firebasestorage.googleapis.com/v0/b/hvala-2c8a4.appspot.com/o/advertisement.jpg?alt=media&token=example-token"
+                />
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta
+                    name="twitter:title"
+                    content="Advertisement Page - Find the Best Deals | Hvala"
+                />
+                <meta
+                    name="twitter:description"
+                    content="Discover the best advertisements for various categories including estate, transport, clothes, electronics, and more. Find great deals and offers on Hvala."
+                />
+                <meta
+                    name="twitter:image"
+                    content="https://firebasestorage.googleapis.com/v0/b/hvala-2c8a4.appspot.com/o/advertisement.jpg?alt=media&token=example-token"
+                />
+            </Helmet>
             <style>
                 {`
                 @media (max-width: 1000px) {
