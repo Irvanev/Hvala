@@ -417,8 +417,10 @@ const SellerProfile = () => {
               <>
                 <div className="profile-reviews d-flex justify-center">
                   <Flex gap="middle" className="d-flex justify-center">
-                    {user?.rating !== 0 ? <span>{user.rating.toFixed(1)}</span> : null}
-                    <Rate disabled defaultValue={user.rating} />
+                    {(user?.rating ?? user?.raiting) > 0 && (
+                      <span>{user?.rating ?? user?.raiting}</span>
+                    )}
+                    <Rate allowHalf disabled defaultValue={user?.rating ?? user?.raiting} />
                   </Flex>
                 </div>
                 <p className="d-flex justify-center" style={{ color: '#03989F' }} onClick={showModalFee}>{t('show_feedbacks')}</p>
@@ -526,8 +528,10 @@ const SellerProfile = () => {
                 <h2 className="profile-name" id="userName">{user?.name}</h2>
                 <div className="profile-reviews">
                   <Flex gap="middle" className="d-flex justify-center">
-                    {user?.rating !== 0 ? <span>{user.rating.toFixed(1)}</span> : null}
-                    <Rate disabled defaultValue={user.rating} />
+                  {(user?.rating ?? user?.raiting) > 0 && (
+                      <span>{user?.rating ?? user?.raiting}</span>
+                    )}
+                    <Rate allowHalf disabled defaultValue={user?.rating ?? user?.raiting} />
                   </Flex>
                 </div>
                 <p style={{ color: '#03989F' }} onClick={showModalFee}>{t('show_feedbacks')}</p>

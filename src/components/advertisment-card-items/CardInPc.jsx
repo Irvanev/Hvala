@@ -336,8 +336,10 @@ const CardInPc = ({ adData, t, index, handleSelect, handleCallClick, showModal, 
                   <span style={{ textDecoration: 'underline', color: '#03989F' }}>{t('go_to_seller_page')}</span>
                 </Link>
                 <div className="d-flex align-items-center">
-                  <span className="me-2">{userData?.rating || userData?.raiting}</span>
-                  <Rate disabled defaultValue={rat} />
+                  {(userData?.rating ?? userData?.raiting) > 0 && (
+                    <span>{userData?.rating ?? userData?.raiting}</span>
+                  )}
+                  <Rate allowHalf disabled defaultValue={userData?.rating ?? userData?.raiting} />
                 </div>
                 <p style={{ color: '#03989F', cursor: 'pointer' }} onClick={showModalFee}>{t('show_feedbacks')}</p>
 

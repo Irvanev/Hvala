@@ -308,8 +308,10 @@ const CardInMobile = ({ adData, t, index, handleSelect, handleCallClick, userDat
                             <h5 style={{ color: 'black' }} className="mb-0">{userData?.name || "User"}</h5>
                             <span style={{ color: '#03989F', textDecoration: 'underline' }}>{t('go_to_seller_page')}</span>
                             <div className="d-flex align-items-center">
-                                <span className="me-2">{userData?.rating || userData?.raiting}</span>
-                                <Rate disabled defaultValue={rat} />
+                                {(userData?.rating ?? userData?.raiting) > 0 && (
+                                    <span>{userData?.rating ?? userData?.raiting}</span>
+                                )}
+                                <Rate allowHalf disabled defaultValue={userData?.rating ?? userData?.raiting} />
                             </div>
                         </Link>
                         <p style={{ color: '#03989F' }} onClick={showModalFee}>{t('show_feedbacks')}</p>
