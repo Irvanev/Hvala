@@ -1,4 +1,8 @@
 {
+  "up_ad": "Raise Advertisement",
+  "up_error": "An error occurred when raising an ad in the search! You can raise an ad once a week.",
+  "up_success": "The ad has been successfully raised in the search!",
+  "up_question": "Do you really want to raise an ad in the search?",
   "forgot_password_sent": "A link to reset your password has been sent to your email",
   "forgot_password": "Forgot password",
   "recovery_password": "Password recovery",

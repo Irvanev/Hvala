@@ -1,4 +1,4 @@
-import { collection, query, where, getDocs, doc, updateDoc, deleteDoc } from "firebase/firestore";
+import { collection, query, where, getDocs, getDoc, doc, updateDoc, deleteDoc, serverTimestamp } from "firebase/firestore";
 import { db, auth } from "../../config/firebase";
 
 export const fetchUserProfile = async (setUser, setLoading) => {
@@ -131,6 +131,34 @@ export async function unarchivedAdvertisement(id) {
         console.log(`Document with ID ${id} was unarchived!`);
     } catch (e) {
         console.error("Error deleting document: ", e);
+    }
+}
+
+export async function upAdvertisment(id, showMessage) {
+    const docRef = doc(db, "advertisment", id);
+
+    try {
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+            const data = docSnap.data();
+            const lastUpdate = data.time_creation.toDate();
+            const now = new Date();
+            const oneWeekInMillis = 7 * 24 * 60 * 60 * 1000;
+
+            if (now - lastUpdate >= oneWeekInMillis) {
+                await updateDoc(docRef, {
+                    time_creation: serverTimestamp()
+                });
+                showMessage.success('up_success');
+            } else {
+                showMessage.error('up_error');
+            }
+        } else {
+            showMessage.error("No such document!");
+        }
+    } catch (e) {
+        showMessage.error("Error updating document: " + e.message);
     }
 }
 

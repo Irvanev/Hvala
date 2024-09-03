@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Card, Col, Carousel, Dropdown, Menu, Popconfirm, } from 'antd';
+import { Card, Col, Carousel, Dropdown, Menu, Popconfirm, message } from 'antd';
 import { EditOutlined, EllipsisOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import Logo from '../../assets/logo_def.png';
@@ -9,7 +9,7 @@ import { getConversionRate } from '../../services/AdvertismentsHome/Advertisment
 import { formatDistanceToNow, format } from 'date-fns';
 import { ru, enUS, sr } from 'date-fns/locale';
 
-import { archivedAdvertisement } from '../../services/profile/Profile';
+import { archivedAdvertisement, upAdvertisment } from '../../services/profile/Profile';
 
 const CardAdvertisementProfile = ({ advertisment, index }) => {
     const history = useHistory();
@@ -25,6 +25,22 @@ const CardAdvertisementProfile = ({ advertisment, index }) => {
         await archivedAdvertisement(id);
         setIsArchived(prevState => !prevState);
         window.location.reload();
+    };
+
+    const handleUpAdvertisment = async (id) => {
+        try {
+            await upAdvertisment(id, {
+                success: (msg) => {
+                    message.success(t(msg));
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 500);
+                },
+                error: (msg) => message.error(t(msg))
+            });
+        } catch (error) {
+            message.error(t('up_error'));
+        }
     };
 
     useEffect(() => {
@@ -79,7 +95,17 @@ const CardAdvertisementProfile = ({ advertisment, index }) => {
                                             okText={t('yes')}
                                             cancelText={t('no')}
                                         >
-                                            <a href="#">{t('move_on_archiv')}</a>
+                                            <a style={{textDecoration: 'none'}} href="#">{t('move_on_archiv')}</a>
+                                        </Popconfirm>
+                                    </Menu.Item>
+                                    <Menu.Item key="2">
+                                        <Popconfirm
+                                            title={t('up_question')}
+                                            onConfirm={() => handleUpAdvertisment(advertisment.id)}
+                                            okText={t('yes')}
+                                            cancelText={t('no')}
+                                        >
+                                            <a style={{textDecoration: 'none'}} href="#">{t('up_ad')}</a>
                                         </Popconfirm>
                                     </Menu.Item>
 

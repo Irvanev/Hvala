@@ -1,4 +1,8 @@
 {
+  "up_ad": "Podigni oglas",
+  "up_error": "Greška pri podizanju oglasa u pretrazi! Oglas možete podizati jednom nedeljno.",
+  "up_success": "Oglas je uspešno podignut u pretrazi!",
+  "up_question": "Da li zaista želite da podignete oglas u pretrazi?",
   "forgot_password_sent": "Poruka sa uputstvima za oporavak lozinke poslata je na vašu email adresu",
   "forgot_password": "Zaboravili ste lozinku?",
   "recovery_password": "Oporavak lozinke",
