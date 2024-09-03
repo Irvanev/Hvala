@@ -17,27 +17,27 @@ const Contact = () => {
   return (
     <div>
       <Helmet>
-        <title>Contact Us - Hvala | Get in Touch Today</title>
+        <title>Kontaktirajte nas - Hvala | Stupite u kontakt danas</title>
         <meta
           name="description"
-          content="Reach out to Hvala for inquiries, support, or feedback. Our team is ready to assist you. Contact us via email, phone, or visit our office."
+          content="Kontaktirajte Hvala za upite, podršku ili povratne informacije. Naš tim je spreman da vam pomogne. Kontaktirajte nas putem e-pošte, telefona ili posetite našu kancelariju."
         />
         <meta
           name="keywords"
-          content="contact, support, customer service, Hvala, email"
+          content="kontakt, podrška, korisnička služba, Hvala, e-pošta"
         />
         <meta
           property="og:title"
-          content="Contact Us - Hvala | Get in Touch Today"
+          content="Kontaktirajte nas - Hvala | Stupite u kontakt danas"
         />
         <meta
           property="og:description"
-          content="Looking for support or have a question? Contact Hvala today via email. We're here to help."
+          content="Tražite podršku ili imate pitanje? Kontaktirajte Hvala danas putem e-pošte. Tu smo da vam pomognemo."
         />
         <meta property="og:type" content="website" />
         <meta
           property="og:url"
-          content="https://www.yourcompanywebsite.com/contact"
+          content="https://hvala.app/contact"
         />
         <meta
           property="og:image"
@@ -46,11 +46,11 @@ const Contact = () => {
         <meta name="twitter:card" content="summary_large_image" />
         <meta
           name="twitter:title"
-          content="Contact Us - Hvala | Get in Touch Today"
+          content="Kontaktirajte nas - Hvala | Stupite u kontakt danas"
         />
         <meta
           name="twitter:description"
-          content="Need assistance? Contact Hvala for all inquiries, support, or feedback. We're ready to help you."
+          content="Treba vam pomoć? Kontaktirajte Hvala za sve upite, podršku ili povratne informacije. Spremni smo da vam pomognemo."
         />
         <meta
           name="twitter:image"
@@ -110,14 +110,22 @@ const Contact = () => {
             justifyContent: "center",
           }}
         >
-          <a href="https://www.instagram.com/hvala.app?igsh=ZmJiOWtrbDY1enNm" target="_blank" rel="noopener noreferrer">
+          <a
+            href="https://www.instagram.com/hvala.app?igsh=ZmJiOWtrbDY1enNm"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <Image
               src={Instagram}
               alt="Instagram"
               style={{ height: "50px", width: "50px", marginRight: "10px" }}
             />
           </a>
-          <a href="https://www.facebook.com/profile.php?id=61553691035329&mibextid=ZbWKwL" target="_blank" rel="noopener noreferrer">
+          <a
+            href="https://www.facebook.com/profile.php?id=61553691035329&mibextid=ZbWKwL"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <Image
               src={Facebook}
               alt="Facebook"
