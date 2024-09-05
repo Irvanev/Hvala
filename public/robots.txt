@@ -1,4 +1,4 @@
-User-agent: Googlebot
+User-agent: *
 Disallow:
 
 Sitemap: https://hvala.app/sitemap.xml
