@@ -1,6 +1,4 @@
-User-agent: *
-Disallow: /admin/
-Disallow: /login/
-Disallow: /register/
+User-agent: Googlebot
+Disallow:
 
 Sitemap: https://hvala.app/sitemap.xml
