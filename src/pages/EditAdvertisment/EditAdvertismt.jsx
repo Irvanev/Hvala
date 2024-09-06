@@ -434,8 +434,8 @@ function EditItem() {
             area: area,
             location: location,
             coordinates: coordinates,
-            //country: country, !TODO
-            //region: region !TODO
+            country: country, 
+            region: region 
         };
 
         try {
@@ -788,6 +788,8 @@ function EditItem() {
                     setSize(data?.size || "");
                     setLocation(data?.location || "");
                     setCoordinates(data?.coordinates || "");
+                    setCountry(data?.country || "montenegro");
+                    setRegion(data?.region || "municipality_budva");
                     console.log("Document data:", data);
 
                 } else {
