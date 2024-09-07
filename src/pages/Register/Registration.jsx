@@ -28,16 +28,16 @@ export const Registration = () => {
 
     const handleOk = async () => {
         setIsModalVisible(false);
+        await signOut(auth);
+        localStorage.clear();
         history.push('/sign_in');
-            await signOut(auth);
-            localStorage.clear();
     };
 
     const handleCancel = async () => {
         setIsModalVisible(false);
+        await signOut(auth);
+        localStorage.clear();
         history.push('/sign_in');
-            await signOut(auth);
-            localStorage.clear();
     };
 
     const checkUsername = async (username) => {
@@ -200,7 +200,7 @@ export const Registration = () => {
                             <p>{t('alreadyRegistered')} <Link to={`/sign_in`} className={styles.customLink}>{t('login')}</Link></p>
                         </Form.Item>
                         <Form.Item>
-                            <button  size='large' htmlType="submit" className={styles.submitButton}>{t('register')}</button>
+                            <button size='large' htmlType="submit" className={styles.submitButton}>{t('register')}</button>
                         </Form.Item>
                         <Modal title={t('confirming_email')} visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
                             <p>{t('confirmEmail')}</p>

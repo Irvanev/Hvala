@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { Authorization } from "./pages/Auth/Authorization";
 import { Registration } from './pages/Register/Registration';
 import { CardItem } from './pages/AdvertismentCard/CardItem';
-import { Profile } from "./pages/Profile/Profile";
 import { Message } from "./pages/message/Message";
 import { AddItem } from "./pages/AddAdvertisment/AddItem";
 import { useState } from "react";

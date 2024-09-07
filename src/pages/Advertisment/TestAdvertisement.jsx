@@ -20,12 +20,15 @@ import { GlobalOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import {
   fetchAdvertisments,
   resizeImageFromUrl,
+  getUserByAuth
 } from "../../services/AdvertismentsHome/test";
 import { Helmet } from "react-helmet";
+import CustomCard from "../../components/card/CustomCard";
 
 const TestAdvertisment = () => {
   const history = useHistory();
   const { t } = useTranslation();
+  const [user, setUser] = useState(null);
   const [advertisments, setAdvertisments] = useState([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -432,7 +435,7 @@ const TestAdvertisment = () => {
   const scrollHandler = (e) => {
     if (
       e.target.documentElement.scrollHeight -
-        (e.target.documentElement.scrollTop + window.innerHeight) <
+      (e.target.documentElement.scrollTop + window.innerHeight) <
       100
     ) {
       setFetching(true);
@@ -535,6 +538,12 @@ const TestAdvertisment = () => {
       window.removeEventListener("scroll", scrollHandler);
     };
   }, []);
+
+  useEffect(() => {
+    getUserByAuth(setUser);
+  } , []);
+
+  console.log(user);
 
   return (
     <>
@@ -684,7 +693,19 @@ const TestAdvertisment = () => {
       </div>
       <div className="container grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {advertisments.map((advertisment, index) => (
-          <CardAdvertisementHome key={index} advertisment={advertisment} />
+          <CustomCard
+            id={advertisment.id}
+            key={index}
+            user={user}
+            image={advertisment.photoUrls[0]}
+            price={advertisment.price}
+            currency={advertisment.currency}
+            title={advertisment.title}
+            location={advertisment.location}
+            date={advertisment.time_creation}
+            showButtons={user?.role === 'admin'}
+            status="active"
+          />
         ))}
       </div>
       <div className="container d-flex justify-content-center mt-3 mb-3">

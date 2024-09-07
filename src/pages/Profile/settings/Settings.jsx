@@ -24,6 +24,7 @@ const Settings = () => {
     const [user, setUser] = useState('');
 
     const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
     const [link, setLink] = useState('');
     const [emailProfile, setEmailProfile] = useState('');
     const [phone, setPhone] = useState('');
@@ -44,6 +45,10 @@ const Settings = () => {
         setBannerUrl(null);
         setBannerFile(null);
         setPreviewUrl(null);
+    };
+
+    const handleMyEmailChange = (e) => {
+        setEmail(e.target.value);
     };
 
     const handleNameChange = (e) => {
@@ -89,11 +94,11 @@ const Settings = () => {
     const validateLink = () => {
         const urlPattern = /^[a-zA-Z0-9-_]+$/;
         if (!urlPattern.test(link)) {
-          setError(t('input_correct_link'));
-          return false;
+            setError(t('input_correct_link'));
+            return false;
         }
         return true;
-      };
+    };
 
     const handleLinkChange = (e) => {
         setLink(e.target.value);
@@ -110,6 +115,7 @@ const Settings = () => {
 
     useEffect(() => {
         if (user) {
+            setEmail(user.email);
             setName(user.name);
             setPhotoUrl(user.photoUrl);
             setLink(user.link);
@@ -148,31 +154,31 @@ const Settings = () => {
 
     const handleSubmit = async () => {
         try {
-          setLoading(true);
-          if (!validateLink()) {
-            message.error(t('input_correct_link'));
-            return;
-          }
-          await form.validateFields();
-          let bannerUrlToUpdate = bannerUrl;
-          if (bannerFile) {
-            bannerUrlToUpdate = await uploadBanner(bannerFile);
-          }
-          await updateUserProfile({ name, link, description, phone, site, emailProfile, instagram, facebook, bannerUrl: bannerUrlToUpdate });
-          message.success(t('profile_updated_successfully'));
-          setTimeout(() => {
-            window.location.reload();
-          }, 500);
+            setLoading(true);
+            if (!validateLink()) {
+                message.error(t('input_correct_link'));
+                return;
+            }
+            await form.validateFields();
+            let bannerUrlToUpdate = bannerUrl;
+            if (bannerFile) {
+                bannerUrlToUpdate = await uploadBanner(bannerFile);
+            }
+            await updateUserProfile({ name, link, description, phone, site, emailProfile, instagram, facebook, bannerUrl: bannerUrlToUpdate });
+            message.success(t('profile_updated_successfully'));
+            setTimeout(() => {
+                window.location.reload();
+            }, 500);
         } catch (error) {
-          message.error(t('profile_update_error'));
+            message.error(t('profile_update_error'));
         } finally {
-          setLoading(false);
+            setLoading(false);
         }
-      };
+    };
 
     return (
         <>
-        <style type="text/css">
+            <style type="text/css">
                 {`
                   @media (max-width: 1000px) {
                       body {
@@ -204,6 +210,13 @@ const Settings = () => {
                 </div>
 
                 <Form layout="vertical" form={form} onFinish={handleSubmit}>
+                    <Form.Item label={t('email')}>
+                        <Input
+                            disabled={true}
+                            value={email}
+                            onChange={handleMyEmailChange}
+                        />
+                    </Form.Item>
                     <Form.Item label={t('username')}>
                         <Input
                             value={name}

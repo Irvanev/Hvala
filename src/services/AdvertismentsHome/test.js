@@ -1,5 +1,5 @@
 import { collection, query, getDocs, orderBy, limit, startAfter, where } from "firebase/firestore";
-import { db } from "../../config/firebase";
+import { db, auth } from "../../config/firebase";
 
 import Resizer from "react-image-file-resizer";
 
@@ -58,6 +58,28 @@ export const fetchAdvertisments = async (
 
     return { advertisments, lastDoc };
 }
+
+export const getUserByAuth = async (setUser) => {
+    const currentUser = auth.currentUser;
+
+    if (currentUser) {
+        const userId = currentUser.uid;
+        const usersRef = collection(db, 'users');
+        const q = query(usersRef, where('id', '==', userId));
+
+        try {
+            const querySnapshot = await getDocs(q);
+            querySnapshot.forEach((doc) => {
+                setUser(doc.data());
+                console.log(doc.data());
+            });
+        } catch (error) {
+            console.error("Error getting documents: ", error);
+        }
+    } else {
+        console.log("No user is signed in.");
+    }
+};
 
 export const resizeImageFromUrl = async (url) => {
     const blob = await fetch(url).then(res => res.blob());

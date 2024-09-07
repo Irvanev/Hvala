@@ -5,9 +5,12 @@ import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/aut
 import { Form, Input, Flex, Modal, Spin, message } from 'antd';
 import { useTranslation } from 'react-i18next';
 import Logotype from "../../assets/logo_def.png"
-import { auth } from "../../config/firebase"
+import { auth, db } from "../../config/firebase"
 import { MyNavbar } from '../../components/Navbar/Navbar';
 import { NavBarBack } from '../../components/Navbar/NavBarBack';
+import { useUserRole } from '../../context/UserRoleContext';
+
+import { collection, query, getDocs, where } from "firebase/firestore";
 
 export const Authorization = () => {
     const { t } = useTranslation();
@@ -20,6 +23,7 @@ export const Authorization = () => {
     const [resetMessage, setResetMessage] = useState('');
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [loading, setLoading] = useState(false);
+    const { setRole } = useUserRole();
 
     const handleSubmit = async (values) => {
         const { email, password } = values;
@@ -30,6 +34,11 @@ export const Authorization = () => {
             if (user.emailVerified) {
                 const userId = user.uid;
                 localStorage.setItem('userId', userId);
+
+                // Получите роль пользователя из базы данных или другого источника
+                const userRole = await fetchUserRole(userId);
+                setRole(userRole);
+
                 history.push('/profile');
             } else {
                 setLoginError(t('confirm_email'));
@@ -41,6 +50,21 @@ export const Authorization = () => {
                 setLoginError(error.message);
             }
         }
+    };
+
+    const fetchUserRole = async (userId) => {
+        const usersRef = collection(db, 'users');
+        const q = query(usersRef, where('id', '==', userId));
+        const querySnapshot = await getDocs(q);
+
+        let userRole = null;
+        querySnapshot.forEach((doc) => {
+            if (doc.exists()) {
+                userRole = doc.data().role;
+            }
+        });
+
+        return userRole;
     };
 
     const handlePasswordReset = async () => {
