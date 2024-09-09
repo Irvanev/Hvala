@@ -134,11 +134,11 @@ const CustomCard = ({ images, price, title, location, date, currency, showButton
 
     return (
         <div className={styles.card}>
-            <Carousel onClick={handleCardClick}>
+            <Carousel>
                 {images.length > 0 ? (
                     images.map((image, index) => (
                         <div key={index}>
-                            <img src={image ? image : logo} alt={title} className={styles.image} />
+                            <img src={image ? image : logo} alt={title} className={styles.image} onClick={handleCardClick}/>
                         </div>
                     ))
                 ) : (
