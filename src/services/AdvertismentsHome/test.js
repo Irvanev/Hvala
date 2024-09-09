@@ -40,7 +40,7 @@ export const fetchAdvertisments = async (
             where("in_archive", "==", false),
             ...conditions,
             startAfter(lastVisible),
-            limit(20)
+            limit(24)
         );
     } else {
         q = query(
@@ -48,7 +48,7 @@ export const fetchAdvertisments = async (
             orderBy("time_creation", "desc"),
             where("in_archive", "==", false),
             ...conditions,
-            limit(20)
+            limit(24)
         );
     }
 
@@ -60,26 +60,28 @@ export const fetchAdvertisments = async (
 }
 
 export const getUserByAuth = async (setUser) => {
-    const currentUser = auth.currentUser;
-
-    if (currentUser) {
-        const userId = currentUser.uid;
-        const usersRef = collection(db, 'users');
-        const q = query(usersRef, where('id', '==', userId));
-
-        try {
-            const querySnapshot = await getDocs(q);
-            querySnapshot.forEach((doc) => {
-                setUser(doc.data());
-                console.log(doc.data());
-            });
-        } catch (error) {
-            console.error("Error getting documents: ", error);
+    const userId = localStorage.getItem('userId'); 
+  
+    if (userId) {
+      const usersRef = collection(db, 'users');
+      const q = query(usersRef, where('id', '==', userId));
+  
+      try {
+        const querySnapshot = await getDocs(q);
+        if (!querySnapshot.empty) {
+          querySnapshot.forEach((doc) => {
+            setUser(doc.data());
+          });
+        } else {
+          console.log('No user data found.');
         }
+      } catch (error) {
+        console.error("Error getting documents: ", error);
+      }
     } else {
-        console.log("No user is signed in.");
+      console.log("No userId found in localStorage.");
     }
-};
+  };
 
 export const resizeImageFromUrl = async (url) => {
     const blob = await fetch(url).then(res => res.blob());

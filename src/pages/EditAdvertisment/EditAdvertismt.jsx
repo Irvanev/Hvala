@@ -434,8 +434,8 @@ function EditItem() {
             area: area,
             location: location,
             coordinates: coordinates,
-            //country: country, !TODO
-            //region: region !TODO
+            country: country,
+            region: region
         };
 
         try {
@@ -719,80 +719,48 @@ function EditItem() {
                 const docRef = doc(db, "advertisment", id);
                 const docSnap = await getDoc(docRef);
 
-                // if (docSnap.exists()) { !TODO
-                //     const data = docSnap.data();
-                //     if (auth.currentUser && auth.currentUser.uid === data.from_uid) {
-                //         setData(data);
-                //         setPhotoUrls(data?.photoUrls || []);
-                //         setCategory(data?.category || "");
-                //         setSubcategory(data?.subcategory || "");
-                //         setTitle(data?.title || "");
-                //         setPrice(data?.price || "");
-                //         setDescription(data?.description || "");
-                //         setPhoneNumber(data?.phone || "");
-                //         setCondition(data?.condition || "");
-                //         setCurrency(data.currency || "");
-                //         setBrand(data?.brand || "");
-                //         setModel(data?.model || "");
-                //         setScreenSize(data?.screen_size || "");
-                //         setMemory(data?.memory || "");
-                //         setOwner(data?.owner || "");
-                //         setType(data?.type || "");
-                //         setArea(data?.area || "");
-                //         setMileage(data?.mileage || "");
-                //         setDrive(data?.drive || "");
-                //         setTransmission(data?.transmission || "");
-                //         setWheel(data?.wheel || "");
-                //         setYear(data?.year || "");
-                //         setBody(data?.body || "");
-                //         setColor(data?.color || "");
-                //         setOwners(data?.owners || "");
-                //         setSize(data?.size || "");
-                //         setLocation(data?.location || "");
-                //         setCoordinates(data?.coordinates || "");
-                //     } else {
-                //         setData(null);
-                //         message.error('Объявление принадлежит не этому пользователю');
-                //     }
-                // } else {
-                //     console.log("No such document!");
-                // }
-
                 if (docSnap.exists()) {
                     const data = docSnap.data();
-                    setData(data);
-                    setPhotoUrls(data?.photoUrls || [])
-                    setCategory(data?.category || "");
-                    setSubcategory(data?.subcategory || "");
-                    setTitle(data?.title || "");
-                    setPrice(data?.price || "");
-                    setDescription(data?.description || "");
-                    setPhoneNumber(data?.phone || "");
-                    setCondition(data?.condition || "");
-                    setCurrency(data.currency || "");
-                    setBrand(data?.brand || "");
-                    setModel(data?.model || "");
-                    setScreenSize(data?.screen_size || "");
-                    setMemory(data?.memory || "");
-                    setOwner(data?.owner || "");
-                    setType(data?.type || "");
-                    setArea(data?.area || "");
-                    setMileage(data?.mileage || "");
-                    setDrive(data?.drive || "");
-                    setTransmission(data?.transmission || "");
-                    setWheel(data?.wheel || "");
-                    setYear(data?.year || "");
-                    setBody(data?.body || "");
-                    setColor(data?.color || "");
-                    setOwners(data?.owners || "");
-                    setSize(data?.size || "");
-                    setLocation(data?.location || "");
-                    setCoordinates(data?.coordinates || "");
-                    console.log("Document data:", data);
-
+                    if (auth.currentUser && auth.currentUser.uid === data.from_uid) {
+                        setData(data);
+                        setPhotoUrls(data?.photoUrls || []);
+                        setCategory(data?.category || "");
+                        setSubcategory(data?.subcategory || "");
+                        setTitle(data?.title || "");
+                        setPrice(data?.price || "");
+                        setDescription(data?.description || "");
+                        setPhoneNumber(data?.phone || "");
+                        setCondition(data?.condition || "");
+                        setCurrency(data.currency || "");
+                        setBrand(data?.brand || "");
+                        setModel(data?.model || "");
+                        setScreenSize(data?.screen_size || "");
+                        setMemory(data?.memory || "");
+                        setOwner(data?.owner || "");
+                        setType(data?.type || "");
+                        setArea(data?.area || "");
+                        setMileage(data?.mileage || "");
+                        setDrive(data?.drive || "");
+                        setTransmission(data?.transmission || "");
+                        setWheel(data?.wheel || "");
+                        setYear(data?.year || "");
+                        setBody(data?.body || "");
+                        setColor(data?.color || "");
+                        setOwners(data?.owners || "");
+                        setSize(data?.size || "");
+                        setLocation(data?.location || "");
+                        setCoordinates(data?.coordinates || "");
+                        setCountry(data?.country || "montenegro");
+                        setRegion(data?.region || "municipality_budva");
+                    } else {
+                        setData(null);
+                        message.error('Объявление принадлежит не этому пользователю');
+                    }
                 } else {
                     console.log("No such document!");
                 }
+
+                
             } catch (error) {
                 console.error('Ошибка при получении данных:', error);
             }

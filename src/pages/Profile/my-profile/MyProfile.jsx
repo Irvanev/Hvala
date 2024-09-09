@@ -95,7 +95,7 @@ const MyProfile = () => {
                                         id={advertisment.id}
                                         key={index}
                                         user={user}
-                                        image={advertisment.photoUrls[0]}
+                                        images={advertisment.photoUrls}
                                         price={advertisment.price}
                                         currency={advertisment.currency}
                                         title={advertisment.title}
@@ -125,7 +125,7 @@ const MyProfile = () => {
                                         id={advertismentArchive.id}
                                         key={index}
                                         user={user}
-                                        image={advertismentArchive.photoUrls[0]}
+                                        images={advertismentArchive.photoUrls}
                                         price={advertismentArchive.price}
                                         currency={advertismentArchive.currency}
                                         title={advertismentArchive.title}

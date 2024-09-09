@@ -12,6 +12,7 @@ import { t } from 'i18next';
 import Categories from '../../components/category';
 
 import styles from './Container.module.css';
+import CustomCard from '../../components/card/CustomCard';
 
 export const CategoryAdvertisments = () => {
     const { category } = useParams();
@@ -916,10 +917,23 @@ export const CategoryAdvertisments = () => {
                                     </div>
                                 </div>
 
-                                <Row xs={2} sm={2} md={3} lg={3} className="g-3 mt-1" id="cardAds">
+                                <Row xs={2} sm={2} md={2} lg={3} className="g-3 mt-1" id="cardAds">
                                     {filteredAdvertisements.length > 0 ? (
                                         filteredAdvertisements.map((advertisment, index) => (
-                                            <CardAdvertisementHome key={index} advertisment={advertisment} />
+                                            <Col>
+                                                <CustomCard
+                                                    id={advertisment.id}
+                                                    key={index}
+                                                    images={advertisment.photoUrls}
+                                                    price={advertisment.price}
+                                                    currency={advertisment.currency}
+                                                    title={advertisment.title}
+                                                    location={advertisment.location}
+                                                    date={advertisment.time_creation}
+                                                    showButtons={false}
+                                                    status="active"
+                                                />
+                                            </Col>
                                         ))
                                     ) : (
                                         <Col>

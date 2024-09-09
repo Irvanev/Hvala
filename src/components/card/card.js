@@ -78,8 +78,8 @@ export async function deleteAdvertisement(id) {
     }
 }
 
-export async function upAdvertisment(id, showMessage) {
-    const docRef = doc(db, "advertisment", id);
+export async function upAdvertisment(idAdv, showMessage) {
+    const docRef = doc(db, "advertisment", idAdv);
 
     try {
         const docSnap = await getDoc(docRef);
@@ -88,6 +88,7 @@ export async function upAdvertisment(id, showMessage) {
             const data = docSnap.data();
             const lastUpdate = data.time_creation.toDate();
             const now = new Date();
+            console.log(lastUpdate, now);
             const oneWeekInMillis = 7 * 24 * 60 * 60 * 1000;
 
             if (now - lastUpdate >= oneWeekInMillis) {

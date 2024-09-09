@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Image } from "react-bootstrap";
 import Logo from "../../assets/person2.jpg";
 import { MyNavbar } from "../../components/Navbar/Navbar";
+import CustomCard from "../../components/card/CustomCard";
 import { NavBarShare } from "../../components/Navbar/NavBarShare";
 import { useParams, useHistory } from "react-router-dom";
 import { collection, query, where, getDocs, addDoc, serverTimestamp, doc, updateDoc } from "firebase/firestore";
@@ -486,7 +487,20 @@ const SellerProfile = () => {
               </div>
               <Row xs={2} sm={2} md={3} lg={3} className="g-3" id="cardAds">
                 {filteredAds.map((advertisment, index) => (
-                  <CardAdvertisementHome key={index} advertisment={advertisment} />
+                  <Col>
+                  <CustomCard
+                    id={advertisment.id}
+                    user={user}
+                    images={advertisment.photoUrls}
+                    price={advertisment.price}
+                    currency={advertisment.currency}
+                    title={advertisment.title}
+                    location={advertisment.location}
+                    date={advertisment.time_creation}
+                    showButtons={user?.role === 'admin'}
+                    status="active"
+                  />
+                </Col>
                 ))}
               </Row>
             </div>
@@ -528,7 +542,7 @@ const SellerProfile = () => {
                 <h2 className="profile-name" id="userName">{user?.name}</h2>
                 <div className="profile-reviews">
                   <Flex gap="middle" className="d-flex justify-center">
-                  {(user?.rating ?? user?.raiting) > 0 && (
+                    {(user?.rating ?? user?.raiting) > 0 && (
                       <span>{user?.rating ?? user?.raiting}</span>
                     )}
                     <Rate allowHalf disabled defaultValue={user?.rating ?? user?.raiting} />
@@ -631,7 +645,20 @@ const SellerProfile = () => {
               </div>
               <Row xs={2} sm={2} className="g-3" id="cardAds">
                 {filteredAds.map((advertisment, index) => (
-                  <CardAdvertisementHome key={index} advertisment={advertisment} />
+                  <Col>
+                    <CustomCard
+                      id={advertisment.id}
+                      user={user}
+                      images={advertisment.photoUrls}
+                      price={advertisment.price}
+                      currency={advertisment.currency}
+                      title={advertisment.title}
+                      location={advertisment.location}
+                      date={advertisment.time_creation}
+                      showButtons={user?.role === 'admin'}
+                      status="active"
+                    />
+                  </Col>
                 ))}
               </Row>
             </Container>

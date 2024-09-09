@@ -1,24 +1,32 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useHistory } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import styles from "./custom-card.module.css";
 import logo from "../../assets/logo_def.png";
-import { Menu, Dropdown } from 'antd';
+import { Menu, Dropdown, Carousel, message, Popconfirm } from 'antd';
 import { FaEdit, FaEllipsisV, FaUpload, FaTrash, FaArchive, FaArrowUp } from "react-icons/fa";
 import { formatDate, getConversionRate, archivedAdvertisement, deleteAdvertisement, unarchivedAdvertisement, upAdvertisment } from './card';
 
 import { auth } from "../../config/firebase";
 
-const CustomCard = ({ image, price, title, location, date, currency, showButtons, id, status, user }) => {
+const CustomCard = ({ images, price, title, location, date, currency, showButtons, id, status, user }) => {
 
     const [menuOpen, setMenuOpen] = useState(false);
     const [stateCurrency, setStateCurrency] = useState('');
     const [conversionRate, setConversionRate] = useState(null);
     const history = useHistory();
+    const { t } = useTranslation();
+
+    const handleCardClick = () => {
+        history.push(`/advertisment/${id}`);
+    };
 
     const handlePublish = async () => {
         if (auth.currentUser.uid === user.id || user.role === 'admin') {
             await unarchivedAdvertisement(id);
-            console.log('Опубликовать');
+            setTimeout(() => {
+                window.location.reload();
+            }, 500);
         } else {
             console.log('Нет прав для выполнения этой операции');
         }
@@ -27,7 +35,9 @@ const CustomCard = ({ image, price, title, location, date, currency, showButtons
     const handleDelete = async () => {
         if (auth.currentUser.uid === user.id || user.role === 'admin') {
             await deleteAdvertisement(id);
-            console.log('Удалить');
+            setTimeout(() => {
+                window.location.reload();
+            }, 500);
         } else {
             console.log('Нет прав для выполнения этой операции');
         }
@@ -36,7 +46,9 @@ const CustomCard = ({ image, price, title, location, date, currency, showButtons
     const handleArchive = async () => {
         if (auth.currentUser.uid === user.id || user.role === 'admin') {
             await archivedAdvertisement(id);
-            console.log('Поместить в архив');
+            setTimeout(() => {
+                window.location.reload();
+            }, 500);
         } else {
             console.log('Нет прав для выполнения этой операции');
         }
@@ -44,19 +56,30 @@ const CustomCard = ({ image, price, title, location, date, currency, showButtons
 
     const handlePromote = async () => {
         if (auth.currentUser.uid === user.id || user.role === 'admin') {
-            await upAdvertisment(id);
-            console.log('Поднять объявление');
+            try {
+                await upAdvertisment(id, {
+                    success: (msg) => {
+                        message.success(t(msg));
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 500);
+                    },
+                    error: (msg) => message.error(t(msg))
+                });
+            } catch (error) {
+                message.error(t('up_error'));
+            }
         } else {
             console.log('Нет прав для выполнения этой операции');
         }
     };
 
     const menuItems = status === 'active' ? [
-        { key: '1', icon: <FaArchive />, text: 'Поместить в архив', onClick: handleArchive },
-        { key: '2', icon: <FaArrowUp />, text: 'Поднять объявление', onClick: handlePromote }
+        { key: '1', text: t('move_on_archiv'), onClick: handleArchive, confirmMessage: t('move_to_archive_question') },
+        { key: '2', text: t('up_ad'), onClick: handlePromote, confirmMessage: t('up_question') }
     ] : [
-        { key: '1', icon: <FaUpload />, text: 'Опубликовать', onClick: handlePublish },
-        { key: '2', icon: <FaTrash />, text: 'Удалить', onClick: handleDelete }
+        { key: '1', text: t('publish'), onClick: handlePublish, confirmMessage: t('publish_question') },
+        { key: '2', text: t('delete'), onClick: handleDelete, confirmMessage: t('delete_question') }
     ];
 
     const handleMenuClick = (e) => {
@@ -67,10 +90,17 @@ const CustomCard = ({ image, price, title, location, date, currency, showButtons
     };
 
     const menu = (
-        <Menu onClick={handleMenuClick}>
+        <Menu>
             {menuItems.map(item => (
                 <Menu.Item key={item.key}>
-                    {item.icon} {item.text}
+                    <Popconfirm
+                        title={item.confirmMessage}
+                        onConfirm={item.onClick}
+                        okText={t('yes')}
+                        cancelText={t('no')}
+                    >
+                        <span>{item.text}</span>
+                    </Popconfirm>
                 </Menu.Item>
             ))}
         </Menu>
@@ -104,18 +134,32 @@ const CustomCard = ({ image, price, title, location, date, currency, showButtons
 
     return (
         <div className={styles.card}>
-            <img src={image || logo} alt={title} className={styles.image} />
+            <Carousel onClick={handleCardClick}>
+                {images.length > 0 ? (
+                    images.map((image, index) => (
+                        <div key={index}>
+                            <img src={image ? image : logo} alt={title} className={styles.image} />
+                        </div>
+                    ))
+                ) : (
+                    <div>
+                        <img src={logo} alt={title} className={styles.image} />
+                    </div>
+                )}
+            </Carousel>
             <div className={styles.details}>
-                <h2 className={styles.title}>{title}</h2>
-                <p className={styles.price}>
-                    {formatPrice(price) + ' ' + currency.toUpperCase()}
-                    {conversionRate &&
-                        <span style={{ fontSize: '0.8em' }}> ~{formatPrice(convertedPrice) + ' ' + (currency === 'eur' ? 'din' : '€')}
-                        </span>
-                    }
-                </p>
-                <p className={styles.location}>{location}</p>
-                <p className={styles.date}>{formatDate(date)}</p>
+                <div onClick={handleCardClick}>
+                    <h2 className={styles.title}>{title}</h2>
+                    <p className={styles.price}>
+                        {formatPrice(price) + ' ' + currency.toUpperCase()}
+                        {conversionRate &&
+                            <span style={{ fontSize: '0.8em' }}> ~{formatPrice(convertedPrice) + ' ' + (currency === 'eur' ? 'din' : '€')}
+                            </span>
+                        }
+                    </p>
+                    <p className={styles.location}>{location}</p>
+                    <p className={styles.date}>{formatDate(date)}</p>
+                </div>
                 {showButtons && (
                     <div className={styles.buttons}>
                         <button className={styles.button} onClick={handleButtonEditClick}>

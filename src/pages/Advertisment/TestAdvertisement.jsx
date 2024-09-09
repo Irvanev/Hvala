@@ -540,10 +540,15 @@ const TestAdvertisment = () => {
   }, []);
 
   useEffect(() => {
-    getUserByAuth(setUser);
-  } , []);
+    const fetchUser = async () => {
+      await getUserByAuth(setUser);
+    };
 
-  console.log(user);
+    fetchUser();
+  }, []);
+
+  useEffect(() => {
+  }, [user]);
 
   return (
     <>
@@ -691,22 +696,24 @@ const TestAdvertisment = () => {
           title={t("filter")}
         />
       </div>
-      <div className="container grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {advertisments.map((advertisment, index) => (
-          <CustomCard
-            id={advertisment.id}
-            key={index}
-            user={user}
-            image={advertisment.photoUrls[0]}
-            price={advertisment.price}
-            currency={advertisment.currency}
-            title={advertisment.title}
-            location={advertisment.location}
-            date={advertisment.time_creation}
-            showButtons={user?.role === 'admin'}
-            status="active"
-          />
-        ))}
+      <div className="container">
+        <div className="mt-6 grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
+          {advertisments.map((advertisment, index) => (
+            <CustomCard
+              id={advertisment.id}
+              key={index}
+              user={user}
+              images={advertisment.photoUrls}
+              price={advertisment.price}
+              currency={advertisment.currency}
+              title={advertisment.title}
+              location={advertisment.location}
+              date={advertisment.time_creation}
+              showButtons={user?.role === 'admin'}
+              status="active"
+            />
+          ))}
+        </div>
       </div>
       <div className="container d-flex justify-content-center mt-3 mb-3">
         {loading && <Spin />}
