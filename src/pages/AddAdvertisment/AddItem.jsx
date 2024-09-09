@@ -53,8 +53,8 @@ export const AddItem = () => {
     const [model, setModel] = useState('');
     const [type, setType] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
-    const [country, setCountry] = useState('');
-    const [region, setRegion] = useState('');
+    const [country, setCountry] = useState('montenegro');
+    const [region, setRegion] = useState('municipality_budva');
     const [coordinates, setCoordinates] = useState({ lat: 42.44136169493567, lng: 19.262717285354550 });
     const [location, setLocation] = useState('');
     const [currency, setCurrency] = useState('');
