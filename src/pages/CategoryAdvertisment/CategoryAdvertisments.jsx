@@ -13,6 +13,7 @@ import Categories from '../../components/category';
 
 import styles from './Container.module.css';
 import CustomCard from '../../components/card/CustomCard';
+import { Helmet } from "react-helmet";
 
 export const CategoryAdvertisments = () => {
     const { category } = useParams();
@@ -741,6 +742,23 @@ export const CategoryAdvertisments = () => {
         }
     };
 
+    const getDescription = (category) => {
+        switch (category) {
+          case 'real-estate':
+            return 'Otkrijte najbolje oglase za nekretnine, uključujući stanove, kuće, zemljišta i još mnogo toga. Pronađite sjajne ponude i popuste na Hvala.';
+          case 'transport':
+            return 'Otkrijte najbolje oglase za transport, uključujući automobile, motocikle, bicikle i još mnogo toga. Pronađite sjajne ponude i popuste na Hvala.';
+          case 'clothing':
+            return 'Otkrijte najbolje oglase za odeću, uključujući mušku, žensku i dečiju odeću. Pronađite sjajne ponude i popuste na Hvala.';
+          case 'electronics':
+            return 'Otkrijte najbolje oglase za elektroniku, uključujući telefone, računare, televizore i još mnogo toga. Pronađite sjajne ponude i popuste na Hvala.';
+          default:
+            return 'Otkrijte najbolje oglase za razne kategorije, uključujući nekretnine, transport, odeću, elektroniku i još mnogo toga. Pronađite sjajne ponude i popuste na Hvala.';
+        }
+      };
+
+      const description = getDescription(category);
+
     return (
         <div>
 
@@ -763,6 +781,46 @@ export const CategoryAdvertisments = () => {
 
             <MyNavbar />
             <NavBarBack />
+
+            <Helmet>
+                <title>{`Oglasna Stranica - ${category ? t(category) : 'Pronađite Najbolje Ponude'} | Hvala`}</title>
+                <meta
+                name="description"
+                content="Otkrijte najbolje oglase za razne kategorije, uključujući nekretnine, transport, odeću, elektroniku i još mnogo toga. Pronađite sjajne ponude i popuste na Hvala."
+                />
+                <meta
+                name="keywords"
+                content="oglasi, nekretnine, transport, odeća, elektronika, kućni proizvodi, građevinski materijali, alati, transport robe, kućni aparati, usluge, dečija roba, zdravlje i lepota, sport, hobi, opuštanje, odmor"
+                />
+                <meta name="viewport" content="width=device-width, initial-scale=1" />
+                <meta
+                property="og:title"
+                content="Oglasna Stranica - Pronađite Najbolje Ponude | Hvala"
+                />
+                <meta
+                property="og:description"
+                content={description}
+                />
+                <meta property="og:type" content="website" />
+                <meta property="og:url" content="https://hvala.app" />
+                <meta
+                property="og:image"
+                content="https://firebasestorage.googleapis.com/v0/b/hvala-2c8a4.appspot.com/o/oglasna-stranica.jpg?alt=media&token=primer-token"
+                />
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta
+                name="twitter:title"
+                content="Oglasna Stranica - Pronađite Najbolje Ponude | Hvala"
+                />
+                <meta
+                name="twitter:description"
+                content="Otkrijte najbolje oglase za razne kategorije, uključujući nekretnine, transport, odeću, elektroniku i još mnogo toga. Pronađite sjajne ponude i popuste na Hvala."
+                />
+                <meta
+                name="twitter:image"
+                content="https://firebasestorage.googleapis.com/v0/b/hvala-2c8a4.appspot.com/o/oglasna-stranica.jpg?alt=media&token=primer-token"
+                />
+            </Helmet>
 
             <Categories setSearchText={setSearchText} options={options} />
 
