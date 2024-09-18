@@ -1,12 +1,12 @@
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 import { Container, Form } from "react-bootstrap";
-import { db, auth, storage } from "../../config/firebase"
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
-import { useState } from 'react';
+import { db, auth, storage } from "../../config/firebase";
+import { collection, addDoc } from "firebase/firestore";
+import { useState } from "react";
 import { MyNavbar } from "../../components/Navbar/Navbar";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { NavBarBack } from "../../components/Navbar/NavBarBack"
+import { NavBarBack } from "../../components/Navbar/NavBarBack";
 import ClothesForm from "../../components/formsForAddingAdvertisements/ClothesForm";
 import PhoneAndTabletsForm from "../../components/formsForAddingAdvertisements/electronics-forms/PhoneAndTabletsForm";
 import TarnsportForm from "../../components/formsForAddingAdvertisements/TransportForm";
@@ -29,541 +29,172 @@ import TvForm from "../../components/formsForAddingAdvertisements/electronics-fo
 import GameConsoleForm from "../../components/formsForAddingAdvertisements/electronics-forms/GameConsoleForm";
 import ComputerForm from "../../components/formsForAddingAdvertisements/electronics-forms/ComputerForm";
 import ComputersAccsForm from "../../components/formsForAddingAdvertisements/electronics-forms/ComputersAccsForm";
-import DefaultForm from "../../components/formsForAddingAdvertisements/DefaultForm"
+import DefaultForm from "../../components/formsForAddingAdvertisements/DefaultForm";
 import DefaultFormWithoutCondition from "../../components/formsForAddingAdvertisements/DefaultFormWithoutCondition";
 import HomeApplianceForm from "../../components/formsForAddingAdvertisements/HomeApplianceForm";
 
-import imageCompression from 'browser-image-compression';
+import { buildFormData } from '../../types/formDataBuilder';
 
-import { Spin } from 'antd';
+import imageCompression from "browser-image-compression";
+
+import { Spin } from "antd";
 
 export const AddItem = () => {
-    const { t } = useTranslation();
-    const userId = auth.currentUser ? auth.currentUser.uid : null;
-    const history = useHistory();
-    const [loading, setLoading] = useState(false);
+  const { t } = useTranslation();
+  const userId = auth.currentUser ? auth.currentUser.uid : null;
+  const history = useHistory();
+  const [loading, setLoading] = useState(false);
 
-    const [selectedCategory, setSelectedCategory] = useState(null);
-    const [selectedSubcategory, setSelectedSubcategory] = useState(null);
-    const [description, setDescription] = useState('');
-    const [condition, setCondition] = useState();
-    const [title, setTitle] = useState('');
-    const [price, setPrice] = useState('');
-    const [brand, setBrand] = useState('');
-    const [model, setModel] = useState('');
-    const [type, setType] = useState('');
-    const [phoneNumber, setPhoneNumber] = useState('');
-    const [country, setCountry] = useState('montenegro');
-    const [region, setRegion] = useState('municipality_budva');
-    const [coordinates, setCoordinates] = useState({ lat: 42.44136169493567, lng: 19.262717285354550 });
-    const [location, setLocation] = useState('');
-    const [currency, setCurrency] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedSubcategory, setSelectedSubcategory] = useState(null);
+  const [description, setDescription] = useState("");
+  const [condition, setCondition] = useState();
+  const [title, setTitle] = useState("");
+  const [price, setPrice] = useState("");
+  const [brand, setBrand] = useState("");
+  const [model, setModel] = useState("");
+  const [type, setType] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [country, setCountry] = useState("montenegro");
+  const [region, setRegion] = useState("municipality_budva");
+  const [coordinates, setCoordinates] = useState({
+    lat: 42.44136169493567,
+    lng: 19.26271728535455,
+  });
+  const [location, setLocation] = useState("");
+  const [currency, setCurrency] = useState("");
 
-    // Для автомобилей
-    const [mileage, setMileage] = useState('');
-    const [drive, setDrive] = useState(''); // привод
-    const [transmission, setTransmission] = useState(''); // трансмиссия
-    const [wheel, setWheel] = useState(''); // руль
-    const [year, setYear] = useState(''); // год выпуска
-    const [body, setBody] = useState(''); // кузов
-    const [color, setColor] = useState('');
-    const [owners, setOwners] = useState(''); // кол-во владельцев
+  // Для автомобилей
+  const [mileage, setMileage] = useState("");
+  const [drive, setDrive] = useState(""); // привод
+  const [transmission, setTransmission] = useState(""); // трансмиссия
+  const [wheel, setWheel] = useState(""); // руль
+  const [year, setYear] = useState(""); // год выпуска
+  const [body, setBody] = useState(""); // кузов
+  const [color, setColor] = useState("");
+  const [owners, setOwners] = useState(""); // кол-во владельцев
 
-    // Для одежды
-    const [size, setSize] = useState('');
+  // Для одежды
+  const [size, setSize] = useState("");
 
+  // Для телеофонов и планшетов, телевизоры
+  const [screen_size, setScreenSize] = useState("");
+  const [memory, setMemory] = useState("");
 
-    // Для телеофонов и планшетов, телевизоры
-    const [screen_size, setScreenSize] = useState('');
-    const [memory, setMemory] = useState('');
+  // Для недвежимости
+  const [roomsAmout, setRoomsAmout] = useState("");
+  const [area, setArea] = useState("");
+  const [owner, setOwner] = useState("");
 
+  const handleCategoryChange = (value) => {
+    setSelectedCategory(value);
+    setSelectedSubcategory(null);
+  };
 
-    // Для недвежимости
-    const [roomsAmout, setRoomsAmout] = useState('');
-    const [area, setArea] = useState('');
-    const [owner, setOwner] = useState('');
+  const handleSubcategoryChange = (value) => {
+    setSelectedSubcategory(value);
+  };
 
+  const handleFileChange = (file) => {
+    setSelectedFiles((prev) => [...prev, file]);
+  };
+  const [photoUrls, setSelectedFiles] = useState([]);
+  const handleSubmit = async () => {
+    setLoading(true);
 
-    const handleCategoryChange = (value) => {
-        setSelectedCategory(value);
-        setSelectedSubcategory(null);
-    }
+    const compressImage = async (file) => {
+      const options = {
+        maxSizeMB: 1,
+        maxWidthOrHeight: 1920,
+        useWebWorker: true,
+      };
+      try {
+        const compressedFile = await imageCompression(file, options);
+        return compressedFile;
+      } catch (error) {
+        console.error("Ошибка при сжатии изображения:", error);
+        throw error;
+      }
+    };
 
-    const handleSubcategoryChange = (value) => {
-        setSelectedSubcategory(value);
-    }
+    const fileUrls = await Promise.all(
+      photoUrls.map(async (file) => {
+        const compressedFile = await compressImage(file);
+        const storageRef = ref(storage, "advertisment/" + compressedFile.name);
+        const uploadTask = uploadBytesResumable(storageRef, compressedFile);
 
-    const handleFileChange = (file) => {
-        setSelectedFiles((prev) => [...prev, file]);
-    }
-    const [photoUrls, setSelectedFiles] = useState([]);
-    const handleSubmit = async () => {
-        setLoading(true);
-
-        const compressImage = async (file) => {
-            const options = {
-                maxSizeMB: 1, // Максимальный размер файла в мегабайтах
-                maxWidthOrHeight: 1920, // Максимальная ширина или высота
-                useWebWorker: true // Использовать Web Worker для сжатия
-            };
-            try {
-                const compressedFile = await imageCompression(file, options);
-                return compressedFile;
-            } catch (error) {
-                console.error("Ошибка при сжатии изображения:", error);
-                throw error;
+        return new Promise((resolve, reject) => {
+          uploadTask.on(
+            "state_changed",
+            (snapshot) => {
+              // Вы можете добавить код для отслеживания прогресса загрузки здесь
+            },
+            (error) => {
+              reject(error);
+            },
+            () => {
+              getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                resolve(downloadURL);
+              });
             }
-        };
-        
-        const fileUrls = await Promise.all(
-            photoUrls.map(async (file) => {
-                const compressedFile = await compressImage(file);
-                const storageRef = ref(storage, 'advertisment/' + compressedFile.name);
-                const uploadTask = uploadBytesResumable(storageRef, compressedFile);
-        
-                return new Promise((resolve, reject) => {
-                    uploadTask.on('state_changed',
-                        (snapshot) => {
-                            // Вы можете добавить код для отслеживания прогресса загрузки здесь
-                        },
-                        (error) => {
-                            reject(error);
-                        },
-                        () => {
-                            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                                resolve(downloadURL);
-                            });
-                        }
-                    );
-                });
-            })
-        );
+          );
+        });
+      })
+    );
 
-        let formData;
+    const formData = buildFormData({
+      userId,
+      selectedCategory,
+      selectedSubcategory,
+      phoneNumber,
+      title,
+      price,
+      currency,
+      description,
+      region,
+      location,
+      country,
+      coordinates,
+      fileUrls,
+      brand,
+      model,
+      screen_size,
+      memory,
+      condition,
+      type,
+      mileage,
+      year,
+      body,
+      color,
+      transmission,
+      drive,
+      wheel,
+      owners,
+      roomsAmout,
+      area,
+      owner,
+      size,
+    });
 
-        switch (selectedCategory) {
-            case 'rest':
-                formData = {
-                    from_uid: userId,
-                    name: "",
-                    category: selectedCategory,
-                    subcategory: selectedSubcategory,
-                    phone: phoneNumber,
-                    title,
-                    price,
-                    currency,
-                    description,
-                    availability: "available",
-                    region: region??"municipality_budva",
-                    location: location,
-                    country: country??"montenegro",
-                    coordinates: coordinates,
-                    time_creation: serverTimestamp(),
-                    photoUrls: fileUrls,
-                    in_archive: false,
-                };
-                break;
+    const advertismentRef = collection(db, "advertisment");
 
-            default:
-                break;
-        }
+    addDoc(advertismentRef, formData)
+      .then((docRef) => {
+        console.log("Document written with ID: ", docRef.id);
+        history.push("/profile");
+      })
+      .catch((error) => {
+        console.error("Error adding document: ", error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
 
-        switch (selectedSubcategory) {
-            case 'phones_and_tablets':
-                formData = {
-                    from_uid: userId,
-                    name: "",
-                    category: selectedCategory,
-                    subcategory: selectedSubcategory,
-                    phone: phoneNumber,
-                    title,
-                    price,
-                    currency,
-                    brand,
-                    model,
-                    screen_size,
-                    memory,
-                    condition,
-                    description,
-                    region: region??"municipality_budva",
-                    location: location,
-                    country: country??"montenegro",
-                    coordinates: coordinates,
-                    availability: "available",
-                    photoUrls: fileUrls,
-                    time_creation: serverTimestamp(),
-                    in_archive: false,
-                };
-                break;
-
-            case 'tv':
-                formData = {
-                    from_uid: userId,
-                    name: "",
-                    category: selectedCategory,
-                    subcategory: selectedSubcategory,
-                    phone: phoneNumber,
-                    title,
-                    price,
-                    currency,
-                    brand,
-                    model,
-                    screen_size,
-                    condition,
-                    description,
-                    region: region??"municipality_budva",
-                    location: location,
-                    country: country??"montenegro",
-                    coordinates: coordinates,
-                    availability: "available",
-                    photoUrls: fileUrls,
-                    time_creation: serverTimestamp(),
-                    in_archive: false,
-                }
-                break;
-
-            case 'game_console':
-            case 'photo_video':
-                formData = {
-                    from_uid: userId,
-                    name: "",
-                    category: selectedCategory,
-                    subcategory: selectedSubcategory,
-                    phone: phoneNumber,
-                    title,
-                    price,
-                    currency,
-                    brand,
-                    model,
-                    condition,
-                    description,
-                    region: region??"municipality_budva",
-                    location: location,
-                    country: country??"montenegro",
-                    coordinates: coordinates,
-                    availability: "available",
-                    photoUrls: fileUrls,
-                    time_creation: serverTimestamp(),
-                    in_archive: false,
-                };
-                break;
-
-            case 'computers':
-                formData = {
-                    from_uid: userId,
-                    name: "",
-                    category: selectedCategory,
-                    subcategory: selectedSubcategory,
-                    phone: phoneNumber,
-                    type: type,
-                    title,
-                    price,
-                    currency,
-                    brand,
-                    model,
-                    condition,
-                    description,
-                    region: region??"municipality_budva",
-                    location: location,
-                    country: country??"montenegro",
-                    coordinates: coordinates,
-                    availability: "available",
-                    photoUrls: fileUrls,
-                    time_creation: serverTimestamp(),
-                    in_archive: false,
-                };
-                break;
-
-            case 'computer_accessories':
-                formData = {
-                    from_uid: userId,
-                    name: "",
-                    category: selectedCategory,
-                    subcategory: selectedSubcategory,
-                    phone: phoneNumber,
-                    type: type,
-                    title,
-                    price,
-                    currency,
-                    brand,
-                    condition,
-                    description,
-                    availability: "available",
-                    region: region??"municipality_budva",
-                    location: location,
-                    country: country??"montenegro",
-                    coordinates: coordinates,
-                    time_creation: serverTimestamp(),
-                    photoUrls: fileUrls,
-                    in_archive: false,
-                }
-                break;
-
-            case 'auto':
-            case 'moto':
-            case 'water_transport':
-                formData = {
-                    from_uid: userId,
-                    name: "",
-                    category: selectedCategory,
-                    subcategory: selectedSubcategory,
-                    phone: phoneNumber,
-                    title,
-                    price,
-                    currency,
-                    brand,
-                    model,
-                    condition,
-                    mileage,
-                    year,
-                    body,
-                    color,
-                    transmission,
-                    drive,
-                    wheel,
-                    owners,
-                    customs: "",
-                    description,
-                    region: region??"municipality_budva",
-                    location: location,
-                    country: country??"montenegro",
-                    coordinates: coordinates,
-                    availability: "available", // !TODO
-                    photoUrls: fileUrls,
-                    time_creation: serverTimestamp(),
-                    in_archive: false,
-                };
-                break;
-
-            case 'sale_estate':
-            case 'rent_estate':
-                formData = {
-                    from_uid: userId,
-                    name: "",
-                    category: selectedCategory,
-                    subcategory: selectedSubcategory,
-                    phone: phoneNumber,
-                    title,
-                    price,
-                    currency,
-                    type,
-                    rooms_amount: roomsAmout,
-                    area,
-                    owner,
-                    description,
-                    kitchen_area: "",
-                    to_center: "",
-                    availability: "available",
-                    region: region??"municipality_budva",
-                    location: location,
-                    country: country??"montenegro",
-                    coordinates: coordinates,
-                    time_creation: serverTimestamp(),
-                    photoUrls: fileUrls,
-                    in_archive: false,
-                };
-                break;
-
-            case 'mens_clothing':
-            case 'womens_clothing':
-            case 'childrens_clothing':
-                formData = {
-                    from_uid: userId,
-                    name: "",
-                    category: selectedCategory,
-                    subcategory: selectedSubcategory,
-                    phone: phoneNumber,
-                    type: type,
-                    title,
-                    price,
-                    currency,
-                    size,
-                    brand,
-                    condition,
-                    description,
-                    availability: "available",
-                    region: region??"municipality_budva",
-                    location: location,
-                    country: country??"montenegro",
-                    coordinates: coordinates,
-                    time_creation: serverTimestamp(),
-                    photoUrls: fileUrls,
-                    in_archive: false,
-                }
-                break;
-
-            case 'refrigerators':
-            case 'washing_machines':
-            case 'vacuum_cleaners':
-            case 'stoves_and_ovens':
-            case 'sewing_equipment':
-            case 'food_preparation':
-            case 'dishwasher':
-                formData = {
-                    from_uid: userId,
-                    name: "",
-                    category: selectedCategory,
-                    subcategory: selectedSubcategory,
-                    phone: phoneNumber,
-                    title,
-                    price,
-                    currency,
-                    brand,
-                    condition,
-                    description,
-                    availability: "available",
-                    region: region??"municipality_budva",
-                    location: location,
-                    country: country??"montenegro",
-                    coordinates: coordinates,
-                    time_creation: serverTimestamp(),
-                    photoUrls: fileUrls,
-                    in_archive: false,
-                }
-                break;
-
-
-            case 'furniture':
-            case 'lighting':
-            case 'dishes':
-            case 'garden_equipment':
-            case 'domestic_cleaning':
-            case 'kitchen_equipment':
-            case 'other_cat':
-            case 'tools':
-            case 'building_materials':
-            case 'heating_and_ventilation':
-            case 'plumbing':
-            case 'electrics':
-            case 'windows':
-            case 'doors':
-            case 'spares':
-            case 'tires_and_wheels':
-            case 'accessories_and_tools':
-            case 'sports_protections':
-            case 'bicycles':
-            case 'scooters':
-            case 'skateboards':
-            case 'hoverboards_and_electric_scooters':
-            case 'ball_games':
-            case 'hunting_and_fishing':
-            case 'tourism_and_outdoor_recreation':
-            case 'billiards_and_bowling':
-            case 'tennis_and_badminton':
-            case 'exercise_equipment_and_fitness':
-            case 'sports_nutrition':
-            case 'water_sports':
-            case 'sapboards':
-            case 'table_games':
-            case 'computer_games':
-            case 'books_n_magazines':
-            case 'tickets':
-            case 'collections':
-            case 'art_materials':
-            case 'music':
-            case 'music_tools':
-                formData = {
-                    from_uid: userId,
-                    name: "",
-                    category: selectedCategory,
-                    subcategory: selectedSubcategory,
-                    phone: phoneNumber,
-                    title,
-                    price,
-                    currency,
-                    condition,
-                    description,
-                    availability: "available",
-                    region: region??"municipality_budva",
-                    location: location,
-                    country: country??"montenegro",
-                    coordinates: coordinates,
-                    time_creation: serverTimestamp(),
-                    photoUrls: fileUrls,
-                    in_archive: false,
-                }
-                break;
-
-            case 'education':
-            case 'handyman':
-            case 'beauty_and_health':
-            case 'transportation':
-            case 'repair_and_construction':
-            case 'computer_services':
-            case 'business_services':
-            case 'cleaning':
-            case 'automotive_services':
-            case 'appliance_repair':
-            case 'event_planning':
-            case 'photography_and_vide':
-            case 'custom_manufacturing':
-            case 'pet_care':
-            case 'car_seats':
-            case 'health_and_care':
-            case 'toys_and_games':
-            case 'strollers':
-            case 'feeding_and_nutrition':
-            case 'bathing':
-            case 'nursery':
-            case 'diapers_and_potties':
-            case 'baby_monitors':
-            case 'maternity_products':
-            case 'schoold_supplies':
-            case 'makeup':
-            case 'manicure_and_pedicure':
-            case 'healthcare_products':
-            case 'perfume':
-            case 'skincare':
-            case 'haircare':
-            case 'tattoos_and_tatooing':
-            case 'tanning_and_sunbeds':
-            case 'personal_hygiene_products':
-                formData = {
-                    from_uid: userId,
-                    name: "",
-                    category: selectedCategory,
-                    subcategory: selectedSubcategory,
-                    phone: phoneNumber,
-                    title,
-                    price,
-                    currency,
-                    description,
-                    availability: "available",
-                    region: region??"municipality_budva",
-                    location: location,
-                    country: country??"montenegro",
-                    coordinates: coordinates,
-                    time_creation: serverTimestamp(),
-                    photoUrls: fileUrls,
-                    in_archive: false,
-                }
-                break;
-
-            default:
-                break;
-        }
-
-        const advertismentRef = collection(db, 'advertisment');
-
-        addDoc(advertismentRef, formData)
-            .then((docRef) => {
-                console.log("Document written with ID: ", docRef.id);
-                history.push('/profile');
-            })
-            .catch((error) => {
-                console.error("Error adding document: ", error);
-            })
-            .finally(() => {
-                setLoading(false);
-            });
-    }
-
-
-    return (
-        <div>
-
-            <style type="text/css">
-                {`
+  return (
+    <div>
+      <style type="text/css">
+        {`
                 @media (max-width: 1000px) {
                     body {
                         padding-bottom: 6rem;
@@ -577,332 +208,571 @@ export const AddItem = () => {
                     }
                 }
                 `}
-            </style>
+      </style>
 
-            <MyNavbar />
+      <MyNavbar />
 
-            <NavBarBack />
+      <NavBarBack />
 
-            <Container className="mt-3">
-                <h3>{t('create_advertisement')}</h3>
-                <Form>
+      <Container className="mt-3">
+        <h3>{t("create_advertisement")}</h3>
+        <Form>
+          <SelectCategory handleCategoryChange={handleCategoryChange} t={t} />
 
-                    <SelectCategory handleCategoryChange={handleCategoryChange} t={t} />
+          {selectedCategory === "estate" && (
+            <SelectSubCategoryEstate
+              handleSubcategoryChange={handleSubcategoryChange}
+              t={t}
+            />
+          )}
+          {selectedCategory === "transport" && (
+            <SelectSubCategoryTransport
+              handleSubcategoryChange={handleSubcategoryChange}
+              t={t}
+            />
+          )}
+          {selectedCategory === "clothes" && (
+            <SelectSubCategoryClothes
+              handleSubcategoryChange={handleSubcategoryChange}
+              t={t}
+            />
+          )}
+          {selectedCategory === "electronics" && (
+            <SelectSubCategoryElectronics
+              handleSubcategoryChange={handleSubcategoryChange}
+              t={t}
+            />
+          )}
+          {selectedCategory === "house_goods" && (
+            <SelectSubCategoryHouseGoods
+              handleSubcategoryChange={handleSubcategoryChange}
+              t={t}
+            />
+          )}
+          {selectedCategory === "building_materials_and_tools" && (
+            <SelectSubCategoryBuilding
+              handleSubcategoryChange={handleSubcategoryChange}
+              t={t}
+            />
+          )}
+          {selectedCategory === "transport_goods" && (
+            <SelectSubCategoryTransportGoods
+              handleSubcategoryChange={handleSubcategoryChange}
+              t={t}
+            />
+          )}
+          {selectedCategory === "home_appliance" && (
+            <SelectSubCategoryHomeAppliance
+              handleSubcategoryChange={handleSubcategoryChange}
+              t={t}
+            />
+          )}
+          {selectedCategory === "service" && (
+            <SelectSubCategoryService
+              handleSubcategoryChange={handleSubcategoryChange}
+              t={t}
+            />
+          )}
+          {selectedCategory === "child_goods" && (
+            <SelectSubCategoryChildGoods
+              handleSubcategoryChange={handleSubcategoryChange}
+              t={t}
+            />
+          )}
+          {selectedCategory === "health_and_beauty" && (
+            <SelectSubCategoryHealth
+              handleSubcategoryChange={handleSubcategoryChange}
+              t={t}
+            />
+          )}
+          {selectedCategory === "sport" && (
+            <SelectSubCategorySport
+              handleSubcategoryChange={handleSubcategoryChange}
+              t={t}
+            />
+          )}
+          {selectedCategory === "hobby_n_Relax" && (
+            <SelectSubCategoryHobby
+              handleSubcategoryChange={handleSubcategoryChange}
+              t={t}
+            />
+          )}
+          {selectedCategory === "rest" && (
+            <DefaultForm
+              loading={loading}
+              currency={currency}
+              setCurrency={setCurrency}
+              coordinates={coordinates}
+              setCoordinates={setCoordinates}
+              location={location}
+              setLocation={setLocation}
+              region={region}
+              setRegion={setRegion}
+              country={country}
+              setCountry={setCountry}
+              title={title}
+              setTitle={setTitle}
+              price={price}
+              setPrice={setPrice}
+              phoneNumber={phoneNumber}
+              setPhoneNumber={setPhoneNumber}
+              description={description}
+              setDescription={setDescription}
+              condition={condition}
+              setCondition={setCondition}
+              handleFileChange={handleFileChange}
+              photoUrls={photoUrls}
+              handleSubmit={handleSubmit}
+            />
+          )}
 
-                    {selectedCategory === 'estate' && (
-                        <SelectSubCategoryEstate handleSubcategoryChange={handleSubcategoryChange} t={t} />
-                    )}
-                    {selectedCategory === 'transport' && (
-                        <SelectSubCategoryTransport handleSubcategoryChange={handleSubcategoryChange} t={t} />
-                    )}
-                    {selectedCategory === 'clothes' && (
-                        <SelectSubCategoryClothes handleSubcategoryChange={handleSubcategoryChange} t={t} />
-                    )}
-                    {selectedCategory === 'electronics' && (
-                        <SelectSubCategoryElectronics handleSubcategoryChange={handleSubcategoryChange} t={t} />
-                    )}
-                    {selectedCategory === 'house_goods' && (
-                        <SelectSubCategoryHouseGoods handleSubcategoryChange={handleSubcategoryChange} t={t} />
-                    )}
-                    {selectedCategory === 'building_materials_and_tools' && (
-                        <SelectSubCategoryBuilding handleSubcategoryChange={handleSubcategoryChange} t={t} />
-                    )}
-                    {selectedCategory === 'transport_goods' && (
-                        <SelectSubCategoryTransportGoods handleSubcategoryChange={handleSubcategoryChange} t={t} />
-                    )}
-                    {selectedCategory === 'home_appliance' && (
-                        <SelectSubCategoryHomeAppliance handleSubcategoryChange={handleSubcategoryChange} t={t} />
-                    )}
-                    {selectedCategory === 'service' && (
-                        <SelectSubCategoryService handleSubcategoryChange={handleSubcategoryChange} t={t} />
-                    )}
-                    {selectedCategory === 'child_goods' && (
-                        <SelectSubCategoryChildGoods handleSubcategoryChange={handleSubcategoryChange} t={t} />
-                    )}
-                    {selectedCategory === 'health_and_beauty' && (
-                        <SelectSubCategoryHealth handleSubcategoryChange={handleSubcategoryChange} t={t} />
-                    )}
-                    {selectedCategory === 'sport' && (
-                        <SelectSubCategorySport handleSubcategoryChange={handleSubcategoryChange} t={t} />
-                    )}
-                    {selectedCategory === 'hobby_n_Relax' && (
-                        <SelectSubCategoryHobby handleSubcategoryChange={handleSubcategoryChange} t={t} />
-                    )}
-                    {selectedCategory === 'rest' && (
-                        <DefaultForm
-                            loading={loading}
-                            currency={currency} setCurrency={setCurrency}
-                            coordinates={coordinates} setCoordinates={setCoordinates}
-                            location={location} setLocation={setLocation}
-                            region={region} setRegion={setRegion}
-                            country={country} setCountry={setCountry}
-                            title={title} setTitle={setTitle}
-                            price={price} setPrice={setPrice}
-                            phoneNumber={phoneNumber} setPhoneNumber={setPhoneNumber}
-                            description={description} setDescription={setDescription}
-                            condition={condition} setCondition={setCondition}
-                            handleFileChange={handleFileChange} photoUrls={photoUrls}
-                            handleSubmit={handleSubmit}
-                        />
-                    )}
+          {(selectedSubcategory === "auto" ||
+            selectedSubcategory === "moto" ||
+            selectedSubcategory === "water_transport") && (
+            <TarnsportForm
+              title={title}
+              setTitle={setTitle}
+              loading={loading}
+              currency={currency}
+              setCurrency={setCurrency}
+              price={price}
+              setPrice={setPrice}
+              brand={brand}
+              setBrand={setBrand}
+              year={year}
+              setYear={setYear}
+              model={model}
+              setModel={setModel}
+              mileage={mileage}
+              setMileage={setMileage}
+              body={body}
+              setBody={setBody}
+              color={color}
+              setColor={setColor}
+              drive={drive}
+              setDrive={setDrive}
+              wheel={wheel}
+              setWheel={setWheel}
+              condition={condition}
+              setCondition={setCondition}
+              transmission={transmission}
+              setTransmission={setTransmission}
+              owners={owners}
+              setOwners={setOwners}
+              phoneNumber={phoneNumber}
+              setPhoneNumber={setPhoneNumber}
+              description={description}
+              setDescription={setDescription}
+              handleFileChange={handleFileChange}
+              photoUrls={photoUrls}
+              handleSubmit={handleSubmit}
+              coordinates={coordinates}
+              location={location}
+              setCoordinates={setCoordinates}
+              setLocation={setLocation}
+              setRegion={setRegion}
+              setCountry={setCountry}
+            />
+          )}
 
-                    {(selectedSubcategory === 'auto' || selectedSubcategory === 'moto' || selectedSubcategory === 'water_transport') && (
-                        <TarnsportForm title={title} setTitle={setTitle}
-                            loading={loading}
-                            currency={currency} setCurrency={setCurrency}
-                            price={price} setPrice={setPrice}
-                            brand={brand} setBrand={setBrand}
-                            year={year} setYear={setYear}
-                            model={model} setModel={setModel}
-                            mileage={mileage} setMileage={setMileage}
-                            body={body} setBody={setBody}
-                            color={color} setColor={setColor}
-                            drive={drive} setDrive={setDrive}
-                            wheel={wheel} setWheel={setWheel}
-                            condition={condition} setCondition={setCondition}
-                            transmission={transmission} setTransmission={setTransmission}
-                            owners={owners} setOwners={setOwners}
-                            phoneNumber={phoneNumber} setPhoneNumber={setPhoneNumber}
-                            description={description} setDescription={setDescription}
-                            handleFileChange={handleFileChange} photoUrls={photoUrls}
-                            handleSubmit={handleSubmit}
-                            coordinates={coordinates} location={location}
-                            setCoordinates={setCoordinates} setLocation={setLocation}
-                            setRegion={setRegion} setCountry={setCountry}
-                        />
-                    )}
+          {(selectedSubcategory === "mens_clothing" ||
+            selectedSubcategory === "womens_clothing" ||
+            selectedSubcategory === "childrens_clothing") && (
+            <ClothesForm
+              title={title}
+              setTitle={setTitle}
+              loading={loading}
+              currency={currency}
+              setCurrency={setCurrency}
+              price={price}
+              setPrice={setPrice}
+              size={size}
+              setSize={setSize}
+              brand={brand}
+              setBrand={setBrand}
+              type={type}
+              setType={setType}
+              condition={condition}
+              setCondition={setCondition}
+              phoneNumber={phoneNumber}
+              setPhoneNumber={setPhoneNumber}
+              description={description}
+              setDescription={setDescription}
+              handleFileChange={handleFileChange}
+              photoUrls={photoUrls}
+              handleSubmit={handleSubmit}
+              coordinates={coordinates}
+              location={location}
+              setCoordinates={setCoordinates}
+              setLocation={setLocation}
+              setRegion={setRegion}
+              setCountry={setCountry}
+            />
+          )}
 
-                    {(selectedSubcategory === 'mens_clothing' || selectedSubcategory === 'womens_clothing' || selectedSubcategory === 'childrens_clothing') && (
-                        <ClothesForm title={title} setTitle={setTitle}
-                            loading={loading}
-                            currency={currency} setCurrency={setCurrency}
-                            price={price} setPrice={setPrice}
-                            size={size} setSize={setSize}
-                            brand={brand} setBrand={setBrand}
-                            type={type} setType={setType}
-                            condition={condition} setCondition={setCondition}
-                            phoneNumber={phoneNumber} setPhoneNumber={setPhoneNumber}
-                            description={description} setDescription={setDescription}
-                            handleFileChange={handleFileChange} photoUrls={photoUrls}
-                            handleSubmit={handleSubmit}
-                            coordinates={coordinates} location={location}
-                            setCoordinates={setCoordinates} setLocation={setLocation}
-                            setRegion={setRegion} setCountry={setCountry}
-                        />
-                    )}
+          {selectedSubcategory === "phones_and_tablets" && (
+            <PhoneAndTabletsForm
+              title={title}
+              setTitle={setTitle}
+              loading={loading}
+              currency={currency}
+              setCurrency={setCurrency}
+              price={price}
+              setPrice={setPrice}
+              model={model}
+              setModel={setModel}
+              screen_size={screen_size}
+              setScreenSize={setScreenSize}
+              memory={memory}
+              setMemory={setMemory}
+              brand={brand}
+              setBrand={setBrand}
+              condition={condition}
+              setCondition={setCondition}
+              phoneNumber={phoneNumber}
+              setPhoneNumber={setPhoneNumber}
+              description={description}
+              setDescription={setDescription}
+              handleFileChange={handleFileChange}
+              photoUrls={photoUrls}
+              handleSubmit={handleSubmit}
+              coordinates={coordinates}
+              location={location}
+              setCoordinates={setCoordinates}
+              setLocation={setLocation}
+              setRegion={setRegion}
+              setCountry={setCountry}
+            />
+          )}
 
-                    {selectedSubcategory === 'phones_and_tablets' && (
-                        <PhoneAndTabletsForm title={title} setTitle={setTitle}
-                            loading={loading}
-                            currency={currency} setCurrency={setCurrency}
-                            price={price} setPrice={setPrice}
-                            model={model} setModel={setModel}
-                            screen_size={screen_size} setScreenSize={setScreenSize}
-                            memory={memory} setMemory={setMemory}
-                            brand={brand} setBrand={setBrand}
-                            condition={condition} setCondition={setCondition}
-                            phoneNumber={phoneNumber} setPhoneNumber={setPhoneNumber}
-                            description={description} setDescription={setDescription}
-                            handleFileChange={handleFileChange} photoUrls={photoUrls}
-                            handleSubmit={handleSubmit}
-                            coordinates={coordinates} location={location}
-                            setCoordinates={setCoordinates} setLocation={setLocation}
-                            setRegion={setRegion} setCountry={setCountry}
-                        />
-                    )}
+          {selectedSubcategory === "tv" && (
+            <TvForm
+              title={title}
+              setTitle={setTitle}
+              loading={loading}
+              currency={currency}
+              setCurrency={setCurrency}
+              price={price}
+              setPrice={setPrice}
+              model={model}
+              setModel={setModel}
+              screen_size={screen_size}
+              setScreenSize={setScreenSize}
+              brand={brand}
+              setBrand={setBrand}
+              condition={condition}
+              setCondition={setCondition}
+              phoneNumber={phoneNumber}
+              setPhoneNumber={setPhoneNumber}
+              description={description}
+              setDescription={setDescription}
+              handleFileChange={handleFileChange}
+              photoUrls={photoUrls}
+              handleSubmit={handleSubmit}
+              coordinates={coordinates}
+              location={location}
+              setCoordinates={setCoordinates}
+              setLocation={setLocation}
+              setRegion={setRegion}
+              setCountry={setCountry}
+            />
+          )}
 
-                    {selectedSubcategory === 'tv' && (
-                        <TvForm title={title} setTitle={setTitle}
-                            loading={loading}
-                            currency={currency} setCurrency={setCurrency}
-                            price={price} setPrice={setPrice}
-                            model={model} setModel={setModel}
-                            screen_size={screen_size} setScreenSize={setScreenSize}
-                            brand={brand} setBrand={setBrand}
-                            condition={condition} setCondition={setCondition}
-                            phoneNumber={phoneNumber} setPhoneNumber={setPhoneNumber}
-                            description={description} setDescription={setDescription}
-                            handleFileChange={handleFileChange} photoUrls={photoUrls}
-                            handleSubmit={handleSubmit}
-                            coordinates={coordinates} location={location}
-                            setCoordinates={setCoordinates} setLocation={setLocation}
-                            setRegion={setRegion} setCountry={setCountry}
-                        />
-                    )}
+          {(selectedSubcategory === "game_console" ||
+            selectedSubcategory === "photo_video") && (
+            <GameConsoleForm
+              title={title}
+              setTitle={setTitle}
+              loading={loading}
+              currency={currency}
+              setCurrency={setCurrency}
+              price={price}
+              setPrice={setPrice}
+              model={model}
+              setModel={setModel}
+              brand={brand}
+              setBrand={setBrand}
+              condition={condition}
+              setCondition={setCondition}
+              phoneNumber={phoneNumber}
+              setPhoneNumber={setPhoneNumber}
+              description={description}
+              setDescription={setDescription}
+              handleFileChange={handleFileChange}
+              photoUrls={photoUrls}
+              handleSubmit={handleSubmit}
+              coordinates={coordinates}
+              location={location}
+              setCoordinates={setCoordinates}
+              setLocation={setLocation}
+              setRegion={setRegion}
+              setCountry={setCountry}
+            />
+          )}
 
-                    {(selectedSubcategory === 'game_console' || selectedSubcategory === 'photo_video') && (
-                        <GameConsoleForm
-                            title={title} setTitle={setTitle}
-                            loading={loading}
-                            currency={currency} setCurrency={setCurrency}
-                            price={price} setPrice={setPrice}
-                            model={model} setModel={setModel}
-                            brand={brand} setBrand={setBrand}
-                            condition={condition} setCondition={setCondition}
-                            phoneNumber={phoneNumber} setPhoneNumber={setPhoneNumber}
-                            description={description} setDescription={setDescription}
-                            handleFileChange={handleFileChange} photoUrls={photoUrls}
-                            handleSubmit={handleSubmit}
-                            coordinates={coordinates} location={location}
-                            setCoordinates={setCoordinates} setLocation={setLocation}
-                            setRegion={setRegion} setCountry={setCountry}
-                        />
-                    )}
+          {selectedSubcategory === "computers" && (
+            <ComputerForm
+              title={title}
+              setTitle={setTitle}
+              loading={loading}
+              currency={currency}
+              setCurrency={setCurrency}
+              country={country}
+              setCountry={setCountry}
+              region={region}
+              setRegion={setRegion}
+              location={location}
+              setLocation={setLocation}
+              price={price}
+              setPrice={setPrice}
+              model={model}
+              setModel={setModel}
+              brand={brand}
+              setBrand={setBrand}
+              type={type}
+              setType={setType}
+              condition={condition}
+              setCondition={setCondition}
+              phoneNumber={phoneNumber}
+              setPhoneNumber={setPhoneNumber}
+              description={description}
+              setDescription={setDescription}
+              handleFileChange={handleFileChange}
+              photoUrls={photoUrls}
+              handleSubmit={handleSubmit}
+              setCoordinates={setCoordinates}
+              coordinates={coordinates}
+            />
+          )}
 
-                    {(selectedSubcategory === 'computers') && (
-                        <ComputerForm
-                            title={title} setTitle={setTitle}
-                            loading={loading}
-                            currency={currency} setCurrency={setCurrency}
-                            country={country} setCountry={setCountry}
-                            region={region} setRegion={setRegion}
-                            location={location} setLocation={setLocation}
-                            price={price} setPrice={setPrice}
-                            model={model} setModel={setModel}
-                            brand={brand} setBrand={setBrand}
-                            type={type} setType={setType}
-                            condition={condition} setCondition={setCondition}
-                            phoneNumber={phoneNumber} setPhoneNumber={setPhoneNumber}
-                            description={description} setDescription={setDescription}
-                            handleFileChange={handleFileChange} photoUrls={photoUrls}
-                            handleSubmit={handleSubmit}
-                            setCoordinates={setCoordinates}
-                            coordinates={coordinates}
-                        />
-                    )}
+          {selectedSubcategory === "computer_accessories" && (
+            <ComputersAccsForm
+              title={title}
+              setTitle={setTitle}
+              loading={loading}
+              currency={currency}
+              setCurrency={setCurrency}
+              country={country}
+              setCountry={setCountry}
+              region={region}
+              setRegion={setRegion}
+              price={price}
+              setPrice={setPrice}
+              model={model}
+              setModel={setModel}
+              brand={brand}
+              setBrand={setBrand}
+              type={type}
+              setType={setType}
+              condition={condition}
+              setCondition={setCondition}
+              phoneNumber={phoneNumber}
+              setPhoneNumber={setPhoneNumber}
+              description={description}
+              setDescription={setDescription}
+              handleFileChange={handleFileChange}
+              photoUrls={photoUrls}
+              handleSubmit={handleSubmit}
+              setCoordinates={setCoordinates}
+              setLocation={setLocation}
+              coordinates={coordinates}
+              location={location}
+            />
+          )}
 
-                    {(selectedSubcategory === 'computer_accessories') && (
-                        <ComputersAccsForm
-                            title={title} setTitle={setTitle}
-                            loading={loading}
-                            currency={currency} setCurrency={setCurrency}
-                            country={country} setCountry={setCountry}
-                            region={region} setRegion={setRegion}
-                            price={price} setPrice={setPrice}
-                            model={model} setModel={setModel}
-                            brand={brand} setBrand={setBrand}
-                            type={type} setType={setType}
-                            condition={condition} setCondition={setCondition}
-                            phoneNumber={phoneNumber} setPhoneNumber={setPhoneNumber}
-                            description={description} setDescription={setDescription}
-                            handleFileChange={handleFileChange} photoUrls={photoUrls}
-                            handleSubmit={handleSubmit}
-                            setCoordinates={setCoordinates} setLocation={setLocation}
-                            coordinates={coordinates} location={location}
-                        />
-                    )}
+          {(selectedSubcategory === "sale_estate" ||
+            selectedSubcategory === "rent_estate") && (
+            <EstateForm
+              title={title}
+              setTitle={setTitle}
+              loading={loading}
+              currency={currency}
+              setCurrency={setCurrency}
+              price={price}
+              setPrice={setPrice}
+              type={type}
+              setType={setType}
+              roomsAmout={roomsAmout}
+              setRoomsAmount={setRoomsAmout}
+              area={area}
+              setArea={setArea}
+              owner={owner}
+              setOwner={setOwner}
+              phoneNumber={phoneNumber}
+              setPhoneNumber={setPhoneNumber}
+              description={description}
+              setDescription={setDescription}
+              handleFileChange={handleFileChange}
+              photoUrls={photoUrls}
+              handleSubmit={handleSubmit}
+              setCoordinates={setCoordinates}
+              setLocation={setLocation}
+              setRegion={setRegion}
+              setCountry={setCountry}
+              coordinates={coordinates}
+              location={location}
+            />
+          )}
 
-                    {(selectedSubcategory === 'sale_estate' || selectedSubcategory === 'rent_estate') && (
-                        <EstateForm title={title} setTitle={setTitle}
-                            loading={loading}
-                            currency={currency} setCurrency={setCurrency}
-                            price={price} setPrice={setPrice}
-                            type={type} setType={setType}
-                            roomsAmout={roomsAmout} setRoomsAmount={setRoomsAmout}
-                            area={area} setArea={setArea}
-                            owner={owner} setOwner={setOwner}
-                            phoneNumber={phoneNumber} setPhoneNumber={setPhoneNumber}
-                            description={description} setDescription={setDescription}
-                            handleFileChange={handleFileChange} photoUrls={photoUrls}
-                            handleSubmit={handleSubmit}
-                            setCoordinates={setCoordinates} setLocation={setLocation}
-                            setRegion={setRegion} setCountry={setCountry}
-                            coordinates={coordinates} location={location}
-                        />
-                    )}
+          {(selectedSubcategory === "refrigerators" ||
+            selectedSubcategory === "washing_machines" ||
+            selectedSubcategory === "vacuum_cleaners" ||
+            selectedSubcategory === "stoves_and_ovens" ||
+            selectedSubcategory === "sewing_equipment" ||
+            selectedSubcategory === "food_preparation" ||
+            selectedSubcategory === "dishwasher") && (
+            <HomeApplianceForm
+              title={title}
+              setTitle={setTitle}
+              loading={loading}
+              currency={currency}
+              setCurrency={setCurrency}
+              brand={brand}
+              setBrand={setBrand}
+              price={price}
+              setPrice={setPrice}
+              condition={condition}
+              setCondition={setCondition}
+              phoneNumber={phoneNumber}
+              setPhoneNumber={setPhoneNumber}
+              description={description}
+              setDescription={setDescription}
+              handleFileChange={handleFileChange}
+              photoUrls={photoUrls}
+              handleSubmit={handleSubmit}
+              setCoordinates={setCoordinates}
+              setLocation={setLocation}
+              setRegion={setRegion}
+              setCountry={setCountry}
+              coordinates={coordinates}
+              location={location}
+            />
+          )}
 
-                    {(selectedSubcategory === 'refrigerators' || selectedSubcategory === 'washing_machines' ||
-                        selectedSubcategory === 'vacuum_cleaners' || selectedSubcategory === 'stoves_and_ovens' ||
-                        selectedSubcategory === 'sewing_equipment' || selectedSubcategory === 'food_preparation' ||
-                        selectedSubcategory === 'dishwasher') && (
-                            <HomeApplianceForm
-                                title={title} setTitle={setTitle}
-                                loading={loading}
-                                currency={currency} setCurrency={setCurrency}
-                                brand={brand} setBrand={setBrand}
-                                price={price} setPrice={setPrice}
-                                condition={condition} setCondition={setCondition}
-                                phoneNumber={phoneNumber} setPhoneNumber={setPhoneNumber}
-                                description={description} setDescription={setDescription}
-                                handleFileChange={handleFileChange} photoUrls={photoUrls}
-                                handleSubmit={handleSubmit}
-                                setCoordinates={setCoordinates} setLocation={setLocation}
-                                setRegion={setRegion} setCountry={setCountry}
-                                coordinates={coordinates} location={location}
-                            />
-                        )}
+          {(selectedSubcategory === "furniture" ||
+            selectedSubcategory === "lighting" ||
+            selectedSubcategory === "dishes" ||
+            selectedSubcategory === "garden_equipment" ||
+            selectedSubcategory === "domestic_cleaning" ||
+            selectedSubcategory === "kitchen_equipment" ||
+            selectedSubcategory === "other_cat" ||
+            selectedSubcategory === "tools" ||
+            selectedSubcategory === "building_materials" ||
+            selectedSubcategory === "heating_and_ventilation" ||
+            selectedSubcategory === "plumbing" ||
+            selectedSubcategory === "electrics" ||
+            selectedSubcategory === "windows" ||
+            selectedSubcategory === "doors" ||
+            selectedSubcategory === "spares" ||
+            selectedSubcategory === "tires_and_wheels" ||
+            selectedSubcategory === "accessories_and_tools" ||
+            selectedSubcategory === "sports_protections" ||
+            selectedSubcategory === "bicycles" ||
+            selectedSubcategory === "scooters" ||
+            selectedSubcategory === "skateboards" ||
+            selectedSubcategory === "hoverboards_and_electric_scooters" ||
+            selectedSubcategory === "ball_games" ||
+            selectedSubcategory === "hunting_and_fishing" ||
+            selectedSubcategory === "tourism_and_outdoor_recreation" ||
+            selectedSubcategory === "billiards_and_bowling" ||
+            selectedSubcategory === "tennis_and_badminton" ||
+            selectedSubcategory === "exercise_equipment_and_fitness" ||
+            selectedSubcategory === "sports_nutrition" ||
+            selectedSubcategory === "water_sports" ||
+            selectedSubcategory === "sapboards" ||
+            selectedSubcategory === "table_games" ||
+            selectedSubcategory === "computer_games" ||
+            selectedSubcategory === "books_n_magazines" ||
+            selectedSubcategory === "tickets" ||
+            selectedSubcategory === "collections" ||
+            selectedSubcategory === "art_materials" ||
+            selectedSubcategory === "music" ||
+            selectedSubcategory === "music_tools") && (
+            <DefaultForm
+              title={title}
+              setTitle={setTitle}
+              loading={loading}
+              currency={currency}
+              setCurrency={setCurrency}
+              price={price}
+              setPrice={setPrice}
+              condition={condition}
+              setCondition={setCondition}
+              phoneNumber={phoneNumber}
+              setPhoneNumber={setPhoneNumber}
+              description={description}
+              setDescription={setDescription}
+              handleFileChange={handleFileChange}
+              photoUrls={photoUrls}
+              handleSubmit={handleSubmit}
+              setCoordinates={setCoordinates}
+              setLocation={setLocation}
+              setRegion={setRegion}
+              setCountry={setCountry}
+              coordinates={coordinates}
+              location={location}
+            />
+          )}
 
-                    {(selectedSubcategory === 'furniture' || selectedSubcategory === 'lighting' ||
-                        selectedSubcategory === 'dishes' || selectedSubcategory === 'garden_equipment' ||
-                        selectedSubcategory === 'domestic_cleaning' || selectedSubcategory === 'kitchen_equipment' ||
-                        selectedSubcategory === 'other_cat' || selectedSubcategory === 'tools' ||
-                        selectedSubcategory === 'building_materials' || selectedSubcategory === 'heating_and_ventilation' ||
-                        selectedSubcategory === 'plumbing' || selectedSubcategory === 'electrics' ||
-                        selectedSubcategory === 'windows' || selectedSubcategory === 'doors' ||
-                        selectedSubcategory === 'spares' || selectedSubcategory === 'tires_and_wheels' ||
-                        selectedSubcategory === 'accessories_and_tools' || selectedSubcategory === 'sports_protections' ||
-                        selectedSubcategory === 'bicycles' || selectedSubcategory === 'scooters' ||
-                        selectedSubcategory === 'skateboards' || selectedSubcategory === 'hoverboards_and_electric_scooters' ||
-                        selectedSubcategory === 'ball_games' || selectedSubcategory === 'hunting_and_fishing' ||
-                        selectedSubcategory === 'tourism_and_outdoor_recreation' || selectedSubcategory === 'billiards_and_bowling' ||
-                        selectedSubcategory === 'tennis_and_badminton' || selectedSubcategory === 'exercise_equipment_and_fitness' ||
-                        selectedSubcategory === 'sports_nutrition' || selectedSubcategory === 'water_sports' ||
-                        selectedSubcategory === 'sapboards' || selectedSubcategory === 'table_games' ||
-                        selectedSubcategory === 'computer_games' || selectedSubcategory === 'books_n_magazines' ||
-                        selectedSubcategory === 'tickets' || selectedSubcategory === 'collections' ||
-                        selectedSubcategory === 'art_materials' || selectedSubcategory === 'music' ||
-                        selectedSubcategory === 'music_tools') && (
-                            <DefaultForm
-                                title={title} setTitle={setTitle}
-                                loading={loading}
-                                currency={currency} setCurrency={setCurrency}
-                                price={price} setPrice={setPrice}
-                                condition={condition} setCondition={setCondition}
-                                phoneNumber={phoneNumber} setPhoneNumber={setPhoneNumber}
-                                description={description} setDescription={setDescription}
-                                handleFileChange={handleFileChange} photoUrls={photoUrls}
-                                handleSubmit={handleSubmit}
-                                setCoordinates={setCoordinates} setLocation={setLocation}
-                                setRegion={setRegion} setCountry={setCountry}
-                                coordinates={coordinates} location={location}
-                            />
-                        )}
-
-                    {(selectedSubcategory === 'education' || selectedSubcategory === 'handyman' ||
-                        selectedSubcategory === 'beauty_and_health' || selectedSubcategory === 'transportation' ||
-                        selectedSubcategory === 'repair_and_construction' || selectedSubcategory === 'computer_services' ||
-                        selectedSubcategory === 'business_services' || selectedSubcategory === 'cleaning' ||
-                        selectedSubcategory === 'automotive_services' || selectedSubcategory === 'appliance_repair' ||
-                        selectedSubcategory === 'event_planning' || selectedSubcategory === 'photography_and_videography' ||
-                        selectedSubcategory === 'custom_manufacturing' || selectedSubcategory === 'pet_care' ||
-                        selectedSubcategory === 'car_seats' || selectedSubcategory === 'health_and_care' ||
-                        selectedSubcategory === 'toys_and_games' || selectedSubcategory === 'strollers' ||
-                        selectedSubcategory === 'feeding_and_nutrition' || selectedSubcategory === 'bathing' ||
-                        selectedSubcategory === 'nursery' || selectedSubcategory === 'diapers_and_potties' ||
-                        selectedSubcategory === 'baby_monitors' || selectedSubcategory === 'maternity_products' ||
-                        selectedSubcategory === 'schoold_supplies' || selectedSubcategory === 'makeup' ||
-                        selectedSubcategory === 'manicure_and_pedicure' || selectedSubcategory === 'healthcare_products' ||
-                        selectedSubcategory === 'perfume' || selectedSubcategory === 'skincare' ||
-                        selectedSubcategory === 'haircare' || selectedSubcategory === 'tattoos_and_tatooing' ||
-                        selectedSubcategory === 'tanning_and_sunbeds' || selectedSubcategory === 'personal_hygiene_products') && (
-                            <DefaultFormWithoutCondition
-                                title={title} setTitle={setTitle}
-                                loading={loading}
-                                currency={currency} setCurrency={setCurrency}
-                                price={price} setPrice={setPrice}
-                                phoneNumber={phoneNumber} setPhoneNumber={setPhoneNumber}
-                                description={description} setDescription={setDescription}
-                                handleFileChange={handleFileChange} photoUrls={photoUrls}
-                                handleSubmit={handleSubmit}
-                                setCoordinates={setCoordinates} setLocation={setLocation}
-                                setRegion={setRegion} setCountry={setCountry}
-                                coordinates={coordinates} location={location}
-                            />
-                        )}
-
-                </Form>
-            </Container>
-
-        </div>
-    );
-}
+          {(selectedSubcategory === "education" ||
+            selectedSubcategory === "handyman" ||
+            selectedSubcategory === "beauty_and_health" ||
+            selectedSubcategory === "transportation" ||
+            selectedSubcategory === "repair_and_construction" ||
+            selectedSubcategory === "computer_services" ||
+            selectedSubcategory === "business_services" ||
+            selectedSubcategory === "cleaning" ||
+            selectedSubcategory === "automotive_services" ||
+            selectedSubcategory === "appliance_repair" ||
+            selectedSubcategory === "event_planning" ||
+            selectedSubcategory === "photography_and_videography" ||
+            selectedSubcategory === "custom_manufacturing" ||
+            selectedSubcategory === "pet_care" ||
+            selectedSubcategory === "car_seats" ||
+            selectedSubcategory === "health_and_care" ||
+            selectedSubcategory === "toys_and_games" ||
+            selectedSubcategory === "strollers" ||
+            selectedSubcategory === "feeding_and_nutrition" ||
+            selectedSubcategory === "bathing" ||
+            selectedSubcategory === "nursery" ||
+            selectedSubcategory === "diapers_and_potties" ||
+            selectedSubcategory === "baby_monitors" ||
+            selectedSubcategory === "maternity_products" ||
+            selectedSubcategory === "schoold_supplies" ||
+            selectedSubcategory === "makeup" ||
+            selectedSubcategory === "manicure_and_pedicure" ||
+            selectedSubcategory === "healthcare_products" ||
+            selectedSubcategory === "perfume" ||
+            selectedSubcategory === "skincare" ||
+            selectedSubcategory === "haircare" ||
+            selectedSubcategory === "tattoos_and_tatooing" ||
+            selectedSubcategory === "tanning_and_sunbeds" ||
+            selectedSubcategory === "personal_hygiene_products") && (
+            <DefaultFormWithoutCondition
+              title={title}
+              setTitle={setTitle}
+              loading={loading}
+              currency={currency}
+              setCurrency={setCurrency}
+              price={price}
+              setPrice={setPrice}
+              phoneNumber={phoneNumber}
+              setPhoneNumber={setPhoneNumber}
+              description={description}
+              setDescription={setDescription}
+              handleFileChange={handleFileChange}
+              photoUrls={photoUrls}
+              handleSubmit={handleSubmit}
+              setCoordinates={setCoordinates}
+              setLocation={setLocation}
+              setRegion={setRegion}
+              setCountry={setCountry}
+              coordinates={coordinates}
+              location={location}
+            />
+          )}
+        </Form>
+      </Container>
+    </div>
+  );
+};
