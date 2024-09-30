@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from "react";
+import React, { useState, useCallback, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Form, Input, InputNumber, Button, Select, Image, Upload, AutoComplete, Spin } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
@@ -350,6 +350,16 @@ const ClothesForm = ({
         setPreviewOpen(true);
     };
 
+    const [availableSizes, setAvailableSizes] = useState([]);
+
+    useEffect(() => {
+        if (type === 'shoes') {
+            setAvailableSizes(['3.5', '4', '5', '5.5', '6', '6.5', '7', '7.5', '8', '8.5', '9', '9.5', '10', '10.5', '11', '12', '12.5', '13', '13.5', '14', '14.5', '15', '15.5', '16']);
+        } else {
+            setAvailableSizes(['XXS', 'XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL', '4XL', '5XL']);
+        }
+    }, [type]);
+
     const handleChange = ({ fileList }) => setFileList(fileList);
 
     const fetchSuggestions = async (value) => {
@@ -374,7 +384,7 @@ const ClothesForm = ({
                 const places = data.places;
                 if (places && places.length > 0) {
                     setOptions(places.map(place => ({
-                        label: place.formattedAddress,  // Extract text from displayName object
+                        label: place.formattedAddress,
                         value: place.formattedAddress,
                         address_components: place.addressComponents,
                         f: place.location
@@ -504,7 +514,7 @@ const ClothesForm = ({
                     </Form.Item>
                     <Form.Item
                         label={t('price')}
-                        name='prie'
+                        name='price'
                         rules={[
                             { required: true, message: 'Please input the price!' },
                             {
@@ -528,16 +538,9 @@ const ClothesForm = ({
                         rules={[{ required: true, message: 'Please select the size!' }]}
                     >
                         <Select value={size} onChange={(value) => setSize(value)}>
-                            <Option value="XXS">XXS</Option>
-                            <Option value="XS">XS</Option>
-                            <Option value="S">S</Option>
-                            <Option value="M">M</Option>
-                            <Option value="L">L</Option>
-                            <Option value="XL">XL</Option>
-                            <Option value="XXL">XXL</Option>
-                            <Option value="XXXL">XXXL</Option>
-                            <Option value="4XL">4XL</Option>
-                            <Option value="5XL">5XL</Option>
+                            {availableSizes.map(size => (
+                                <Option key={size} value={size}>{size}</Option>
+                            ))}
                         </Select>
                     </Form.Item>
                     <Form.Item label={t('brand')}>

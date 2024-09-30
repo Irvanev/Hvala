@@ -811,6 +811,16 @@ function EditItem() {
         }
     }
 
+    const [availableSizes, setAvailableSizes] = useState([]);
+
+    useEffect(() => {
+        if (type === 'shoes') {
+            setAvailableSizes(['3.5', '4', '5', '5.5', '6', '6.5', '7', '7.5', '8', '8.5', '9', '9.5', '10', '10.5', '11', '12', '12.5', '13', '13.5', '14', '14.5', '15', '15.5', '16']);
+        } else {
+            setAvailableSizes(['XXS', 'XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL', '4XL', '5XL']);
+        }
+    }, [type]);
+
     const getForm = () => {
         switch (subcategory) {
             case 'mens_clothing':
@@ -850,21 +860,14 @@ function EditItem() {
                                 <InputNumber style={{ width: '100%' }} defaultValue={price} addonBefore={selectAfter} onChange={(value) => setPrice(parseInt(value, 10))} />
                             </Form.Item>
                             <Form.Item
-                                className="mb-3"
                                 label={t('size')}
+                                name="size"
+                                rules={[{ required: true, message: 'Please select the size!' }]}
                             >
                                 <Select value={size} onChange={(value) => setSize(value)}>
-                                    <Option value="">{t('size')}</Option>
-                                    <Option value="XXS">XXS</Option>
-                                    <Option value="XS">XS</Option>
-                                    <Option value="S">S</Option>
-                                    <Option value="M">M</Option>
-                                    <Option value="L">L</Option>
-                                    <Option value="XL">XL</Option>
-                                    <Option value="XXL">XXL</Option>
-                                    <Option value="XXXL">XXXL</Option>
-                                    <Option value="4XL">4XL</Option>
-                                    <Option value="5XL">5XL</Option>
+                                    {availableSizes.map(size => (
+                                        <Option key={size} value={size}>{size}</Option>
+                                    ))}
                                 </Select>
                             </Form.Item>
                             <Form.Item

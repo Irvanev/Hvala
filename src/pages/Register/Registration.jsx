@@ -16,6 +16,7 @@ import {
   query,
   where,
   getDocs,
+  addDoc
 } from "firebase/firestore";
 import { useHistory, Link } from "react-router-dom";
 import { MyNavbar } from "../../components/Navbar/Navbar";
@@ -98,6 +99,19 @@ export const Registration = () => {
         email: email,
         id: user.uid,
       });
+
+      await addDoc(collection(db, "message"), {
+        from_avatar: "",
+        from_name: username,
+        from_uid: user.uid,
+        last_msg:"",
+        last_time: serverTimestamp(),
+        msg_num: 0,
+        to_avatar: "https://firebasestorage.googleapis.com/v0/b/hvala-2c8a4.appspot.com/o/avatars%2Fhpdpgwmqdy688id.jpg?alt=media&token=bbd54fdc-6c39-46dd-9292-7f778e54584d",
+        to_name: "Chat-helper",
+        to_uid:"rT133kD5FROrwnXIweP3crx1S1Y2"
+      });
+
     } catch (error) {
       alert(error.message);
     }
