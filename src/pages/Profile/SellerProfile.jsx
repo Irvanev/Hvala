@@ -28,6 +28,8 @@ const SellerProfile = () => {
   const from_uid = auth.currentUser ? auth.currentUser.uid : null;
   const [userMe, setUserMe] = useState(null);
 
+  const [searchText, setSearchText] = useState('');
+
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
 
@@ -299,6 +301,14 @@ const SellerProfile = () => {
     }
   }
 
+  const handleSearchChange = (event) => {
+    setSearchText(event.target.value);
+  };
+
+  const filteredAdsBySearch = filteredAds.filter(advertisment =>
+    advertisment.title.toLowerCase().includes(searchText.toLowerCase())
+  );
+
   return (
     <div>
       <style type="text/css">
@@ -314,6 +324,10 @@ const SellerProfile = () => {
                       border-radius: 50%;
                       width: 100px;
                       height: 100px;
+                  }
+                  .profile-name {
+                    text-align: center;
+                    margin-top: 60px;
                   }
                   @media (max-width: 1000px) {
                       body {
@@ -380,7 +394,7 @@ const SellerProfile = () => {
                 style={{
                   position: 'absolute',
                   bottom: '-5rem',
-                  left: '4rem',
+                  left: '5rem',
                   borderRadius: '50%',
                   border: '3px solid white',
                   width: '12.5em',
@@ -480,14 +494,20 @@ const SellerProfile = () => {
             )}
           </div>
           <div className="w-3/4">
-            <div className="container album mt-3">
-              <div className="d-flex align-items-center mt-3 mb-3">
-                <CustomDropdown categories={categories} onCategorySelect={handleCategorySelect} />
-                <InputSearch placeholder={t('search')} width='100%' height='40px' />
-              </div>
-              <Row xs={2} sm={2} md={3} lg={3} className="g-3" id="cardAds">
-                {filteredAds.map((advertisment, index) => (
-                  <Col>
+          <div className="container album mt-3">
+            <div className="d-flex align-items-center mt-3 mb-3">
+              <CustomDropdown categories={categories} onCategorySelect={handleCategorySelect} />
+              <InputSearch
+                placeholder={t('search')}
+                width='100%'
+                height='40px'
+                value={searchText}
+                onChange={handleSearchChange}
+              />
+            </div>
+            <Row xs={2} sm={2} md={3} lg={3} className="g-3" id="cardAds">
+              {filteredAdsBySearch.map((advertisment, index) => (
+                <Col key={index}>
                   <CustomCard
                     id={advertisment.id}
                     user={user}
@@ -501,9 +521,9 @@ const SellerProfile = () => {
                     status="active"
                   />
                 </Col>
-                ))}
-              </Row>
-            </div>
+              ))}
+            </Row>
+          </div>
           </div>
         </div>
       </div>
@@ -643,8 +663,15 @@ const SellerProfile = () => {
               <div className="d-flex justify-center mt-3 mb-3">
                 <CustomDropdown categories={categories} onCategorySelect={handleCategorySelect} />
               </div>
-              <Row xs={2} sm={2} className="g-3" id="cardAds">
-                {filteredAds.map((advertisment, index) => (
+              <InputSearch
+                placeholder={t('search')}
+                width='100%'
+                height='40px'
+                value={searchText}
+                onChange={handleSearchChange}
+              />
+              <Row xs={2} sm={2} className="g-3 mt-3" id="cardAds">
+                {filteredAdsBySearch.map((advertisment, index) => (
                   <Col>
                     <CustomCard
                       id={advertisment.id}
