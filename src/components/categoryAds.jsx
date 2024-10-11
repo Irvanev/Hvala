@@ -6,9 +6,9 @@ import Logo from '../assets/new_logo.png'
 import { useTranslation } from 'react-i18next';
 
 import banner from "../assets/New_Hvala_2_0.png"
-import SearchAuto from './SearchAuto';
+import InputSearch from './input-search/InputSearch';
 
-const Categories = () => {
+const CategoriesAds = ({handleSearchChange, searchText}) => {
   const { t } = useTranslation();
 
   const items = [
@@ -143,10 +143,12 @@ const Categories = () => {
               <img src={Logo} alt='logo' style={{ width: '100px', height: 'auto' }}></img>
             </a>
           </div>
-          <SearchAuto
+          <InputSearch
                 placeholder={t('search')}
                 width='100%'
                 height='40px'
+                value={searchText}
+                onChange={handleSearchChange}
               />
           <Dropdown
             menu={{
@@ -177,10 +179,12 @@ const Categories = () => {
               </Button>
             </a>
           </Dropdown>
-          <SearchAuto
+          <InputSearch
                 placeholder={t('search')}
                 width='100%'
                 height='40px'
+                value={searchText}
+                onChange={handleSearchChange}
               />
         </div>
         <div className='container'>
@@ -191,4 +195,4 @@ const Categories = () => {
   );
 };
 
-export default Categories;
+export default CategoriesAds;

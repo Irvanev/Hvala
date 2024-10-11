@@ -25,6 +25,8 @@ import Categories from "../../components/category";
 import styles from "./Container.module.css";
 import CustomCard from "../../components/card/CustomCard";
 import { Helmet } from "react-helmet";
+import InputSearch from "../../components/input-search/InputSearch";
+import CategoriesAds from "../../components/categoryAds";
 
 export const CategoryAdvertisments = () => {
   const { category } = useParams();
@@ -1026,6 +1028,15 @@ export const CategoryAdvertisments = () => {
   const description = getDescription(category);
   const keywords = getKeywords(category);
   const url = getUrl(category);
+  
+
+  const handleSearchChange = (event) => {
+    setSearchText(event.target.value);
+  };
+
+  const filteredAdsBySearch = filteredAdvertisements.filter(advertisment =>
+    advertisment.title.toLowerCase().includes(searchText.toLowerCase())
+  );
 
   return (
     <div>
@@ -1083,7 +1094,7 @@ export const CategoryAdvertisments = () => {
         />
       </Helmet>
 
-      <Categories setSearchText={setSearchText} options={options} />
+      <CategoriesAds handleSearchChange={handleSearchChange} searchText={searchText}/>
 
       <Container>
         <Row>
