@@ -393,61 +393,210 @@ const ClothesForm = ({
     const debounceFetchSuggestions = debounce(fetchSuggestions, 300);
 
     const handleSelect = async (value) => {
-        const selectedPlace = options.find(option => option.value === value);
-        console.log(selectedPlace);
-        console.log('here')
-        if (selectedPlace) {
-            const longitude = selectedPlace.f.longitude;
-            const latitude = selectedPlace.f.latitude;
-            if (latitude !== undefined && longitude !== undefined) {
-                const newCoordinates = {
-                    lat: parseFloat(latitude),
-                    lng: parseFloat(longitude),
-                };
-                const geoPoint = new GeoPoint(newCoordinates.lat, newCoordinates.lng);
-                setCoordinates(geoPoint);
-                setLocation(value);
+    const selectedPlace = options.find(option => option.value === value);
+    if (selectedPlace) {
+        const { longitude, latitude } = selectedPlace.f;
+        if (latitude !== undefined && longitude !== undefined) {
+            const newCoordinates = {
+                lat: parseFloat(latitude),
+                lng: parseFloat(longitude),
+            };
+            const geoPoint = new GeoPoint(newCoordinates.lat, newCoordinates.lng);
+            setCoordinates(geoPoint);
+            setLocation(value);
 
-                if (mapRef.current) {
-                    mapRef.current.panTo(newCoordinates);
+            if (mapRef.current) {
+                mapRef.current.panTo(newCoordinates);
+            }
+
+            try {
+                const geocodeData = await fetchGeocodingData(newCoordinates.lat, newCoordinates.lng);
+                if (geocodeData) {
+                    const { country, region } = extractCountryAndRegion(geocodeData);
+                    setCountry(getCountryKey(country));
+                    setRegion(getRegionKey(region));
+                    console.log('Country:', getCountryKey(country));
+                    console.log('Region:', getRegionKey(region));
+                } else {
+                    console.warn('Geocoding API не вернул данных.');
                 }
+            } catch (error) {
+                console.error('Ошибка при вызове Geocoding API:', error);
+            }
+        } else {
+            console.error('Invalid coordinates received:', selectedPlace);
+        }
+    }
+};
 
-                let country = '';
-                let region = '';
-                const addressComponents = selectedPlace.address_components;
+const fetchGeocodingData = async (lat, lng) => {
+    const apiKey = 'AIzaSyA0JYzidakTvQYEe0pS50vshlex2Q4jg4g';
+    const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${apiKey}`;
+    
+    const response = await fetch(url);
+    if (response.status === 200) {
+        const data = await response.json();
+        if (data.status === 'OK' && data.results.length > 0) {
+            return data.results[0];
+        }
+    }
+    return null;
+};
 
-                if (addressComponents.length >= 6) {
-                    country = addressComponents[5]?.longText || '';
-                    region = addressComponents[4]?.longText || '';
-                } else if (addressComponents.length >= 5) {
-                    country = addressComponents[4]?.longText || '';
-                    region = addressComponents[3]?.longText || '';
-                } else if (addressComponents.length >= 4) {
-                    country = addressComponents[3]?.longText || '';
-                    region = addressComponents[2]?.longText || '';
-                } else if (addressComponents.length >= 3) {
-                    country = addressComponents[2]?.longText || '';
-                    region = addressComponents[1]?.longText || '';
-                } else if (addressComponents.length >= 2) {
-                    country = addressComponents[1]?.longText || '';
-                    region = addressComponents[0]?.longText || '';
+const regionMapping = {
+    // Войводина
+    "severni banat": "vojvodina",
+    "severni banat okrug": "vojvodina",
+    "srednji banat": "vojvodina",
+    "srednji banat okrug": "vojvodina",
+    "južni banat": "vojvodina",
+    "južni banat okrug": "vojvodina",
+    "južnobački": "vojvodina",
+    "južnobački okrug": "vojvodina",
+    "zapadnobački": "vojvodina",
+    "zapadnobački okrug": "vojvodina",
+    "srem": "vojvodina",
+    "srem okrug": "vojvodina",
+    "sremski okrug": "vojvodina",
+    
+    // Белград
+    "belgrade": "belgrade",
+    "belgrade okrug": "belgrade",
+    "belgrade district": "belgrade",
+    "белград": "belgrade",
+    "београд": "belgrade",
+    "град београд": "belgrade",
+    
+    // Шумадия и Западная Сербия
+    "mačvanski": "sumadija_and_western_serbia",
+    "mačvanski okrug": "sumadija_and_western_serbia",
+    "мачвански": "sumadija_and_western_serbia",
+    "мачвански округ": "sumadija_and_western_serbia",
+    "kolubarski": "sumadija_and_western_serbia",
+    "kolubarski okrug": "sumadija_and_western_serbia",
+    "колубарски": "sumadija_and_western_serbia",
+    "колубарски округ": "sumadija_and_western_serbia",
+    "podunavski": "sumadija_and_western_serbia",
+    "podunavski okrug": "sumadija_and_western_serbia",
+    "подунавски": "sumadija_and_western_serbia",
+    "подунавски округ": "sumadija_and_western_serbia",
+    "pomoravski": "sumadija_and_western_serbia",
+    "pomoravski okrug": "sumadija_and_western_serbia",
+    "поморавски": "sumadija_and_western_serbia",
+    "поморавски округ": "sumadija_and_western_serbia",
+    "rasinski": "sumadija_and_western_serbia",
+    "rasinski okrug": "sumadija_and_western_serbia",
+    "расински": "sumadija_and_western_serbia",
+    "расински округ": "sumadija_and_western_serbia",
+    "braničevo": "sumadija_and_western_serbia",
+    "braničevo okrug": "sumadija_and_western_serbia",
+    "браничево": "sumadija_and_western_serbia",
+    "браничево округ": "sumadija_and_western_serbia",
+    "jablanica": "sumadija_and_western_serbia",
+    "jablanica okrug": "sumadija_and_western_serbia",
+    "јабланица": "sumadija_and_western_serbia",
+    "јабланица округ": "sumadija_and_western_serbia",
+    "zlatiborski": "sumadija_and_western_serbia",
+    "zlatiborski okrug": "sumadija_and_western_serbia",
+    "златиборски": "sumadija_and_western_serbia",
+    "златиборски округ": "sumadija_and_western_serbia",
+    "moravički": "sumadija_and_western_serbia",
+    "moravički okrug": "sumadija_and_western_serbia",
+    "моравички": "sumadija_and_western_serbia",
+    "моравички округ": "sumadija_and_western_serbia",
+    "šumadijski": "sumadija_and_western_serbia",
+    "šumadijski okrug": "sumadija_and_western_serbia",
+    "шумадијски": "sumadija_and_western_serbia",
+    "шумадијски округ": "sumadija_and_western_serbia",
+    "bor": "sumadija_and_western_serbia",
+    "bor okrug": "sumadija_and_western_serbia",
+    "бор": "sumadija_and_western_serbia",
+    "бор округ": "sumadija_and_western_serbia",
+    
+    // Южная и Восточная Сербия
+    "nišava": "southern_and_eastern_serbia",
+    "nišava okrug": "southern_and_eastern_serbia",
+    "nišavski": "southern_and_eastern_serbia",
+    "nišavski okrug": "southern_and_eastern_serbia",
+    "нишава": "southern_and_eastern_serbia",
+    "нишава округ": "southern_and_eastern_serbia",
+    "нишавски": "southern_and_eastern_serbia",
+    "нишавски округ": "southern_and_eastern_serbia",
+    "toplički": "southern_and_eastern_serbia",
+    "toplički okrug": "southern_and_eastern_serbia",
+    "топлички": "southern_and_eastern_serbia",
+    "топлички округ": "southern_and_eastern_serbia",
+    "pirotski": "southern_and_eastern_serbia",
+    "pirotski okrug": "southern_and_eastern_serbia",
+    "пиротски": "southern_and_eastern_serbia",
+    "пиротски округ": "southern_and_eastern_serbia",
+    "pčinjski": "southern_and_eastern_serbia",
+    "pčinjski okrug": "southern_and_eastern_serbia",
+    "пчиниски": "southern_and_eastern_serbia",
+    "пчиниски округ": "southern_and_eastern_serbia",
+    
+    // Косово и Метохия
+    "kosovo and metohija": "kosovo_and_metohija",
+    "kosovo and metohija okrug": "kosovo_and_metohija",
+    "косово и метохия": "kosovo_and_metohija",
+    "косово и метохия округ": "kosovo_and_metohija",
+    "kosovski": "kosovo_and_metohija",
+    "kosovski okrug": "kosovo_and_metohija",
+    "косовски": "kosovo_and_metohija",
+    "косовски округ": "kosovo_and_metohija"
+};
+
+function getSerbianRegionKey(string) {
+    const normalizedString = string.toLowerCase();
+
+    // Удаляем слово "okrug" или "округ" из строки для упрощения сопоставления
+    const cleanedString = normalizedString.replace(/\bokrug\b|\bокруг\b/g, '').trim();
+    console.log(cleanedString + "aboba");
+    console.log("hyyufgeyffe");
+    if (regionMapping[cleanedString]) {
+        return regionMapping[cleanedString];
+    }
+
+    return "unknown_region";
+}
+
+const extractCountryAndRegion = (geocodeResult) => {
+    let country = '';
+    let region = '';
+
+    // First pass to extract the country
+    geocodeResult.address_components.forEach(component => {
+        if (component.types.includes('country')) {
+            country = component.long_name;
+        }
+    });
+
+    console.log("Country extracted:", country); // For debugging
+
+    // Second pass to extract the region
+    geocodeResult.address_components.forEach(component => {
+        if (component.types.includes('administrative_area_level_1') || component.types.includes('administrative_area_level_2')) {
+            region = component.long_name;
+            console.log("Region before mapping:", region);
+            console.log(`Country includes 'Сербия': ${country.includes('Сербия')}`);
+
+            if (country.includes('Сербия') || country.includes('Serbia') || country.includes('Србиja')) {
+                console.log("Mapping region for Serbia");
+                const mappedRegion = getSerbianRegionKey(region);
+                console.log("Mapped Region:", mappedRegion);
+                if (mappedRegion !== "unknown_region") {
+                    region = mappedRegion;
                 }
-
-                console.log(addressComponents)
-                console.log(country);
-                console.log(region);
-                console.log(value);
-                console.log(newCoordinates);
-                console.log('----');
-
-                setCountry(getCountryKey(country));
-                setRegion(getRegionKey(region));
-
-            } else {
-                console.error('Invalid coordinates received:', selectedPlace);
             }
         }
-    };
+    });
+
+    return { country, region };
+};
+
+
+
+
 
     const selectAfter = (
         <Select defaultValue={t('currency')} style={{ width: 120 }} onChange={(value) => setCurrency(value)}>
