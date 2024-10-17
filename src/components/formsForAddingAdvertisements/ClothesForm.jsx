@@ -43,39 +43,132 @@ function getCountryKey(string) {
 
 
     function getRegionKey(string) {
-        if (string.includes("Unsko-sanski") || string.includes("Унско-Санский") || string.includes("Уна-Санский") || string.includes("Una-Sana")) {
+        if (
+            string.toLowerCase().includes("unsko-sanski") || 
+            string.toLowerCase().includes("унско-санский") || 
+            string.toLowerCase().includes("уна-санский") || 
+            string.toLowerCase().includes("una-sana") || 
+            string.toLowerCase().includes("унско-сански") || 
+            string.toLowerCase().includes("unsko-sanski kanton")
+        ) {
             return "una_sana_canton";
-        } else if (string.includes("Posavina") || string.includes("Посавский")) {
+        } else if (
+            string.toLowerCase().includes("posavina") || 
+            string.toLowerCase().includes("посавский") || 
+            string.toLowerCase().includes("посавина кантон") || 
+            string.toLowerCase().includes("посавски кантон") || 
+            string.toLowerCase().includes("posavski kanton")
+        ) {
             return "posavina_canton";
-        } else if (string.includes("Tuzla") || string.includes("Тузланский")) {
+        } else if (
+            string.toLowerCase().includes("tuzla") || 
+            string.toLowerCase().includes("тузланский") || 
+            string.toLowerCase().includes("тузла кантон") || 
+            string.toLowerCase().includes("тузлански кантон") || 
+            string.toLowerCase().includes("tuzlanski kanton")
+        ) {
             return "tuzla_canton";
-        } else if (string.includes("Zenica-Doboj") || string.includes("Зеничко-Добойский")) {
+        } else if (
+            string.toLowerCase().includes("zenica-doboj") || 
+            string.toLowerCase().includes("зеничко-добойский") || 
+            string.toLowerCase().includes("зеница-добой кантон") || 
+            string.toLowerCase().includes("зеничко-добојски кантон") || 
+            string.toLowerCase().includes("zeničko-dobojski kanton")
+        ) {
             return "zenica_doboj_canton";
-        } else if (string.includes("Bosnian-Podrinje") || string.includes("Боснийско-Подринский")) {
+        } else if (
+            string.toLowerCase().includes("bosnian-podrinje") || 
+            string.toLowerCase().includes("боснийско-подринский") || 
+            string.toLowerCase().includes("боснийско-подринье кантон") || 
+            string.toLowerCase().includes("босанско-подрињски кантон") || 
+            string.toLowerCase().includes("bosansko-podrinjski kanton")
+        ) {
             return "bosnian_podrinje_canton_gorazde";
-        } else if (string.includes("Central Bosnia") || string.includes("Центрально-Боснийский")) {
+        } else if (
+            string.toLowerCase().includes("central bosnia") || 
+            string.toLowerCase().includes("центрально-боснийский") || 
+            string.toLowerCase().includes("центральная босния кантон") || 
+            string.toLowerCase().includes("средњобосански кантон") || 
+            string.toLowerCase().includes("srednjobosanski kanton")
+        ) {
             return "central_bosnia_canton";
-        } else if (string.includes("Herzegovina-Neretva") || string.includes("Герцеговинско-Неретванский")) {
+        } else if (
+            string.toLowerCase().includes("herzegovina-neretva") || 
+            string.toLowerCase().includes("герцеговино-неретвенский") || 
+            string.toLowerCase().includes("герцеговино-неретвенский кантон") || 
+            string.toLowerCase().includes("херцеговачко-неретвански кантон") || 
+            string.toLowerCase().includes("hercegovačko-neretvanski kanton")
+        ) {
             return "herzegovina_neretva_canton";
-        } else if (string.includes("West Herzegovina") || string.includes("Западно-Герцеговинский")) {
+        } else if (
+            string.toLowerCase().includes("west herzegovina") || 
+            string.toLowerCase().includes("западно-герцеговинский") || 
+            string.toLowerCase().includes("западная герцеговина кантон") || 
+            string.toLowerCase().includes("западнохерцеговачки кантон") || 
+            string.toLowerCase().includes("zapadnohercegovački kanton")
+        ) {
             return "west_herzegovina_canton";
-        } else if (string.includes("Sarajevo") || string.includes("Кантон Сараево")) {
+        } else if (
+            string.toLowerCase().includes("sarajevo") || 
+            string.toLowerCase().includes("кантон сараево") || 
+            string.toLowerCase().includes("сараевский кантон") || 
+            string.toLowerCase().includes("сарајевски кантон") || 
+            string.toLowerCase().includes("sarajevski kanton")
+        ) {
             return "sarajevo_canton";
-        } else if (string.includes("Banja Luka") || string.includes("Баня-Лука")) {
+        } else if (
+            string.toLowerCase().includes("banja luka") || 
+            string.toLowerCase().includes("баня-лука") || 
+            string.toLowerCase().includes("бања лука") || 
+            string.toLowerCase().includes("banja luka")
+        ) {
             return "banja_luka";
-        } else if (string.includes("Bijeljina") || string.includes("Биелина")) {
+        } else if (
+            string.toLowerCase().includes("bijeljina") || 
+            string.toLowerCase().includes("биелина") || 
+            string.toLowerCase().includes("бијељина") || 
+            string.toLowerCase().includes("bijeljina")
+        ) {
             return "bijeljina";
-        } else if (string.includes("Doboj") || string.includes("Добой")) {
+        } else if (
+            string.toLowerCase().includes("doboj") || 
+            string.toLowerCase().includes("добой") || 
+            string.toLowerCase().includes("добој")
+        ) {
             return "doboj";
-        } else if (string.includes("Prijedor") || string.includes("Прийедор")) {
+        } else if (
+            string.toLowerCase().includes("prijedor") || 
+            string.toLowerCase().includes("прийедор") || 
+            string.toLowerCase().includes("приједор") || 
+            string.toLowerCase().includes("prijedor")
+        ) {
             return "prijedor";
-        } else if (string.includes("Istočno Sarajevo") || string.includes("Источно Сараево")) {
+        } else if (
+            string.toLowerCase().includes("istočno sarajevo") || 
+            string.toLowerCase().includes("источно сараево") || 
+            string.toLowerCase().includes("источно сарајево") || 
+            string.toLowerCase().includes("istočno sarajevo")
+        ) {
             return "istocno_sarajevo";
-        } else if (string.includes("Trebinje") || string.includes("Требинье")) {
+        } else if (
+            string.toLowerCase().includes("trebinje") || 
+            string.toLowerCase().includes("требинье") || 
+            string.toLowerCase().includes("требиње") || 
+            string.toLowerCase().includes("trebinje")
+        ) {
             return "trebinje";
-        } else if (string.includes("Brčko") || string.includes("Брчко")) {
+        } else if (
+            string.toLowerCase().includes("brčko") || 
+            string.toLowerCase().includes("брчко") || 
+            string.toLowerCase().includes("brcko")
+        ) {
             return "brcko";
-        } else if (string.includes("Canton 10") || string.includes("Кантон 10")) {
+        } else if (
+            string.toLowerCase().includes("canton 10") || 
+            string.toLowerCase().includes("кантон 10") || 
+            string.toLowerCase().includes("кантон десет") || 
+            string.toLowerCase().includes("kanton 10")
+        ) {
             return "canton_10";
         } else if (string.includes("Podgorica") || string.includes("Подгорица")) {
             if (string.includes("Municipality")) {
@@ -169,47 +262,47 @@ function getCountryKey(string) {
             return "sumadija_district";
         } else if (string.includes("Jablanica District") || string.includes("Jablanica") || string.includes("Ябланичский") || string.includes("Јабланички")) {
             return "jablanica_district";
-        } else if (string.includes("Zagreb City") || string.includes("Град Загреб")) {
-            return "zagreb_city";
-        } else if (string.includes("Zagreb County") || string.includes("Загребская")) {
+        } else if (string.toLowerCase().includes("zagreb city") || string.toLowerCase().includes("град загреб") || string.toLowerCase().includes("загреб") || string.toLowerCase().includes("zagreb")) {
+        return "zagreb_city";
+        } else if (string.toLowerCase().includes("zagrebačka županija") || string.toLowerCase().includes("загребская")) {
             return "zagreb_county";
-        } else if (string.includes("Split-Dalmatia") || string.includes("Сплитско-Далматинская")) {
+        } else if (string.toLowerCase().includes("splitsko-dalmatinska županija") || string.toLowerCase().includes("сплитско-далматинская")) {
             return "split_dalmatia";
-        } else if (string.includes("Istria") || string.includes("Истарская")) {
+        } else if (string.toLowerCase().includes("istarska županija") || string.toLowerCase().includes("истарская")) {
             return "istria";
-        } else if (string.includes("Primorje-Gorski Kotar") || string.includes("Приморско-Горанская")) {
+        } else if (string.toLowerCase().includes("primorsko-goranska županija") || string.toLowerCase().includes("приморско-горанская")) {
             return "primorje_gorski_kotar";
-        } else if (string.includes("Lika-Senj") || string.includes("Лика-Сень")) {
+        } else if (string.toLowerCase().includes("ličko-senjska županija") || string.toLowerCase().includes("лика-сень")) {
             return "lika_senj";
-        } else if (string.includes("Virovitica-Podravina") || string.includes("Вировитицко-Подравская")) {
+        } else if (string.toLowerCase().includes("virovitičko-podravska županija") || string.toLowerCase().includes("вировитицко-подравская")) {
             return "virovitica_podravina";
-        } else if (string.includes("Požega-Slavonia") || string.includes("Пожешко-Славонская")) {
+        } else if (string.toLowerCase().includes("požeško-slavonska županija") || string.toLowerCase().includes("пожешко-славонская")) {
             return "pozega_slavonia";
-        } else if (string.includes("Brod-Posavina") || string.includes("Бродско-Посавская")) {
+        } else if (string.toLowerCase().includes("brodsko-posavska županija") || string.toLowerCase().includes("бродско-посавская")) {
             return "brod_posavina";
-        } else if (string.includes("Zadar") || string.includes("Задар")) {
+        } else if (string.toLowerCase().includes("zadarska županija") || string.toLowerCase().includes("задар")) {
             return "zadar";
-        } else if (string.includes("Osijek-Baranja") || string.includes("Осиечко-Бараньская")) {
+        } else if (string.toLowerCase().includes("osječko-baranjska županija") || string.toLowerCase().includes("осиечко-бараньская")) {
             return "osijek_baranja";
-        } else if (string.includes("Sisak-Moslavina") || string.includes("Сисачко-Мославинская")) {
+        } else if (string.toLowerCase().includes("sisačko-moslavačka županija") || string.toLowerCase().includes("сисачко-мославинская")) {
             return "sisak_moslavina";
-        } else if (string.includes("Koprivnica-Križevci") || string.includes("Копривницко-Крижевечка")) {
+        } else if (string.toLowerCase().includes("koprivničko-križevačka županija") || string.toLowerCase().includes("копривницко-крижевечка")) {
             return "koprivnica_krizevci";
-        } else if (string.includes("Bjelovar-Bilogora") || string.includes("Бьеловарско-Билогорская")) {
+        } else if (string.toLowerCase().includes("bjelovarsko-bilogorska županija") || string.toLowerCase().includes("бьеловарско-билогорская")) {
             return "bjelovar_bilogora";
-        } else if (string.includes("Karlovac") || string.includes("Карловацкая")) {
+        } else if (string.toLowerCase().includes("karlovačka županija") || string.toLowerCase().includes("карловацкая")) {
             return "karlovac";
-        } else if (string.includes("Varaždin") || string.includes("Вараждинская")) {
+        } else if (string.toLowerCase().includes("varaždinska županija") || string.toLowerCase().includes("вараждинская")) {
             return "varazdin";
-        } else if (string.includes("Krapina-Zagorje") || string.includes("Крапинско-Загорская")) {
+        } else if (string.toLowerCase().includes("krapinsko-zagorska županija") || string.toLowerCase().includes("крапинско-загорская")) {
             return "krapina_zagorje";
-        } else if (string.includes("Međimurje") || string.includes("Меджимурская")) {
+        } else if (string.toLowerCase().includes("međimurska županija") || string.toLowerCase().includes("меджимурская")) {
             return "medimurje";
-        } else if (string.includes("Šibenik-Knin") || string.includes("Шибенско-Книнская")) {
+        } else if (string.toLowerCase().includes("šibensko-kninska županija") || string.toLowerCase().includes("шибенско-книнская")) {
             return "sibenik_knin";
-        } else if (string.includes("Vukovar-Srijem") || string.includes("Вуковарско-Сремская")) {
+        } else if (string.toLowerCase().includes("vukovarsko-srijemska županija") || string.toLowerCase().includes("вуковарско-сремская")) {
             return "vukovar_srijem";
-        } else if (string.includes("Dubrovnik-Neretva") || string.includes("Дубровачко-Неретванская")) {
+        } else if (string.toLowerCase().includes("dubrovačko-neretvanska županija") || string.toLowerCase().includes("дубровачко-неретванская")) {
             return "dubrovnik_neretva";
         } else {
             return "municipality_budva";
@@ -413,6 +506,8 @@ const ClothesForm = ({
                 const geocodeData = await fetchGeocodingData(newCoordinates.lat, newCoordinates.lng);
                 if (geocodeData) {
                     const { country, region } = extractCountryAndRegion(geocodeData);
+                    console.log(geocodeData);
+                    console.log(region.toLocaleLowerCase().includes("zagreb"));
                     setCountry(getCountryKey(country));
                     setRegion(getRegionKey(region));
                     console.log('Country:', getCountryKey(country));
@@ -572,11 +667,17 @@ const extractCountryAndRegion = (geocodeResult) => {
     });
 
     console.log("Country extracted:", country); // For debugging
-
-    // Second pass to extract the region
+    console.log(country.toLowerCase().includes('bosnia') || country.toLowerCase().includes('босния') || country.toLowerCase().includes('bosna'));
     geocodeResult.address_components.forEach(component => {
-        if (component.types.includes('administrative_area_level_1') || component.types.includes('administrative_area_level_2')) {
+        if (component.types.includes('administrative_area_level_2') && (country.toLowerCase().includes('bosnia') || country.toLowerCase().includes('босния') || country.toLowerCase().includes('bosna'))) {
+            console.log('pisa');
             region = component.long_name;
+            console.log("Region before mapping:", region);
+            console.log(`Country includes 'Сербия': ${country.includes('Сербия')}`);
+        } else if ((component.types.includes('administrative_area_level_1') || component.types.includes('administrative_area_level_2') || component.types.includes('locality')) && !(country.toLowerCase().includes('bosnia') || country.toLowerCase().includes('босния') || country.toLowerCase().includes('bosna'))) {
+            console.log(!(country.toLowerCase().includes('bosnia') || country.toLowerCase().includes('босния') || country.toLowerCase().includes('bosna')));
+            region = component.long_name;
+            console.log('popa');
             console.log("Region before mapping:", region);
             console.log(`Country includes 'Сербия': ${country.includes('Сербия')}`);
 
@@ -593,10 +694,6 @@ const extractCountryAndRegion = (geocodeResult) => {
 
     return { country, region };
 };
-
-
-
-
 
     const selectAfter = (
         <Select defaultValue={t('currency')} style={{ width: 120 }} onChange={(value) => setCurrency(value)}>
