@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 import { Container, Form } from "react-bootstrap";
 import { db, auth, storage } from "../../config/firebase"
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { collection, addDoc, serverTimestamp, GeoPoint } from "firebase/firestore";
 import { useState } from 'react';
 import { MyNavbar } from "../../components/Navbar/Navbar";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
@@ -53,10 +53,10 @@ export const AddItem = () => {
     const [model, setModel] = useState('');
     const [type, setType] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
-    const [country, setCountry] = useState('montenegro');
-    const [region, setRegion] = useState('municipality_budva');
+    const [country, setCountry] = useState('');
+    const [region, setRegion] = useState('');
     const [coordinates, setCoordinates] = useState({ lat: 42.44136169493567, lng: 19.262717285354550 });
-    const [location, setLocation] = useState('');
+    const [location, setLocation] = useState('Crna Gora, Podgorica');
     const [currency, setCurrency] = useState('');
 
     // Для автомобилей
@@ -140,8 +140,11 @@ export const AddItem = () => {
         );
 
         let formData;
-
+        console.log(coordinates);
+        console.log(region);
+        console.log(new GeoPoint(coordinates.lat, coordinates.lng));
         switch (selectedCategory) {
+            
             case 'rest':
                 formData = {
                     from_uid: userId,
@@ -154,10 +157,10 @@ export const AddItem = () => {
                     currency,
                     description,
                     availability: "available",
-                    region: region??"municipality_budva",
+                    region: region??"municipality_podgorica",
                     location: location,
                     country: country??"montenegro",
-                    coordinates: coordinates,
+                    coordinates: new GeoPoint(coordinates.lat, coordinates.lng),
                     time_creation: serverTimestamp(),
                     photoUrls: fileUrls,
                     in_archive: false,
@@ -185,10 +188,10 @@ export const AddItem = () => {
                     memory,
                     condition,
                     description,
-                    region: region??"municipality_budva",
+                    region: region??"municipality_podgorica",
                     location: location,
                     country: country??"montenegro",
-                    coordinates: coordinates,
+                    coordinates: new GeoPoint(coordinates.lat, coordinates.lng),
                     availability: "available",
                     photoUrls: fileUrls,
                     time_creation: serverTimestamp(),
@@ -211,10 +214,10 @@ export const AddItem = () => {
                     screen_size,
                     condition,
                     description,
-                    region: region??"municipality_budva",
+                    region: region??"municipality_podgorica",
                     location: location,
                     country: country??"montenegro",
-                    coordinates: coordinates,
+                    coordinates: new GeoPoint(coordinates.lat, coordinates.lng),
                     availability: "available",
                     photoUrls: fileUrls,
                     time_creation: serverTimestamp(),
@@ -237,10 +240,10 @@ export const AddItem = () => {
                     model,
                     condition,
                     description,
-                    region: region??"municipality_budva",
+                    region: region??"municipality_podgorica",
                     location: location,
                     country: country??"montenegro",
-                    coordinates: coordinates,
+                    coordinates: new GeoPoint(coordinates.lat, coordinates.lng),
                     availability: "available",
                     photoUrls: fileUrls,
                     time_creation: serverTimestamp(),
@@ -263,10 +266,10 @@ export const AddItem = () => {
                     model,
                     condition,
                     description,
-                    region: region??"municipality_budva",
+                    region: region??"municipality_podgorica",
                     location: location,
                     country: country??"montenegro",
-                    coordinates: coordinates,
+                    coordinates: new GeoPoint(coordinates.lat, coordinates.lng),
                     availability: "available",
                     photoUrls: fileUrls,
                     time_creation: serverTimestamp(),
@@ -289,10 +292,10 @@ export const AddItem = () => {
                     condition,
                     description,
                     availability: "available",
-                    region: region??"municipality_budva",
+                    region: region??"municipality_podgorica",
                     location: location,
                     country: country??"montenegro",
-                    coordinates: coordinates,
+                    coordinates: new GeoPoint(coordinates.lat, coordinates.lng),
                     time_creation: serverTimestamp(),
                     photoUrls: fileUrls,
                     in_archive: false,
@@ -324,10 +327,10 @@ export const AddItem = () => {
                     owners,
                     customs: "",
                     description,
-                    region: region??"municipality_budva",
+                    region: region??"municipality_podgorica",
                     location: location,
                     country: country??"montenegro",
-                    coordinates: coordinates,
+                    coordinates: new GeoPoint(coordinates.lat, coordinates.lng),
                     availability: "available", // !TODO
                     photoUrls: fileUrls,
                     time_creation: serverTimestamp(),
@@ -354,10 +357,10 @@ export const AddItem = () => {
                     kitchen_area: "",
                     to_center: "",
                     availability: "available",
-                    region: region??"municipality_budva",
+                    region: region??"municipality_podgorica",
                     location: location,
                     country: country??"montenegro",
-                    coordinates: coordinates,
+                    coordinates: new GeoPoint(coordinates.lat, coordinates.lng),
                     time_creation: serverTimestamp(),
                     photoUrls: fileUrls,
                     in_archive: false,
@@ -382,10 +385,10 @@ export const AddItem = () => {
                     condition,
                     description,
                     availability: "available",
-                    region: region??"municipality_budva",
+                    region: region??"municipality_podgorica",
                     location: location,
                     country: country??"montenegro",
-                    coordinates: coordinates,
+                    coordinates: new GeoPoint(coordinates.lat, coordinates.lng),
                     time_creation: serverTimestamp(),
                     photoUrls: fileUrls,
                     in_archive: false,
@@ -412,10 +415,10 @@ export const AddItem = () => {
                     condition,
                     description,
                     availability: "available",
-                    region: region??"municipality_budva",
+                    region: region??"municipality_podgorica",
                     location: location,
                     country: country??"montenegro",
-                    coordinates: coordinates,
+                    coordinates: new GeoPoint(coordinates.lat, coordinates.lng),
                     time_creation: serverTimestamp(),
                     photoUrls: fileUrls,
                     in_archive: false,
@@ -474,10 +477,10 @@ export const AddItem = () => {
                     condition,
                     description,
                     availability: "available",
-                    region: region??"municipality_budva",
+                    region: region??"municipality_podgorica",
                     location: location,
                     country: country??"montenegro",
-                    coordinates: coordinates,
+                    coordinates: new GeoPoint(coordinates.lat, coordinates.lng),
                     time_creation: serverTimestamp(),
                     photoUrls: fileUrls,
                     in_archive: false,
@@ -529,10 +532,10 @@ export const AddItem = () => {
                     currency,
                     description,
                     availability: "available",
-                    region: region??"municipality_budva",
+                    region: region??"municipality_podgorica",
                     location: location,
                     country: country??"montenegro",
-                    coordinates: coordinates,
+                    coordinates: new GeoPoint(coordinates.lat, coordinates.lng),
                     time_creation: serverTimestamp(),
                     photoUrls: fileUrls,
                     in_archive: false,
@@ -544,7 +547,7 @@ export const AddItem = () => {
         }
 
         const advertismentRef = collection(db, 'advertisment');
-
+        console.log(new GeoPoint(coordinates.lat, coordinates.lng));
         addDoc(advertismentRef, formData)
             .then((docRef) => {
                 console.log("Document written with ID: ", docRef.id);

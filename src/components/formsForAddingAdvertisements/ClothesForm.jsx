@@ -429,7 +429,7 @@ function getCountryKey(string) {
         } else if (string.toLowerCase().includes("dubrovačko-neretvanska županija") || string.toLowerCase().includes("дубровачко-неретванская")) {
             return "dubrovnik_neretva";
         } else {
-            return "municipality_budva";
+            return "municipality_podgorica";
         }
     }
 
@@ -468,8 +468,8 @@ const MapComponent = ({ coordinates, setCoordinates, setCountry, country, setReg
                 lng: newCenter.lng()
             };
             const geoPoint = new GeoPoint(newCoordinates.lat, newCoordinates.lng);
-            setCoordinates(geoPoint);
-            
+            setCoordinates(newCoordinates);
+            console.log()
             // Fetch the address using Geocoding API
             const geocoder = new window.google.maps.Geocoder();
             geocoder.geocode({ location: newCoordinates }, (results, status) => {
@@ -492,17 +492,17 @@ const MapComponent = ({ coordinates, setCoordinates, setCountry, country, setReg
                         //     region = addressComponents[2]?.long_name || '';
                         // }
                         console.log(addressComponents);
-                        const { country, region } = extractCountryAndRegion(results[0]);
+                        const { country, region, extRegion } = extractCountryAndRegion(results[0]);
                         setLocation(formattedAddress);  // Update the AutoComplete field
                         setCountry(getCountryKey(country));
-                        setRegion(getRegionKey(region));
-                        setTestCountry(getCountryKey(country));
-                        setTestRegion(getRegionKey(region));
+                        setRegion(region);
+                        setTestCountry(country);
+                        setTestRegion(extRegion);
                     } else {
-                        setLocation('No results found');
+                        setLocation('Podgorica, Crna Gora');
                     }
                 } else {
-                    setLocation('Geocoder failed due to: ' + status);
+                    setLocation('Podgorica, Crna Gora');
                 }
             });
         }
@@ -628,6 +628,7 @@ function getSerbianRegionKey(string) {
 const extractCountryAndRegion = (geocodeResult) => {
     let country = '';
     let region = '';
+    let extRegion = '';
 
     // First pass to extract the country
     geocodeResult.address_components.forEach(component => {
@@ -644,10 +645,12 @@ const extractCountryAndRegion = (geocodeResult) => {
             country.toLowerCase().includes('bosna')) {
             
             if (component.types.includes('administrative_area_level_2')) {
-                region = component.long_name;
+                region = getRegionKey(component.long_name);
+                extRegion = component.long_name;
                 console.log('Region from administrative_area_level_2:', region);
             } else if (component.types.includes('administrative_area_level_1')  && !region) {
-                region = component.long_name;
+                region = getRegionKey(component.long_name);
+                extRegion = component.long_name;
                 console.log('Region from administrative_area_level_1:', region);
             } else {
                 console.log('No matching administrative area found.');
@@ -658,14 +661,15 @@ const extractCountryAndRegion = (geocodeResult) => {
         }
     else if ((component.types.includes('administrative_area_level_1') || component.types.includes('administrative_area_level_2') || component.types.includes('locality')) && !(country.toLowerCase().includes('bosnia') || country.toLowerCase().includes('босния') || country.toLowerCase().includes('bosna'))) {
             console.log(!(country.toLowerCase().includes('bosnia') || country.toLowerCase().includes('босния') || country.toLowerCase().includes('bosna')));
-            region = component.long_name;
+            region = getRegionKey(component.long_name);
+            extRegion = component.long_name;
             console.log('popa');
-            console.log("Region before mapping:", region);
+            console.log("Region before mapping:", component.long_name);
             console.log(`Country includes 'Сербия': ${country.includes('Сербия')}`);
 
             if (country.includes('Сербия') || country.includes('Serbia') || country.includes('Србиja')) {
                 console.log("Mapping region for Serbia");
-                const mappedRegion = getSerbianRegionKey(region);
+                const mappedRegion = getSerbianRegionKey(component.long_name);
                 console.log("Mapped Region:", mappedRegion);
                 if (mappedRegion !== "unknown_region") {
                     region = mappedRegion;
@@ -674,7 +678,7 @@ const extractCountryAndRegion = (geocodeResult) => {
         } 
     });
 
-    return { country, region };
+    return { country, region, extRegion };
 };
 
     return (
@@ -696,10 +700,10 @@ const extractCountryAndRegion = (geocodeResult) => {
         
         <Row gutter={16} style={{ marginTop: '20px' }}>
             <Col span={12}>
-                <strong>{t('region')}:</strong> {testRegion ?? ""}
+                <strong>{t('region')}:</strong> {testRegion ?? "Podgorica"}
             </Col>
             <Col span={12}>
-                <strong>{t('country')}:</strong> {testCountry ?? ""}
+                <strong>{t('country')}:</strong> {testCountry ?? "Crna Gora"}
             </Col>
         </Row>
     </div>
@@ -728,8 +732,8 @@ const ClothesForm = ({
     const mapRef = useRef(null);
 
     const [form] = Form.useForm();
-    const [testRegion, setTestRegion] = useState([]);
-    const [testCountry, setTestCountry] = useState([]);
+    const [testRegion, setTestRegion] = useState('Podgorica');
+    const [testCountry, setTestCountry] = useState('Crna Gora');
     const onSubmit = async () => {
         try {
             const values = await form.validateFields();
@@ -802,7 +806,7 @@ const ClothesForm = ({
                 lng: parseFloat(longitude),
             };
             const geoPoint = new GeoPoint(newCoordinates.lat, newCoordinates.lng);
-            setCoordinates(geoPoint);
+            setCoordinates(newCoordinates);
             setLocation(value);
 
             if (mapRef.current) {
