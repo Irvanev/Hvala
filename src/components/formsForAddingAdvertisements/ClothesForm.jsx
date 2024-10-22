@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { Form, Input, InputNumber, Button, Select, Image, Upload, AutoComplete, Spin } from 'antd';
+import { Form, Input, InputNumber, Button, Select, Image, Upload, AutoComplete, Spin, Row, Col } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { GoogleMap, LoadScript } from '@react-google-maps/api';
 import debounce from 'lodash.debounce';
@@ -25,6 +25,8 @@ const markerStyle = {
     zIndex: 1,
 };
 
+
+
 function getCountryKey(string) {
         if (string.includes("Serbia") || string.includes("Сербия") || string.includes("Србија")) {
             return "serbia";
@@ -44,6 +46,13 @@ function getCountryKey(string) {
 
     function getRegionKey(string) {
         if (
+            string.toLowerCase().includes("republika srpska") || 
+            string.toLowerCase().includes("република српска") || 
+            string.toLowerCase().includes("srpska") || 
+            string.toLowerCase().includes("српска") 
+        ) {
+            return "republika_srpska";
+        } else if (
             string.toLowerCase().includes("unsko-sanski") || 
             string.toLowerCase().includes("унско-санский") || 
             string.toLowerCase().includes("уна-санский") || 
@@ -77,6 +86,7 @@ function getCountryKey(string) {
         ) {
             return "zenica_doboj_canton";
         } else if (
+            string.toLowerCase().includes("bosnian podrinje") || 
             string.toLowerCase().includes("bosnian-podrinje") || 
             string.toLowerCase().includes("боснийско-подринский") || 
             string.toLowerCase().includes("боснийско-подринье кантон") || 
@@ -170,57 +180,171 @@ function getCountryKey(string) {
             string.toLowerCase().includes("kanton 10")
         ) {
             return "canton_10";
-        } else if (string.includes("Podgorica") || string.includes("Подгорица")) {
-            if (string.includes("Municipality")) {
+        } else if (
+            string.toLowerCase().includes("podgorica") || 
+            string.toLowerCase().includes("подгорица") || 
+            string.toLowerCase().includes("podgorica") ||
+            string.toLowerCase().includes("подгорица")
+        ) {
+            if (string.toLowerCase().includes("municipality")) {
                 return "municipality_podgorica";
-            } else if (string.includes("Capital City") || string.includes("град")) {
+            } else if (
+                string.toLowerCase().includes("capital city") || 
+                string.toLowerCase().includes("град") || 
+                string.toLowerCase().includes("grad")
+            ) {
                 return "glavni_grad_podgorica";
+            } else {
+                return "municipality_podgorica";
             }
-        } else if (string.includes("Danilovgrad") || string.includes("Даниловград")) {
+        } else if (
+            string.toLowerCase().includes("danilovgrad") || 
+            string.toLowerCase().includes("даниловград") || 
+            string.toLowerCase().includes("danilovgrad")
+        ) {
             return "municipality_danilovgrad";
-        } else if (string.includes("Cetinje") || string.includes("Цетине")) {
+        } else if (
+            string.toLowerCase().includes("cetinje") || 
+            string.toLowerCase().includes("цетине") || 
+            string.toLowerCase().includes("cetinje")
+        ) {
             return "municipality_cetinje";
-        } else if (string.includes("Budva") || string.includes("Будва")) {
+        } else if (
+            string.toLowerCase().includes("budva") || 
+            string.toLowerCase().includes("будва") || 
+            string.toLowerCase().includes("budva")
+        ) {
             return "municipality_budva";
-        } else if (string.includes("Bar") || string.includes("Бар")) {
+        } else if (
+            (string.toLowerCase().includes("bar") || 
+            string.toLowerCase().includes("бар") || 
+            string.toLowerCase().includes("bar"))
+        ) {
             return "municipality_bar";
-        } else if (string.includes("Herceg Novi") || string.includes("Герцег-Нови")) {
+        } else if (
+            string.toLowerCase().includes("herceg novi") || 
+            string.toLowerCase().includes("герцег-нови") || 
+            string.toLowerCase().includes("herceg novi") || 
+            string.toLowerCase().includes("херцег-нови")
+        ) {
             return "municipality_herceg_novi";
-        } else if (string.includes("Kotor") || string.includes("Котор")) {
+        } else if (
+            string.toLowerCase().includes("kotor") || 
+            string.toLowerCase().includes("котор") || 
+            string.toLowerCase().includes("kotor")
+        ) {
             return "municipality_kotor";
-        } else if (string.includes("Tivat") || string.includes("Тиват")) {
+        } else if (
+            string.toLowerCase().includes("tivat") || 
+            string.toLowerCase().includes("тиват") || 
+            string.toLowerCase().includes("tivat")
+        ) {
             return "municipality_tivat";
-        } else if (string.includes("Ulcinj") || string.includes("Улцинь")) {
+        } else if (
+            string.toLowerCase().includes("ulcinj") || 
+            string.toLowerCase().includes("улцинь") || 
+            string.toLowerCase().includes("ulcinj") ||
+            string.toLowerCase().includes("улцињ")
+        ) {
             return "municipality_ulcinj";
-        } else if (string.includes("Pljevlja") || string.includes("Плевля")) {
+        } else if (
+            string.toLowerCase().includes("pljevlja") || 
+            string.toLowerCase().includes("плевля") || 
+            string.toLowerCase().includes("pljevlja") ||
+            string.toLowerCase().includes("пљевља")
+        ) {
             return "municipality_pljevlja";
-        } else if (string.includes("Bijelo Polje") || string.includes("Бижело Поле")) {
+        } else if (
+            string.toLowerCase().includes("bijelo polje") || 
+            string.toLowerCase().includes("бијело поље") || 
+            string.toLowerCase().includes("bijelo polje")
+        ) {
             return "municipality_bijelo_polje";
-        } else if (string.includes("Zabljak") || string.includes("Жабляк")) {
+        } else if (
+            string.toLowerCase().includes("zabljak") || 
+            string.toLowerCase().includes("жабляк") || 
+            string.toLowerCase().includes("žabljak") || 
+            string.toLowerCase().includes("жабљак")
+        ) {
             return "municipality_zabljak";
-        } else if (string.includes("Kolasin") || string.includes("Колашин")) {
+        } else if (
+            string.toLowerCase().includes("kolasin") || 
+            string.toLowerCase().includes("колашин") || 
+            string.toLowerCase().includes("kolašin")
+        ) {
             return "municipality_kolasin";
-        } else if (string.includes("Mojkovac") || string.includes("Мойковац")) {
+        } else if (
+            string.toLowerCase().includes("mojkovac") || 
+            string.toLowerCase().includes("мойковац") || 
+            string.toLowerCase().includes("mojkovac") ||
+            string.toLowerCase().includes("мојковац")
+        ) {
             return "municipality_mojkovac";
-        } else if (string.includes("Berane") || string.includes("Берне")) {
+        } else if (
+            string.toLowerCase().includes("berane") || 
+            string.toLowerCase().includes("берне") || 
+            string.toLowerCase().includes("berane") ||
+            string.toLowerCase().includes("беране")
+        ) {
             return "municipality_berane";
-        } else if (string.includes("Andrijevica") || string.includes("Андриевица")) {
+        } else if (
+            string.toLowerCase().includes("andrijevica") || 
+            string.toLowerCase().includes("андриевица") || 
+            string.toLowerCase().includes("andrijevica") ||
+            string.toLowerCase().includes("андријевица")
+        ) {
             return "municipality_andrijevica";
-        } else if (string.includes("Plav") || string.includes("Плав")) {
+        } else if (
+            string.toLowerCase().includes("plav") || 
+            string.toLowerCase().includes("плав") || 
+            string.toLowerCase().includes("plav")
+        ) {
             return "municipality_plav";
-        } else if (string.includes("Rozaje") || string.includes("Рожае")) {
+        } else if (
+            string.toLowerCase().includes("rozaje") || 
+            string.toLowerCase().includes("рожае") || 
+            string.toLowerCase().includes("rožaje") ||
+            string.toLowerCase().includes("рожаје")
+        ) {
             return "municipality_rozaje";
-        } else if (string.includes("Niksic") || string.includes("Никшич")) {
+        } else if (
+            string.toLowerCase().includes("niksic") || 
+            string.toLowerCase().includes("никшич") || 
+            string.toLowerCase().includes("nikšić") ||
+            string.toLowerCase().includes("никшић")
+        ) {
             return "municipality_niksic";
-        } else if (string.includes("Savnik") || string.includes("Шавник")) {
+        } else if (
+            string.toLowerCase().includes("savnik") || 
+            string.toLowerCase().includes("шавник") || 
+            string.toLowerCase().includes("šavnik") ||
+            string.toLowerCase().includes("шаўник")
+        ) {
             return "municipality_savnik";
-        } else if (string.includes("Pluzine") || string.includes("Плужине")) {
+        } else if (
+            string.toLowerCase().includes("pluzine") || 
+            string.toLowerCase().includes("плужине") || 
+            string.toLowerCase().includes("plužine") ||
+            string.toLowerCase().includes("плужине")
+        ) {
             return "municipality_pluzine";
-        } else if (string.includes("Gusinje") || string.includes("Гусиње")) {
+        } else if (
+            string.toLowerCase().includes("gusinje") || 
+            string.toLowerCase().includes("гусиње") || 
+            string.toLowerCase().includes("gusinje")
+        ) {
             return "municipality_gusinje";
-        } else if (string.includes("Petrovac") || string.includes("Петровац")) {
+        } else if (
+            string.toLowerCase().includes("petrovac") || 
+            string.toLowerCase().includes("петровац") || 
+            string.toLowerCase().includes("petrovac")
+        ) {
             return "municipality_petrovac";
-        } else if (string.includes("Tuzi") || string.includes("Тузи")) {
+        } else if (
+            string.toLowerCase().includes("tuzi") || 
+            string.toLowerCase().includes("тузи") || 
+            string.toLowerCase().includes("tuzi")
+        ) {
             return "municipality_tuzi";
         } else if (string.includes("Vojvodina") || string.includes("Воеводина")) {
             return "vojvodina";
@@ -272,11 +396,11 @@ function getCountryKey(string) {
             return "istria";
         } else if (string.toLowerCase().includes("primorsko-goranska županija") || string.toLowerCase().includes("приморско-горанская")) {
             return "primorje_gorski_kotar";
-        } else if (string.toLowerCase().includes("ličko-senjska županija") || string.toLowerCase().includes("лика-сень")) {
+        } else if (string.toLowerCase().includes("ličko-senjska županija") || string.toLowerCase().includes("лика-сень") || string.toLowerCase().includes("lika-senj")) {
             return "lika_senj";
         } else if (string.toLowerCase().includes("virovitičko-podravska županija") || string.toLowerCase().includes("вировитицко-подравская")) {
             return "virovitica_podravina";
-        } else if (string.toLowerCase().includes("požeško-slavonska županija") || string.toLowerCase().includes("пожешко-славонская")) {
+        } else if (string.toLowerCase().includes("požeško-slavonska županija") || string.toLowerCase().includes("пожешко-славонская") || string.toLowerCase().includes("požega-slavonia")) {
             return "pozega_slavonia";
         } else if (string.toLowerCase().includes("brodsko-posavska županija") || string.toLowerCase().includes("бродско-посавская")) {
             return "brod_posavina";
@@ -288,9 +412,9 @@ function getCountryKey(string) {
             return "sisak_moslavina";
         } else if (string.toLowerCase().includes("koprivničko-križevačka županija") || string.toLowerCase().includes("копривницко-крижевечка")) {
             return "koprivnica_krizevci";
-        } else if (string.toLowerCase().includes("bjelovarsko-bilogorska županija") || string.toLowerCase().includes("бьеловарско-билогорская")) {
+        } else if (string.toLowerCase().includes("bjelovarsko-bilogorska županija") || string.toLowerCase().includes("бьеловарско-билогорская") || string.toLowerCase().includes("bjelovar-bilogora")) {
             return "bjelovar_bilogora";
-        } else if (string.toLowerCase().includes("karlovačka županija") || string.toLowerCase().includes("карловацкая")) {
+        } else if (string.toLowerCase().includes("karlovačka županija") || string.toLowerCase().includes("карловацкая") || string.toLowerCase().includes("karlovac")) {
             return "karlovac";
         } else if (string.toLowerCase().includes("varaždinska županija") || string.toLowerCase().includes("вараждинская")) {
             return "varazdin";
@@ -309,8 +433,7 @@ function getCountryKey(string) {
         }
     }
 
-const MapComponent = ({ coordinates, setCoordinates, setCountry, country, setRegion, region, setLocation, location, mapRef }) => {
-
+const MapComponent = ({ coordinates, setCoordinates, setCountry, country, setRegion, region, setLocation, location, mapRef, testRegion, setTestRegion, testCountry, setTestCountry }) => {
     const countryMappings = {
         'Черногория': 'montenegro',
         'Црна Гора': 'montenegro',
@@ -330,7 +453,7 @@ const MapComponent = ({ coordinates, setCoordinates, setCountry, country, setReg
         'Bosnia and Herzegovina': 'bosnia_and_herzegovina'
     };
 
-    
+    const { t } = useTranslation();
 
     const onLoad = useCallback((map) => {
         mapRef.current = map;
@@ -346,7 +469,7 @@ const MapComponent = ({ coordinates, setCoordinates, setCountry, country, setReg
             };
             const geoPoint = new GeoPoint(newCoordinates.lat, newCoordinates.lng);
             setCoordinates(geoPoint);
-
+            
             // Fetch the address using Geocoding API
             const geocoder = new window.google.maps.Geocoder();
             geocoder.geocode({ location: newCoordinates }, (results, status) => {
@@ -355,23 +478,26 @@ const MapComponent = ({ coordinates, setCoordinates, setCountry, country, setReg
                         const addressComponents = results[0].address_components;
                         const formattedAddress = results[0].formatted_address;
 
-                        let country = '';
-                        let region = '';
+                        // let country = '';
+                        // let region = '';
 
-                        if (addressComponents.length >= 6) {
-                            country = addressComponents[5]?.long_name || '';
-                            region = addressComponents[4]?.long_name || '';
-                        } else if (addressComponents.length >= 5) {
-                            country = addressComponents[4]?.long_name || '';
-                            region = addressComponents[3]?.long_name || '';
-                        } else if (addressComponents.length >= 4) {
-                            country = addressComponents[3]?.long_name || '';
-                            region = addressComponents[2]?.long_name || '';
-                        }
-
+                        // if (addressComponents.length >= 6) {
+                        //     country = addressComponents[5]?.long_name || '';
+                        //     region = addressComponents[4]?.long_name || '';
+                        // } else if (addressComponents.length >= 5) {
+                        //     country = addressComponents[4]?.long_name || '';
+                        //     region = addressComponents[3]?.long_name || '';
+                        // } else if (addressComponents.length >= 4) {
+                        //     country = addressComponents[3]?.long_name || '';
+                        //     region = addressComponents[2]?.long_name || '';
+                        // }
+                        console.log(addressComponents);
+                        const { country, region } = extractCountryAndRegion(results[0]);
                         setLocation(formattedAddress);  // Update the AutoComplete field
                         setCountry(getCountryKey(country));
                         setRegion(getRegionKey(region));
+                        setTestCountry(getCountryKey(country));
+                        setTestRegion(getRegionKey(region));
                     } else {
                         setLocation('No results found');
                     }
@@ -382,9 +508,177 @@ const MapComponent = ({ coordinates, setCoordinates, setCountry, country, setReg
         }
     };
 
+    const regionMapping = {
+    // Войводина
+    "severni banat": "vojvodina",
+    "severni banat okrug": "vojvodina",
+    "srednji banat": "vojvodina",
+    "srednji banat okrug": "vojvodina",
+    "južni banat": "vojvodina",
+    "južni banat okrug": "vojvodina",
+    "južnobački": "vojvodina",
+    "južnobački okrug": "vojvodina",
+    "zapadnobački": "vojvodina",
+    "zapadnobački okrug": "vojvodina",
+    "srem": "vojvodina",
+    "srem okrug": "vojvodina",
+    "sremski okrug": "vojvodina",
+    
+    // Белград
+    "belgrade": "belgrade",
+    "belgrade okrug": "belgrade",
+    "belgrade district": "belgrade",
+    "белград": "belgrade",
+    "београд": "belgrade",
+    "град београд": "belgrade",
+    
+    // Шумадия и Западная Сербия
+    "mačvanski": "sumadija_and_western_serbia",
+    "mačvanski okrug": "sumadija_and_western_serbia",
+    "мачвански": "sumadija_and_western_serbia",
+    "мачвански округ": "sumadija_and_western_serbia",
+    "kolubarski": "sumadija_and_western_serbia",
+    "kolubarski okrug": "sumadija_and_western_serbia",
+    "колубарски": "sumadija_and_western_serbia",
+    "колубарски округ": "sumadija_and_western_serbia",
+    "podunavski": "sumadija_and_western_serbia",
+    "podunavski okrug": "sumadija_and_western_serbia",
+    "подунавски": "sumadija_and_western_serbia",
+    "подунавски округ": "sumadija_and_western_serbia",
+    "pomoravski": "sumadija_and_western_serbia",
+    "pomoravski okrug": "sumadija_and_western_serbia",
+    "поморавски": "sumadija_and_western_serbia",
+    "поморавски округ": "sumadija_and_western_serbia",
+    "rasinski": "sumadija_and_western_serbia",
+    "rasinski okrug": "sumadija_and_western_serbia",
+    "расински": "sumadija_and_western_serbia",
+    "расински округ": "sumadija_and_western_serbia",
+    "braničevo": "sumadija_and_western_serbia",
+    "braničevo okrug": "sumadija_and_western_serbia",
+    "браничево": "sumadija_and_western_serbia",
+    "браничево округ": "sumadija_and_western_serbia",
+    "jablanica": "sumadija_and_western_serbia",
+    "jablanica okrug": "sumadija_and_western_serbia",
+    "јабланица": "sumadija_and_western_serbia",
+    "јабланица округ": "sumadija_and_western_serbia",
+    "zlatiborski": "sumadija_and_western_serbia",
+    "zlatiborski okrug": "sumadija_and_western_serbia",
+    "златиборски": "sumadija_and_western_serbia",
+    "златиборски округ": "sumadija_and_western_serbia",
+    "moravički": "sumadija_and_western_serbia",
+    "moravički okrug": "sumadija_and_western_serbia",
+    "моравички": "sumadija_and_western_serbia",
+    "моравички округ": "sumadija_and_western_serbia",
+    "šumadijski": "sumadija_and_western_serbia",
+    "šumadijski okrug": "sumadija_and_western_serbia",
+    "шумадијски": "sumadija_and_western_serbia",
+    "шумадијски округ": "sumadija_and_western_serbia",
+    "bor": "sumadija_and_western_serbia",
+    "bor okrug": "sumadija_and_western_serbia",
+    "бор": "sumadija_and_western_serbia",
+    "бор округ": "sumadija_and_western_serbia",
+    
+    // Южная и Восточная Сербия
+    "nišava": "southern_and_eastern_serbia",
+    "nišava okrug": "southern_and_eastern_serbia",
+    "nišavski": "southern_and_eastern_serbia",
+    "nišavski okrug": "southern_and_eastern_serbia",
+    "нишава": "southern_and_eastern_serbia",
+    "нишава округ": "southern_and_eastern_serbia",
+    "нишавски": "southern_and_eastern_serbia",
+    "нишавски округ": "southern_and_eastern_serbia",
+    "toplički": "southern_and_eastern_serbia",
+    "toplički okrug": "southern_and_eastern_serbia",
+    "топлички": "southern_and_eastern_serbia",
+    "топлички округ": "southern_and_eastern_serbia",
+    "pirotski": "southern_and_eastern_serbia",
+    "pirotski okrug": "southern_and_eastern_serbia",
+    "пиротски": "southern_and_eastern_serbia",
+    "пиротски округ": "southern_and_eastern_serbia",
+    "pčinjski": "southern_and_eastern_serbia",
+    "pčinjski okrug": "southern_and_eastern_serbia",
+    "пчиниски": "southern_and_eastern_serbia",
+    "пчиниски округ": "southern_and_eastern_serbia",
+    
+    // Косово и Метохия
+    "kosovo and metohija": "kosovo_and_metohija",
+    "kosovo and metohija okrug": "kosovo_and_metohija",
+    "косово и метохия": "kosovo_and_metohija",
+    "косово и метохия округ": "kosovo_and_metohija",
+    "kosovski": "kosovo_and_metohija",
+    "kosovski okrug": "kosovo_and_metohija",
+    "косовски": "kosovo_and_metohija",
+    "косовски округ": "kosovo_and_metohija"
+};
 
+function getSerbianRegionKey(string) {
+    const normalizedString = string.toLowerCase();
+
+    // Удаляем слово "okrug" или "округ" из строки для упрощения сопоставления
+    const cleanedString = normalizedString.replace(/\bokrug\b|\bокруг\b/g, '').trim();
+    console.log(cleanedString + "aboba");
+    console.log("hyyufgeyffe");
+    if (regionMapping[cleanedString]) {
+        return regionMapping[cleanedString];
+    }
+
+    return "unknown_region";
+}
+
+const extractCountryAndRegion = (geocodeResult) => {
+    let country = '';
+    let region = '';
+
+    // First pass to extract the country
+    geocodeResult.address_components.forEach(component => {
+        if (component.types.includes('country')) {
+            country = component.long_name;
+        }
+    });
+
+    console.log("Country extracted:", country); // For debugging
+    console.log(country.toLowerCase().includes('bosnia') || country.toLowerCase().includes('босния') || country.toLowerCase().includes('bosna'));
+    geocodeResult.address_components.forEach(component => {
+        if (country.toLowerCase().includes('bosnia') || 
+            country.toLowerCase().includes('босния') || 
+            country.toLowerCase().includes('bosna')) {
+            
+            if (component.types.includes('administrative_area_level_2')) {
+                region = component.long_name;
+                console.log('Region from administrative_area_level_2:', region);
+            } else if (component.types.includes('administrative_area_level_1')  && !region) {
+                region = component.long_name;
+                console.log('Region from administrative_area_level_1:', region);
+            } else {
+                console.log('No matching administrative area found.');
+            }
+            
+            console.log("Country:", country);
+            console.log("Region:", region);
+        }
+    else if ((component.types.includes('administrative_area_level_1') || component.types.includes('administrative_area_level_2') || component.types.includes('locality')) && !(country.toLowerCase().includes('bosnia') || country.toLowerCase().includes('босния') || country.toLowerCase().includes('bosna'))) {
+            console.log(!(country.toLowerCase().includes('bosnia') || country.toLowerCase().includes('босния') || country.toLowerCase().includes('bosna')));
+            region = component.long_name;
+            console.log('popa');
+            console.log("Region before mapping:", region);
+            console.log(`Country includes 'Сербия': ${country.includes('Сербия')}`);
+
+            if (country.includes('Сербия') || country.includes('Serbia') || country.includes('Србиja')) {
+                console.log("Mapping region for Serbia");
+                const mappedRegion = getSerbianRegionKey(region);
+                console.log("Mapped Region:", mappedRegion);
+                if (mappedRegion !== "unknown_region") {
+                    region = mappedRegion;
+                }
+            }
+        } 
+    });
+
+    return { country, region };
+};
 
     return (
+    <div>
         <div style={containerStyle}>
             <GoogleMap
                 mapContainerStyle={{ width: '100%', height: '100%' }}
@@ -399,7 +693,18 @@ const MapComponent = ({ coordinates, setCoordinates, setCountry, country, setReg
                 style={markerStyle}
             />
         </div>
-    );
+        
+        <Row gutter={16} style={{ marginTop: '20px' }}>
+            <Col span={12}>
+                <strong>{t('region')}:</strong> {testRegion ?? ""}
+            </Col>
+            <Col span={12}>
+                <strong>{t('country')}:</strong> {testCountry ?? ""}
+            </Col>
+        </Row>
+    </div>
+);
+
 };
 
 const ClothesForm = ({
@@ -423,7 +728,8 @@ const ClothesForm = ({
     const mapRef = useRef(null);
 
     const [form] = Form.useForm();
-
+    const [testRegion, setTestRegion] = useState([]);
+    const [testCountry, setTestCountry] = useState([]);
     const onSubmit = async () => {
         try {
             const values = await form.validateFields();
@@ -437,6 +743,7 @@ const ClothesForm = ({
     const [previewImage, setPreviewImage] = useState('');
     const [previewOpen, setPreviewOpen] = useState(false);
     const [options, setOptions] = useState([]);
+
 
     const handlePreview = async (file) => {
         setPreviewImage(file.thumbUrl);
@@ -506,7 +813,10 @@ const ClothesForm = ({
                 const geocodeData = await fetchGeocodingData(newCoordinates.lat, newCoordinates.lng);
                 if (geocodeData) {
                     const { country, region } = extractCountryAndRegion(geocodeData);
+                    setTestCountry(getCountryKey(country));
+                    setTestRegion(getRegionKey(region));
                     console.log(geocodeData);
+                    console.log(region.toLowerCase().includes("шавник")+"aboba2");
                     console.log(region.toLocaleLowerCase().includes("zagreb"));
                     setCountry(getCountryKey(country));
                     setRegion(getRegionKey(region));
@@ -853,7 +1163,7 @@ const extractCountryAndRegion = (geocodeResult) => {
                     </Form.Item>
 
                     <Form.Item label={t('coordinates')}>
-                        <MapComponent coordinates={coordinates} setCoordinates={setCoordinates} setRegion={setRegion} setCountry={setCountry} setLocation={setLocation} mapRef={mapRef} />
+                        <MapComponent coordinates={coordinates} setCoordinates={setCoordinates} setRegion={setRegion} setCountry={setCountry} setLocation={setLocation} mapRef={mapRef} setTestCountry={setTestCountry} setTestRegion={setTestRegion} testCountry={testCountry} testRegion={testRegion} />
                     </Form.Item>
 
                     <Form.Item label={t('location_name')}>
@@ -867,7 +1177,10 @@ const extractCountryAndRegion = (geocodeResult) => {
                         >
                             <Input />
                         </AutoComplete>
+                        
                     </Form.Item>
+
+
 
                     <Form.Item style={{ display: 'flex', justifyContent: 'center' }}>
                         <Spin style={{color: '#03989F'}} spinning={loading}>
