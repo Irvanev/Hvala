@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { GoogleMap, LoadScript } from '@react-google-maps/api';
 import debounce from 'lodash.debounce';
 import { GeoPoint } from 'firebase/firestore';
-import LocationService from '../../services/LocationService.ts';
+import LocationService from '../../services/LocationService.js';
 
 
 const containerStyle = {

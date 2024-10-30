@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useRef, useEffect } from "react";
 import { GoogleMap, LoadScript } from '@react-google-maps/api';
 import { GeoPoint } from 'firebase/firestore';
-import LocationService from '../../services/LocationService.ts';
+import LocationService from '../../services/LocationService.js';
 
 const containerStyle = {
     width: '100%',

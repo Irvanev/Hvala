@@ -29,7 +29,7 @@ import { NavBarBack } from "../../components/Navbar/NavBarBack";
 import SelectTypesForClothes from "../../components/select-types/select-types-clothes/SelectTypesForClothes";
 import PhotoUpload from "./PhotoUpload";
 import SaveButton from "./SaveButton";
-import LocationService from '../../services/LocationService.ts';
+import LocationService from '../../services/LocationService.js';
 
 const { Option } = Select;
 const { TextArea } = Input;
