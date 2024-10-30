@@ -48,6 +48,7 @@ function getCountryKey(string) {
         if (
             string.toLowerCase().includes("republika srpska") || 
             string.toLowerCase().includes("република српска") || 
+            string.toLowerCase().includes("република сербская") || 
             string.toLowerCase().includes("srpska") || 
             string.toLowerCase().includes("српска") 
         ) {
@@ -469,7 +470,6 @@ const MapComponent = ({ coordinates, setCoordinates, setCountry, country, setReg
             };
             const geoPoint = new GeoPoint(newCoordinates.lat, newCoordinates.lng);
             setCoordinates(newCoordinates);
-            console.log()
             // Fetch the address using Geocoding API
             const geocoder = new window.google.maps.Geocoder();
             geocoder.geocode({ location: newCoordinates }, (results, status) => {
@@ -491,7 +491,6 @@ const MapComponent = ({ coordinates, setCoordinates, setCountry, country, setReg
                         //     country = addressComponents[3]?.long_name || '';
                         //     region = addressComponents[2]?.long_name || '';
                         // }
-                        console.log(addressComponents);
                         const { country, region, extRegion } = extractCountryAndRegion(results[0]);
                         setLocation(formattedAddress);  // Update the AutoComplete field
                         setCountry(getCountryKey(country));
@@ -512,102 +511,97 @@ const MapComponent = ({ coordinates, setCoordinates, setCountry, country, setReg
     // Войводина
     "severni banat": "vojvodina",
     "severni banat okrug": "vojvodina",
+    "северни банат": "vojvodina",
+    "северни банат округ": "vojvodina",
+    "севернобанатски округ": "vojvodina",
     "srednji banat": "vojvodina",
     "srednji banat okrug": "vojvodina",
-    "južni banat": "vojvodina",
-    "južni banat okrug": "vojvodina",
-    "južnobački": "vojvodina",
-    "južnobački okrug": "vojvodina",
-    "zapadnobački": "vojvodina",
-    "zapadnobački okrug": "vojvodina",
+    "средњи банат": "vojvodina",
+    "средњи банат округ": "vojvodina",
+    "средњобанатски округ": "vojvodina",
+    "juzni banat": "vojvodina",
+    "juzni banat okrug": "vojvodina",
+    "јужни банат": "vojvodina",
+    "јужни банат округ": "vojvodina",
+    "јужнобанатски округ": "vojvodina",
+    "juznobacki": "vojvodina",
+    "juznobacki okrug": "vojvodina",
+    "јужнобачки округ": "vojvodina",
+    "zapadnobacki": "vojvodina",
+    "zapadnobacki okrug": "vojvodina",
+    "западнобачки округ": "vojvodina",
     "srem": "vojvodina",
-    "srem okrug": "vojvodina",
     "sremski okrug": "vojvodina",
+    "сремски округ": "vojvodina",
+    "воеводина": "vojvodina",
+    "војводина": "vojvodina",
     
     // Белград
     "belgrade": "belgrade",
     "belgrade okrug": "belgrade",
-    "belgrade district": "belgrade",
     "белград": "belgrade",
     "београд": "belgrade",
     "град београд": "belgrade",
     
     // Шумадия и Западная Сербия
-    "mačvanski": "sumadija_and_western_serbia",
-    "mačvanski okrug": "sumadija_and_western_serbia",
-    "мачвански": "sumadija_and_western_serbia",
-    "мачвански округ": "sumadija_and_western_serbia",
+    "zlatiborski": "sumadija_and_western_serbia",
+    "zlatiborski okrug": "sumadija_and_western_serbia",
+    "златиборски округ": "sumadija_and_western_serbia",
     "kolubarski": "sumadija_and_western_serbia",
     "kolubarski okrug": "sumadija_and_western_serbia",
-    "колубарски": "sumadija_and_western_serbia",
     "колубарски округ": "sumadija_and_western_serbia",
-    "podunavski": "sumadija_and_western_serbia",
-    "podunavski okrug": "sumadija_and_western_serbia",
-    "подунавски": "sumadija_and_western_serbia",
-    "подунавски округ": "sumadija_and_western_serbia",
+    "macvanski": "sumadija_and_western_serbia",
+    "macvanski okrug": "sumadija_and_western_serbia",
+    "мачвански округ": "sumadija_and_western_serbia",
+    "moravicki": "sumadija_and_western_serbia",
+    "moravicki okrug": "sumadija_and_western_serbia",
+    "моравички округ": "sumadija_and_western_serbia",
     "pomoravski": "sumadija_and_western_serbia",
     "pomoravski okrug": "sumadija_and_western_serbia",
-    "поморавски": "sumadija_and_western_serbia",
     "поморавски округ": "sumadija_and_western_serbia",
     "rasinski": "sumadija_and_western_serbia",
     "rasinski okrug": "sumadija_and_western_serbia",
-    "расински": "sumadija_and_western_serbia",
     "расински округ": "sumadija_and_western_serbia",
-    "braničevo": "sumadija_and_western_serbia",
-    "braničevo okrug": "sumadija_and_western_serbia",
-    "браничево": "sumadija_and_western_serbia",
-    "браничево округ": "sumadija_and_western_serbia",
-    "jablanica": "sumadija_and_western_serbia",
-    "jablanica okrug": "sumadija_and_western_serbia",
-    "јабланица": "sumadija_and_western_serbia",
-    "јабланица округ": "sumadija_and_western_serbia",
-    "zlatiborski": "sumadija_and_western_serbia",
-    "zlatiborski okrug": "sumadija_and_western_serbia",
-    "златиборски": "sumadija_and_western_serbia",
-    "златиборски округ": "sumadija_and_western_serbia",
-    "moravički": "sumadija_and_western_serbia",
-    "moravički okrug": "sumadija_and_western_serbia",
-    "моравички": "sumadija_and_western_serbia",
-    "моравички округ": "sumadija_and_western_serbia",
-    "šumadijski": "sumadija_and_western_serbia",
-    "šumadijski okrug": "sumadija_and_western_serbia",
-    "шумадијски": "sumadija_and_western_serbia",
+    "raski": "sumadija_and_western_serbia",
+    "raski okrug": "sumadija_and_western_serbia",
+    "рашки округ": "sumadija_and_western_serbia",
+    "sumadijski": "sumadija_and_western_serbia",
+    "sumadijski okrug": "sumadija_and_western_serbia",
     "шумадијски округ": "sumadija_and_western_serbia",
-    "bor": "sumadija_and_western_serbia",
-    "bor okrug": "sumadija_and_western_serbia",
-    "бор": "sumadija_and_western_serbia",
-    "бор округ": "sumadija_and_western_serbia",
     
     // Южная и Восточная Сербия
-    "nišava": "southern_and_eastern_serbia",
-    "nišava okrug": "southern_and_eastern_serbia",
-    "nišavski": "southern_and_eastern_serbia",
-    "nišavski okrug": "southern_and_eastern_serbia",
-    "нишава": "southern_and_eastern_serbia",
-    "нишава округ": "southern_and_eastern_serbia",
-    "нишавски": "southern_and_eastern_serbia",
+    "bor": "southern_and_eastern_serbia",
+    "bor okrug": "southern_and_eastern_serbia",
+    "борски округ": "southern_and_eastern_serbia",
+    "branicevo": "southern_and_eastern_serbia",
+    "branicevo okrug": "southern_and_eastern_serbia",
+    "браничевски округ": "southern_and_eastern_serbia",
+    "zajecarski": "southern_and_eastern_serbia",
+    "zajecarski okrug": "southern_and_eastern_serbia",
+    "зајечарски округ": "southern_and_eastern_serbia",
+    "nisava": "southern_and_eastern_serbia",
+    "nisava okrug": "southern_and_eastern_serbia",
     "нишавски округ": "southern_and_eastern_serbia",
-    "toplički": "southern_and_eastern_serbia",
-    "toplički okrug": "southern_and_eastern_serbia",
-    "топлички": "southern_and_eastern_serbia",
-    "топлички округ": "southern_and_eastern_serbia",
     "pirotski": "southern_and_eastern_serbia",
     "pirotski okrug": "southern_and_eastern_serbia",
-    "пиротски": "southern_and_eastern_serbia",
     "пиротски округ": "southern_and_eastern_serbia",
-    "pčinjski": "southern_and_eastern_serbia",
-    "pčinjski okrug": "southern_and_eastern_serbia",
-    "пчиниски": "southern_and_eastern_serbia",
-    "пчиниски округ": "southern_and_eastern_serbia",
+    "podunavski": "southern_and_eastern_serbia",
+    "podunavski okrug": "southern_and_eastern_serbia",
+    "подунавски округ": "southern_and_eastern_serbia",
+    "pcinjski": "southern_and_eastern_serbia",
+    "pcinjski okrug": "southern_and_eastern_serbia",
+    "пчињски округ": "southern_and_eastern_serbia",
+    "toplicki": "southern_and_eastern_serbia",
+    "toplicki okrug": "southern_and_eastern_serbia",
+    "топлички округ": "southern_and_eastern_serbia",
+    "jablanica": "southern_and_eastern_serbia",
+    "jablanica okrug": "southern_and_eastern_serbia",
+    "јабланички округ": "southern_and_eastern_serbia",
     
     // Косово и Метохия
     "kosovo and metohija": "kosovo_and_metohija",
-    "kosovo and metohija okrug": "kosovo_and_metohija",
-    "косово и метохия": "kosovo_and_metohija",
-    "косово и метохия округ": "kosovo_and_metohija",
-    "kosovski": "kosovo_and_metohija",
     "kosovski okrug": "kosovo_and_metohija",
-    "косовски": "kosovo_and_metohija",
+    "косово и метохија": "kosovo_and_metohija",
     "косовски округ": "kosovo_and_metohija"
 };
 
@@ -616,8 +610,6 @@ function getSerbianRegionKey(string) {
 
     // Удаляем слово "okrug" или "округ" из строки для упрощения сопоставления
     const cleanedString = normalizedString.replace(/\bokrug\b|\bокруг\b/g, '').trim();
-    console.log(cleanedString + "aboba");
-    console.log("hyyufgeyffe");
     if (regionMapping[cleanedString]) {
         return regionMapping[cleanedString];
     }
@@ -637,8 +629,6 @@ const extractCountryAndRegion = (geocodeResult) => {
         }
     });
 
-    console.log("Country extracted:", country); // For debugging
-    console.log(country.toLowerCase().includes('bosnia') || country.toLowerCase().includes('босния') || country.toLowerCase().includes('bosna'));
     geocodeResult.address_components.forEach(component => {
         if (country.toLowerCase().includes('bosnia') || 
             country.toLowerCase().includes('босния') || 
@@ -647,30 +637,19 @@ const extractCountryAndRegion = (geocodeResult) => {
             if (component.types.includes('administrative_area_level_2')) {
                 region = getRegionKey(component.long_name);
                 extRegion = component.long_name;
-                console.log('Region from administrative_area_level_2:', region);
             } else if (component.types.includes('administrative_area_level_1')  && !region) {
                 region = getRegionKey(component.long_name);
-                extRegion = component.long_name;
-                console.log('Region from administrative_area_level_1:', region);
             } else {
                 console.log('No matching administrative area found.');
             }
             
-            console.log("Country:", country);
-            console.log("Region:", region);
         }
     else if ((component.types.includes('administrative_area_level_1') || component.types.includes('administrative_area_level_2') || component.types.includes('locality')) && !(country.toLowerCase().includes('bosnia') || country.toLowerCase().includes('босния') || country.toLowerCase().includes('bosna'))) {
-            console.log(!(country.toLowerCase().includes('bosnia') || country.toLowerCase().includes('босния') || country.toLowerCase().includes('bosna')));
             region = getRegionKey(component.long_name);
             extRegion = component.long_name;
-            console.log('popa');
-            console.log("Region before mapping:", component.long_name);
-            console.log(`Country includes 'Сербия': ${country.includes('Сербия')}`);
 
             if (country.includes('Сербия') || country.includes('Serbia') || country.includes('Србиja')) {
-                console.log("Mapping region for Serbia");
                 const mappedRegion = getSerbianRegionKey(component.long_name);
-                console.log("Mapped Region:", mappedRegion);
                 if (mappedRegion !== "unknown_region") {
                     region = mappedRegion;
                 }
@@ -819,13 +798,8 @@ const ClothesForm = ({
                     const { country, region } = extractCountryAndRegion(geocodeData);
                     setTestCountry(getCountryKey(country));
                     setTestRegion(getRegionKey(region));
-                    console.log(geocodeData);
-                    console.log(region.toLowerCase().includes("шавник")+"aboba2");
-                    console.log(region.toLocaleLowerCase().includes("zagreb"));
                     setCountry(getCountryKey(country));
                     setRegion(getRegionKey(region));
-                    console.log('Country:', getCountryKey(country));
-                    console.log('Region:', getRegionKey(region));
                 } else {
                     console.warn('Geocoding API не вернул данных.');
                 }
@@ -856,102 +830,97 @@ const regionMapping = {
     // Войводина
     "severni banat": "vojvodina",
     "severni banat okrug": "vojvodina",
+    "северни банат": "vojvodina",
+    "северни банат округ": "vojvodina",
+    "севернобанатски округ": "vojvodina",
     "srednji banat": "vojvodina",
     "srednji banat okrug": "vojvodina",
-    "južni banat": "vojvodina",
-    "južni banat okrug": "vojvodina",
-    "južnobački": "vojvodina",
-    "južnobački okrug": "vojvodina",
-    "zapadnobački": "vojvodina",
-    "zapadnobački okrug": "vojvodina",
+    "средњи банат": "vojvodina",
+    "средњи банат округ": "vojvodina",
+    "средњобанатски округ": "vojvodina",
+    "juzni banat": "vojvodina",
+    "juzni banat okrug": "vojvodina",
+    "јужни банат": "vojvodina",
+    "јужни банат округ": "vojvodina",
+    "јужнобанатски округ": "vojvodina",
+    "juznobacki": "vojvodina",
+    "juznobacki okrug": "vojvodina",
+    "јужнобачки округ": "vojvodina",
+    "zapadnobacki": "vojvodina",
+    "zapadnobacki okrug": "vojvodina",
+    "западнобачки округ": "vojvodina",
     "srem": "vojvodina",
-    "srem okrug": "vojvodina",
     "sremski okrug": "vojvodina",
+    "сремски округ": "vojvodina",
+    "воеводина": "vojvodina",
+    "војводина": "vojvodina",
     
     // Белград
     "belgrade": "belgrade",
     "belgrade okrug": "belgrade",
-    "belgrade district": "belgrade",
     "белград": "belgrade",
     "београд": "belgrade",
     "град београд": "belgrade",
     
     // Шумадия и Западная Сербия
-    "mačvanski": "sumadija_and_western_serbia",
-    "mačvanski okrug": "sumadija_and_western_serbia",
-    "мачвански": "sumadija_and_western_serbia",
-    "мачвански округ": "sumadija_and_western_serbia",
+    "zlatiborski": "sumadija_and_western_serbia",
+    "zlatiborski okrug": "sumadija_and_western_serbia",
+    "златиборски округ": "sumadija_and_western_serbia",
     "kolubarski": "sumadija_and_western_serbia",
     "kolubarski okrug": "sumadija_and_western_serbia",
-    "колубарски": "sumadija_and_western_serbia",
     "колубарски округ": "sumadija_and_western_serbia",
-    "podunavski": "sumadija_and_western_serbia",
-    "podunavski okrug": "sumadija_and_western_serbia",
-    "подунавски": "sumadija_and_western_serbia",
-    "подунавски округ": "sumadija_and_western_serbia",
+    "macvanski": "sumadija_and_western_serbia",
+    "macvanski okrug": "sumadija_and_western_serbia",
+    "мачвански округ": "sumadija_and_western_serbia",
+    "moravicki": "sumadija_and_western_serbia",
+    "moravicki okrug": "sumadija_and_western_serbia",
+    "моравички округ": "sumadija_and_western_serbia",
     "pomoravski": "sumadija_and_western_serbia",
     "pomoravski okrug": "sumadija_and_western_serbia",
-    "поморавски": "sumadija_and_western_serbia",
     "поморавски округ": "sumadija_and_western_serbia",
     "rasinski": "sumadija_and_western_serbia",
     "rasinski okrug": "sumadija_and_western_serbia",
-    "расински": "sumadija_and_western_serbia",
     "расински округ": "sumadija_and_western_serbia",
-    "braničevo": "sumadija_and_western_serbia",
-    "braničevo okrug": "sumadija_and_western_serbia",
-    "браничево": "sumadija_and_western_serbia",
-    "браничево округ": "sumadija_and_western_serbia",
-    "jablanica": "sumadija_and_western_serbia",
-    "jablanica okrug": "sumadija_and_western_serbia",
-    "јабланица": "sumadija_and_western_serbia",
-    "јабланица округ": "sumadija_and_western_serbia",
-    "zlatiborski": "sumadija_and_western_serbia",
-    "zlatiborski okrug": "sumadija_and_western_serbia",
-    "златиборски": "sumadija_and_western_serbia",
-    "златиборски округ": "sumadija_and_western_serbia",
-    "moravički": "sumadija_and_western_serbia",
-    "moravički okrug": "sumadija_and_western_serbia",
-    "моравички": "sumadija_and_western_serbia",
-    "моравички округ": "sumadija_and_western_serbia",
-    "šumadijski": "sumadija_and_western_serbia",
-    "šumadijski okrug": "sumadija_and_western_serbia",
-    "шумадијски": "sumadija_and_western_serbia",
+    "raski": "sumadija_and_western_serbia",
+    "raski okrug": "sumadija_and_western_serbia",
+    "рашки округ": "sumadija_and_western_serbia",
+    "sumadijski": "sumadija_and_western_serbia",
+    "sumadijski okrug": "sumadija_and_western_serbia",
     "шумадијски округ": "sumadija_and_western_serbia",
-    "bor": "sumadija_and_western_serbia",
-    "bor okrug": "sumadija_and_western_serbia",
-    "бор": "sumadija_and_western_serbia",
-    "бор округ": "sumadija_and_western_serbia",
     
     // Южная и Восточная Сербия
-    "nišava": "southern_and_eastern_serbia",
-    "nišava okrug": "southern_and_eastern_serbia",
-    "nišavski": "southern_and_eastern_serbia",
-    "nišavski okrug": "southern_and_eastern_serbia",
-    "нишава": "southern_and_eastern_serbia",
-    "нишава округ": "southern_and_eastern_serbia",
-    "нишавски": "southern_and_eastern_serbia",
+    "bor": "southern_and_eastern_serbia",
+    "bor okrug": "southern_and_eastern_serbia",
+    "борски округ": "southern_and_eastern_serbia",
+    "branicevo": "southern_and_eastern_serbia",
+    "branicevo okrug": "southern_and_eastern_serbia",
+    "браничевски округ": "southern_and_eastern_serbia",
+    "zajecarski": "southern_and_eastern_serbia",
+    "zajecarski okrug": "southern_and_eastern_serbia",
+    "зајечарски округ": "southern_and_eastern_serbia",
+    "nisava": "southern_and_eastern_serbia",
+    "nisava okrug": "southern_and_eastern_serbia",
     "нишавски округ": "southern_and_eastern_serbia",
-    "toplički": "southern_and_eastern_serbia",
-    "toplički okrug": "southern_and_eastern_serbia",
-    "топлички": "southern_and_eastern_serbia",
-    "топлички округ": "southern_and_eastern_serbia",
     "pirotski": "southern_and_eastern_serbia",
     "pirotski okrug": "southern_and_eastern_serbia",
-    "пиротски": "southern_and_eastern_serbia",
     "пиротски округ": "southern_and_eastern_serbia",
-    "pčinjski": "southern_and_eastern_serbia",
-    "pčinjski okrug": "southern_and_eastern_serbia",
-    "пчиниски": "southern_and_eastern_serbia",
-    "пчиниски округ": "southern_and_eastern_serbia",
+    "podunavski": "southern_and_eastern_serbia",
+    "podunavski okrug": "southern_and_eastern_serbia",
+    "подунавски округ": "southern_and_eastern_serbia",
+    "pcinjski": "southern_and_eastern_serbia",
+    "pcinjski okrug": "southern_and_eastern_serbia",
+    "пчињски округ": "southern_and_eastern_serbia",
+    "toplicki": "southern_and_eastern_serbia",
+    "toplicki okrug": "southern_and_eastern_serbia",
+    "топлички округ": "southern_and_eastern_serbia",
+    "jablanica": "southern_and_eastern_serbia",
+    "jablanica okrug": "southern_and_eastern_serbia",
+    "јабланички округ": "southern_and_eastern_serbia",
     
     // Косово и Метохия
     "kosovo and metohija": "kosovo_and_metohija",
-    "kosovo and metohija okrug": "kosovo_and_metohija",
-    "косово и метохия": "kosovo_and_metohija",
-    "косово и метохия округ": "kosovo_and_metohija",
-    "kosovski": "kosovo_and_metohija",
     "kosovski okrug": "kosovo_and_metohija",
-    "косовски": "kosovo_and_metohija",
+    "косово и метохија": "kosovo_and_metohija",
     "косовски округ": "kosovo_and_metohija"
 };
 
@@ -960,8 +929,6 @@ function getSerbianRegionKey(string) {
 
     // Удаляем слово "okrug" или "округ" из строки для упрощения сопоставления
     const cleanedString = normalizedString.replace(/\bokrug\b|\bокруг\b/g, '').trim();
-    console.log(cleanedString + "aboba");
-    console.log("hyyufgeyffe");
     if (regionMapping[cleanedString]) {
         return regionMapping[cleanedString];
     }
@@ -972,6 +939,7 @@ function getSerbianRegionKey(string) {
 const extractCountryAndRegion = (geocodeResult) => {
     let country = '';
     let region = '';
+    let extRegion = '';
 
     // First pass to extract the country
     geocodeResult.address_components.forEach(component => {
@@ -980,33 +948,34 @@ const extractCountryAndRegion = (geocodeResult) => {
         }
     });
 
-    console.log("Country extracted:", country); // For debugging
-    console.log(country.toLowerCase().includes('bosnia') || country.toLowerCase().includes('босния') || country.toLowerCase().includes('bosna'));
     geocodeResult.address_components.forEach(component => {
-        if (component.types.includes('administrative_area_level_2') && (country.toLowerCase().includes('bosnia') || country.toLowerCase().includes('босния') || country.toLowerCase().includes('bosna'))) {
-            console.log('pisa');
-            region = component.long_name;
-            console.log("Region before mapping:", region);
-            console.log(`Country includes 'Сербия': ${country.includes('Сербия')}`);
-        } else if ((component.types.includes('administrative_area_level_1') || component.types.includes('administrative_area_level_2') || component.types.includes('locality')) && !(country.toLowerCase().includes('bosnia') || country.toLowerCase().includes('босния') || country.toLowerCase().includes('bosna'))) {
-            console.log(!(country.toLowerCase().includes('bosnia') || country.toLowerCase().includes('босния') || country.toLowerCase().includes('bosna')));
-            region = component.long_name;
-            console.log('popa');
-            console.log("Region before mapping:", region);
-            console.log(`Country includes 'Сербия': ${country.includes('Сербия')}`);
-
+        if (country.toLowerCase().includes('bosnia') || 
+            country.toLowerCase().includes('босния') || 
+            country.toLowerCase().includes('bosna')) {
+            
+            if (component.types.includes('administrative_area_level_2')) {
+                region = getRegionKey(component.long_name);
+                extRegion = component.long_name;
+            } else if (component.types.includes('administrative_area_level_1')  && !region) {
+                region = getRegionKey(component.long_name);
+                extRegion = component.long_name;
+            } else {
+                console.log('No matching administrative area found.');
+            }
+        }
+    else if ((component.types.includes('administrative_area_level_1') || component.types.includes('administrative_area_level_2') || component.types.includes('locality')) && !(country.toLowerCase().includes('bosnia') || country.toLowerCase().includes('босния') || country.toLowerCase().includes('bosna'))) {
+            region = getRegionKey(component.long_name);
+            extRegion = component.long_name;
             if (country.includes('Сербия') || country.includes('Serbia') || country.includes('Србиja')) {
-                console.log("Mapping region for Serbia");
-                const mappedRegion = getSerbianRegionKey(region);
-                console.log("Mapped Region:", mappedRegion);
+                const mappedRegion = getSerbianRegionKey(component.long_name);
                 if (mappedRegion !== "unknown_region") {
                     region = mappedRegion;
                 }
             }
-        }
+        } 
     });
 
-    return { country, region };
+    return { country, region, extRegion };
 };
 
     const selectAfter = (

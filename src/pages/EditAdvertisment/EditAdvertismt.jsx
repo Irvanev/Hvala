@@ -29,10 +29,12 @@ import { NavBarBack } from "../../components/Navbar/NavBarBack";
 import SelectTypesForClothes from "../../components/select-types/select-types-clothes/SelectTypesForClothes";
 import PhotoUpload from "./PhotoUpload";
 import SaveButton from "./SaveButton";
+import LocationService from '../../services/LocationService.ts';
 
 const { Option } = Select;
 const { TextArea } = Input;
 
+const locationService = new LocationService();
 
 function getCountryKey(string) {
     if (string.includes("Serbia") || string.includes("Сербия") || string.includes("Србија")) {
@@ -271,6 +273,8 @@ function EditItem() {
     const [country, setCountry] = useState('');
     const [region, setRegion] = useState('');
     const [options, setOptions] = useState([]);
+    const [testRegion, setTestRegion] = useState('Podgorica');
+    const [testCountry, setTestCountry] = useState('Crna Gora');
 
     const selectAfter = (
         <Select defaultValue={t('currency')} value={currency} style={{ width: 120 }} onChange={(value) => setCurrency(value)}>
@@ -325,71 +329,60 @@ function EditItem() {
     const mapRef = useRef(null);
 
     const handleSelect = async (value) => {
-        console.log(value);
-        console.log("HERE");
-        const selectedPlace = options.find(option => option.value === value);
+    const selectedPlace = options.find(option => option.value === value);
+    if (selectedPlace) {
+        const { longitude, latitude } = selectedPlace.f;
+        if (latitude !== undefined && longitude !== undefined) {
+            const newCoordinates = {
+                lat: parseFloat(latitude),
+                lng: parseFloat(longitude),
+            };
+            const geoPoint = new GeoPoint(newCoordinates.lat, newCoordinates.lng);
+            setCoordinates(newCoordinates);
+            setLocation(value);
 
-        if (selectedPlace) {
-            const longitude = selectedPlace.f.longitude;
-            const latitude = selectedPlace.f.latitude;
+            if (mapRef.current) {
+                mapRef.current.panTo(newCoordinates);
+            }
 
-            if (latitude !== undefined && longitude !== undefined) {
-                const newCoordinates = {
-                    lat: parseFloat(latitude),
-                    lng: parseFloat(longitude),
-                };
-                const geoPoint = new GeoPoint(newCoordinates.lat, newCoordinates.lng);
-                setCoordinates(geoPoint);
-                setLocation(value);
-
-                if (mapRef.current) {
-                    mapRef.current.panTo(newCoordinates);
+            try {
+                const geocodeData = await fetchGeocodingData(newCoordinates.lat, newCoordinates.lng);
+                if (geocodeData) {
+                    const { country, region } = locationService.extractCountryAndRegion(geocodeData);
+                    setTestCountry(locationService.getCountryKey(country));
+                    setTestRegion(locationService.getRegionKey(region));
+                    console.log(geocodeData);
+                    console.log(region.toLowerCase().includes("шавник")+"aboba2");
+                    console.log(region.toLocaleLowerCase().includes("zagreb"));
+                    setCountry(locationService.getCountryKey(country));
+                    setRegion(locationService.getRegionKey(region));
+                    console.log('Country:', locationService.getCountryKey(country));
+                    console.log('Region:', locationService.getRegionKey(region));
+                } else {
+                    console.warn('Geocoding API не вернул данных.');
                 }
-                console.log(latitude, longitude);
-
-                const geocoder = new window.google.maps.Geocoder();
-                geocoder.geocode({ location: newCoordinates }, (results, status) => {
-                    if (status === 'OK' && results.length > 0) {
-                        const addressComponents = results[0].address_components;
-                        let country = '';
-                        let region = '';
-
-                        addressComponents.forEach(component => {
-                            if (component.types.includes('country')) {
-                                country = component.long_name;
-                            }
-                            if (component.types.includes('administrative_area_level_1')) {
-                                region = component.long_name;
-                            }
-                            if (region === '' && component.types.includes('locality')) {
-                                region = component.long_name
-                            }
-                        });
-
-                        setCountry(getCountryKey(country));
-                        setRegion(getRegionKey(region));
-
-                        console.log('Address Components:', addressComponents);
-                        console.log('Country:', country);
-                        console.log('Region:', region);
-                        console.log('Selected Value:', value);
-                        console.log('New Coordinates:', newCoordinates);
-                        console.log('----');
-                    } else {
-                        console.error('Geocoder failed due to: ' + status);
-                        setCountry(getCountryKey(country));
-                        setRegion(getRegionKey(region));
-                    }
-                });
-            } else {
-                console.error('Invalid coordinates received:', selectedPlace);
-                setCountry(getCountryKey(country));
-                setRegion(getRegionKey(region));
+            } catch (error) {
+                console.error('Ошибка при вызове Geocoding API:', error);
             }
         } else {
-            console.error('Selected place not found:', value);
+            console.error('Invalid coordinates received:', selectedPlace);
         }
-    };
+    }
+};
+
+const fetchGeocodingData = async (lat, lng) => {
+    const apiKey = 'AIzaSyA0JYzidakTvQYEe0pS50vshlex2Q4jg4g';
+    const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${apiKey}`;
+    
+    const response = await fetch(url);
+    if (response.status === 200) {
+        const data = await response.json();
+        if (data.status === 'OK' && data.results.length > 0) {
+            return data.results[0];
+        }
+    }
+    return null;
+};
 
     const handlePhotoUrlsChange = (newPhotoUrls) => {
         setPhotoUrls(newPhotoUrls);
@@ -1961,7 +1954,7 @@ function EditItem() {
                             setRegion={setRegion}
                             setCountry={setCountry}
                             setLocation={setLocation}
-                            mapRef={mapRef}
+                            mapRef={mapRef} setTestCountry={setTestCountry} setTestRegion={setTestRegion} testCountry={testCountry} testRegion={testRegion}
                         />
                     </Form.Item>
 

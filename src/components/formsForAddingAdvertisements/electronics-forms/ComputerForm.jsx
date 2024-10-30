@@ -5,6 +5,9 @@ import { useTranslation } from "react-i18next";
 import { GoogleMap, LoadScript } from '@react-google-maps/api';
 import debounce from 'lodash.debounce';
 import { GeoPoint } from 'firebase/firestore';
+import LocationService from '../../services/LocationService.ts';
+
+const locationService = new LocationService();
 
 const containerStyle = {
     width: '100%',
@@ -185,7 +188,7 @@ function getCountryKey(string) {
         }
     }
 
-const MapComponent = ({ coordinates, setCoordinates, setCountry, country, setRegion, region, setLocation, location, mapRef }) => {
+const MapComponent = ({ coordinates, setCoordinates, setCountry, country, setRegion, region, setLocation, location, mapRef, testRegion, setTestRegion, testCountry, setTestCountry  }) => {
 
     const countryMappings = {
         'Черногория': 'montenegro',
@@ -206,6 +209,8 @@ const MapComponent = ({ coordinates, setCoordinates, setCountry, country, setReg
         'Bosnia and Herzegovina': 'bosnia_and_herzegovina'
     };
 
+    const { t } = useTranslation();
+
     function getCountryKey(countryName) {
         return countryMappings[countryName] || null;  // Вернуть стандартизированный ключ или null, если отображение не найдено
     }
@@ -219,11 +224,14 @@ const MapComponent = ({ coordinates, setCoordinates, setCountry, country, setReg
         if (mapRef.current) {
             const newCenter = mapRef.current.getCenter();
             const newCoordinates = {
-                lat: newCenter.lat(),
-                lng: newCenter.lng()
-            };
-            const geoPoint = new GeoPoint(newCoordinates.lat, newCoordinates.lng);
-            setCoordinates(geoPoint);
+            lat: newCenter.lat(),
+            lng: newCenter.lng()
+        };
+
+        const geoPoint = new GeoPoint(newCenter.lat(), newCenter.lng());
+
+        // Save the LatLng object
+        setCoordinates(newCoordinates); // Save LatLng object
 
             // Fetch the address using Geocoding API
             const geocoder = new window.google.maps.Geocoder();
@@ -235,32 +243,32 @@ const MapComponent = ({ coordinates, setCoordinates, setCountry, country, setReg
 
                         console.log(results[0]);
 
-                        let country = '';
-                        let region = '';
+                        // let country = '';
+                        // let region = '';
 
-                        if (addressComponents.length >= 6) {
-                            country = addressComponents[5]?.long_name || '';
-                            region = addressComponents[4]?.long_name || '';
-                        } else if (addressComponents.length >= 5) {
-                            country = addressComponents[4]?.long_name || '';
-                            region = addressComponents[3]?.long_name || '';
-                        } else if (addressComponents.length >= 4) {
-                            country = addressComponents[3]?.long_name || '';
-                            region = addressComponents[2]?.long_name || '';
-                        }
+                        // if (addressComponents.length >= 6) {
+                        //     country = addressComponents[5]?.long_name || '';
+                        //     region = addressComponents[4]?.long_name || '';
+                        // } else if (addressComponents.length >= 5) {
+                        //     country = addressComponents[4]?.long_name || '';
+                        //     region = addressComponents[3]?.long_name || '';
+                        // } else if (addressComponents.length >= 4) {
+                        //     country = addressComponents[3]?.long_name || '';
+                        //     region = addressComponents[2]?.long_name || '';
+                        // }
 
-                        console.log(country);
-                        console.log(region);
-
-                        setLocation(formattedAddress);
-                        setCountry(getCountryKey(country));
-                        setRegion(getRegionKey(region));
+                        console.log(addressComponents);
+                        const { country, region, extRegion } = locationService.extractCountryAndRegion(results[0]);
+                        setLocation(formattedAddress);  // Update the AutoComplete field
+                        setCountry(locationService.getCountryKey(country));
+                        setRegion(region);
+                        setTestCountry(country);
+                        setTestRegion(extRegion);
                     } else {
-                        console.log("NOT OK");
-                        setLocation('No results found');
+                        setLocation('Podgorica, Crna Gora');
                     }
                 } else {
-                    setLocation('Geocoder failed due to: ' + status);
+                    setLocation('Podgorica, Crna Gora');
                 }
             });
         }
@@ -268,6 +276,7 @@ const MapComponent = ({ coordinates, setCoordinates, setCountry, country, setReg
 
 
     return (
+        <div>
         <div style={containerStyle}>
             <GoogleMap
                 mapContainerStyle={{ width: '100%', height: '100%' }}
@@ -281,6 +290,15 @@ const MapComponent = ({ coordinates, setCoordinates, setCountry, country, setReg
                 alt="marker"
                 style={markerStyle}
             />
+        </div>
+        <Row gutter={16} style={{ marginTop: '20px' }}>
+            <Col span={12}>
+                <strong>{t('region')}:</strong> {testRegion ?? "Podgorica"}
+            </Col>
+            <Col span={12}>
+                <strong>{t('country')}:</strong> {testCountry ?? "Crna Gora"}
+            </Col>
+        </Row>
         </div>
     );
 };
@@ -307,6 +325,8 @@ const ComputerForm = ({
     const mapRef = useRef(null);
 
     const [form] = Form.useForm();
+    const [testRegion, setTestRegion] = useState('Podgorica');
+    const [testCountry, setTestCountry] = useState('Crna Gora');
 
     const onSubmit = async () => {
         try {
@@ -370,61 +390,60 @@ const ComputerForm = ({
     const debounceFetchSuggestions = debounce(fetchSuggestions, 300);
 
     const handleSelect = async (value) => {
-        const selectedPlace = options.find(option => option.value === value);
-        console.log(selectedPlace);
-        console.log('here')
-        if (selectedPlace) {
-            const longitude = selectedPlace.f.longitude;
-            const latitude = selectedPlace.f.latitude;
-            if (latitude !== undefined && longitude !== undefined) {
-                const newCoordinates = {
-                    lat: parseFloat(latitude),
-                    lng: parseFloat(longitude),
-                };
-                const geoPoint = new GeoPoint(newCoordinates.lat, newCoordinates.lng);
-                setCoordinates(geoPoint);
-                setLocation(value);
+    const selectedPlace = options.find(option => option.value === value);
+    if (selectedPlace) {
+        const { longitude, latitude } = selectedPlace.f;
+        if (latitude !== undefined && longitude !== undefined) {
+            const newCoordinates = {
+                lat: parseFloat(latitude),
+                lng: parseFloat(longitude),
+            };
+            const geoPoint = new GeoPoint(newCoordinates.lat, newCoordinates.lng);
+            setCoordinates(newCoordinates);
+            setLocation(value);
 
-                if (mapRef.current) {
-                    mapRef.current.panTo(newCoordinates);
-                }
-
-                let country = '';
-                let region = '';
-                const addressComponents = selectedPlace.address_components;
-
-                if (addressComponents.length >= 6) {
-                    country = addressComponents[5]?.longText || '';
-                    region = addressComponents[4]?.longText || '';
-                } else if (addressComponents.length >= 5) {
-                    country = addressComponents[4]?.longText || '';
-                    region = addressComponents[3]?.longText || '';
-                } else if (addressComponents.length >= 4) {
-                    country = addressComponents[3]?.longText || '';
-                    region = addressComponents[2]?.longText || '';
-                } else if (addressComponents.length >= 3) {
-                    country = addressComponents[2]?.longText || '';
-                    region = addressComponents[1]?.longText || '';
-                } else if (addressComponents.length >= 2) {
-                    country = addressComponents[1]?.longText || '';
-                    region = addressComponents[0]?.longText || '';
-                }
-
-                console.log(addressComponents)
-                console.log(country);
-                console.log(region);
-                console.log(value);
-                console.log(newCoordinates);
-                console.log('----');
-
-                setCountry(getCountryKey(country));
-                setRegion(getRegionKey(region));
-
-            } else {
-                console.error('Invalid coordinates received:', selectedPlace);
+            if (mapRef.current) {
+                mapRef.current.panTo(newCoordinates);
             }
+
+            try {
+                const geocodeData = await fetchGeocodingData(newCoordinates.lat, newCoordinates.lng);
+                if (geocodeData) {
+                    const { country, region } = locationService.extractCountryAndRegion(geocodeData);
+                    setTestCountry(locationService.getCountryKey(country));
+                    setTestRegion(locationService.getRegionKey(region));
+                    console.log(geocodeData);
+                    console.log(region.toLowerCase().includes("шавник")+"aboba2");
+                    console.log(region.toLocaleLowerCase().includes("zagreb"));
+                    setCountry(locationService.getCountryKey(country));
+                    setRegion(locationService.getRegionKey(region));
+                    console.log('Country:', locationService.getCountryKey(country));
+                    console.log('Region:', locationService.getRegionKey(region));
+                } else {
+                    console.warn('Geocoding API не вернул данных.');
+                }
+            } catch (error) {
+                console.error('Ошибка при вызове Geocoding API:', error);
+            }
+        } else {
+            console.error('Invalid coordinates received:', selectedPlace);
         }
-    };
+    }
+};
+
+const fetchGeocodingData = async (lat, lng) => {
+    const apiKey = 'AIzaSyA0JYzidakTvQYEe0pS50vshlex2Q4jg4g';
+    const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${apiKey}`;
+    
+    const response = await fetch(url);
+    if (response.status === 200) {
+        const data = await response.json();
+        if (data.status === 'OK' && data.results.length > 0) {
+            return data.results[0];
+        }
+    }
+    return null;
+};
 
     const selectAfter = (
         <Select defaultValue={t('currency')} style={{ width: 120 }} onChange={(value) => setCurrency(value)}>
@@ -569,7 +588,7 @@ const ComputerForm = ({
                     </Form.Item>
 
                     <Form.Item label={t('coordinates')}>
-                        <MapComponent coordinates={coordinates} setCoordinates={setCoordinates} setRegion={setRegion} setCountry={setCountry} setLocation={setLocation} mapRef={mapRef} />
+                        <MapComponent coordinates={coordinates} setCoordinates={setCoordinates} setRegion={setRegion} setCountry={setCountry} setLocation={setLocation} mapRef={mapRef} setTestCountry={setTestCountry} setTestRegion={setTestRegion} testCountry={testCountry} testRegion={testRegion} />
                     </Form.Item>
 
                     <Form.Item label={t('location_name')}>

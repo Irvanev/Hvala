@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useRef, useEffect } from "react";
 import { GoogleMap, LoadScript } from '@react-google-maps/api';
 import { GeoPoint } from 'firebase/firestore';
+import LocationService from '../../services/LocationService.ts';
 
 const containerStyle = {
     width: '100%',
@@ -25,6 +26,8 @@ const defaultCenter = {
     lat: -3.745,
     lng: -38.523
 };
+
+const locationService = new LocationService();
 
 function getCountryKey(string) {
         if (string.includes("Serbia") || string.includes("Сербия") || string.includes("Србија")) {
@@ -223,7 +226,7 @@ const getLatLng = (geoPoint) => ({
     lng: geoPoint._long
 });
 
-export const MapComponent = ({ coordinates, setCoordinates, setCountry, setRegion, setLocation, mapRef }) => {
+export const MapComponent = ({ coordinates, setCoordinates, setCountry, setRegion, setLocation, mapRef, testRegion, setTestRegion, testCountry, setTestCountry }) => {
 
     const onLoad = useCallback((map) => {
         mapRef.current = map;
@@ -243,22 +246,20 @@ export const MapComponent = ({ coordinates, setCoordinates, setCountry, setRegio
         }
     }, [coordinates]);
 
+    const { t } = useTranslation();
+
     const onDragEnd = async () => {
         if (mapRef.current) {
             const newCenter = mapRef.current.getCenter();
             const newCoordinates = {
-                lat: newCenter.lat(),
-                lng: newCenter.lng()
-            };
+            lat: newCenter.lat(),
+            lng: newCenter.lng()
+        };
 
-            // Validate new coordinates
-            if (isNaN(newCoordinates.lat) || isNaN(newCoordinates.lng)) {
-                console.error("Invalid coordinates from map:", newCoordinates);
-                return;
-            }
+        const geoPoint = new GeoPoint(newCenter.lat(), newCenter.lng());
 
-            const geoPoint = new GeoPoint(newCoordinates.lat, newCoordinates.lng);
-            setCoordinates(geoPoint);
+        // Save the LatLng object
+        setCoordinates(newCoordinates); // Save LatLng object
 
             // Fetch the address using Geocoding API
             const geocoder = new window.google.maps.Geocoder();
@@ -270,40 +271,32 @@ export const MapComponent = ({ coordinates, setCoordinates, setCountry, setRegio
 
                         console.log(results[0]);
 
-                        let country = '';
-                        let region = '';
+                        // let country = '';
+                        // let region = '';
 
-                        if (addressComponents.length >= 6) {
-                            country = addressComponents[5]?.long_name || '';
-                            region = addressComponents[4]?.long_name || '';
-                        } else if (addressComponents.length >= 5) {
-                            country = addressComponents[4]?.long_name || '';
-                            region = addressComponents[3]?.long_name || '';
-                        } else if (addressComponents.length >= 4) {
-                            country = addressComponents[3]?.long_name || '';
-                            region = addressComponents[2]?.long_name || '';
-                        }
+                        // if (addressComponents.length >= 6) {
+                        //     country = addressComponents[5]?.long_name || '';
+                        //     region = addressComponents[4]?.long_name || '';
+                        // } else if (addressComponents.length >= 5) {
+                        //     country = addressComponents[4]?.long_name || '';
+                        //     region = addressComponents[3]?.long_name || '';
+                        // } else if (addressComponents.length >= 4) {
+                        //     country = addressComponents[3]?.long_name || '';
+                        //     region = addressComponents[2]?.long_name || '';
+                        // }
 
-                        console.log(getCountryKey(country));
-                        console.log(getRegionKey(region));
-                        console.log(coordinates);
-                        console.log(formattedAddress);
-                        setLocation(formattedAddress);
-                        setCountry(getCountryKey(country));
-                        setRegion(getRegionKey(region));
+                        console.log(addressComponents);
+                        const { country, region, extRegion } = locationService.extractCountryAndRegion(results[0]);
+                        setLocation(formattedAddress);  // Update the AutoComplete field
+                        setCountry(locationService.getCountryKey(country));
+                        setRegion(region);
+                        setTestCountry(country);
+                        setTestRegion(extRegion);
                     } else {
-                        let country = '';
-                        let region = '';
-
-                        console.log("NOT OK");
-                        setCountry(getCountryKey(country));
-                        setRegion(getRegionKey(region));
+                        setLocation('Podgorica, Crna Gora');
                     }
                 } else {
-                    let country = '';
-                    let region = '';
-                    setCountry(getCountryKey(country));
-                    setRegion(getRegionKey(region));
+                    setLocation('Podgorica, Crna Gora');
                 }
             });
         }
@@ -325,6 +318,14 @@ export const MapComponent = ({ coordinates, setCoordinates, setCountry, setRegio
                     style={markerStyle}
                 />
             </div>
+            <Row gutter={16} style={{ marginTop: '20px' }}>
+            <Col span={12}>
+                <strong>{t('region')}:</strong> {testRegion ?? "Podgorica"}
+            </Col>
+            <Col span={12}>
+                <strong>{t('country')}:</strong> {testCountry ?? "Crna Gora"}
+            </Col>
+        </Row>
         </LoadScript>
     );
 };
