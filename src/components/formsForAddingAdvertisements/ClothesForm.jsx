@@ -497,8 +497,10 @@ const MapComponent = ({ coordinates, setCoordinates, setCountry, country, setReg
                         setLocation(formattedAddress);  // Update the AutoComplete field
                         setCountry(getCountryKey(country));
                         setRegion(region);
-                        setTestCountry(getCountryKey(country));
-                        setTestRegion(getRegionKey(region));
+                        setTestCountry(country);
+                        setTestRegion(region);
+                        console.log(results[0]);
+                        console.log(region);
                     } else {
                         setLocation('Podgorica, Crna Gora');
                     }
