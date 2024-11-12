@@ -5,6 +5,8 @@ import { PlusOutlined } from '@ant-design/icons';
 import { GoogleMap, LoadScript } from '@react-google-maps/api';
 import debounce from 'lodash.debounce';
 import { GeoPoint } from 'firebase/firestore';
+import LocationService from '../../services/LocationService.js';
+import RegionSelector from "../../services/RegionSelector.jsx";
 
 const containerStyle = {
     width: '100%',
@@ -25,7 +27,7 @@ const markerStyle = {
     zIndex: 1,
 };
 
-
+var lservice = new LocationService();
 
 function getCountryKey(string) {
         if (string.includes("Serbia") || string.includes("Сербия") || string.includes("Србија")) {
@@ -355,8 +357,6 @@ function getCountryKey(string) {
             return "sumadija_and_western_serbia";
         } else if (string.includes("Southern and Eastern Serbia") || string.includes("Южно-Банатский")) {
             return "southern_and_eastern_serbia";
-        } else if (string.includes("Kosovo and Metohija") || string.includes("Косово и Метохия")) {
-            return "kosovo_and_metohija";
         } else if (string.includes("Belgrade") || string.includes("Белград") || string.includes("Београд")) {
             return "belgrade";
         } else if (string.includes("Bor") || string.includes("Bor") || string.includes("Борский") || string.includes("Борски")) {
@@ -454,6 +454,8 @@ const MapComponent = ({ coordinates, setCoordinates, setCountry, country, setReg
         'Bosnia and Herzegovina': 'bosnia_and_herzegovina'
     };
 
+    const { Option } = Select;
+
     const { t } = useTranslation();
 
     const onLoad = useCallback((map) => {
@@ -495,8 +497,8 @@ const MapComponent = ({ coordinates, setCoordinates, setCountry, country, setReg
                         setLocation(formattedAddress);  // Update the AutoComplete field
                         setCountry(getCountryKey(country));
                         setRegion(region);
-                        setTestCountry(country);
-                        setTestRegion(extRegion);
+                        setTestCountry(getCountryKey(country));
+                        setTestRegion(getRegionKey(region));
                     } else {
                         setLocation('Podgorica, Crna Gora');
                     }
@@ -598,11 +600,6 @@ const MapComponent = ({ coordinates, setCoordinates, setCountry, country, setReg
     "jablanica okrug": "southern_and_eastern_serbia",
     "јабланички округ": "southern_and_eastern_serbia",
     
-    // Косово и Метохия
-    "kosovo and metohija": "kosovo_and_metohija",
-    "kosovski okrug": "kosovo_and_metohija",
-    "косово и метохија": "kosovo_and_metohija",
-    "косовски округ": "kosovo_and_metohija"
 };
 
 function getSerbianRegionKey(string) {
@@ -660,6 +657,8 @@ const extractCountryAndRegion = (geocodeResult) => {
     return { country, region, extRegion };
 };
 
+    const regionChoice = lservice.getRegionChoice(t);
+
     return (
     <div>
         <div style={containerStyle}>
@@ -676,15 +675,15 @@ const extractCountryAndRegion = (geocodeResult) => {
                 style={markerStyle}
             />
         </div>
-        
-        <Row gutter={16} style={{ marginTop: '20px' }}>
-            <Col span={12}>
-                <strong>{t('region')}:</strong> {testRegion ?? "Podgorica"}
-            </Col>
-            <Col span={12}>
-                <strong>{t('country')}:</strong> {testCountry ?? "Crna Gora"}
-            </Col>
-        </Row>
+
+        <Form.Item
+            label={t('region')}
+            name="region"
+            rules={[{ required: true, message: 'Please select a region!' }]}
+        >
+            <RegionSelector region={testRegion} setRegion={setTestRegion} country={testCountry} setCountry={setTestCountry}></RegionSelector>
+        </Form.Item>
+
     </div>
 );
 
@@ -735,15 +734,27 @@ const ClothesForm = ({
 
     const handleChange = ({ fileList }) => setFileList(fileList);
 
+    const suggestionCache = {}; // Initialize a cache object
+
     const fetchSuggestions = async (value) => {
+        // Avoid fetching if input is too short
+        if (value.length < 3) return;
+
+        // Check cache for existing results
+        if (suggestionCache[value]) {
+            setOptions(suggestionCache[value]); // Use cached data if available
+            return;
+        }
+
         try {
             const apiKey = 'AIzaSyD7K42WP5zjV99GP3xll40eFr_5DaAk3ZU';
             const url = "https://places.googleapis.com/v1/places:searchText";
             const headers = {
                 'Content-Type': 'application/json',
                 'X-Goog-Api-Key': apiKey,
-                'X-Goog-FieldMask': 'places.*',
+                'X-Goog-FieldMask': 'places.formattedAddress,places.addressComponents,places.location',
             };
+
             const body = JSON.stringify({ textQuery: value });
 
             const response = await fetch(url, {
@@ -755,34 +766,42 @@ const ClothesForm = ({
             if (response.status === 200) {
                 const data = await response.json();
                 const places = data.places;
+
                 if (places && places.length > 0) {
-                    setOptions(places.map(place => ({
-                        label: place.formattedAddress,  // Extract text from displayName object
-                        value: place.formattedAddress,
+                    const mappedOptions = places.map(place => ({
+                        label: place.formattedAddress || "Unknown address",
+                        value: place.formattedAddress || "Unknown address",
                         address_components: place.addressComponents,
-                        f: place.location
-                    })));
+                        location: place.location
+                    }));
+                    
+                    // Cache the results
+                    suggestionCache[value] = mappedOptions;
+                    
+                    // Update the options with the fetched data
+                    setOptions(mappedOptions);
                 } else {
                     console.log("No places found");
                 }
             } else {
-                throw new Error("Failed to fetch suggestions: ${response.statusText}");
+                throw new Error(`Failed to fetch suggestions: ${response.statusText}`);
             }
         } catch (e) {
             console.log("Error: ", e);
         }
     };
 
-    const debounceFetchSuggestions = debounce(fetchSuggestions, 300);
+    const debounceFetchSuggestions = debounce(fetchSuggestions, 1000);
 
     const handleSelect = async (value) => {
     const selectedPlace = options.find(option => option.value === value);
+    
     if (selectedPlace) {
-        const { longitude, latitude } = selectedPlace.f;
-        if (latitude !== undefined && longitude !== undefined) {
+        const { location } = selectedPlace;
+        if (location && location.latitude !== undefined && location.longitude !== undefined) {
             const newCoordinates = {
-                lat: parseFloat(latitude),
-                lng: parseFloat(longitude),
+                lat: parseFloat(location.latitude),
+                lng: parseFloat(location.longitude),
             };
             const geoPoint = new GeoPoint(newCoordinates.lat, newCoordinates.lng);
             setCoordinates(newCoordinates);
@@ -917,11 +936,6 @@ const regionMapping = {
     "jablanica okrug": "southern_and_eastern_serbia",
     "јабланички округ": "southern_and_eastern_serbia",
     
-    // Косово и Метохия
-    "kosovo and metohija": "kosovo_and_metohija",
-    "kosovski okrug": "kosovo_and_metohija",
-    "косово и метохија": "kosovo_and_metohija",
-    "косовски округ": "kosovo_and_metohija"
 };
 
 function getSerbianRegionKey(string) {
@@ -941,7 +955,6 @@ const extractCountryAndRegion = (geocodeResult) => {
     let region = '';
     let extRegion = '';
 
-    // First pass to extract the country
     geocodeResult.address_components.forEach(component => {
         if (component.types.includes('country')) {
             country = component.long_name;
