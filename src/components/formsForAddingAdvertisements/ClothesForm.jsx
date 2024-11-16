@@ -683,7 +683,7 @@ const extractCountryAndRegion = (geocodeResult) => {
             name="region"
             rules={[{ required: true, message: 'Please select a region!' }]}
         >
-            <RegionSelector region={testRegion} setRegion={setTestRegion} country={testCountry} setCountry={setTestCountry}></RegionSelector>
+            <RegionSelector region={testRegion} setRegion={setTestRegion} country={testCountry} setCountry={setTestCountry} coordinates={coordinates} setCoordinates={setCoordinates}></RegionSelector>
         </Form.Item>
 
     </div>
