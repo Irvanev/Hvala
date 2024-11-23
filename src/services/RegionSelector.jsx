@@ -5,7 +5,7 @@ import LocationService from './LocationService';
 
 const { Option } = Select;
 
-const RegionSelector = ({ region, setRegion, country, setCountry, coordinates, setCoordinates }) => {
+const RegionSelector = ({ region, setRegion, country, setCountry, coordinates, setCoordinates, location, setLocation }) => {
     const { t } = useTranslation();
     const lservice = new LocationService();
     const regionChoice = lservice.getRegionChoice(t);
@@ -189,7 +189,7 @@ const RegionSelector = ({ region, setRegion, country, setCountry, coordinates, s
                 return serbiaRegions;
             case 'croatia':
                 return croatiaRegions;
-            case 'bosnia':
+            case 'bosnia_and_herzegovina':
                 return bosniaRegions;
             default:
                 return {};
@@ -304,12 +304,13 @@ const RegionSelector = ({ region, setRegion, country, setCountry, coordinates, s
                     onChange={(value) => {
                         setManualChange(true);
                         setCountry(value);
+                        setLocation(t(value));
                     }}
                 >
                     <Option value="montenegro">{t('montenegro')}</Option>
                     <Option value="serbia">{t('serbia')}</Option>
                     <Option value="croatia">{t('croatia')}</Option>
-                    <Option value="bosnia">{t('bosnia')}</Option>
+                    <Option value="bosnia_and_herzegovina">{t('bosnia_and_herzegovina')}</Option>
                 </Select>
             </Form.Item>
 
@@ -327,6 +328,8 @@ const RegionSelector = ({ region, setRegion, country, setCountry, coordinates, s
                     onChange={(value) => {
                         setRegion(value);
                         setCoordinates(regionCoordinates[value]);
+                        var temp = t(country) + ", " + t(value);
+                        setLocation(temp);
                     }}
                     filterOption={(input, option) =>
                         option.children.toLowerCase().includes(input.toLowerCase())
@@ -334,7 +337,7 @@ const RegionSelector = ({ region, setRegion, country, setCountry, coordinates, s
                 >
                     {Object.entries(regions).map(([key, label]) => (
                         <Option key={key} value={key}>
-                            {label}
+                            {t(label)}
                         </Option>
                     ))}
                 </Select>
