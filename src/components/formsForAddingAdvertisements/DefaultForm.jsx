@@ -101,7 +101,7 @@ const MapComponent = ({ coordinates, setCoordinates,setCountry, country, setRegi
                         setCountry(locationService.getCountryKey(country));
                         setRegion(region);
                         setTestCountry(country);
-                        setTestRegion(extRegion);
+                        setTestRegion(region);
                     } else {
                         setLocation('Podgorica, Crna Gora');
                     }

@@ -273,7 +273,7 @@ const MapComponent = ({ coordinates, setCoordinates, setCountry, country, setReg
                         setCountry(locationService.getCountryKey(country));
                         setRegion(region);
                         setTestCountry(country);
-                        setTestRegion(extRegion);
+                        setTestRegion(region);
                     } else {
                         setLocation('Podgorica, Crna Gora');
                     }
