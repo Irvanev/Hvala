@@ -305,18 +305,17 @@ class LocationService {
             string.toLowerCase().includes("tuzi")
         ) {
             return "municipality_tuzi";
-        } else if (string.includes("Vojvodina") || string.includes("Воеводина")) {
-            return "vojvodina";
-        } else if (string.includes("Belgrade") || string.includes("Белград")) {
-            return "belgrade";
-        } else if (string.includes("Šumadija") || string.includes("Шумадийский")) {
-            return "sumadija_and_western_serbia";
-        } else if (string.includes("Southern and Eastern Serbia") || string.includes("Южно-Банатский")) {
-            return "southern_and_eastern_serbia";
-        } else if (string.includes("Kosovo and Metohija") || string.includes("Косово и Метохия")) {
-            return "kosovo_and_metohija";
-        } else if (string.includes("Belgrade") || string.includes("Белград") || string.includes("Београд")) {
-            return "belgrade";
+        } else if (string.toLowerCase().includes("vojvodina") || string.toLowerCase().includes("воеводина") || string.toLowerCase().includes("војводина")) {
+    return "vojvodina";
+} else if (string.toLowerCase().includes("belgrade") || string.toLowerCase().includes("белград") || string.toLowerCase().includes("београд")) {
+    return "belgrade";
+} else if (string.toLowerCase().includes("šumadija") || string.toLowerCase().includes("sumadija") || string.toLowerCase().includes("шумадийский") || string.toLowerCase().includes("шумадија")) {
+    return "sumadija_and_western_serbia";
+} else if (string.toLowerCase().includes("southern and eastern serbia") || string.toLowerCase().includes("южно-банатский") || string.toLowerCase().includes("јужно-банатски") || string.toLowerCase().includes("southern_and_eastern_serbia")) {
+    return "southern_and_eastern_serbia";
+} else if (string.toLowerCase().includes("belgrade") || string.toLowerCase().includes("белград") || string.toLowerCase().includes("београд")) {
+    return "belgrade";
+
         } else if (string.includes("Bor") || string.includes("Bor") || string.includes("Борский") || string.includes("Борски")) {
             return "bor_district";
         } else if (string.includes("Braničevo District") || string.includes("Braničevo") || string.includes("Браничевский") || string.includes("Браничевски округ")) {

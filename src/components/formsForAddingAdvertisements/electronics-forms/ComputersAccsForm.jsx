@@ -6,6 +6,7 @@ import { GoogleMap, LoadScript } from '@react-google-maps/api';
 import debounce from 'lodash.debounce';
 import { GeoPoint } from 'firebase/firestore';
 import LocationService from './../../../services/LocationService.js';
+import RegionSelector from "../../../services/RegionSelector.jsx";
 
 const containerStyle = {
     width: '100%',
@@ -156,6 +157,7 @@ const MapComponent = ({ coordinates, setCoordinates, setCountry, country, setReg
                 <strong>{t('country')}:</strong> {testCountry ?? "Crna Gora"}
             </Col>
         </Row>
+        <RegionSelector region={testRegion} setRegion={setTestRegion} country={testCountry} setCountry={setTestCountry} coordinates={coordinates} setCoordinates={setCoordinates} location={location} setLocation={setLocation}></RegionSelector>
         </div>
     );
 };
@@ -447,7 +449,7 @@ const fetchGeocodingData = async (lat, lng) => {
                     </Form.Item>
 
                     <Form.Item label={t('coordinates')}>
-                        <MapComponent coordinates={coordinates} setCoordinates={setCoordinates} setRegion={setRegion} setCountry={setCountry} setLocation={setLocation} mapRef={mapRef} setTestCountry={setTestCountry} setTestRegion={setTestRegion} testCountry={testCountry} testRegion={testRegion} />
+                        <MapComponent coordinates={coordinates} setCoordinates={setCoordinates} setRegion={setRegion} setCountry={setCountry} setLocation={setLocation} mapRef={mapRef} setTestCountry={setTestCountry} setTestRegion={setTestRegion} testCountry={testCountry} testRegion={testRegion} location={location} />
                     </Form.Item>
 
                     <Form.Item label={t('location_name')}>

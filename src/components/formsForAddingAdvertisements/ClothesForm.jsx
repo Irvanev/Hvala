@@ -493,7 +493,7 @@ const MapComponent = ({ coordinates, setCoordinates, setCountry, country, setReg
                         //     country = addressComponents[3]?.long_name || '';
                         //     region = addressComponents[2]?.long_name || '';
                         // }
-                        const { country, region, extRegion } = extractCountryAndRegion(results[0]);
+                        const { country, region, extRegion } = lservice.extractCountryAndRegion(results[0]);
                         setLocation(formattedAddress);  // Update the AutoComplete field
                         setCountry(getCountryKey(country));
                         setRegion(region);
@@ -501,6 +501,7 @@ const MapComponent = ({ coordinates, setCoordinates, setCountry, country, setReg
                         setTestRegion(region);
                         console.log(results[0]);
                         console.log(region);
+                        console.log("pups");
                     } else {
                         setLocation('Podgorica, Crna Gora');
                     }
@@ -679,9 +680,9 @@ const extractCountryAndRegion = (geocodeResult) => {
         </div>
 
         <Form.Item
-            label={t('region')}
-            name="region"
-            rules={[{ required: true, message: 'Please select a region!' }]}
+            // label={t('region')}
+            // name="region"
+            // rules={[{ required: true, message: 'Please select a region!' }]}
         >
             <RegionSelector region={testRegion} setRegion={setTestRegion} country={testCountry} setCountry={setTestCountry} coordinates={coordinates} setCoordinates={setCoordinates} location={location} setLocation={setLocation}></RegionSelector>
         </Form.Item>

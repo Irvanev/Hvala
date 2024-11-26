@@ -52,20 +52,6 @@ const RegionSelector = ({ region, setRegion, country, setCountry, coordinates, s
 
     const croatiaRegions = useMemo(() => ({
         zagreb_city: t('zagreb_city'),
-        bor_district: t('bor_district'),
-        branicevo_district: t('branicevo_district'),
-        zlatibor_district: t('zlatibor_district'),
-        kolubara_district: t('kolubara_district'),
-        moravica_district: t('moravica_district'),
-        nisava_district: t('nisava_district'),
-        pirot_district: t('pirot_district'),
-        podunavlje_district: t('podunavlje_district'),
-        pcinja_district: t('pcinja_district'),
-        raska_district: t('raska_district'),
-        rasina_district: t('rasina_district'),
-        toplica_district: t('toplica_district'),
-        sumadija_district: t('sumadija_district'),
-        jablanica_district: t('jablanica_district'),
         zagreb_county: t('zagreb_county'),
         split_dalmatia: t('split_dalmatia'),
         istria: t('istria'),
@@ -182,7 +168,7 @@ const RegionSelector = ({ region, setRegion, country, setCountry, coordinates, s
 
     // Select regions based on the selected country
     const getRegionsForCountry = () => {
-        switch (country) {
+        switch (getCountryKey(country)) {
             case 'montenegro':
                 return montenegroRegions;
             case 'serbia':
@@ -198,17 +184,17 @@ const RegionSelector = ({ region, setRegion, country, setCountry, coordinates, s
 
     function getCountryKey(string) {
         if (string.includes("Serbia") || string.includes("Сербия") || string.includes("Србија") || string.includes("serbia")) {
-            return "serbia";
+            return 'serbia';
         } else if (string.includes("Croatia") || string.includes("Хорватия") || string.includes("Хрватска") || string.includes("croatia")) {
-            return "croatia";
+            return 'croatia';
         } else if (string.includes("Bosnia and Herzegovina") || string.includes("Босния и Герцеговина") || string.includes("Босна и Херцеговина") || string.includes("bosnia_and_herzegovina")) {
-            return "bosnia_and_herzegovina";
+            return 'bosnia_and_herzegovina';
         } else if (string.includes("Montenegro") || string.includes("Черногория") || string.includes("Црна Гора") || string.includes("montenegro")) {
-            return "montenegro";
+            return 'montenegro';
         } else if (string.includes("North Macedonia") || string.includes("Мacedonia") || string.includes("Северная Македония") || string.includes("Македония") || string.includes("Северна Македонија") || string.includes("north_macedonia")) {
-            return "north_macedonia";
+            return 'north_macedonia';
         } else {
-            return "montenegro";
+            return 'montenegro';
         }
     }
 
@@ -219,7 +205,7 @@ const RegionSelector = ({ region, setRegion, country, setCountry, coordinates, s
 
     useEffect(() => {
         console.log("Updated region from outside:", region);
-
+        console.log(t(region));
         // Update 'region' field in the form
         form.setFieldsValue({ region, country });
 
@@ -242,12 +228,11 @@ const RegionSelector = ({ region, setRegion, country, setCountry, coordinates, s
 
     useEffect(() => {
         const recognizedCountryKey = getCountryKey(country);
-        const recognizedRegionKey = locationService.getRegionKey(region);
-        console.log(recognizedCountryKey);
-        console.log(t(recognizedCountryKey));
-        console.log("country is");
+        const recognizedRegionKey = locationService.getRegionKey(region.toLowerCase());
+        console.log(region);
         console.log(recognizedRegionKey);
         console.log(t(recognizedRegionKey));
+        console.log(getRegionsForCountry(recognizedCountryKey));
         console.log("region is");
 
         // Проверка и обновление через прокладку
@@ -270,7 +255,7 @@ const RegionSelector = ({ region, setRegion, country, setCountry, coordinates, s
         if (buffer.current.region !== recognizedRegionKey) {
             buffer.current.region = recognizedRegionKey;
             setRegion(recognizedRegionKey);
-            form.setFieldsValue({ region: t(recognizedRegionKey) });
+            form.setFieldsValue({ region: recognizedRegionKey });
         }
 
         // Обработка ручного изменения
@@ -280,14 +265,25 @@ const RegionSelector = ({ region, setRegion, country, setCountry, coordinates, s
                 buffer.current.region = firstRegionKey;
                 setRegion(firstRegionKey);
                 setCoordinates(regionCoordinates[firstRegionKey]);
-                form.setFieldsValue({ region: t(firstRegionKey) });
+                form.setFieldsValue({ region: firstRegionKey });
             }
             setManualChange(false);
         }
     }, [country, region, manualChange]);
 
 
+    const renderRegionOptions = () => {
+        const regionList = country === 'montenegro' ? montenegroRegions :
+            country === 'serbia' ? serbiaRegions :
+            country === 'croatia' ? croatiaRegions :
+            bosniaRegions;
 
+        return Object.keys(regionList).map((key) => (
+            <Option key={key} value={key}>
+                {regionList[key]} {/* This will display the translated region name */}
+            </Option>
+        ));
+    };
 
 
     return (
@@ -326,6 +322,7 @@ const RegionSelector = ({ region, setRegion, country, setCountry, coordinates, s
                     placeholder={t('select_region')}
                     optionFilterProp="children"
                     onChange={(value) => {
+                        
                         setRegion(value);
                         setCoordinates(regionCoordinates[value]);
                         var temp = t(country) + ", " + t(value);
@@ -337,7 +334,7 @@ const RegionSelector = ({ region, setRegion, country, setCountry, coordinates, s
                 >
                     {Object.entries(regions).map(([key, label]) => (
                         <Option key={key} value={key}>
-                            {t(label)}
+                            {label}
                         </Option>
                     ))}
                 </Select>
