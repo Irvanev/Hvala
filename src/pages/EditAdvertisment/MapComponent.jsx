@@ -1,7 +1,10 @@
 import React, { useState, useCallback, useRef, useEffect } from "react";
 import { GoogleMap, LoadScript } from '@react-google-maps/api';
 import { GeoPoint } from 'firebase/firestore';
+import { Row, Col } from 'antd';
+import { useTranslation } from "react-i18next";
 import LocationService from '../../services/LocationService.js';
+import RegionSelector from "../../services/RegionSelector.jsx";
 
 const containerStyle = {
     width: '100%',
@@ -226,7 +229,7 @@ const getLatLng = (geoPoint) => ({
     lng: geoPoint._long
 });
 
-export const MapComponent = ({ coordinates, setCoordinates, setCountry, setRegion, setLocation, mapRef, testRegion, setTestRegion, testCountry, setTestCountry }) => {
+export const MapComponent = ({ coordinates, setCoordinates, setCountry, setRegion, setLocation, mapRef, testRegion, setTestRegion, testCountry, setTestCountry, location }) => {
 
     const onLoad = useCallback((map) => {
         mapRef.current = map;
@@ -291,7 +294,7 @@ export const MapComponent = ({ coordinates, setCoordinates, setCountry, setRegio
                         setCountry(locationService.getCountryKey(country));
                         setRegion(region);
                         setTestCountry(country);
-                        setTestRegion(extRegion);
+                        setTestRegion(region);
                     } else {
                         setLocation('Podgorica, Crna Gora');
                     }
@@ -326,6 +329,7 @@ export const MapComponent = ({ coordinates, setCoordinates, setCountry, setRegio
                 <strong>{t('country')}:</strong> {testCountry ?? "Crna Gora"}
             </Col>
         </Row>
+        <RegionSelector region={testRegion} setRegion={setTestRegion} country={testCountry} setCountry={setTestCountry} coordinates={coordinates} setCoordinates={setCoordinates} location={location} setLocation={setLocation}></RegionSelector>
         </LoadScript>
     );
 };

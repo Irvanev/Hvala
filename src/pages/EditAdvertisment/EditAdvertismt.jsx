@@ -1954,7 +1954,7 @@ const fetchGeocodingData = async (lat, lng) => {
                             setRegion={setRegion}
                             setCountry={setCountry}
                             setLocation={setLocation}
-                            mapRef={mapRef} setTestCountry={setTestCountry} setTestRegion={setTestRegion} testCountry={testCountry} testRegion={testRegion}
+                            mapRef={mapRef} setTestCountry={setTestCountry} setTestRegion={setTestRegion} testCountry={testCountry} testRegion={testRegion} location={location}
                         />
                     </Form.Item>
 
