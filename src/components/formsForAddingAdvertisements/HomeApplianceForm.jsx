@@ -326,12 +326,12 @@ const MapComponent = ({ coordinates, setCoordinates, setCountry, country, setReg
         </div>
 
         <Row gutter={16} style={{ marginTop: '20px' }}>
-            <Col span={12}>
+            {/* <Col span={12}>
                 <strong>{t('region')}:</strong> {testRegion ?? "Podgorica"}
             </Col>
             <Col span={12}>
                 <strong>{t('country')}:</strong> {testCountry ?? "Crna Gora"}
-            </Col>
+            </Col> */}
         </Row>
         <RegionSelector region={testRegion} setRegion={setTestRegion} country={testCountry} setCountry={setTestCountry} coordinates={coordinates} setCoordinates={setCoordinates} location={location} setLocation={setLocation}></RegionSelector>
         </div>
