@@ -9,6 +9,8 @@ import en from "./assets/locales/en.json";
 import ru from "./assets/locales/ru.json";
 import sr from "./assets/locales/me.json";
 
+import { UserRoleProvider } from './context/UserRoleContext';
+
 i18n
   .use(initReactI18next)
   .init({
@@ -26,6 +28,8 @@ i18n
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <App />
+  <UserRoleProvider>
+    <App />
+  </UserRoleProvider>
 );
 reportWebVitals();

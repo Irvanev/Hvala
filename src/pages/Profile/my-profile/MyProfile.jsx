@@ -5,8 +5,6 @@ import styles from './my-profile.module.css';
 
 import { MyNavbar } from "../../../components/Navbar/Navbar";
 import { NavBarLogout } from "../../../components/Navbar/NavBarLogout";
-import CardAdvertisementProfile from "../../../components/profile-card/CardAdvertismentProfile";
-import CardAdvertisementProfileArchive from "../../../components/profile-card/CardAdvertismentArchive";
 import OrangeButton from "../../../components/buttons/orange-button/OrangeButton";
 
 import photoProfile from "../../../assets/person2.jpg";
@@ -14,12 +12,13 @@ import photoProfile from "../../../assets/person2.jpg";
 import { Rate, Spin, Tabs, Empty, Modal, Badge } from "antd";
 
 import { fetchUserProfile, fetchUserAdvertisment, fetchUserFeedback, fetchUserAdvertismentArchive } from "../../../services/profile/Profile";
+import CustomCard from "../../../components/card/CustomCard";
 
 const { TabPane } = Tabs;
 
 const MyProfile = () => {
     const history = useHistory();
-    const {t} = useTranslation();
+    const { t } = useTranslation();
     const [user, setUser] = useState(null);
     const [advertisment, setAdvertisment] = useState([]);
     const [advertismentArchive, setAdvertismentArchive] = useState([]);
@@ -92,7 +91,19 @@ const MyProfile = () => {
                         <div className={styles.profileCards}>
                             {advertisment.length > 0 ? (
                                 advertisment.map((advertisment, index) => (
-                                    <CardAdvertisementProfile key={index} advertisment={advertisment} />
+                                    <CustomCard
+                                        id={advertisment.id}
+                                        key={index}
+                                        user={user}
+                                        images={advertisment.photoUrls}
+                                        price={advertisment.price}
+                                        currency={advertisment.currency}
+                                        title={advertisment.title}
+                                        location={advertisment.location}
+                                        date={advertisment.time_creation}
+                                        showButtons={true}
+                                        status="active"
+                                    />
                                 ))
                             ) : (
                                 <Empty />
@@ -110,7 +121,19 @@ const MyProfile = () => {
                         <div className={styles.profileCards}>
                             {advertismentArchive.length > 0 ? (
                                 advertismentArchive.map((advertismentArchive, index) => (
-                                    <CardAdvertisementProfileArchive key={index} advertismentArchive={advertismentArchive} />
+                                    <CustomCard
+                                        id={advertismentArchive.id}
+                                        key={index}
+                                        user={user}
+                                        images={advertismentArchive.photoUrls}
+                                        price={advertismentArchive.price}
+                                        currency={advertismentArchive.currency}
+                                        title={advertismentArchive.title}
+                                        location={advertismentArchive.location}
+                                        date={advertismentArchive.time_creation}
+                                        showButtons={true}
+                                        status="archived"
+                                    />
                                 ))
                             ) : (
                                 <Empty />

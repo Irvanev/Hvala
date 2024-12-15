@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Image } from "react-bootstrap";
 import Logo from "../../assets/person2.jpg";
 import { MyNavbar } from "../../components/Navbar/Navbar";
+import CustomCard from "../../components/card/CustomCard";
 import { NavBarShare } from "../../components/Navbar/NavBarShare";
 import { useParams, useHistory } from "react-router-dom";
 import { collection, query, where, getDocs, addDoc, serverTimestamp, doc, updateDoc } from "firebase/firestore";
@@ -26,6 +27,8 @@ const SellerProfile = () => {
   const history = useHistory();
   const from_uid = auth.currentUser ? auth.currentUser.uid : null;
   const [userMe, setUserMe] = useState(null);
+
+  const [searchText, setSearchText] = useState('');
 
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
@@ -298,6 +301,14 @@ const SellerProfile = () => {
     }
   }
 
+  const handleSearchChange = (event) => {
+    setSearchText(event.target.value);
+  };
+
+  const filteredAdsBySearch = filteredAds.filter(advertisment =>
+    advertisment.title.toLowerCase().includes(searchText.toLowerCase())
+  );
+
   return (
     <div>
       <style type="text/css">
@@ -313,6 +324,10 @@ const SellerProfile = () => {
                       border-radius: 50%;
                       width: 100px;
                       height: 100px;
+                  }
+                  .profile-name {
+                    text-align: center;
+                    margin-top: 60px;
                   }
                   @media (max-width: 1000px) {
                       body {
@@ -379,7 +394,7 @@ const SellerProfile = () => {
                 style={{
                   position: 'absolute',
                   bottom: '-5rem',
-                  left: '4rem',
+                  left: '5rem',
                   borderRadius: '50%',
                   border: '3px solid white',
                   width: '12.5em',
@@ -479,17 +494,36 @@ const SellerProfile = () => {
             )}
           </div>
           <div className="w-3/4">
-            <div className="container album mt-3">
-              <div className="d-flex align-items-center mt-3 mb-3">
-                <CustomDropdown categories={categories} onCategorySelect={handleCategorySelect} />
-                <InputSearch placeholder={t('search')} width='100%' height='40px' />
-              </div>
-              <Row xs={2} sm={2} md={3} lg={3} className="g-3" id="cardAds">
-                {filteredAds.map((advertisment, index) => (
-                  <CardAdvertisementHome key={index} advertisment={advertisment} />
-                ))}
-              </Row>
+          <div className="container album mt-3">
+            <div className="d-flex align-items-center mt-3 mb-3">
+              <CustomDropdown categories={categories} onCategorySelect={handleCategorySelect} />
+              <InputSearch
+                placeholder={t('search')}
+                width='100%'
+                height='40px'
+                value={searchText}
+                onChange={handleSearchChange}
+              />
             </div>
+            <Row xs={2} sm={2} md={3} lg={3} className="g-3" id="cardAds">
+              {filteredAdsBySearch.map((advertisment, index) => (
+                <Col key={index}>
+                  <CustomCard
+                    id={advertisment.id}
+                    user={user}
+                    images={advertisment.photoUrls}
+                    price={advertisment.price}
+                    currency={advertisment.currency}
+                    title={advertisment.title}
+                    location={advertisment.location}
+                    date={advertisment.time_creation}
+                    showButtons={user?.role === 'admin'}
+                    status="active"
+                  />
+                </Col>
+              ))}
+            </Row>
+          </div>
           </div>
         </div>
       </div>
@@ -528,7 +562,7 @@ const SellerProfile = () => {
                 <h2 className="profile-name" id="userName">{user?.name}</h2>
                 <div className="profile-reviews">
                   <Flex gap="middle" className="d-flex justify-center">
-                  {(user?.rating ?? user?.raiting) > 0 && (
+                    {(user?.rating ?? user?.raiting) > 0 && (
                       <span>{user?.rating ?? user?.raiting}</span>
                     )}
                     <Rate allowHalf disabled defaultValue={user?.rating ?? user?.raiting} />
@@ -629,9 +663,29 @@ const SellerProfile = () => {
               <div className="d-flex justify-center mt-3 mb-3">
                 <CustomDropdown categories={categories} onCategorySelect={handleCategorySelect} />
               </div>
-              <Row xs={2} sm={2} className="g-3" id="cardAds">
-                {filteredAds.map((advertisment, index) => (
-                  <CardAdvertisementHome key={index} advertisment={advertisment} />
+              <InputSearch
+                placeholder={t('search')}
+                width='100%'
+                height='40px'
+                value={searchText}
+                onChange={handleSearchChange}
+              />
+              <Row xs={2} sm={2} className="g-3 mt-3" id="cardAds">
+                {filteredAdsBySearch.map((advertisment, index) => (
+                  <Col>
+                    <CustomCard
+                      id={advertisment.id}
+                      user={user}
+                      images={advertisment.photoUrls}
+                      price={advertisment.price}
+                      currency={advertisment.currency}
+                      title={advertisment.title}
+                      location={advertisment.location}
+                      date={advertisment.time_creation}
+                      showButtons={user?.role === 'admin'}
+                      status="active"
+                    />
+                  </Col>
                 ))}
               </Row>
             </Container>
