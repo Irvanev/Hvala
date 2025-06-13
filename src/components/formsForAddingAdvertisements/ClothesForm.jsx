@@ -1036,7 +1036,6 @@ const extractCountryAndRegion = (geocodeResult) => {
                             <Option value="accessories">{t('accessories')}</Option>
                             <Option value="homewear">{t('homewear')}</Option>
                             <Option value="underwear">{t('underwear')}</Option>
-                            <Option value="shoes">{t('shoes')}</Option>
                             <Option value="jackets_and_suits">{t('jackets_and_suits')}</Option>
                             <Option value="shirts">{t('shirts')}</Option>
                             <Option value="Steam sweaters_and_hoodies">{t('sweaters_and_hoodies')}</Option>

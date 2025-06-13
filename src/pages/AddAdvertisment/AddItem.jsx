@@ -8,12 +8,14 @@ import { MyNavbar } from "../../components/Navbar/Navbar";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { NavBarBack } from "../../components/Navbar/NavBarBack"
 import ClothesForm from "../../components/formsForAddingAdvertisements/ClothesForm";
+import ShoesForm from "../../components/formsForAddingAdvertisements/ShoesForm";
 import PhoneAndTabletsForm from "../../components/formsForAddingAdvertisements/electronics-forms/PhoneAndTabletsForm";
 import TarnsportForm from "../../components/formsForAddingAdvertisements/TransportForm";
 import SelectCategory from "../../components/select-category-form/SelectCategory";
 import SelectSubCategoryEstate from "../../components/select-category-form/SelectSubCategoryEstate";
 import SelectSubCategoryTransport from "../../components/select-category-form/SelectSubCategoryTransport";
 import SelectSubCategoryClothes from "../../components/select-category-form/SelectSubCategoryClothes";
+import SelectSubCategoryShoes from "../../components/select-category-form/SelectedSubCategoryShoes";
 import SelectSubCategoryElectronics from "../../components/select-category-form/SelectSubCategoryElectronics";
 import SelectSubCategoryHouseGoods from "../../components/select-category-form/SelectSubCategoryHouseGoods";
 import SelectSubCategoryBuilding from "../../components/select-category-form/SelectSubCategoryBulding";
@@ -370,6 +372,9 @@ export const AddItem = () => {
             case 'mens_clothing':
             case 'womens_clothing':
             case 'childrens_clothing':
+            case 'men_shoes':
+            case 'women_shoes':
+            case 'children_shoes':
                 formData = {
                     from_uid: userId,
                     name: "",
@@ -601,6 +606,9 @@ export const AddItem = () => {
                     {selectedCategory === 'clothes' && (
                         <SelectSubCategoryClothes handleSubcategoryChange={handleSubcategoryChange} t={t} />
                     )}
+                    {selectedCategory === 'shoes' && (
+                        <SelectSubCategoryShoes handleSubcategoryChange={handleSubcategoryChange} t={t} />
+                    )}
                     {selectedCategory === 'electronics' && (
                         <SelectSubCategoryElectronics handleSubcategoryChange={handleSubcategoryChange} t={t} />
                     )}
@@ -677,6 +685,25 @@ export const AddItem = () => {
 
                     {(selectedSubcategory === 'mens_clothing' || selectedSubcategory === 'womens_clothing' || selectedSubcategory === 'childrens_clothing') && (
                         <ClothesForm title={title} setTitle={setTitle}
+                            loading={loading}
+                            currency={currency} setCurrency={setCurrency}
+                            price={price} setPrice={setPrice}
+                            size={size} setSize={setSize}
+                            brand={brand} setBrand={setBrand}
+                            type={type} setType={setType}
+                            condition={condition} setCondition={setCondition}
+                            phoneNumber={phoneNumber} setPhoneNumber={setPhoneNumber}
+                            description={description} setDescription={setDescription}
+                            handleFileChange={handleFileChange} photoUrls={photoUrls}
+                            handleSubmit={handleSubmit}
+                            coordinates={coordinates} location={location}
+                            setCoordinates={setCoordinates} setLocation={setLocation}
+                            setRegion={setRegion} setCountry={setCountry}
+                        />
+                    )}
+
+                    {(selectedSubcategory === 'men_shoes' || selectedSubcategory === 'womens_shoes' || selectedSubcategory === 'children_shoes') && (
+                        <ShoesForm title={title} setTitle={setTitle}
                             loading={loading}
                             currency={currency} setCurrency={setCurrency}
                             price={price} setPrice={setPrice}

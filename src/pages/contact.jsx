@@ -2,6 +2,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { Helmet } from "react-helmet";
 import { MyNavbar } from "../components/Navbar/Navbar";
+import CustomHeader from "../components/header/CustomHeader";
 import { Container } from "react-bootstrap";
 import Image from "react-bootstrap/Image";
 import Instagram from "../assets/instagram_icon.png";
@@ -66,13 +67,13 @@ const Contact = () => {
                 }
                 @media (min-width: 1000px) {
                     body {
-                        padding-top: 3.5rem;
+                        padding-top: 0rem;
                         padding-bottom: 3.5em;
                     }
                 }
                 `}
       </style>
-      <MyNavbar />
+      <CustomHeader />
       <Container className="mt-3">
         <h3>{t("contact_navbar")}</h3>
         <h5

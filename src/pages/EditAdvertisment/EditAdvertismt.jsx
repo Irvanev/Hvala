@@ -7,6 +7,7 @@ import { MyNavbar } from "../../components/Navbar/Navbar";
 import CategorySelect from '../../pages/EditAdvertisment/CategorySelect';
 import BuildingMaterial from './BuildingMaterial';
 import Clothes from './Clothes';
+import Shoes from './Shoes';
 import Electronics from './Electronics';
 import HouseGoods from './HouseGoods';
 import TransportGoods from './TransportGoods';
@@ -35,201 +36,6 @@ const { Option } = Select;
 const { TextArea } = Input;
 
 const locationService = new LocationService();
-
-function getCountryKey(string) {
-    if (string.includes("Serbia") || string.includes("Сербия") || string.includes("Србија")) {
-        return "serbia";
-    } else if (string.includes("Croatia") || string.includes("Хорватия") || string.includes("Хрватска")) {
-        return "croatia";
-    } else if (string.includes("Bosnia and Herzegovina") || string.includes("Босния и Герцеговина") || string.includes("Босна и Херцеговина")) {
-        return "bosnia_and_herzegovina";
-    } else if (string.includes("Montenegro") || string.includes("Черногория") || string.includes("Црна Гора")) {
-        return "montenegro";
-    } else if (string.includes("North Macedonia") || string.includes("Мacedonia") || string.includes("Северная Македония") || string.includes("Македония") || string.includes("Северна Македонија")) {
-        return "north_macedonia";
-    } else {
-        return "montenegro";
-    }
-
-}
-
-
-function getRegionKey(string) {
-    if (string.includes("Unsko-sanski") || string.includes("Унско-Санский") || string.includes("Уна-Санский") || string.includes("Una-Sana")) {
-        return "una_sana_canton";
-    } else if (string.includes("Posavina") || string.includes("Посавский")) {
-        return "posavina_canton";
-    } else if (string.includes("Tuzla") || string.includes("Тузланский")) {
-        return "tuzla_canton";
-    } else if (string.includes("Zenica-Doboj") || string.includes("Зеничко-Добойский")) {
-        return "zenica_doboj_canton";
-    } else if (string.includes("Bosnian-Podrinje") || string.includes("Боснийско-Подринский")) {
-        return "bosnian_podrinje_canton_gorazde";
-    } else if (string.includes("Central Bosnia") || string.includes("Центрально-Боснийский")) {
-        return "central_bosnia_canton";
-    } else if (string.includes("Herzegovina-Neretva") || string.includes("Герцеговинско-Неретванский")) {
-        return "herzegovina_neretva_canton";
-    } else if (string.includes("West Herzegovina") || string.includes("Западно-Герцеговинский")) {
-        return "west_herzegovina_canton";
-    } else if (string.includes("Sarajevo") || string.includes("Кантон Сараево")) {
-        return "sarajevo_canton";
-    } else if (string.includes("Banja Luka") || string.includes("Баня-Лука")) {
-        return "banja_luka";
-    } else if (string.includes("Bijeljina") || string.includes("Биелина")) {
-        return "bijeljina";
-    } else if (string.includes("Doboj") || string.includes("Добой")) {
-        return "doboj";
-    } else if (string.includes("Prijedor") || string.includes("Прийедор")) {
-        return "prijedor";
-    } else if (string.includes("Istočno Sarajevo") || string.includes("Источно Сараево")) {
-        return "istocno_sarajevo";
-    } else if (string.includes("Trebinje") || string.includes("Требинье")) {
-        return "trebinje";
-    } else if (string.includes("Brčko") || string.includes("Брчко")) {
-        return "brcko";
-    } else if (string.includes("Canton 10") || string.includes("Кантон 10")) {
-        return "canton_10";
-    } else if (string.includes("Podgorica") || string.includes("Подгорица")) {
-        if (string.includes("Municipality")) {
-            return "municipality_podgorica";
-        } else if (string.includes("Capital City") || string.includes("град")) {
-            return "glavni_grad_podgorica";
-        }
-    } else if (string.includes("Danilovgrad") || string.includes("Даниловград")) {
-        return "municipality_danilovgrad";
-    } else if (string.includes("Cetinje") || string.includes("Цетине")) {
-        return "municipality_cetinje";
-    } else if (string.includes("Budva") || string.includes("Будва")) {
-        return "municipality_budva";
-    } else if (string.includes("Bar") || string.includes("Бар")) {
-        return "municipality_bar";
-    } else if (string.includes("Herceg Novi") || string.includes("Герцег-Нови")) {
-        return "municipality_herceg_novi";
-    } else if (string.includes("Kotor") || string.includes("Котор")) {
-        return "municipality_kotor";
-    } else if (string.includes("Tivat") || string.includes("Тиват")) {
-        return "municipality_tivat";
-    } else if (string.includes("Ulcinj") || string.includes("Улцинь")) {
-        return "municipality_ulcinj";
-    } else if (string.includes("Pljevlja") || string.includes("Плевля")) {
-        return "municipality_pljevlja";
-    } else if (string.includes("Bijelo Polje") || string.includes("Бижело Поле")) {
-        return "municipality_bijelo_polje";
-    } else if (string.includes("Zabljak") || string.includes("Жабляк")) {
-        return "municipality_zabljak";
-    } else if (string.includes("Kolasin") || string.includes("Колашин")) {
-        return "municipality_kolasin";
-    } else if (string.includes("Mojkovac") || string.includes("Мойковац")) {
-        return "municipality_mojkovac";
-    } else if (string.includes("Berane") || string.includes("Берне")) {
-        return "municipality_berane";
-    } else if (string.includes("Andrijevica") || string.includes("Андриевица")) {
-        return "municipality_andrijevica";
-    } else if (string.includes("Plav") || string.includes("Плав")) {
-        return "municipality_plav";
-    } else if (string.includes("Rozaje") || string.includes("Рожае")) {
-        return "municipality_rozaje";
-    } else if (string.includes("Niksic") || string.includes("Никшич")) {
-        return "municipality_niksic";
-    } else if (string.includes("Savnik") || string.includes("Шавник")) {
-        return "municipality_savnik";
-    } else if (string.includes("Pluzine") || string.includes("Плужине")) {
-        return "municipality_pluzine";
-    } else if (string.includes("Gusinje") || string.includes("Гусиње")) {
-        return "municipality_gusinje";
-    } else if (string.includes("Petrovac") || string.includes("Петровац")) {
-        return "municipality_petrovac";
-    } else if (string.includes("Tuzi") || string.includes("Тузи")) {
-        return "municipality_tuzi";
-    } else if (string.includes("Vojvodina") || string.includes("Воеводина")) {
-        return "vojvodina";
-    } else if (string.includes("Belgrade") || string.includes("Белград")) {
-        return "belgrade";
-    } else if (string.includes("Šumadija") || string.includes("Шумадийский")) {
-        return "sumadija_and_western_serbia";
-    } else if (string.includes("Southern and Eastern Serbia") || string.includes("Южно-Банатский")) {
-        return "southern_and_eastern_serbia";
-    } else if (string.includes("Kosovo and Metohija") || string.includes("Косово и Метохия")) {
-        return "kosovo_and_metohija";
-    } else if (string.includes("Belgrade") || string.includes("Белград") || string.includes("Београд")) {
-        return "belgrade";
-    } else if (string.includes("Bor") || string.includes("Bor") || string.includes("Борский") || string.includes("Борски")) {
-        return "bor_district";
-    } else if (string.includes("Braničevo District") || string.includes("Braničevo") || string.includes("Браничевский") || string.includes("Браничевски округ")) {
-        return "branicevo_district";
-    } else if (string.includes("Zlatibor District") || string.includes("Zlatibor") || string.includes("Златиборский") || string.includes("Златиборски округ")) {
-        return "zlatibor_district";
-    } else if (string.includes("Kolubara District") || string.includes("Kolubara") || string.includes("Колубарский") || string.includes("Колубарски округ")) {
-        return "kolubara_district";
-    } else if (string.includes("Moravica District") || string.includes("Moravica") || string.includes("Моравичский") || string.includes("Моравички округ")) {
-        return "moravica_district";
-    } else if (string.includes("Nišava District") || string.includes("Nišava") || string.includes("Нишавский") || string.includes("Нишавски округ")) {
-        return "nisava_district";
-    } else if (string.includes("Pirot District") || string.includes("Pirot") || string.includes("Пиротский") || string.includes("Пиротски округ")) {
-        return "pirot_district";
-    } else if (string.includes("Podunavlje District") || string.includes("Podunavlje") || string.includes("Подунайский") || string.includes("Подунавски")) {
-        return "podunavlje_district";
-    } else if (string.includes("Pčinja District") || string.includes("Pčinja") || string.includes("Пчиньский") || string.includes("Пчињски")) {
-        return "pcinja_district";
-    } else if (string.includes("Raška District") || string.includes("Raška") || string.includes("Рашский") || string.includes("Рашки")) {
-        return "raska_district";
-    } else if (string.includes("Rasina District") || string.includes("Rasina") || string.includes("Расинский") || string.includes("Расински")) {
-        return "rasina_district";
-    } else if (string.includes("Toplica District") || string.includes("Toplica") || string.includes("Топличский") || string.includes("Топлички")) {
-        return "toplica_district";
-    } else if (string.includes("Šumadija District") || string.includes("Šumadija") || string.includes("Шумадийский") || string.includes("Шумадијски")) {
-        return "sumadija_district";
-    } else if (string.includes("Jablanica District") || string.includes("Jablanica") || string.includes("Ябланичский") || string.includes("Јабланички")) {
-        return "jablanica_district";
-    } else if (string.includes("Zagreb City") || string.includes("Град Загреб")) {
-        return "zagreb_city";
-    } else if (string.includes("Zagreb County") || string.includes("Загребская")) {
-        return "zagreb_county";
-    } else if (string.includes("Split-Dalmatia") || string.includes("Сплитско-Далматинская")) {
-        return "split_dalmatia";
-    } else if (string.includes("Istria") || string.includes("Истарская")) {
-        return "istria";
-    } else if (string.includes("Primorje-Gorski Kotar") || string.includes("Приморско-Горанская")) {
-        return "primorje_gorski_kotar";
-    } else if (string.includes("Lika-Senj") || string.includes("Лика-Сень")) {
-        return "lika_senj";
-    } else if (string.includes("Virovitica-Podravina") || string.includes("Вировитицко-Подравская")) {
-        return "virovitica_podravina";
-    } else if (string.includes("Požega-Slavonia") || string.includes("Пожешко-Славонская")) {
-        return "pozega_slavonia";
-    } else if (string.includes("Brod-Posavina") || string.includes("Бродско-Посавская")) {
-        return "brod_posavina";
-    } else if (string.includes("Zadar") || string.includes("Задар")) {
-        return "zadar";
-    } else if (string.includes("Osijek-Baranja") || string.includes("Осиечко-Бараньская")) {
-        return "osijek_baranja";
-    } else if (string.includes("Sisak-Moslavina") || string.includes("Сисачко-Мославинская")) {
-        return "sisak_moslavina";
-    } else if (string.includes("Koprivnica-Križevci") || string.includes("Копривницко-Крижевечка")) {
-        return "koprivnica_krizevci";
-    } else if (string.includes("Bjelovar-Bilogora") || string.includes("Бьеловарско-Билогорская")) {
-        return "bjelovar_bilogora";
-    } else if (string.includes("Karlovac") || string.includes("Карловацкая")) {
-        return "karlovac";
-    } else if (string.includes("Varaždin") || string.includes("Вараждинская")) {
-        return "varazdin";
-    } else if (string.includes("Krapina-Zagorje") || string.includes("Крапинско-Загорская")) {
-        return "krapina_zagorje";
-    } else if (string.includes("Međimurje") || string.includes("Меджимурская")) {
-        return "medimurje";
-    } else if (string.includes("Šibenik-Knin") || string.includes("Шибенско-Книнская")) {
-        return "sibenik_knin";
-    } else if (string.includes("Vukovar-Srijem") || string.includes("Вуковарско-Сремская")) {
-        return "vukovar_srijem";
-    } else if (string.includes("Dubrovnik-Neretva") || string.includes("Дубровачко-Неретванская")) {
-        return "dubrovnik_neretva";
-    } else {
-        return "municipality_budva";
-    }
-}
-
-
-
 
 function EditItem() {
     const { t } = useTranslation();
@@ -426,13 +232,18 @@ const fetchGeocodingData = async (lat, lng) => {
             type: type,
             area: area,
             location: location,
-            coordinates: coordinates,
+            coordinates: new GeoPoint(coordinates.lat, coordinates.lng),
             country: country,
             region: region
         };
 
+        const removeFields = (fields) => {
+            fields.forEach(field => {
+                delete updatedData[field];
+            });
+        };
+
         try {
-            // Если категория является услугой, удалите поле condition !TODO
             if (subcategory === 'transfer' || subcategory === 'taxi' ||
                 subcategory === 'education' || subcategory === 'handyman' ||
                 subcategory === 'beauty_and_health' || subcategory === 'transportation' ||
@@ -451,28 +262,7 @@ const fetchGeocodingData = async (lat, lng) => {
                 subcategory === 'perfume' || subcategory === 'skincare' ||
                 subcategory === 'haircare' || subcategory === 'tattoos_and_tatooing' ||
                 subcategory === 'tanning_and_sunbeds' || subcategory === 'personal_hygiene_products') {
-                await updateDoc(docRef, {
-                    ...updatedData,
-                    condition: deleteField(),
-                    brand: deleteField(),
-                    size: deleteField(),
-                    type: deleteField(),
-                    owner: deleteField(),
-                    area: deleteField(),
-                    rooms_amount: deleteField(),
-                    model: deleteField(),
-                    mileage: deleteField(),
-                    year: deleteField(),
-                    body: deleteField(),
-                    color: deleteField(),
-                    transmission: deleteField(),
-                    drive: deleteField(),
-                    wheel: deleteField(),
-                    owners: deleteField(),
-                    customs: deleteField(),
-                    screen_size: deleteField(),
-                    memory: deleteField(),
-                });
+                removeFields(['condition', 'brand', 'size', 'type', 'owner', 'area', 'rooms_amount', 'RoomsAmount', 'model', 'mileage', 'year', 'body', 'color', 'transmission', 'drive', 'wheel', 'owners', 'customs', 'screen_size', 'memory']);
             }
             if (subcategory === 'furniture' || subcategory === 'lighting' ||
                 subcategory === 'dishes' || subcategory === 'garden_equipment' ||
@@ -494,210 +284,43 @@ const fetchGeocodingData = async (lat, lng) => {
                 subcategory === 'tickets' || subcategory === 'collections' ||
                 subcategory === 'art_materials' || subcategory === 'music' ||
                 subcategory === 'music_tools') {
-                await updateDoc(docRef, {
-                    ...updatedData,
-                    brand: deleteField(),
-                    size: deleteField(),
-                    type: deleteField(),
-                    owner: deleteField(),
-                    area: deleteField(),
-                    rooms_amount: deleteField(),
-                    model: deleteField(),
-                    mileage: deleteField(),
-                    year: deleteField(),
-                    body: deleteField(),
-                    color: deleteField(),
-                    transmission: deleteField(),
-                    drive: deleteField(),
-                    wheel: deleteField(),
-                    owners: deleteField(),
-                    customs: deleteField(),
-                    screen_size: deleteField(),
-                    memory: deleteField(),
-                });
+                removeFields(['brand', 'size', 'type', 'owner', 'area', 'rooms_amount', 'RoomsAmount', 'model', 'mileage', 'year', 'body', 'color', 'transmission', 'drive', 'wheel', 'owners', 'customs', 'screen_size', 'memory']);
             }
             if (subcategory === 'phones_and_tablets') {
-                await updateDoc(docRef, {
-                    ...updatedData,
-                    size: deleteField(),
-                    type: deleteField(),
-                    owner: deleteField(),
-                    area: deleteField(),
-                    rooms_amount: deleteField(),
-                    mileage: deleteField(),
-                    year: deleteField(),
-                    body: deleteField(),
-                    color: deleteField(),
-                    transmission: deleteField(),
-                    drive: deleteField(),
-                    wheel: deleteField(),
-                    owners: deleteField(),
-                    customs: deleteField(),
-                });
+                removeFields(['size', 'type', 'owner', 'area', 'rooms_amount', 'RoomsAmount', 'mileage', 'year', 'body', 'color', 'transmission', 'drive', 'wheel', 'owners', 'customs']);
             }
             if (subcategory === 'tv') {
-                await updateDoc(docRef, {
-                    ...updatedData,
-                    size: deleteField(),
-                    type: deleteField(),
-                    owner: deleteField(),
-                    area: deleteField(),
-                    rooms_amount: deleteField(),
-                    mileage: deleteField(),
-                    year: deleteField(),
-                    body: deleteField(),
-                    color: deleteField(),
-                    transmission: deleteField(),
-                    drive: deleteField(),
-                    wheel: deleteField(),
-                    owners: deleteField(),
-                    customs: deleteField(),
-                    memory: deleteField(),
-                });
+                removeFields(['size', 'type', 'owner', 'area', 'rooms_amount', 'RoomsAmount', 'mileage', 'year', 'body', 'color', 'transmission', 'drive', 'wheel', 'owners', 'customs', 'memory']);
             }
             if (subcategory === 'game_console' || subcategory === 'photo_video') {
-                await updateDoc(docRef, {
-                    ...updatedData,
-                    size: deleteField(),
-                    type: deleteField(),
-                    owner: deleteField(),
-                    area: deleteField(),
-                    rooms_amount: deleteField(),
-                    mileage: deleteField(),
-                    year: deleteField(),
-                    body: deleteField(),
-                    color: deleteField(),
-                    transmission: deleteField(),
-                    drive: deleteField(),
-                    wheel: deleteField(),
-                    owners: deleteField(),
-                    customs: deleteField(),
-                    screen_size: deleteField(),
-                    memory: deleteField(),
-                });
+                removeFields(['size', 'type', 'owner', 'area', 'rooms_amount', 'RoomsAmount', 'mileage', 'year', 'body', 'color', 'transmission', 'drive', 'wheel', 'owners', 'customs', 'screen_size', 'memory']);
             }
             if (subcategory === 'computers') {
-                await updateDoc(docRef, {
-                    ...updatedData,
-                    size: deleteField(),
-                    owner: deleteField(),
-                    area: deleteField(),
-                    rooms_amount: deleteField(),
-                    mileage: deleteField(),
-                    year: deleteField(),
-                    body: deleteField(),
-                    color: deleteField(),
-                    transmission: deleteField(),
-                    drive: deleteField(),
-                    wheel: deleteField(),
-                    owners: deleteField(),
-                    customs: deleteField(),
-                    screen_size: deleteField(),
-                    memory: deleteField(),
-                });
+                removeFields(['size', 'owner', 'area', 'rooms_amount', 'RoomsAmount', 'mileage', 'year', 'body', 'color', 'transmission', 'drive', 'wheel', 'owners', 'customs', 'screen_size', 'memory']);
             }
             if (subcategory === 'computer_accessories') {
-                await updateDoc(docRef, {
-                    ...updatedData,
-                    size: deleteField(),
-                    owner: deleteField(),
-                    area: deleteField(),
-                    rooms_amount: deleteField(),
-                    model: deleteField(),
-                    mileage: deleteField(),
-                    year: deleteField(),
-                    body: deleteField(),
-                    color: deleteField(),
-                    transmission: deleteField(),
-                    drive: deleteField(),
-                    wheel: deleteField(),
-                    owners: deleteField(),
-                    customs: deleteField(),
-                    screen_size: deleteField(),
-                    memory: deleteField(),
-                });
+                removeFields(['size', 'owner', 'area', 'rooms_amount', 'RoomsAmount', 'model', 'mileage', 'year', 'body', 'color', 'transmission', 'drive', 'wheel', 'owners', 'customs', 'screen_size', 'memory']);
             }
             if (subcategory === 'auto' || subcategory === 'moto' || subcategory === 'water_transport') {
-                await updateDoc(docRef, {
-                    ...updatedData,
-                    size: deleteField(),
-                    type: deleteField(),
-                    owner: deleteField(),
-                    area: deleteField(),
-                    rooms_amount: deleteField(),
-                    screen_size: deleteField(),
-                    memory: deleteField(),
-                });
+                removeFields(['size', 'type', 'owner', 'area', 'rooms_amount', 'RoomsAmount', 'screen_size', 'memory']);
             }
             if (subcategory === 'sale_estate' || subcategory === 'rent_estate') {
-                await updateDoc(docRef, {
-                    ...updatedData,
-                    condition: deleteField(),
-                    brand: deleteField(),
-                    size: deleteField(),
-                    model: deleteField(),
-                    mileage: deleteField(),
-                    year: deleteField(),
-                    body: deleteField(),
-                    color: deleteField(),
-                    transmission: deleteField(),
-                    drive: deleteField(),
-                    wheel: deleteField(),
-                    owners: deleteField(),
-                    customs: deleteField(),
-                    screen_size: deleteField(),
-                    memory: deleteField(),
-                });
+                removeFields(['condition', 'brand', 'size', 'model', 'mileage', 'year', 'body', 'color', 'transmission', 'drive', 'wheel', 'owners', 'customs', 'screen_size', 'memory']);
             }
             if (subcategory === 'mens_clothing' || subcategory === 'womens_clothing' || subcategory === 'childrens_clothing') {
-                await updateDoc(docRef, {
-                    ...updatedData,
-                    owner: deleteField(),
-                    area: deleteField(),
-                    rooms_amount: deleteField(),
-                    model: deleteField(),
-                    mileage: deleteField(),
-                    year: deleteField(),
-                    body: deleteField(),
-                    color: deleteField(),
-                    transmission: deleteField(),
-                    drive: deleteField(),
-                    wheel: deleteField(),
-                    owners: deleteField(),
-                    customs: deleteField(),
-                    screen_size: deleteField(),
-                    memory: deleteField(),
-                });
+                removeFields(['owner', 'area', 'rooms_amount', 'RoomsAmount', 'model', 'mileage', 'year', 'body', 'color', 'transmission', 'drive', 'wheel', 'owners', 'customs', 'screen_size', 'memory']);
+            }
+            if (subcategory === 'men_shoes' || subcategory === 'women_shoes' || subcategory === 'children_shoes') {
+                removeFields(['owner', 'area', 'rooms_amount', 'RoomsAmount', 'model', 'mileage', 'year', 'body', 'color', 'transmission', 'drive', 'wheel', 'owners', 'customs', 'screen_size', 'memory']);
             }
             if (subcategory === 'refrigerators' || subcategory === 'washing_machines' || subcategory === 'vacuum_cleaners' ||
                 subcategory === 'stoves_and_ovens' || subcategory === 'sewing_equipment' || subcategory === 'food_preparation' ||
                 subcategory === 'dishwasher') {
-                await updateDoc(docRef, {
-                    ...updatedData,
-                    size: deleteField(),
-                    type: deleteField(),
-                    owner: deleteField(),
-                    area: deleteField(),
-                    rooms_amount: deleteField(),
-                    model: deleteField(),
-                    mileage: deleteField(),
-                    year: deleteField(),
-                    body: deleteField(),
-                    color: deleteField(),
-                    transmission: deleteField(),
-                    drive: deleteField(),
-                    wheel: deleteField(),
-                    owners: deleteField(),
-                    customs: deleteField(),
-                    screen_size: deleteField(),
-                    memory: deleteField(),
-                });
+                removeFields(['size', 'type', 'owner', 'area', 'rooms_amount', 'RoomsAmount', 'model', 'mileage', 'year', 'body', 'color', 'transmission', 'drive', 'wheel', 'owners', 'customs', 'screen_size', 'memory']);
             }
 
-            else {
-                await updateDoc(docRef, updatedData);
-                setLoading(false);
-            }
+            await updateDoc(docRef, updatedData);
+            setLoading(false);
 
             console.log("Document successfully updated!");
             history.push('/profile');
@@ -777,6 +400,8 @@ const fetchGeocodingData = async (lat, lng) => {
                 return (<BuildingMaterial t={t} subcategory={subcategory} handleSubCategoryChange={handleSubcategoryChange} />);
             case 'clothes':
                 return (<Clothes t={t} subcategory={subcategory} handleSubCategoryChange={handleSubcategoryChange} />);
+            case 'shoes':
+                return (<Shoes t={t} subcategory={subcategory} handleSubCategoryChange={handleSubcategoryChange} />);
             case 'electronics':
                 return (<Electronics t={t} subcategory={subcategory} handleSubCategoryChange={handleSubcategoryChange} />);
             case 'house_goods':
@@ -807,12 +432,8 @@ const fetchGeocodingData = async (lat, lng) => {
     const [availableSizes, setAvailableSizes] = useState([]);
 
     useEffect(() => {
-        if (type === 'shoes') {
-            setAvailableSizes(['3.5', '4', '5', '5.5', '6', '6.5', '7', '7.5', '8', '8.5', '9', '9.5', '10', '10.5', '11', '12', '12.5', '13', '13.5', '14', '14.5', '15', '15.5', '16']);
-        } else {
-            setAvailableSizes(['XXS', 'XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL', '4XL', '5XL']);
-        }
-    }, [type]);
+        setAvailableSizes(['XXS', 'XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL', '4XL', '5XL']);
+    },);
 
     const getForm = () => {
         switch (subcategory) {
@@ -899,6 +520,128 @@ const fetchGeocodingData = async (lat, lng) => {
                         </LoadScript>
                     </>
                 )
+            case 'men_shoes':
+            case 'women_shoes':
+            case 'children_shoes':
+                return (
+                    <>
+                        <LoadScript googleMapsApiKey="AIzaSyD7K42WP5zjV99GP3xll40eFr_5DaAk3ZU">
+                            <Form.Item className="mb-3">
+                                <label>{t('title')}</label>
+                                <Input type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
+                            </Form.Item>
+                            <Form.Item
+                                        label={t("type")}
+                                        name="type"
+                                        rules={[{ required: true, message: "Please input the type!" }]}
+                                      >
+                                        <Select
+                                          aria-label="Default select example"
+                                          showSearch
+                                          value={type}
+                                          defaultValue={type}
+                                          onChange={(value) => setType(value)}
+                                          optionFilterProp="children"
+                                          filterOption={(input, option) =>
+                                            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                          }
+                                        >
+                                          <Option value="sneakers">{t("sneakers")}</Option>
+                                          <Option value="boots">{t("boots")}</Option>
+                                          <Option value="shoes">{t("shoes")}</Option>
+                                          <Option value="trainers">{t("trainers")}</Option>
+                                          <Option value="high_boots">{t("high_boots")}</Option>
+                                          <Option value="moccasins">{t("moccasins")}</Option>
+                                          <Option value="sports_shoes">{t("sports_shoes")}</Option>
+                                          <Option value="ugg_boots">{t("ugg_boots")}</Option>
+                                          <Option value="work_shoes">{t("work_shoes")}</Option>
+                                          <Option value="rubber_shoes">{t("rubber_shoes")}</Option>
+                                          <Option value="sandals">{t("sandals")}</Option>
+                                          <Option value="slippers">{t("slippers")}</Option>
+                                          <Option value="home_shoes">{t("home_shoes")}</Option>
+                                          <Option value="slipons">{t("slipons")}</Option>
+                                          <Option value="shoe_care">{t("shoe_care")}</Option>
+                                        </Select>
+                                      </Form.Item>
+                            <Form.Item
+                                label={t('price')}
+                                name='prie'
+                                rules={[
+                                    { required: true, message: 'Please input the price!' },
+                                    {
+                                        validator: (_, value) => {
+                                            if (!value || value <= 0) {
+                                                return Promise.reject(new Error('Price must be greater than zero!'));
+                                            }
+                                            if (!currency) {
+                                                return Promise.reject(new Error('Please select a currency!'));
+                                            }
+                                            return Promise.resolve();
+                                        }
+                                    }
+                                ]}
+                            >
+                                <InputNumber style={{ width: '100%' }} defaultValue={price} addonBefore={selectAfter} onChange={(value) => setPrice(parseInt(value, 10))} />
+                            </Form.Item>
+                            <Form.Item
+                                        label={t("size")+ " (EU)"}
+                                        name="size"
+                                        rules={[{ required: true, message: "Please select the size!" }]}
+                                      >
+                                        <Select value={size} defaultValue={size} onChange={(value) => setSize(value)}>
+                                          <Option value="35">35</Option>
+                                          <Option value="36">36</Option>
+                                          <Option value="37">37</Option>
+                                          <Option value="38">38</Option>
+                                          <Option value="39">39</Option>
+                                          <Option value="40">40</Option>
+                                          <Option value="41">41</Option>
+                                          <Option value="42">42</Option>
+                                          <Option value="43">43</Option>
+                                          <Option value="44">44</Option>
+                                          <Option value="45">45</Option>
+                                          <Option value="46">46</Option>
+                                          <Option value="47">47</Option>
+                                          <Option value="48">48</Option>
+                                        </Select>
+                                      </Form.Item>
+                            <Form.Item
+                                className="mb-3"
+                                label={t('brand')}
+                            >
+                                <Input type="text" value={brand} onChange={(e) => setBrand(e.target.value)} />
+                            </Form.Item>
+                            <Form.Item
+                                className="mb-3"
+                                label={t('condition')}
+                            >
+                                <Select value={condition} onChange={(value) => setCondition(value)}>
+                                    <Option value="new_cond">{t('new_cond')}</Option>
+                                    <Option value="bu_cond">{t('bu_cond')}</Option>
+                                </Select>
+                            </Form.Item>
+                            <Form.Item
+                                className="mb-3"
+                                label={t('phone_number')}
+                            >
+                                <Input type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
+                            </Form.Item>
+                            <Form.Item
+                                className="mb-3"
+                                label={t('description')}
+                            >
+                                <TextArea rows={3} value={description} onChange={(e) => setDescription(e.target.value)} />
+                            </Form.Item>
+                            <Form.Item
+                                className="mb-3"
+                                label={t('photos')}
+                            >
+                                <PhotoUpload data={{ photoUrls }} onPhotoUrlsChange={handlePhotoUrlsChange} />
+                            </Form.Item>
+                        </LoadScript>
+                    </>
+                )
+
             case 'auto':
             case 'moto':
             case 'water_transport':

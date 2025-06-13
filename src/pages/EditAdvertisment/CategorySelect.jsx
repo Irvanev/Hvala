@@ -19,6 +19,7 @@ const CategorySelect = ({ handleCategoryChange, category }) => {
                 <Option value="estate">{t('estate')}</Option>
                 <Option value="transport">{t('transport')}</Option>
                 <Option value="clothes">{t('clothes')}</Option>
+                <Option value="shoes">{t('shoes')}</Option>
                 <Option value="electronics">{t('electronics')}</Option>
                 <Option value="house_goods">{t('house_goods')}</Option>
                 <Option value="building_materials_and_tools">{t('building_materials_and_tools')}</Option>

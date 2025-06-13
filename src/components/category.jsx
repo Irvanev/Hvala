@@ -47,13 +47,21 @@ const Categories = () => {
     {
       key: '5',
       label: (
+        <Link to="/advertisments/shoes" style={{ fontSize: '16px', textDecoration: 'none' }}>
+          {t('shoes')}
+        </Link>
+      ),
+    },
+    {
+      key: '6',
+      label: (
         <Link to="/advertisments/house_goods" style={{ fontSize: '16px', textDecoration: 'none' }}>
           {t('house_goods')}
         </Link>
       ),
     },
     {
-      key: '6',
+      key: '7',
       label: (
         <Link to="/advertisments/building_materials_and_tools" style={{ fontSize: '16px', textDecoration: 'none' }}>
           {t('building_materials_and_tools')}
@@ -61,7 +69,7 @@ const Categories = () => {
       ),
     },
     {
-      key: '7',
+      key: '8',
       label: (
         <Link to="/advertisments/transport_goods" style={{ fontSize: '16px', textDecoration: 'none' }}>
           {t('transport_goods')}
@@ -69,7 +77,7 @@ const Categories = () => {
       ),
     },
     {
-      key: '8',
+      key: '9',
       label: (
         <Link to="/advertisments/petSupplies" style={{ fontSize: '16px', textDecoration: 'none' }}>
           {t('petSupplies')}
@@ -77,7 +85,7 @@ const Categories = () => {
       ),
     },
     {
-      key: '9',
+      key: '10',
       label: (
         <Link to="/advertisments/home_appliance" style={{ fontSize: '16px', textDecoration: 'none' }}>
           {t('home_appliance')}
@@ -85,7 +93,7 @@ const Categories = () => {
       ),
     },
     {
-      key: '10',
+      key: '11',
       label: (
         <Link to="/advertisments/service" style={{ fontSize: '16px', textDecoration: 'none' }}>
           {t('service')}
@@ -93,7 +101,7 @@ const Categories = () => {
       ),
     },
     {
-      key: '11',
+      key: '12',
       label: (
         <Link to="/advertisments/child_goods" style={{ fontSize: '16px', textDecoration: 'none' }}>
           {t('child_goods')}
@@ -101,7 +109,7 @@ const Categories = () => {
       ),
     },
     {
-      key: '12',
+      key: '13',
       label: (
         <Link to="/advertisments/health_and_beauty" style={{ fontSize: '16px', textDecoration: 'none' }}>
           {t('health_and_beauty')}
@@ -109,7 +117,7 @@ const Categories = () => {
       ),
     },
     {
-      key: '13',
+      key: '14',
       label: (
         <Link to="/advertisments/sport" style={{ fontSize: '16px', textDecoration: 'none' }}>
           {t('sport')}
@@ -117,7 +125,7 @@ const Categories = () => {
       ),
     },
     {
-      key: '14',
+      key: '15',
       label: (
         <Link to="/advertisments/hobby_n_Relax" style={{ fontSize: '16px', textDecoration: 'none' }}>
           {t('hobby_n_Relax')}
@@ -125,7 +133,7 @@ const Categories = () => {
       ),
     },
     {
-      key: '15',
+      key: '16',
       label: (
         <Link to="/advertisments/rest" style={{ fontSize: '16px', textDecoration: 'none' }}>
           {t('rest')}
