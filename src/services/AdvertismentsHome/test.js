@@ -8,8 +8,14 @@ export const fetchAdvertisments = async (
     condition, size, type, wheel, mileage, body, drive,
     year, transmission, memory, screen_size, brand, minPrice, maxPrice, currency
 ) => {
-    const advertismentsCollection = collection(db, "advertisment");
-    let conditions = [];
+    console.log("🔍 FETCH ADVERTISEMENTS CALLED");
+    console.log("📊 DB OBJECT:", db);
+    
+    try {
+        const advertismentsCollection = collection(db, "advertisment");
+        console.log("📂 COLLECTION REF:", advertismentsCollection);
+        
+        let conditions = [];
 
     if (category) conditions.push(where('category', '==', category));
     if (subcategory) conditions.push(where('subcategory', '==', subcategory));
@@ -52,11 +58,29 @@ export const fetchAdvertisments = async (
         );
     }
 
+    console.log("📋 QUERY OBJECT:", q);
+    console.log("⏳ EXECUTING QUERY...");
+    
     const querySnapshot = await getDocs(q);
+    console.log("📊 QUERY SNAPSHOT:", querySnapshot);
+    console.log("📏 SNAPSHOT SIZE:", querySnapshot.size);
+    console.log("📦 DOCS:", querySnapshot.docs);
+    
     const advertisments = querySnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
+    console.log("📄 MAPPED ADVERTISEMENTS:", advertisments);
+    
     const lastDoc = querySnapshot.docs[querySnapshot.docs.length - 1];
+    console.log("📄 LAST DOC:", lastDoc);
 
     return { advertisments, lastDoc };
+    
+    } catch (error) {
+        console.error("❌ FETCH ADVERTISEMENTS ERROR:", error);
+        console.error("❌ ERROR CODE:", error.code);
+        console.error("❌ ERROR MESSAGE:", error.message);
+        console.error("❌ ERROR STACK:", error.stack);
+        return { advertisments: [], lastDoc: null };
+    }
 }
 
 export const getUserByAuth = async (setUser) => {

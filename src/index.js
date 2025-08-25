@@ -11,6 +11,14 @@ import sr from "./assets/locales/me.json";
 
 import { UserRoleProvider } from './context/UserRoleContext';
 
+// Инициализация Capacitor для нативных платформ
+import { Capacitor } from '@capacitor/core';
+
+// Инициализируем Firebase раньше других компонентов
+import './config/firebase';
+
+console.log('🚀 App starting on platform:', Capacitor.getPlatform());
+
 i18n
   .use(initReactI18next)
   .init({

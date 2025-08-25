@@ -23,6 +23,7 @@ import {
   getUserByAuth
 } from "../../services/AdvertismentsHome/test";
 import { Helmet } from "react-helmet";
+import FirebaseDebug from "../../services/FirebaseDebug";
 import CustomCard from "../../components/card/CustomCard";
 
 const TestAdvertisment = () => {
@@ -472,7 +473,16 @@ const TestAdvertisment = () => {
     const fetchData = async () => {
       if (fetching && hasMore) {
         setLoading(true);
+        
+        // Firebase Debug - тестируем подключение
+        console.log("🔧 STARTING FIREBASE DEBUG TEST...");
+        const debugResult = await FirebaseDebug.testConnection();
+        console.log("🔧 DEBUG RESULT:", debugResult);
+        
+        const authResult = await FirebaseDebug.testAuth();
+        console.log("🔧 AUTH RESULT:", authResult);
         console.log("Fetching data...");
+        console.log("📥 CALLING fetchAdvertisments...");
         const { advertisments: newAds, lastDoc } = await fetchAdvertisments(
           lastVisible,
           category,
@@ -495,6 +505,10 @@ const TestAdvertisment = () => {
           maxPrice,
           currency
         );
+        console.log("📦 RECEIVED ADVERTISEMENTS:", newAds);
+        console.log("📏 ADVERTISEMENTS COUNT:", newAds ? newAds.length : 0);
+        console.log("📄 LAST DOC:", lastDoc);
+        
         const resizedData = await Promise.all(
           newAds.map(async (ad) => {
             if (!ad.photoUrls || ad.photoUrls.length === 0) {

@@ -152,7 +152,7 @@ export const MyNavbar = () => {
             <div className='app d-lg-none'>
 
 
-                <div className="fixed bottom-0 left-0 z-50 w-full h-16 bg-customColor1 border-t rounded-t-2xl border-gray-200">
+                <div className="fixed bottom-0 left-0 z-50 w-full h-20 pb-2 bg-customColor1 border-t rounded-t-2xl border-gray-200">
                     <div className="grid h-full max-w-lg grid-cols-5 mx-auto font-medium">
                         <button onClick={handleHomeClick} type="button" className="inline-flex flex-col items-center justify-center px-4 group е">
                             <svg className={`w-6 h-6 ${getButtonStyle('/advertisment')}`} aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">

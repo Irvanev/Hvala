@@ -21,7 +21,7 @@ export const NavBarLogout = () => {
 
     return (
         <div className="d-lg-none">
-            <div className="lg:hidden fixed top-0 w-full z-50 border-b border-gray-300 bg-customColor1 h-11">
+            <div className="lg:hidden fixed top-0 w-full z-50 border-b border-gray-300 bg-customColor1 h-16 pt-4">
                 <div className="flex items-center justify-between px-4 py-2">
                     <button onClick={goBack} className="text-blue-500">
                         <svg className="w-6 h-6 text-customColor3 transition-transform transform active:scale-90" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">

@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useRef, useEffect } from "react";
 import { GoogleMap, LoadScript } from '@react-google-maps/api';
+import { GOOGLE_MAPS_CONFIG } from '../../config/googleMaps';
 import { GeoPoint } from 'firebase/firestore';
 import { Row, Col } from 'antd';
 import { useTranslation } from "react-i18next";
@@ -306,7 +307,7 @@ export const MapComponent = ({ coordinates, setCoordinates, setCountry, setRegio
     };
 
     return (
-        <LoadScript async googleMapsApiKey="AIzaSyD7K42WP5zjV99GP3xll40eFr_5DaAk3ZU">
+        <LoadScript async googleMapsApiKey={GOOGLE_MAPS_CONFIG.getPlatformApiKey()}>
             <div style={containerStyle}>
                 <GoogleMap
                     mapContainerStyle={{ width: '100%', height: '100%' }}

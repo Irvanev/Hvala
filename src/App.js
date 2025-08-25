@@ -5,7 +5,7 @@ import { Registration } from './pages/Register/Registration';
 import { CardItem } from './pages/AdvertismentCard/CardItem';
 import { Message } from "./pages/message/Message";
 import { AddItem } from "./pages/AddAdvertisment/AddItem";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import LanguageModal from './LanguageModal';
 import PrivateRoute from "./components/PrivateRoute";
 import { CategoryAdvertisments } from "./pages/CategoryAdvertisment/CategoryAdvertisments";
@@ -17,6 +17,7 @@ import EditItem from './pages/EditAdvertisment/EditAdvertismt';
 import { PrivacyPolicy } from './pages/PrivacyPolice/privacy';
 import TestAdvertisment from './pages/Advertisment/TestAdvertisement';
 import MyProfile from './pages/Profile/my-profile/MyProfile';
+import { initializePushNotifications } from './services/PushNotificationService';
 
 
 function App() {
@@ -25,6 +26,11 @@ function App() {
   const handleClose = () => {
     setShowModal(false);
   };
+
+  useEffect(() => {
+    // Initialize push notifications for mobile platforms
+    initializePushNotifications();
+  }, []);
 
   return (
     <div>
