@@ -1,0 +1,120 @@
+{
+  "project_info": {
+    "project_number": "937525121099",
+    "project_id": "hvala-2c8a4",
+    "storage_bucket": "hvala-2c8a4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:937525121099:android:7ce4e7072e33be4bb7fdce",
+        "android_client_info": {
+          "package_name": "app.hvala.release"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "937525121099-hfcvc6ed201he24b8uvs778pg8dtq4n8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBOluJ3rhiBc0W4CvF7BmBJGk2ABTQmxYQ"
+        },
+        {
+          "current_key": "AIzaSyBwN0bEm8UHaWWRKZqbpSP64XMsxTbOAeY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "937525121099-hfcvc6ed201he24b8uvs778pg8dtq4n8.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "937525121099-43h8m7t6v54kik0du8jgh55j49fkc76q.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "app.hvala.release"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:937525121099:android:888d04d6111bb358b7fdce",
+        "android_client_info": {
+          "package_name": "com.example.monte_negro"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "937525121099-b7q2uffi4q98r0s1frmdfbvruebcov52.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.monte_negro",
+            "certificate_hash": "15605e2d7d83851c8f958a9b399078bd6ef2ecce"
+          }
+        },
+        {
+          "client_id": "937525121099-nl9d7ci9kil81p9o82h51mb3uugvogp4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.monte_negro",
+            "certificate_hash": "b83413d9991a7277a6cc8b16d7cc95d6bf73fa40"
+          }
+        },
+        {
+          "client_id": "937525121099-tqgengd81ed8pfkv4njcqn3882na5ds9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.monte_negro",
+            "certificate_hash": "9c7f638bf9cae23f5e110946ef1c71e552377e27"
+          }
+        },
+        {
+          "client_id": "937525121099-v4jpggcil1dv6lbn1u7cpt6it9ekt15l.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.monte_negro",
+            "certificate_hash": "71e4e69797828cde5def16ae4772c49e362f8312"
+          }
+        },
+        {
+          "client_id": "937525121099-hfcvc6ed201he24b8uvs778pg8dtq4n8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBOluJ3rhiBc0W4CvF7BmBJGk2ABTQmxYQ"
+        },
+        {
+          "current_key": "AIzaSyBwN0bEm8UHaWWRKZqbpSP64XMsxTbOAeY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "937525121099-hfcvc6ed201he24b8uvs778pg8dtq4n8.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "937525121099-43h8m7t6v54kik0du8jgh55j49fkc76q.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "app.hvala.release"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

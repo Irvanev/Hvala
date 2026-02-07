@@ -9,25 +9,35 @@ import en from "./assets/locales/en.json";
 import ru from "./assets/locales/ru.json";
 import sr from "./assets/locales/me.json";
 
+import { UserRoleProvider } from './context/UserRoleContext';
+
+// Инициализация Capacitor для нативных платформ
+import { Capacitor } from '@capacitor/core';
+
+// Инициализируем Firebase раньше других компонентов
+import './config/firebase';
+
+console.log('🚀 App starting on platform:', Capacitor.getPlatform());
+
 i18n
-    .use(initReactI18next)
-    .init({
-        resources: {
-            en: { translation: en },
-            ru: { translation: ru },
-            sr: { translation: sr }
-        },
-        lng: localStorage.getItem('i18nextLng') || 'en',
-        fallbackLng: "en",
-        interpolation: {
-            escapeValue: false
-        }
-    });
+  .use(initReactI18next)
+  .init({
+    resources: {
+      en: { translation: en },
+      ru: { translation: ru },
+      sr: { translation: sr }
+    },
+    lng: localStorage.getItem('i18nextLng') || 'en',
+    fallbackLng: "en",
+    interpolation: {
+      escapeValue: false
+    }
+  });
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
+  <UserRoleProvider>
     <App />
-  </React.StrictMode>
+  </UserRoleProvider>
 );
 reportWebVitals();

@@ -2,16 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { Card, Col, Carousel, Dropdown, Menu, Popconfirm, } from 'antd';
 import { EditOutlined, EllipsisOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
-import Logo from '../../assets/logo.png';
+import Logo from '../../assets/logo_def.png';
 import { useTranslation } from 'react-i18next';
 import { getConversionRate } from '../../services/AdvertismentsHome/AdvertismentsService';
 import { formatDistanceToNow, format } from 'date-fns';
 import { ru, enUS, sr } from 'date-fns/locale';
 
-import { unarchivedAdvertisement, deleteAdvertisement } from '../../services/ProfileService';
+import { unarchivedAdvertisement, deleteAdvertisement } from '../../services/profile/Profile';
 
 const CardAdvertisementProfileArchive = ({ advertismentArchive, index }) => {
     const { i18n } = useTranslation();
+    const { t } = useTranslation();
     const [conversionRate, setConversionRate] = useState(null);
     const [currency, setCurrency] = useState('');
 
@@ -22,11 +23,13 @@ const CardAdvertisementProfileArchive = ({ advertismentArchive, index }) => {
     const handleUnarchive = async (id) => {
         await unarchivedAdvertisement(id);
         setIsUnarchived(prevState => !prevState);
+        window.location.reload();
     };
 
     const handleDelete = async (id) => {
         await deleteAdvertisement(id);
         setDeleteAdvertisment(prevState => !prevState);
+        window.location.reload();
     };
 
     useEffect(() => {
@@ -68,28 +71,30 @@ const CardAdvertisementProfileArchive = ({ advertismentArchive, index }) => {
                 <Card
                     hoverable
                     actions={[
-                        <EditOutlined key="edit" />,
+                        <a href={`/edit/${advertismentArchive.id}`}>
+                            <EditOutlined key="edit" />
+                        </a>,
                         <Dropdown
                             overlay={
                                 <Menu>
                                     <Menu.Item key="1">
                                         <Popconfirm
-                                            title="Вы уверены, что хотите опубликовать?"
+                                            title={t('publish_question')}
                                             onConfirm={() => handleUnarchive(advertismentArchive.id)}
-                                            okText="Да"
-                                            cancelText="Нет"
+                                            okText={t('yes')}
+                                            cancelText={t('no')}
                                         >
-                                            <a href="#">Опубликовать</a>
+                                            <a href="#">{t('publish')}</a>
                                         </Popconfirm>
                                     </Menu.Item>
                                     <Menu.Item key="2">
                                         <Popconfirm
-                                            title="Вы уверены, что хотите полнотсью удалить объявление?"
+                                            title={t('delete_question')}
                                             onConfirm={() => handleDelete(advertismentArchive.id)}
-                                            okText="Да"
-                                            cancelText="Нет"
+                                            okText={t('yes')}
+                                            cancelText={t('no')}
                                         >
-                                            <a href="#">Удалить</a>
+                                            <a href="#">{t('delete')}</a>
                                         </Popconfirm>
                                     </Menu.Item>
                                 </Menu>
@@ -100,7 +105,7 @@ const CardAdvertisementProfileArchive = ({ advertismentArchive, index }) => {
                             <EllipsisOutlined onClick={() => setDropdownVisible(!dropdownVisible)} />
                         </Dropdown>,
                     ]}
-                    style={{ width: '100%', height: '57vh', display: 'flex',
+                    style={{ width: '100%', height: '29rem', display: 'flex',
                     flexDirection: 'column', justifyContent: 'space-between'}}
                     bodyStyle={{ padding: 0, margin: '1vh' }}
                     cover={
@@ -108,13 +113,13 @@ const CardAdvertisementProfileArchive = ({ advertismentArchive, index }) => {
                             <Carousel>
                                 {advertismentArchive.photoUrls && advertismentArchive.photoUrls.length > 0 ? (
                                     advertismentArchive.photoUrls.map((url, index) => (
-                                        <div key={index} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '30vh' }}>
-                                            <img style={{ height: '30vh', width: '100%', objectFit: 'cover' }} alt="example" src={url || Logo} />
+                                        <div key={index} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '12rem' }}>
+                                            <img style={{ height: '12rem', width: '100%', objectFit: 'cover' }} alt="example" src={url || Logo} />
                                         </div>
                                     ))
                                 ) : (
-                                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '30vh' }}>
-                                        <img style={{ height: '30vh', width: '100%', objectFit: 'cover' }} alt="example" src={Logo} />
+                                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '12rem' }}>
+                                        <img style={{ height: '12rem', width: '100%', objectFit: 'cover' }} alt="example" src={Logo} />
                                     </div>
                                 )}
                             </Carousel>
@@ -137,7 +142,7 @@ const CardAdvertisementProfileArchive = ({ advertismentArchive, index }) => {
                             overflow: 'hidden',
                             textOverflow: 'ellipsis'
                         }}>
-                            {advertismentArchive.location}
+                            {t(advertismentArchive.country)}, {t(advertismentArchive.region)}
                         </p>
                         <p>{formatDate(advertismentArchive.time_creation)}</p>
                     </Link>

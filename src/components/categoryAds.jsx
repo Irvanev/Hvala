@@ -1,0 +1,216 @@
+import React, { useState } from 'react'
+import { Link } from 'react-router-dom';
+import { MenuOutlined } from '@ant-design/icons';
+import { Dropdown, Button, Select, Input } from 'antd';
+import Logo from '../assets/new_logo.png'
+import { useTranslation } from 'react-i18next';
+
+import banner from "../assets/New_Hvala_2_0.png"
+import InputSearch from './input-search/InputSearch';
+
+const CategoriesAds = ({handleSearchChange, searchText}) => {
+  const { t } = useTranslation();
+
+  const items = [
+    {
+      key: '1',
+      label: (
+        <Link to="/advertisments/estate" style={{ fontSize: '16px', textDecoration: 'none' }}>
+          {t('estate')}
+        </Link>
+      ),
+    },
+    {
+      key: '2',
+      label: (
+        <Link to="/advertisments/transport" style={{ fontSize: '16px', textDecoration: 'none' }}>
+          {t('transport')}
+        </Link>
+      ),
+    },
+    {
+      key: '3',
+      label: (
+        <Link to="/advertisments/electronics" style={{ fontSize: '16px', textDecoration: 'none' }}>
+          {t('electronics')}
+        </Link>
+      ),
+    },
+    {
+      key: '4',
+      label: (
+        <Link to="/advertisments/clothes" style={{ fontSize: '16px', textDecoration: 'none' }}>
+          {t('clothes')}
+        </Link>
+      ),
+    },
+    {
+      key: '4_shoes',
+      label: (
+        <Link to="/advertisments/shoes" style={{ fontSize: '16px', textDecoration: 'none' }}>
+          {t('shoes')}
+          <span style={{ marginLeft: '6px', background: '#03989F', color: '#fff', fontSize: '10px', fontWeight: 600, padding: '1px 5px', borderRadius: 3 }}>NEW</span>
+        </Link>
+      ),
+    },
+    {
+      key: '4_work',
+      label: (
+        <Link to="/advertisments/work" style={{ fontSize: '16px', textDecoration: 'none' }}>
+          {t('work')}
+          <span style={{ marginLeft: '6px', background: '#03989F', color: '#fff', fontSize: '10px', fontWeight: 600, padding: '1px 5px', borderRadius: 3 }}>NEW</span>
+        </Link>
+      ),
+    },
+    {
+      key: '5',
+      label: (
+        <Link to="/advertisments/house_goods" style={{ fontSize: '16px', textDecoration: 'none' }}>
+          {t('house_goods')}
+        </Link>
+      ),
+    },
+    {
+      key: '6',
+      label: (
+        <Link to="/advertisments/building_materials_and_tools" style={{ fontSize: '16px', textDecoration: 'none' }}>
+          {t('building_materials_and_tools')}
+        </Link>
+      ),
+    },
+    {
+      key: '7',
+      label: (
+        <Link to="/advertisments/transport_goods" style={{ fontSize: '16px', textDecoration: 'none' }}>
+          {t('transport_goods')}
+        </Link>
+      ),
+    },
+    {
+      key: '8',
+      label: (
+        <Link to="/advertisments/petSupplies" style={{ fontSize: '16px', textDecoration: 'none' }}>
+          {t('petSupplies')}
+        </Link>
+      ),
+    },
+    {
+      key: '9',
+      label: (
+        <Link to="/advertisments/home_appliance" style={{ fontSize: '16px', textDecoration: 'none' }}>
+          {t('home_appliance')}
+        </Link>
+      ),
+    },
+    {
+      key: '10',
+      label: (
+        <Link to="/advertisments/service" style={{ fontSize: '16px', textDecoration: 'none' }}>
+          {t('service')}
+        </Link>
+      ),
+    },
+    {
+      key: '11',
+      label: (
+        <Link to="/advertisments/child_goods" style={{ fontSize: '16px', textDecoration: 'none' }}>
+          {t('child_goods')}
+        </Link>
+      ),
+    },
+    {
+      key: '12',
+      label: (
+        <Link to="/advertisments/health_and_beauty" style={{ fontSize: '16px', textDecoration: 'none' }}>
+          {t('health_and_beauty')}
+        </Link>
+      ),
+    },
+    {
+      key: '13',
+      label: (
+        <Link to="/advertisments/sport" style={{ fontSize: '16px', textDecoration: 'none' }}>
+          {t('sport')}
+        </Link>
+      ),
+    },
+    {
+      key: '14',
+      label: (
+        <Link to="/advertisments/hobby_n_Relax" style={{ fontSize: '16px', textDecoration: 'none' }}>
+          {t('hobby_n_Relax')}
+        </Link>
+      ),
+    },
+    {
+      key: '15',
+      label: (
+        <Link to="/advertisments/rest" style={{ fontSize: '16px', textDecoration: 'none' }}>
+          {t('rest')}
+        </Link>
+      ),
+    },
+  ];
+
+  return (
+    <>
+      <div className='d-none d-lg-block' style={{ marginTop: '20px' }}>
+        <div className='container mb-3' style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div className='logo' style={{ marginRight: '20px' }}>
+            <a href='/'>
+              <img src={Logo} alt='logo' style={{ width: '100px', height: 'auto' }}></img>
+            </a>
+          </div>
+          <InputSearch
+                placeholder={t('search')}
+                width='100%'
+                height='40px'
+                value={searchText}
+                onChange={handleSearchChange}
+              />
+          <Dropdown
+            menu={{
+              items,
+            }}
+          >
+            <a onClick={(e) => e.preventDefault()}>
+              <Button style={{ backgroundColor: '#FFBF34', color: 'white', border: 'none', marginLeft: '20px' }} size='large' icon={<MenuOutlined />}>
+                {t('category')}
+              </Button>
+            </a>
+          </Dropdown>
+        </div>
+      </div>
+
+      <div className='d-lg-none'>
+        <div className='logo mb-3' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <img src={banner} alt="Advertisement" className="img-fluid" />
+        </div>
+        <div className='container mb-3' style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <Dropdown
+            menu={{
+              items,
+            }}
+          >
+            <a onClick={(e) => e.preventDefault()}>
+              <Button style={{ marginRight: '20px', backgroundColor: '#FFBF34', color: 'white', border: 'none' }} size='large' icon={<MenuOutlined />}>
+              </Button>
+            </a>
+          </Dropdown>
+          <InputSearch
+                placeholder={t('search')}
+                width='100%'
+                height='40px'
+                value={searchText}
+                onChange={handleSearchChange}
+              />
+        </div>
+        <div className='container'>
+        </div>
+      </div>
+    </>
+
+  );
+};
+
+export default CategoriesAds;

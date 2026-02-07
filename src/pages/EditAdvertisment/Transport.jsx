@@ -1,12 +1,21 @@
 import React from 'react'
+import { Select } from 'antd';
 
-export default function Transport({t}) {
+const { Option } = Select;
+
+export default function Transport({ handleSubCategoryChange, subcategory, t }) {
     return (
-        <>
-            <option>{t('choce_subcategory')}</option>
-            <option value="auto">{t('auto')}</option>
-            <option value="moto"> {t('moto')}</option>
-            <option value="water_transport">{t('water_transport')}</option>
-        </>
+        <Select
+            className="mb-3"
+            aria-label="Default select example"
+            onChange={handleSubCategoryChange}
+            value={subcategory}
+            style={{ width: '100%' }}
+        >
+            <Option>{t('choce_subcategory')}</Option>
+            <Option value="auto">{t('auto')}</Option>
+            <Option value="moto"> {t('moto')}</Option>
+            <Option value="water_transport">{t('water_transport')}</Option>
+        </Select>
     )
 }

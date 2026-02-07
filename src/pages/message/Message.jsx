@@ -7,8 +7,9 @@ import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { FaPaperPlane } from 'react-icons/fa';
 import { BsCardImage } from 'react-icons/bs';
 import { List, Avatar, Image, Input } from 'antd';
-import { SendOutlined, PaperClipOutlined } from '@ant-design/icons';
-import { Button, NavBar } from 'antd-mobile'
+import { SendOutlined, PaperClipOutlined, LeftOutlined } from '@ant-design/icons';
+import { Button } from 'antd-mobile'
+import { useTranslation } from "react-i18next";
 
 import {
     collection,
@@ -24,11 +25,12 @@ import {
     limitToLast
 } from "firebase/firestore";
 import './messages.css';
-import Logo from '../../assets/logo.png';
+import Logo from '../../assets/person5.jpg';
 import { NavBarBack } from "../../components/Navbar/NavBarBack";
 
 
 export const Message = () => {
+    const {t} = useTranslation();
     const history = useHistory();
     const [messages, setMessages] = useState([]);
     const [selectedMessage, setSelectedMessage] = useState(null);
@@ -234,7 +236,7 @@ export const Message = () => {
     return (
         <div>
 
-            {!isMessagesContainerOpen && (
+{!isMessagesContainerOpen && (
                 <MyNavbar />
             )}
 
@@ -242,13 +244,13 @@ export const Message = () => {
                 <NavBarBack />
             )}
 
-            <div className="container d-none d-lg-block mt-3" style={{ paddingTop: '70px' }}>
+            <div className="container d-none d-lg-block mt-3" style={{ paddingTop: 8 }}>
                 <div className="messaging">
                     <div className="inbox_msg">
                         <div className="inbox_people">
-                            <div className="headind_srch">
+                        <div className="headind_srch">
                                 <div className="recent_heading">
-                                    <h4>Сообщения</h4>
+                                    <h4>{t('message_navbar')}</h4>
                                 </div>
                             </div>
                             <div className="inbox_chat">
@@ -371,7 +373,7 @@ export const Message = () => {
                                         style={{ display: 'none' }}
                                         onChange={handleImageUpload}
                                     />
-                                    <input type="text" className="write_msg" placeholder="Type a message"
+                                    <input type="text" className="write_msg" placeholder={t('input_message')}
                                         value={message} onChange={e => setMessage(e.target.value)} />
                                     <button className="msg_send_btn" type="submit">
                                         <FaPaperPlane />
@@ -385,7 +387,7 @@ export const Message = () => {
             </div>
 
             <div className="d-lg-none">
-                <List className="container" style={{ paddingTop: '3.5rem' }}
+                <List className="container" style={{ paddingTop: 8, paddingBottom: 8 }}
                     dataSource={combinedMessages}
                     renderItem={(message, index) => (
                         <List.Item key={index} onClick={() => {
@@ -413,25 +415,29 @@ export const Message = () => {
                         </List.Item>
                     )}
                 />
-                <div className="messages-container" style={{ display: isMessagesContainerOpen ? 'block' : 'none' }}>
-                    <div className="test" style={{ height: 'calc(100vh - 100px)', overflowY: 'scroll' }}>
+                <div
+                    className="messages-container"
+                    style={{
+                        display: isMessagesContainerOpen ? 'flex' : 'none',
+                        flexDirection: 'column',
+                        position: 'fixed',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        zIndex: 9998,
+                        backgroundColor: '#fff',
+                    }}
+                >
+                    <div className={styles.chatHeader}>
+                        <LeftOutlined className={styles.chatHeaderBack} onClick={() => setIsMessagesContainerOpen(false)} />
+                        <Link to={`/seller/${userId}`} className={styles.chatHeaderLink}>
+                            <Avatar src={userImageUrl || Logo} alt="Profile" style={{ width: '40px', height: '40px', borderRadius: '50%' }} />
+                            <span className={styles.chatHeaderName}>{userName}</span>
+                        </Link>
+                    </div>
+                    <div className={`test ${styles.chatScrollArea}`} style={{ flex: 1, overflowY: 'auto', minHeight: 0 }}>
                         <div className={styles.messageHistory}>
-                            <NavBar
-                                style={{
-                                    position: 'fixed',
-                                    top: 0,
-                                    width: '100%',
-                                    zIndex: 9999,
-                                    borderBottom: 'solid 1px grey',
-                                    backgroundColor: 'white'
-                                }}
-                                onBack={() => setIsMessagesContainerOpen(false)}
-                            >
-                                <Link to={`/seller/${userId}`}>
-                                    <Avatar src={userImageUrl || Logo} alt="Profile" style={{ width: '40px', height: '40px', borderRadius: '50%' }} />
-                                    <span style={{ marginLeft: '10px' }}>{userName}</span>
-                                </Link>
-                            </NavBar>
                             {msgList.map((msg, index) => (
                                 msg.from === user.uid ? (
                                     <div className={styles.outgoingMessage} key={index}>
@@ -484,7 +490,7 @@ export const Message = () => {
                             />
                             <PaperClipOutlined className={styles.sendIcon} onClick={() => fileInput.current.click()} />
                             <TextArea className={styles.textInput} rows={1}
-                                placeholder="input message" autoSize={{ minRows: 1, maxRows: 4 }}
+                                placeholder={t('input_message')} autoSize={{ minRows: 1, maxRows: 4 }}
                                 value={message} onChange={e => setMessage(e.target.value)}
                                 onPressEnter={handleSubmit}
                             />

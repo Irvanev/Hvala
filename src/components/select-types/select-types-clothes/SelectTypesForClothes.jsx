@@ -7,7 +7,7 @@ const SelectTypesForClothes = ({ type, setType }) => {
     const { Option } = Select;
     return (
         <div>
-            <Select aria-label="Default select example" value={type} onChange={(value) => setType(value)}>
+            <Select aria-label="Default select example" value={type} onChange={(value) => setType(value)} style={{width: '100%'}}>
                 <Option value="outwear">{t('outwear')}</Option>
                 <Option value="hats">{t('hats')}</Option>
                 <Option value="accessories">{t('accessories')}</Option>

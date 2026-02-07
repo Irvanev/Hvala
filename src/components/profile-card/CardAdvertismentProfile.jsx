@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Col, Carousel, Dropdown, Menu, Popconfirm, } from 'antd';
+import { useHistory } from 'react-router-dom';
+import { Card, Col, Carousel, Dropdown, Menu, Popconfirm, message } from 'antd';
 import { EditOutlined, EllipsisOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
-import Logo from '../../assets/logo.png';
+import Logo from '../../assets/logo_def.png';
 import { useTranslation } from 'react-i18next';
 import { getConversionRate } from '../../services/AdvertismentsHome/AdvertismentsService';
 import { formatDistanceToNow, format } from 'date-fns';
 import { ru, enUS, sr } from 'date-fns/locale';
 
-import { archivedAdvertisement } from '../../services/ProfileService';
+import { archivedAdvertisement, upAdvertisment } from '../../services/profile/Profile';
 
 const CardAdvertisementProfile = ({ advertisment, index }) => {
+    const history = useHistory();
     const { i18n } = useTranslation();
+    const { t } = useTranslation();
     const [conversionRate, setConversionRate] = useState(null);
     const [currency, setCurrency] = useState('');
 
@@ -21,6 +24,23 @@ const CardAdvertisementProfile = ({ advertisment, index }) => {
     const handleArchive = async (id) => {
         await archivedAdvertisement(id);
         setIsArchived(prevState => !prevState);
+        window.location.reload();
+    };
+
+    const handleUpAdvertisment = async (id) => {
+        try {
+            await upAdvertisment(id, {
+                success: (msg) => {
+                    message.success(t(msg));
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 500);
+                },
+                error: (msg) => message.error(t(msg))
+            });
+        } catch (error) {
+            message.error(t('up_error'));
+        }
     };
 
     useEffect(() => {
@@ -58,22 +78,34 @@ const CardAdvertisementProfile = ({ advertisment, index }) => {
 
     return (
         <>
-            <Col key={index}>
+            <Col key={index} style={{ paddingBottom: '50px' }}>
                 <Card
                     hoverable
                     actions={[
-                        <EditOutlined key="edit" />,
+                        <a href={`/edit/${advertisment.id}`}>
+                            <EditOutlined key="edit" />
+                        </a>,
                         <Dropdown
                             overlay={
                                 <Menu>
                                     <Menu.Item key="1">
                                         <Popconfirm
-                                            title="Вы уверены, что хотите опубликовать?"
+                                            title={t('publish_question')}
                                             onConfirm={() => handleArchive(advertisment.id)}
-                                            okText="Да"
-                                            cancelText="Нет"
+                                            okText={t('yes')}
+                                            cancelText={t('no')}
                                         >
-                                            <a href="#">Переместить в архив</a>
+                                            <a style={{textDecoration: 'none'}} href="#">{t('move_on_archiv')}</a>
+                                        </Popconfirm>
+                                    </Menu.Item>
+                                    <Menu.Item key="2">
+                                        <Popconfirm
+                                            title={t('up_question')}
+                                            onConfirm={() => handleUpAdvertisment(advertisment.id)}
+                                            okText={t('yes')}
+                                            cancelText={t('no')}
+                                        >
+                                            <a style={{textDecoration: 'none'}} href="#">{t('up_ad')}</a>
                                         </Popconfirm>
                                     </Menu.Item>
 
@@ -85,21 +117,23 @@ const CardAdvertisementProfile = ({ advertisment, index }) => {
                             <EllipsisOutlined onClick={() => setDropdownVisible(!dropdownVisible)} />
                         </Dropdown>,
                     ]}
-                    style={{ width: '100%', height: '57vh', display: 'flex',
-                    flexDirection: 'column', justifyContent: 'space-between'}}
+                    style={{
+                        width: '100%', height: '29rem', display: 'flex',
+                        flexDirection: 'column', justifyContent: 'space-between'
+                    }}
                     bodyStyle={{ padding: 0, margin: '1vh' }}
                     cover={
                         <Link key={advertisment.id} to={`/advertisment/${advertisment.id}`} style={{ textDecoration: "none", color: 'black' }}>
                             <Carousel>
                                 {advertisment.photoUrls && advertisment.photoUrls.length > 0 ? (
                                     advertisment.photoUrls.map((url, index) => (
-                                        <div key={index} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '30vh' }}>
-                                            <img style={{ height: '30vh', width: '100%', objectFit: 'cover' }} alt="example" src={url || Logo} />
+                                        <div key={index} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '12rem' }}>
+                                            <img style={{ height: '12rem', width: '100%', objectFit: 'cover' }} alt="example" src={url || Logo} />
                                         </div>
                                     ))
                                 ) : (
-                                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '30vh' }}>
-                                        <img style={{ height: '30vh', width: '100%', objectFit: 'cover' }} alt="example" src={Logo} />
+                                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '12rem' }}>
+                                        <img style={{ height: '12rem', width: '100%', objectFit: 'cover' }} alt="example" src={Logo} />
                                     </div>
                                 )}
                             </Carousel>
@@ -122,7 +156,7 @@ const CardAdvertisementProfile = ({ advertisment, index }) => {
                             overflow: 'hidden',
                             textOverflow: 'ellipsis'
                         }}>
-                            {advertisment.location}
+                            {t(advertisment.country)}, {t(advertisment.region)}
                         </p>
                         <p>{formatDate(advertisment.time_creation)}</p>
                     </Link>

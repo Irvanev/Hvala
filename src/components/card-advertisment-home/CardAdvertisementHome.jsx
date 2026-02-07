@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Col, Carousel } from 'antd';
 import { Link } from 'react-router-dom';
-import Logo from '../../assets/logo.png';
+import Logo from '../../assets/logo_def.png';
 import { useTranslation } from 'react-i18next';
-import { getConversionRate } from '../../services/AdvertismentsHome/AdvertismentsService';
+import { getConversionRate } from '../../services/currencyCache';
 import { formatDistanceToNow, format } from 'date-fns';
 import { ru, enUS, sr } from 'date-fns/locale';
 
 const CardAdvertisementHome = ({ advertisment, index }) => {
     const { i18n } = useTranslation();
+    const { t } = useTranslation();
     const [conversionRate, setConversionRate] = useState(null);
     const [currency, setCurrency] = useState('');
 
@@ -23,6 +24,22 @@ const CardAdvertisementHome = ({ advertisment, index }) => {
     }, [currency]);
 
     const convertedPrice = Math.round(advertisment.price * conversionRate);
+
+    const formatPrice = (price) => {
+        if (price >= 1000000) {
+            return parseInt(price / 1000000) + 'm ';
+        } else {
+            return price;
+        }
+    }
+
+    const formatCurrency = (currency) => {
+        if (currency === 'eur') {
+            return '€';
+        } else {
+            return currency;
+        }
+    }
 
     function formatDate(timestamp) {
         const locales = { ru, en: enUS, sr };
@@ -47,23 +64,33 @@ const CardAdvertisementHome = ({ advertisment, index }) => {
 
     return (
         <>
-            <Col key={index} className='d-none d-lg-block'>
+            <Col key={index} className='d-none d-lg-block mt-3'>
                 <Link key={advertisment.id} to={`/advertisment/${advertisment.id}`} style={{ textDecoration: "none" }}>
                     <Card
                         hoverable
-                        style={{ height: '51vh', width: '100%' }}
+                        style={{ height: '48vh', width: '100%' }}
                         bodyStyle={{ padding: 0, margin: '1vh' }}
                         cover={
                             <Carousel>
                                 {advertisment.photoUrls && advertisment.photoUrls.length > 0 ? (
                                     advertisment.photoUrls.map((url, index) => (
                                         <div key={index} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '30vh' }}>
-                                            <img style={{ height: '30vh', width: '100%', objectFit: 'cover' }} alt="example" src={url || Logo} />
+                                            <img
+                                                style={{ height: '30vh', width: '100%', objectFit: 'cover' }}
+                                                alt="example"
+                                                src={url || Logo}
+                                                loading={index === 0 ? "eager" : "lazy"}
+                                                decoding="async"
+                                            />
                                         </div>
                                     ))
                                 ) : (
                                     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '30vh' }}>
-                                        <img style={{ height: '30vh', width: '100%', objectFit: 'cover' }} alt="example" src={Logo} />
+                                        <img
+                                            style={{ height: '30vh', width: '100%', objectFit: 'cover' }}
+                                            alt="example"
+                                            src={Logo}
+                                        />
                                     </div>
                                 )}
                             </Carousel>
@@ -71,9 +98,9 @@ const CardAdvertisementHome = ({ advertisment, index }) => {
                     >
                         <Card.Meta title={advertisment.title} />
                         <p style={{ color: 'grey', fontSize: '1.3em' }}>
-                            {advertisment.price + ' ' + currency.toUpperCase()}
+                            {advertisment.price + formatCurrency(currency)}
                             {conversionRate &&
-                                <span style={{ fontSize: '0.8em' }}> ~{convertedPrice.toFixed(2) + '' + (currency === 'eur' ? 'din' : '€')}
+                                <span style={{ fontSize: '0.8em' }}> ~{formatPrice(convertedPrice) + '' + (currency === 'eur' ? 'din' : '€')}
                                 </span>
                             }
                         </p>
@@ -84,7 +111,7 @@ const CardAdvertisementHome = ({ advertisment, index }) => {
                             overflow: 'hidden',
                             textOverflow: 'ellipsis'
                         }}>
-                            {advertisment.location}
+                            {t(advertisment.country)}, {t(advertisment.region)}
                         </p>
                         <p>{formatDate(advertisment.time_creation)}</p>
 
@@ -116,9 +143,9 @@ const CardAdvertisementHome = ({ advertisment, index }) => {
                     >
                         <Card.Meta title={advertisment.title} />
                         <p style={{ color: 'grey', fontSize: '1.3em' }}>
-                            {advertisment.price + ' ' + currency.toUpperCase()}
+                            {advertisment.price + formatCurrency(currency)}
                             {conversionRate &&
-                                <span style={{ fontSize: '0.8em' }}> ~{convertedPrice.toFixed(2) + '' + (currency === 'eur' ? 'din' : '€')}
+                                <span style={{ fontSize: '0.8em' }}> ~{formatPrice(convertedPrice) + '' + (currency === 'eur' ? 'din' : '€')}
                                 </span>
                             }
                         </p>

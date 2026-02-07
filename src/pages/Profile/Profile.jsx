@@ -8,15 +8,15 @@ import ProfileCardForPc from '../../components/profile-card/ProfileInfoForPc';
 import { fetchUser, fetchReviews, fetchAdvertisements, fetchAdvertismentsArchive } from '../../services/ProfileService';
 import ProfileInfoForMobile from '../../components/profile-card/ProfileInfoForMobile';
 import ModalForNumberReports from '../../components/profile-card/ModalForNumberReports';
-import { Button, Empty, Tabs, Badge, Space } from 'antd';
+import { Tabs, Badge, Space } from 'antd';
 import { NavBarLogout } from '../../components/Navbar/NavBarLogout';
 import CardAdvertisementProfile from '../../components/profile-card/CardAdvertismentProfile'
 import CardAdvertisementProfileArchive from "../../components/profile-card/CardAdvertismentArchive";
 import CardAdvertisementProfileMobile from "../../components/profile-card/CardAdvertismentProfileMobile";
 import CardAdvertisementProfileArchiveMobile from "../../components/profile-card/CardAdvertismentArchiveMobile";
+import { auth } from "../../config/firebase";
 
 export const Profile = () => {
-    const { i18n } = useTranslation();
     const { t } = useTranslation();
     const [user, setUser] = useState(null);
     const [show, setShow] = useState(false);
@@ -30,18 +30,56 @@ export const Profile = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const userId = localStorage.getItem('userId');
-            const user = await fetchUser(userId);
-            const { reviews, feedbackCount } = await fetchReviews(userId);
-            const advertisements = await fetchAdvertisements(userId);
-            const archive = await fetchAdvertismentsArchive(userId);
-            setUser({ ...user, reviewCount: feedbackCount });
-            setReviews(reviews);
-            setAdvertisements(advertisements);
-            setAdvertisementsArchive(archive);
+            const currentUser = auth.currentUser;
+            if (currentUser) {
+                const userId = currentUser.uid;
+                const user = await fetchUser(userId);
+                setUser(user);
+            }
         };
+
         fetchData();
-    }, [advertisment]);
+    }, []);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const currentUser = auth.currentUser;
+            if (currentUser) {
+                const userId = currentUser.uid;
+                const { reviews, feedbackCount } = await fetchReviews(userId);
+                setReviews(reviews);
+                setUser(prevUser => ({ ...prevUser, reviewCount: feedbackCount }));
+            }
+        };
+
+        fetchData();
+    }, []);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const currentUser = auth.currentUser;
+            if (currentUser) {
+                const userId = currentUser.uid;
+                const advertisements = await fetchAdvertisements(userId);
+                setAdvertisements(advertisements);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const currentUser = auth.currentUser;
+            if (currentUser) {
+                const userId = currentUser.uid;
+                const archive = await fetchAdvertismentsArchive(userId);
+                setAdvertisementsArchive(archive);
+            }
+        };
+
+        fetchData();
+    }, []);
 
     return (
         <div>
@@ -58,7 +96,7 @@ export const Profile = () => {
                                         tab={
                                             <Space>
                                                 {advertisment.length > 0 && <Badge color="orange" count={advertisment.length} />}
-                                                Мои объявления
+                                                {t('my_ads')}
                                             </Space>
                                         }
                                         key="1"
@@ -66,21 +104,11 @@ export const Profile = () => {
                                         <Row xs={2} sm={2} md={3} lg={3} className="g-3" id="cardAds">
                                             {advertisment.length > 0 ? (
                                                 advertisment.map((advertisment, index) => (
-                                                    <CardAdvertisementProfile key={index} advertisment={advertisment} />
+                                                    <CardAdvertisementProfile key={index} advertisment={advertisment} setAdvertisements={setAdvertisements} />
                                                 ))
                                             ) : (
                                                 <div>
-                                                    <Empty
-                                                        image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
-                                                        imageStyle={{
-                                                            height: 60,
-                                                        }}
-                                                        description={
-                                                            <span>Тут будут ваши объявления</span>
-                                                        }
-                                                    >
-                                                        <Button type="primary">Создать объявление</Button>
-                                                    </Empty>
+
                                                 </div>
                                             )}
                                         </Row>
@@ -89,7 +117,7 @@ export const Profile = () => {
                                         tab={
                                             <Space>
                                                 {advertismentArchive.length > 0 && <Badge color="orange" count={advertismentArchive.length} />}
-                                                Архив
+                                                {t('archive_ads')}
                                             </Space>
                                         }
                                         key="2"
@@ -101,17 +129,7 @@ export const Profile = () => {
                                                 ))
                                             ) : (
                                                 <div>
-                                                    <Empty
-                                                        image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
-                                                        imageStyle={{
-                                                            height: 60,
-                                                        }}
-                                                        description={
-                                                            <span>Тут будут ваши объявления</span>
-                                                        }
-                                                    >
-                                                        <Button type="primary">Создать объявление</Button>
-                                                    </Empty>
+
                                                 </div>
                                             )}
                                         </Row>
@@ -133,7 +151,7 @@ export const Profile = () => {
                                     tab={
                                         <Space>
                                             {advertisment.length > 0 && <Badge color="orange" count={advertisment.length} />}
-                                            Мои объявления
+                                            {t('my_ads')}
                                         </Space>
                                     }
                                     key="1"
@@ -145,30 +163,20 @@ export const Profile = () => {
                                             ))
                                         ) : (
                                             <div className={styles.emptyMobile}>
-                                                <Empty
-                                                    image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
-                                                    imageStyle={{
-                                                        height: 60,
-                                                    }}
-                                                    description={
-                                                        <span>Тут будут ваши объявления</span>
-                                                    }
-                                                >
-                                                    <Button type="primary">Создать объявление</Button>
-                                                </Empty>
+
                                             </div>
                                         )}
                                     </Row>
                                 </TabPane>
                                 <TabPane
-                                        tab={
-                                            <Space>
-                                                {advertismentArchive.length > 0 && <Badge color="orange" count={advertismentArchive.length} />}
-                                                Архив
-                                            </Space>
-                                        }
-                                        key="2"
-                                    >
+                                    tab={
+                                        <Space>
+                                            {advertismentArchive.length > 0 && <Badge color="orange" count={advertismentArchive.length} />}
+                                            {t('archive_ads')}
+                                        </Space>
+                                    }
+                                    key="2"
+                                >
                                     <Row xs={2} sm={2} md={3} lg={4} className="g-3" id="cardAds">
                                         {(advertismentArchive.map((advertismentArchive, index) => (
                                             <CardAdvertisementProfileArchiveMobile key={index} advertismentArchive={advertismentArchive} />

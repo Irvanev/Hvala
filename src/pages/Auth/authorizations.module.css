@@ -13,8 +13,22 @@
 .submitButton {
     font-size: 20px;
     width: 100%;
-    background-color: orange;
+    height: 40px;
+    background-color: #FFBF34;
     color: white;
     border: none;
-    margin-bottom: 50px;
+    border-radius: 10px;
+}
+
+.submitButton:hover {
+    background-color: #FFCB5B;
+}
+
+.customLink {
+    text-decoration: none;
+    color: #03989F;
+}
+
+.customLink:hover {
+    color: #00B2BB;
 }

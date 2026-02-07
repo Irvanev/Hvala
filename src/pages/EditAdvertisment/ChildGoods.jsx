@@ -1,21 +1,30 @@
 import React from 'react'
+import { Select } from 'antd';
 
-export default function ChildGoods({t}) {
+const { Option } = Select;
+
+export default function ChildGoods({ handleSubCategoryChange, subcategory, t }) {
     return (
-        <>
-            <option>{t('choce_subcategory')}</option>
-            <option value="car_seats">{t('car_seats')}</option>
-            <option value="health_and_care">{t('health_and_care')}</option>
-            <option value="toys_and_games"> {t('toys_and_games')}</option>
-            <option value="strollers"> {t('strollers')}</option>
-            <option value="feeding_and_nutrition"> {t('feeding_and_nutrition')}</option>
-            <option value="bathing"> {t('bathing')}</option>
-            <option value="nursery"> {t('nursery')}</option>
-            <option value="diapers_and_potties"> {t('diapers_and_potties')}</option>
-            <option value="baby_monitors"> {t('baby_monitors')}</option>
-            <option value="maternity_products"> {t('maternity_products')}</option>
-            <option value="schoold_supplies"> {t('schoold_supplies')}</option>
-            <option value="other_cat"> {t('other_cat')}</option>
-        </>
+        <Select
+            className="mb-3"
+            aria-label="Default select example"
+            onChange={handleSubCategoryChange}
+            value={subcategory}
+            style={{ width: '100%' }}
+        >
+            <Option>{t('choce_subcategory')}</Option>
+            <Option value="car_seats">{t('car_seats')}</Option>
+            <Option value="health_and_care">{t('health_and_care')}</Option>
+            <Option value="toys_and_games"> {t('toys_and_games')}</Option>
+            <Option value="strollers"> {t('strollers')}</Option>
+            <Option value="feeding_and_nutrition"> {t('feeding_and_nutrition')}</Option>
+            <Option value="bathing"> {t('bathing')}</Option>
+            <Option value="nursery"> {t('nursery')}</Option>
+            <Option value="diapers_and_potties"> {t('diapers_and_potties')}</Option>
+            <Option value="baby_monitors"> {t('baby_monitors')}</Option>
+            <Option value="maternity_products"> {t('maternity_products')}</Option>
+            <Option value="schoold_supplies"> {t('schoold_supplies')}</Option>
+            <Option value="other_cat"> {t('other_cat')}</Option>
+        </Select>
     )
 }

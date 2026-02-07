@@ -1,28 +1,71 @@
-import React from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useHistory, useLocation, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Capacitor } from '@capacitor/core';
 import { auth } from '../../config/firebase';
 import { signOut } from 'firebase/auth';
+import { db } from '../../config/firebase';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 
-import { TabBar } from 'antd-mobile';
 import { Avatar, Button, Dropdown, Menu } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
+import { DownOutlined, GlobalOutlined } from '@ant-design/icons';
 import { Nav, Navbar, Container } from 'react-bootstrap'
-import {
-    SetOutline,
-    UserOutline,
-    AddOutline,
-    MessageOutline,
-    AppstoreOutline
-} from 'antd-mobile-icons'
 import { MessageOutlined } from '@ant-design/icons';
+import LanguageModal from '../../LanguageModal';
+
+import personLogo from "../../assets/person2.jpg"
 
 export const MyNavbar = () => {
     const { t } = useTranslation();
     const history = useHistory();
     const location = useLocation();
     const { pathname } = location;
-    const user = JSON.parse(localStorage.getItem('user'));
+    const user = auth.currentUser;
+
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [userData, setUserData] = useState(null);
+
+    useEffect(() => {
+        if (user) {
+            const fetchUserData = async () => {
+                const q = query(collection(db, 'users'), where('id', '==', user.uid));
+                const querySnapshot = await getDocs(q);
+                querySnapshot.forEach((doc) => {
+                    setUserData(doc.data());
+                });
+            };
+            fetchUserData();
+        }
+    }, [user, db]);
+
+    const showModal = () => {
+        setIsModalVisible(true);
+    };
+
+    const handleHomeClick = () => {
+        history.push('/');
+    };
+    const handleSettingsClick = () => {
+        history.push('/settings');
+    };
+    const handleAddItemClick = () => {
+        history.push('/addItem');
+        window.location.reload();
+    };
+    const handleMessageClick = () => {
+        history.push('/message');
+    };
+    const handleProfileClick = () => {
+        history.push('/profile');
+    };
+
+    const getButtonStyle = (path) => {
+        return location.pathname === path ? 'text-customColor2' : 'text-customColor3';
+    };
+
+    const handleModalClose = () => {
+        setIsModalVisible(false);
+    };
 
     const setRoute = (value) => {
         history.push(value);
@@ -40,72 +83,67 @@ export const MyNavbar = () => {
     const menu = (
         <Menu>
             <Menu.Item>
-                <a href="/profile">{t("profile")}</a>
+                <Link to="/profile" style={{ textDecoration: 'none' }}>{t("profile_navbar")}</Link>
             </Menu.Item>
             <Menu.Item>
-                <a href="/settings">{t("settings")}</a>
+                <Link to="/settings" style={{ textDecoration: 'none' }}>{t("settings")}</Link>
             </Menu.Item>
             <Menu.Item onClick={logout}>
-                <a href="/logout">{t("exit")}</a>
+                <a style={{ textDecoration: 'none' }} href="/sign_in">{t("exit")}</a>
             </Menu.Item>
         </Menu>
     );
-
-    const tabs = [
-        {
-            key: '/advertisment',
-            title: t("home_navbar"),
-            icon: <AppstoreOutline size={24} />,
-        },
-        {
-            key: '/settings',
-            title: t("settings"),
-            icon: <SetOutline size={24} />,
-        },
-        {
-            key: '/addItem',
-            title: t("addItem_navbar"),
-            icon: <AddOutline size={24} />,
-        },
-        {
-            key: '/message',
-            title: t("message_navbar"),
-            icon: <MessageOutline size={24} />,
-        },
-        {
-            key: '/profile',
-            title: t("profile_navbar"),
-            icon: <UserOutline size={24} />,
-        },
-    ];
 
 
     return (
         <div>
 
-            <Navbar collapseOnSelect expand="lg" className="bg-body-tertiary d-none d-lg-block" style={{ position: 'fixed', width: '100%', zIndex: '999', top: 0 }}>
-                <Container>
+            <Navbar collapseOnSelect expand="lg" className="d-none d-lg-block" style={{ position: 'fixed', width: '100%', zIndex: '999', top: 0, backgroundColor: '#03989F', alignItems: 'center' }}>
+                <Container className="d-flex align-items-center">
                     <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-                    <Navbar.Collapse id="responsive-navbar-nav">
-                        <Nav className="me-auto">
-                            <Nav.Link href="/advertisment" style={{ fontSize: '18px' }}>{t("home_navbar")}</Nav.Link>
-                            <Nav.Link href="/help" style={{ fontSize: '18px' }}>{t("help_navbar")}</Nav.Link>
-                            <Nav.Link href="/contacts" style={{ fontSize: '18px' }}>{t("contact_navbar")}</Nav.Link>
+                    <Navbar.Collapse id="responsive-navbar-nav" className="align-items-center">
+                        <Nav className="me-auto" style={{ alignItems: 'center' }}>
+                            <Link to="" style={{ textDecoration: 'none' }} onClick={showModal}>
+                                <Nav.Link href="" style={{ fontSize: '18px', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <GlobalOutlined style={{ fontSize: '24px', color: '#FFBF34', marginRight: '8px' }} />
+                                    {t("language")}
+                                </Nav.Link>
+                            </Link>
+
+                            <LanguageModal
+                                show={isModalVisible}
+                                handleClose={handleModalClose}
+                            />
+                            <Link to="/" style={{ textDecoration: 'none' }}>
+                                <Nav.Link href="/" style={{ fontSize: '18px', color: '#ffffff' }}>{t("home_navbar")}</Nav.Link>
+                            </Link>
+                            <Link to="/help" style={{ textDecoration: 'none' }}>
+                                <Nav.Link href='/help' style={{ fontSize: '18px', color: '#ffffff' }}>{t("help_navbar")}</Nav.Link>
+                            </Link>
+                            <Link to="/contacts" style={{ textDecoration: 'none' }}>
+                                <Nav.Link href="/contacts" style={{ fontSize: '18px', color: '#ffffff' }}>{t("contact_navbar")}</Nav.Link>
+                            </Link>
                         </Nav>
-                        <Nav>
-                            <Nav.Link href="/message" style={{ fontSize: '18px', padding: '12px' }}><MessageOutlined style={{ fontSize: '25px', padding: '3px' }} /></Nav.Link>
-                            {user ? (
+                        <Nav style={{ alignItems: 'center' }}>
+                            <Link to="/message" style={{ textDecoration: 'none' }}>
+                                <Nav.Link href="/message" style={{ fontSize: '18px', padding: '12px', color: '#ffffff' }}><MessageOutlined style={{ fontSize: '25px', padding: '3px' }} /></Nav.Link>
+                            </Link>
+                            {userData ? (
                                 <Dropdown overlay={menu}>
-                                    <Nav.Link href="/profile" style={{ fontSize: '18px', padding: '12px' }}>
-                                        <Avatar size={32} alt={user.name} src={user.photoUrl} style={{ marginRight: '10px' }} />
-                                        {user.name}<DownOutlined style={{ fontSize: '12px' }} />
-                                    </Nav.Link>
+                                    <Link to="/profile" style={{ textDecoration: 'none' }}>
+                                        <Nav.Link href="/profile" style={{ fontSize: '18px', padding: '12px', color: '#ffffff' }}>
+                                            <Avatar size={32} alt={user.name} src={userData.photoUrl || personLogo} style={{ marginRight: '10px' }} />
+                                            {userData.name}<DownOutlined style={{ fontSize: '12px' }} />
+                                        </Nav.Link>
+                                    </Link>
                                 </Dropdown>
                             ) : (
-                                <Nav.Link href="/sign_in" style={{ fontSize: '18px', padding: '12px' }}>{t("auth")}</Nav.Link>
+                                <Link to="/sign_in" style={{ textDecoration: 'none' }}>
+                                    <Nav.Link href="/sign_in" style={{ fontSize: '18px', padding: '12px' }}>{t("auth")}</Nav.Link>
+                                </Link>
                             )}
                             <Nav.Link href="/addItem" >
-                                <Button style={{ backgroundColor: 'orange', color: 'white', border: 'none' }} size='large'>{t("addItem_navbar")}</Button>
+                                <Button style={{ backgroundColor: '#FFBF34', color: 'white', border: 'none' }} size='large'>{t("addItem_navbar")}</Button>
                             </Nav.Link>
                         </Nav>
                     </Navbar.Collapse>
@@ -113,23 +151,58 @@ export const MyNavbar = () => {
             </Navbar>
 
             <div className='app d-lg-none'>
-                <TabBar activeKey={pathname} onChange={value => setRoute(value)} style={{
-                    position: 'fixed',
-                    height: '70px',
-                    width: '100%',
-                    bottom: 0,
-                    zIndex: 9999,
-                    backgroundColor: 'white',
-                    borderTop: '1px solid #ccc',
-                    borderTopLeftRadius: '20px',
-                    borderTopRightRadius: '20px',
-                }}>
-                    {tabs.map(item => (
-                        <TabBar.Item key={item.key} icon={item.icon} title={item.title} />
-                    ))}
-                </TabBar>
+
+
+                <div
+                    className="fixed bottom-0 left-0 z-50 w-full h-20 bg-customColor1 border-t rounded-t-2xl border-gray-200"
+                    style={{
+                        paddingBottom: Capacitor.getPlatform() === 'android'
+                            ? 'max(env(safe-area-inset-bottom, 0px), 28px)'
+                            : 'max(0.5rem, env(safe-area-inset-bottom, 0px))',
+                    }}
+                >
+                    <div className="grid h-full max-w-lg grid-cols-5 mx-auto font-medium">
+                        <button onClick={handleHomeClick} type="button" className="inline-flex flex-col items-center justify-center px-4 group е">
+                            <svg className={`w-6 h-6 ${getButtonStyle('/advertisment')}`} aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                <path fillRule="evenodd" d="M11.293 3.293a1 1 0 0 1 1.414 0l6 6 2 2a1 1 0 0 1-1.414 1.414L19 12.414V19a2 2 0 0 1-2 2h-3a1 1 0 0 1-1-1v-3h-2v3a1 1 0 0 1-1 1H7a2 2 0 0 1-2-2v-6.586l-.293.293a1 1 0 0 1-1.414-1.414l2-2 6-6Z" clipRule="evenodd" />
+                            </svg>
+                            <span className={`text-xs text-customColor3  group-hover:text-customColor2 ${getButtonStyle('/advertisment')}`}>{t("home_navbar")}</span>
+                        </button>
+                        <button onClick={handleSettingsClick} type="button" className="inline-flex flex-col items-center justify-center px-4 border-gray-200 group dark:border-gray-600">
+                            <svg className={`w-6 h-6 ${getButtonStyle('/settings')}`} aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M5 13.17a3.001 3.001 0 0 0 0 5.66V20a1 1 0 1 0 2 0v-1.17a3.001 3.001 0 0 0 0-5.66V4a1 1 0 0 0-2 0v9.17ZM11 20v-9.17a3.001 3.001 0 0 1 0-5.66V4a1 1 0 1 1 2 0v1.17a3.001 3.001 0 0 1 0 5.66V20a1 1 0 1 1-2 0Zm6-1.17V20a1 1 0 1 0 2 0v-1.17a3.001 3.001 0 0 0 0-5.66V4a1 1 0 1 0-2 0v9.17a3.001 3.001 0 0 0 0 5.66Z" />
+                            </svg>
+                            <span className={`text-xs text-customColor3  group-hover:text-customColor2 ${getButtonStyle('/settings')}`}>{t("settings")}</span>
+                        </button>
+
+
+                        <button onClick={handleAddItemClick} type="button" className="inline-flex flex-col items-center justify-center px-4 group">
+                            <svg className={`w-6 h-6 ${getButtonStyle('/addItem')}`} aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 12h14m-7 7V5" />
+                            </svg>
+                            <span className={`text-xs text-customColor3  group-hover:text-customColor2 ${getButtonStyle('/addItem')}`}>{t("addItem_navbar")}</span>
+                        </button>
+
+
+                        <button onClick={handleMessageClick} type="button" className="inline-flex flex-col items-center justify-center px-4 group">
+                            <svg className={`w-6 h-6 ${getButtonStyle('/message')}`} aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                <path fillRule="evenodd" d="M4 3a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h1v2a1 1 0 0 0 1.707.707L9.414 13H15a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H4Z" clipRule="evenodd" />
+                                <path fillRule="evenodd" d="M8.023 17.215c.033-.03.066-.062.098-.094L10.243 15H15a3 3 0 0 0 3-3V8h2a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1h-1v2a1 1 0 0 1-1.707.707L14.586 18H9a1 1 0 0 1-.977-.785Z" clipRule="evenodd" />
+                            </svg>
+                            <span className={`text-xs text-customColor3  group-hover:text-customColor2 ${getButtonStyle('/message')}`}>{t("message_navbar")}</span>
+                        </button>
+
+                        <button onClick={handleProfileClick} type="button" className="inline-flex flex-col items-center justify-center px-4 border-gray-200 group dark:border-gray-600">
+                            <svg className={`w-6 h-6 ${getButtonStyle('/profile')}`} aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                <path fillRule="evenodd" d="M12 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4h-4Z" clipRule="evenodd" />
+                            </svg>
+                            <span className={`text-xs text-customColor3  group-hover:text-customColor2 ${getButtonStyle('/profile')}`}>{t("profile_navbar")}</span>
+                        </button>
+                    </div>
+                </div>
+
             </div>
 
-        </div>
+        </div >
     );
 }

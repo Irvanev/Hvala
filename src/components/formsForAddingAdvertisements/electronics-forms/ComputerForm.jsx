@@ -1,9 +1,14 @@
 import React, { useState, useCallback, useRef } from "react";
-import { Form, Input, InputNumber, Button, Select, Image, Upload, AutoComplete } from 'antd';
+import { Form, Input, InputNumber, Button, Select, Image, Upload, AutoComplete, Spin, Row, Col  } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { useTranslation } from "react-i18next";
 import { GoogleMap, LoadScript } from '@react-google-maps/api';
 import debounce from 'lodash.debounce';
+import { GeoPoint } from 'firebase/firestore';
+import LocationService from './../../../services/LocationService.js';
+import RegionSelector from "../../../services/RegionSelector.jsx";
+
+const locationService = new LocationService();
 
 const containerStyle = {
     width: '100%',
@@ -35,6 +40,8 @@ function getCountryKey(string) {
             return "montenegro";
         } else if (string.includes("North Macedonia") || string.includes("Мacedonia") || string.includes("Северная Македония") || string.includes("Македония") || string.includes("Северна Македонија")) {
             return "north_macedonia";
+        } else {
+            return "montenegro";
         }
 
     }
@@ -135,38 +142,6 @@ function getCountryKey(string) {
             return "sumadija_and_western_serbia";
         } else if (string.includes("Southern and Eastern Serbia") || string.includes("Южно-Банатский")) {
             return "southern_and_eastern_serbia";
-        } else if (string.includes("Kosovo and Metohija") || string.includes("Косово и Метохия")) {
-            return "kosovo_and_metohija";
-        } else if (string.includes("Belgrade") || string.includes("Белград") || string.includes("Београд")) {
-            return "belgrade";
-        } else if (string.includes("Bor") || string.includes("Bor") || string.includes("Борский") || string.includes("Борски")) {
-            return "bor_district";
-        } else if (string.includes("Braničevo District") || string.includes("Braničevo") || string.includes("Браничевский") || string.includes("Браничевски округ")) {
-            return "branicevo_district";
-        } else if (string.includes("Zlatibor District") || string.includes("Zlatibor") || string.includes("Златиборский") || string.includes("Златиборски округ")) {
-            return "zlatibor_district";
-        } else if (string.includes("Kolubara District") || string.includes("Kolubara") || string.includes("Колубарский") || string.includes("Колубарски округ")) {
-            return "kolubara_district";
-        } else if (string.includes("Moravica District") || string.includes("Moravica") || string.includes("Моравичский") || string.includes("Моравички округ")) {
-            return "moravica_district";
-        } else if (string.includes("Nišava District") || string.includes("Nišava") || string.includes("Нишавский") || string.includes("Нишавски округ")) {
-            return "nisava_district";
-        } else if (string.includes("Pirot District") || string.includes("Pirot") || string.includes("Пиротский") || string.includes("Пиротски округ")) {
-            return "pirot_district";
-        } else if (string.includes("Podunavlje District") || string.includes("Podunavlje") || string.includes("Подунайский") || string.includes("Подунавски")) {
-            return "podunavlje_district";
-        } else if (string.includes("Pčinja District") || string.includes("Pčinja") || string.includes("Пчиньский") || string.includes("Пчињски")) {
-            return "pcinja_district";
-        } else if (string.includes("Raška District") || string.includes("Raška") || string.includes("Рашский") || string.includes("Рашки")) {
-            return "raska_district";
-        } else if (string.includes("Rasina District") || string.includes("Rasina") || string.includes("Расинский") || string.includes("Расински")) {
-            return "rasina_district";
-        } else if (string.includes("Toplica District") || string.includes("Toplica") || string.includes("Топличский") || string.includes("Топлички")) {
-            return "toplica_district";
-        } else if (string.includes("Šumadija District") || string.includes("Šumadija") || string.includes("Шумадийский") || string.includes("Шумадијски")) {
-            return "sumadija_district";
-        } else if (string.includes("Jablanica District") || string.includes("Jablanica") || string.includes("Ябланичский") || string.includes("Јабланички")) {
-            return "jablanica_district";
         } else if (string.includes("Zagreb City") || string.includes("Град Загреб")) {
             return "zagreb_city";
         } else if (string.includes("Zagreb County") || string.includes("Загребская")) {
@@ -210,11 +185,11 @@ function getCountryKey(string) {
         } else if (string.includes("Dubrovnik-Neretva") || string.includes("Дубровачко-Неретванская")) {
             return "dubrovnik_neretva";
         } else {
-            return "unknown_region";
+            return "municipality_budva";
         }
     }
 
-const MapComponent = ({ coordinates, setCoordinates, setCountry, country, setRegion, region, setLocation, location, mapRef }) => {
+const MapComponent = ({ coordinates, setCoordinates, setCountry, country, setRegion, region, setLocation, location, mapRef, testRegion, setTestRegion, testCountry, setTestCountry  }) => {
 
     const countryMappings = {
         'Черногория': 'montenegro',
@@ -235,6 +210,8 @@ const MapComponent = ({ coordinates, setCoordinates, setCountry, country, setReg
         'Bosnia and Herzegovina': 'bosnia_and_herzegovina'
     };
 
+    const { t } = useTranslation();
+
     function getCountryKey(countryName) {
         return countryMappings[countryName] || null;  // Вернуть стандартизированный ключ или null, если отображение не найдено
     }
@@ -248,10 +225,14 @@ const MapComponent = ({ coordinates, setCoordinates, setCountry, country, setReg
         if (mapRef.current) {
             const newCenter = mapRef.current.getCenter();
             const newCoordinates = {
-                lat: newCenter.lat(),
-                lng: newCenter.lng()
-            };
-            setCoordinates(newCoordinates);
+            lat: newCenter.lat(),
+            lng: newCenter.lng()
+        };
+
+        const geoPoint = new GeoPoint(newCenter.lat(), newCenter.lng());
+
+        // Save the LatLng object
+        setCoordinates(newCoordinates); // Save LatLng object
 
             // Fetch the address using Geocoding API
             const geocoder = new window.google.maps.Geocoder();
@@ -263,32 +244,32 @@ const MapComponent = ({ coordinates, setCoordinates, setCountry, country, setReg
 
                         console.log(results[0]);
 
-                        let country = '';
-                        let region = '';
+                        // let country = '';
+                        // let region = '';
 
-                        if (addressComponents.length >= 6) {
-                            country = addressComponents[5]?.long_name || '';
-                            region = addressComponents[4]?.long_name || '';
-                        } else if (addressComponents.length >= 5) {
-                            country = addressComponents[4]?.long_name || '';
-                            region = addressComponents[3]?.long_name || '';
-                        } else if (addressComponents.length >= 4) {
-                            country = addressComponents[3]?.long_name || '';
-                            region = addressComponents[2]?.long_name || '';
-                        }
+                        // if (addressComponents.length >= 6) {
+                        //     country = addressComponents[5]?.long_name || '';
+                        //     region = addressComponents[4]?.long_name || '';
+                        // } else if (addressComponents.length >= 5) {
+                        //     country = addressComponents[4]?.long_name || '';
+                        //     region = addressComponents[3]?.long_name || '';
+                        // } else if (addressComponents.length >= 4) {
+                        //     country = addressComponents[3]?.long_name || '';
+                        //     region = addressComponents[2]?.long_name || '';
+                        // }
 
-                        console.log(country);
-                        console.log(region);
-
-                        setLocation(formattedAddress);
-                        setCountry(getCountryKey(country));
-                        setRegion(getRegionKey(region));
+                        console.log(addressComponents);
+                        const { country, region, extRegion } = locationService.extractCountryAndRegion(results[0]);
+                        setLocation(formattedAddress);  // Update the AutoComplete field
+                        setCountry(locationService.getCountryKey(country));
+                        setRegion(region);
+                        setTestCountry(country);
+                        setTestRegion(region);
                     } else {
-                        console.log("NOT OK");
-                        setLocation('No results found');
+                        setLocation('Podgorica, Crna Gora');
                     }
                 } else {
-                    setLocation('Geocoder failed due to: ' + status);
+                    setLocation('Podgorica, Crna Gora');
                 }
             });
         }
@@ -296,6 +277,7 @@ const MapComponent = ({ coordinates, setCoordinates, setCountry, country, setReg
 
 
     return (
+        <div>
         <div style={containerStyle}>
             <GoogleMap
                 mapContainerStyle={{ width: '100%', height: '100%' }}
@@ -309,6 +291,16 @@ const MapComponent = ({ coordinates, setCoordinates, setCountry, country, setReg
                 alt="marker"
                 style={markerStyle}
             />
+        </div>
+        <Row gutter={16} style={{ marginTop: '20px' }}>
+            {/* <Col span={12}>
+                <strong>{t('region')}:</strong> {testRegion ?? "Podgorica"}
+            </Col>
+            <Col span={12}>
+                <strong>{t('country')}:</strong> {testCountry ?? "Crna Gora"}
+            </Col> */}
+        </Row>
+        <RegionSelector region={testRegion} setRegion={setTestRegion} country={testCountry} setCountry={setTestCountry} coordinates={coordinates} setCoordinates={setCoordinates} location={location} setLocation={setLocation}></RegionSelector>
         </div>
     );
 };
@@ -326,13 +318,17 @@ const ComputerForm = ({
     condition, setCondition,
     phoneNumber, setPhoneNumber,
     description, setDescription,
-    handleSubmit, handleFileChange
+    handleSubmit, handleFileChange,
+    currency, setCurrency,
+    loading
 }) => {
     const { t } = useTranslation();
     const { Option } = Select;
     const mapRef = useRef(null);
 
     const [form] = Form.useForm();
+    const [testRegion, setTestRegion] = useState('Podgorica');
+    const [testCountry, setTestCountry] = useState('Crna Gora');
 
     const onSubmit = async () => {
         try {
@@ -396,192 +392,205 @@ const ComputerForm = ({
     const debounceFetchSuggestions = debounce(fetchSuggestions, 300);
 
     const handleSelect = async (value) => {
-        const selectedPlace = options.find(option => option.value === value);
-        console.log(selectedPlace);
-        console.log('here')
-        if (selectedPlace) {
-            const longitude = selectedPlace.f.longitude;
-            const latitude = selectedPlace.f.latitude;
-            if (latitude !== undefined && longitude !== undefined) {
-                const newCoordinates = {
-                    lat: parseFloat(latitude),
-                    lng: parseFloat(longitude),
-                };
-                setCoordinates(newCoordinates);
-                setLocation(value);
+    const selectedPlace = options.find(option => option.value === value);
+    if (selectedPlace) {
+        const { longitude, latitude } = selectedPlace.f;
+        if (latitude !== undefined && longitude !== undefined) {
+            const newCoordinates = {
+                lat: parseFloat(latitude),
+                lng: parseFloat(longitude),
+            };
+            const geoPoint = new GeoPoint(newCoordinates.lat, newCoordinates.lng);
+            setCoordinates(newCoordinates);
+            setLocation(value);
 
-                if (mapRef.current) {
-                    mapRef.current.panTo(newCoordinates);
-                }
-
-                let country = '';
-                let region = '';
-                const addressComponents = selectedPlace.address_components;
-
-                if (addressComponents.length >= 6) {
-                    country = addressComponents[5]?.longText || '';
-                    region = addressComponents[4]?.longText || '';
-                } else if (addressComponents.length >= 5) {
-                    country = addressComponents[4]?.longText || '';
-                    region = addressComponents[3]?.longText || '';
-                } else if (addressComponents.length >= 4) {
-                    country = addressComponents[3]?.longText || '';
-                    region = addressComponents[2]?.longText || '';
-                } else if (addressComponents.length >= 3) {
-                    country = addressComponents[2]?.longText || '';
-                    region = addressComponents[1]?.longText || '';
-                } else if (addressComponents.length >= 2) {
-                    country = addressComponents[1]?.longText || '';
-                    region = addressComponents[0]?.longText || '';
-                }
-
-                console.log(addressComponents)
-                console.log(country);
-                console.log(region);
-                console.log(value);
-                console.log(newCoordinates);
-                console.log('----');
-
-                setCountry(getCountryKey(country));
-                setRegion(getRegionKey(region));
-
-            } else {
-                console.error('Invalid coordinates received:', selectedPlace);
+            if (mapRef.current) {
+                mapRef.current.panTo(newCoordinates);
             }
+
+            try {
+                const geocodeData = await fetchGeocodingData(newCoordinates.lat, newCoordinates.lng);
+                if (geocodeData) {
+                    const { country, region } = locationService.extractCountryAndRegion(geocodeData);
+                    setTestCountry(locationService.getCountryKey(country));
+                    setTestRegion(locationService.getRegionKey(region));
+                    console.log(geocodeData);
+                    console.log(region.toLowerCase().includes("шавник")+"aboba2");
+                    console.log(region.toLocaleLowerCase().includes("zagreb"));
+                    setCountry(locationService.getCountryKey(country));
+                    setRegion(locationService.getRegionKey(region));
+                    console.log('Country:', locationService.getCountryKey(country));
+                    console.log('Region:', locationService.getRegionKey(region));
+                } else {
+                    console.warn('Geocoding API не вернул данных.');
+                }
+            } catch (error) {
+                console.error('Ошибка при вызове Geocoding API:', error);
+            }
+        } else {
+            console.error('Invalid coordinates received:', selectedPlace);
         }
-    };
+    }
+};
+
+const fetchGeocodingData = async (lat, lng) => {
+    const apiKey = 'AIzaSyA0JYzidakTvQYEe0pS50vshlex2Q4jg4g';
+    const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${apiKey}`;
+    
+    const response = await fetch(url);
+    if (response.status === 200) {
+        const data = await response.json();
+        if (data.status === 'OK' && data.results.length > 0) {
+            return data.results[0];
+        }
+    }
+    return null;
+};
+
+    const selectAfter = (
+        <Select defaultValue={t('currency')} style={{ width: 120 }} onChange={(value) => setCurrency(value)}>
+            <Option value="eur">€</Option>
+            <Option value="rsd">RSD</Option>
+        </Select>
+    );
 
     return (
         <LoadScript googleMapsApiKey="AIzaSyD7K42WP5zjV99GP3xll40eFr_5DaAk3ZU">
-        <div>
-            <Form
-                form={form}
-                className='mt-3'
-                layout="vertical"
-            >
+            <div>
+                <Form
+                    form={form}
+                    className='mt-3'
+                    layout="vertical"
+                >
 
-                <Form.Item label={t('Photo')}>
-                    <Upload
-                        multiple
-                        listType="picture-card"
-                        fileList={fileList}
-                        onPreview={handlePreview}
-                        onChange={handleChange}
-                        beforeUpload={file => {
-                            handleFileChange(file);
-                            return false;
-                        }}
-                    >
-                        {fileList.length >= 8 ? null :
-                            <button
-                                style={{
-                                    border: 0,
-                                    background: 'none',
-                                }}
-                                type="button"
-                            >
-                                <PlusOutlined />
-                                <div
+                    <Form.Item label={t('Photo')}>
+                        <Upload
+                            multiple
+                            listType="picture-card"
+                            fileList={fileList}
+                            onPreview={handlePreview}
+                            onChange={handleChange}
+                            beforeUpload={file => {
+                                handleFileChange(file);
+                                return false;
+                            }}
+                        >
+                            {fileList.length >= 8 ? null :
+                                <button
                                     style={{
-                                        marginTop: 8,
+                                        border: 0,
+                                        background: 'none',
                                     }}
+                                    type="button"
                                 >
-                                    Upload
-                                </div>
-                            </button>
-                        }
-                    </Upload>
-                    {previewImage && (
-                        <Image
-                            wrapperStyle={{
-                                display: 'none',
-                            }}
-                            preview={{
-                                visible: previewOpen,
-                                onVisibleChange: (visible) => setPreviewOpen(visible),
-                                afterOpenChange: (visible) => !visible && setPreviewImage(''),
-                            }}
-                            src={previewImage}
-                        />
-                    )}
-                </Form.Item>
+                                    <PlusOutlined />
+                                    <div
+                                        style={{
+                                            marginTop: 8,
+                                        }}
+                                    >
+                                        Upload
+                                    </div>
+                                </button>
+                            }
+                        </Upload>
+                        {previewImage && (
+                            <Image
+                                wrapperStyle={{
+                                    display: 'none',
+                                }}
+                                preview={{
+                                    visible: previewOpen,
+                                    onVisibleChange: (visible) => setPreviewOpen(visible),
+                                    afterOpenChange: (visible) => !visible && setPreviewImage(''),
+                                }}
+                                src={previewImage}
+                            />
+                        )}
+                    </Form.Item>
 
-                {/* <CountryRegion country={country} setCountry={setCountry}
+                    {/* <CountryRegion country={country} setCountry={setCountry}
                 region={region} setRegion={setRegion} location={location} setLocation={setLocation} t={t}/> */}
 
-                <Form.Item
-                    name="title"
-                    label={t('title')}
-                    rules={[{ required: true, message: 'Please input the title!' }]}
-                >
-                    <Input value={title} onChange={(e) => setTitle(e.target.value)} />
-                </Form.Item>
-                <Form.Item label={t('brand')}>
-                    <Select
-                        showSearch
-                        value={brand}
-                        onChange={(value) => setBrand(value)}
-                        optionFilterProp="children"
-                        filterOption={(input, option) =>
-                            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        }
+                    <Form.Item
+                        name="title"
+                        label={t('title')}
+                        rules={[{ required: true, message: 'Please input the title!' }]}
                     >
-                        <Option value="Samsung">Samsung</Option>
-                        <Option value="Apple">Apple</Option>
-                        <Option value="Xiaomi">Xiaomi</Option>
-                        <Option value="Huawei">Huawei</Option>
-                        <Option value="Honor">Honor</Option>
-                        <Option value="Acer">Acer</Option>
-                        <Option value="Asus">Asus</Option>
-                        <Option value="LG">LG</Option>
-                        <Option value="Google">Google</Option>
-                        <Option value="MSI">MSI</Option>
-                    </Select>
-                </Form.Item>
-                <Form.Item label={t('model')}>
-                    <Input type="text" value={model} onChange={(e) => setModel(e.target.value)} />
-                </Form.Item>
-                <Form.Item label={t('type')}>
-                    <Select value={type} onChange={(value) => setType(value)}>
-                        <Option value="laptop">{t('laptop')}</Option>
-                        <Option value="stationary_computer">{t('stationary_computer')}</Option>
-                        <Option value="micro_computer">{t('micro_computer')}</Option>
-                        <Option value="monoblock">{t('monoblock')}</Option>
-                    </Select>
-                </Form.Item>
-                <Form.Item
-                    label={t('price')}
-                    name='price'
-                    rules={[{ required: true, message: 'Please input the price!' }]}
-                >
-                    <InputNumber
-                        prefix="€"
-                        value={price}
-                        onChange={(value) => setPrice(parseInt(value, 10))}
-                        style={{
-                            width: '100%',
-                        }}
-                    />
-                </Form.Item>
-                <Form.Item
-                    label={t('condition')}
-                    name='condition'
-                    rules={[{ required: true, message: 'Please input the price!' }]}
-                >
-                    <Select value={condition} onChange={(value) => setCondition(value)}>
-                        <Option value="new_cond">{t('new_cond')}</Option>
-                        <Option value="bu_cond">{t('bu_cond')}</Option>
-                    </Select>
-                </Form.Item>
-                <Form.Item label={t('phone_number')}>
-                    <Input type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
-                </Form.Item>
-                <Form.Item label={t('description')}>
-                    <Input.TextArea rows={3} value={description} onChange={(e) => setDescription(e.target.value)} />
-                </Form.Item>
+                        <Input value={title} onChange={(e) => setTitle(e.target.value)} />
+                    </Form.Item>
+                    <Form.Item label={t('brand')}>
+                        <Select
+                            showSearch
+                            value={brand}
+                            onChange={(value) => setBrand(value)}
+                            optionFilterProp="children"
+                            filterOption={(input, option) =>
+                                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                            }
+                        >
+                            <Option value="Samsung">Samsung</Option>
+                            <Option value="Apple">Apple</Option>
+                            <Option value="Xiaomi">Xiaomi</Option>
+                            <Option value="Huawei">Huawei</Option>
+                            <Option value="Honor">Honor</Option>
+                            <Option value="Acer">Acer</Option>
+                            <Option value="Asus">Asus</Option>
+                            <Option value="LG">LG</Option>
+                            <Option value="Google">Google</Option>
+                            <Option value="MSI">MSI</Option>
+                        </Select>
+                    </Form.Item>
+                    <Form.Item label={t('model')}>
+                        <Input type="text" value={model} onChange={(e) => setModel(e.target.value)} />
+                    </Form.Item>
+                    <Form.Item label={t('type')}>
+                        <Select value={type} onChange={(value) => setType(value)}>
+                            <Option value="laptop">{t('laptop')}</Option>
+                            <Option value="stationary_computer">{t('stationary_computer')}</Option>
+                            <Option value="micro_computer">{t('micro_computer')}</Option>
+                            <Option value="monoblock">{t('monoblock')}</Option>
+                        </Select>
+                    </Form.Item>
+                    <Form.Item
+                        label={t('price')}
+                        name='prie'
+                        rules={[
+                            { required: true, message: 'Please input the price!' },
+                            {
+                                validator: (_, value) => {
+                                    if (!value || value <= 0) {
+                                        return Promise.reject(new Error('Price must be greater than zero!'));
+                                    }
+                                    if (!currency) {
+                                        return Promise.reject(new Error('Please select a currency!'));
+                                    }
+                                    return Promise.resolve();
+                                }
+                            }
+                        ]}
+                    >
+                        <InputNumber style={{ width: '100%' }} value={price} addonBefore={selectAfter} onChange={(value) => setPrice(parseInt(value, 10))} defaultValue={1} />
+                    </Form.Item>
+                    <Form.Item
+                        label={t('condition')}
+                        name='condition'
+                        rules={[{ required: true, message: 'Please input the price!' }]}
+                    >
+                        <Select value={condition} onChange={(value) => setCondition(value)}>
+                            <Option value="new_cond">{t('new_cond')}</Option>
+                            <Option value="bu_cond">{t('bu_cond')}</Option>
+                        </Select>
+                    </Form.Item>
+                    <Form.Item label={t('phone_number')}>
+                        <Input type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
+                    </Form.Item>
+                    <Form.Item label={t('description')}>
+                        <Input.TextArea rows={3} value={description} onChange={(e) => setDescription(e.target.value)} />
+                    </Form.Item>
 
                     <Form.Item label={t('coordinates')}>
-                        <MapComponent coordinates={coordinates} setCoordinates={setCoordinates} setRegion={setRegion} setCountry={setCountry} setLocation={setLocation} mapRef={mapRef} />
+                        <MapComponent coordinates={coordinates} setCoordinates={setCoordinates} setRegion={setRegion} setCountry={setCountry} setLocation={setLocation} mapRef={mapRef} setTestCountry={setTestCountry} setTestRegion={setTestRegion} testCountry={testCountry} testRegion={testRegion} location={location} />
                     </Form.Item>
 
                     <Form.Item label={t('location_name')}>
@@ -597,13 +606,15 @@ const ComputerForm = ({
                         </AutoComplete>
                     </Form.Item>
 
-                <Form.Item style={{ display: 'flex', justifyContent: 'center' }}>
-                    <Button type="primary" onClick={onSubmit} size='large' style={{ backgroundColor: 'orange', width: '150px' }}>
-                        {t('add')}
-                    </Button>
-                </Form.Item>
-            </Form>
-        </div>
+                    <Form.Item style={{ display: 'flex', justifyContent: 'center' }}>
+                        <Spin style={{ color: '#03989F' }} spinning={loading}>
+                            <Button type="primary" onClick={onSubmit} size='large' style={{ backgroundColor: '#FFBF34', width: '150px' }}>
+                                {t('add')}
+                            </Button>
+                        </Spin>
+                    </Form.Item>
+                </Form>
+            </div>
         </LoadScript>
     );
 };

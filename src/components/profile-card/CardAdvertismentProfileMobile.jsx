@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { Card, Col, Carousel, Dropdown, Menu, Popconfirm, } from 'antd';
 import { EditOutlined, EllipsisOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
-import Logo from '../../assets/logo.png';
+import Logo from '../../assets/logo_def.png';
 import { useTranslation } from 'react-i18next';
 import { getConversionRate } from '../../services/AdvertismentsHome/AdvertismentsService';
 import { formatDistanceToNow, format } from 'date-fns';
@@ -11,7 +12,9 @@ import { ru, enUS, sr } from 'date-fns/locale';
 import { archivedAdvertisement } from '../../services/ProfileService';
 
 const CardAdvertisementProfileMobile = ({ advertisment, index }) => {
+    const history = useHistory();
     const { i18n } = useTranslation();
+    const { t } = useTranslation();
     const [conversionRate, setConversionRate] = useState(null);
     const [currency, setCurrency] = useState('');
 
@@ -21,6 +24,7 @@ const CardAdvertisementProfileMobile = ({ advertisment, index }) => {
     const handleArchive = async (id) => {
         await archivedAdvertisement(id);
         setIsArchived(prevState => !prevState);
+        window.location.reload();
     };
 
     useEffect(() => {
@@ -55,25 +59,37 @@ const CardAdvertisementProfileMobile = ({ advertisment, index }) => {
             return format(date, 'd MMMM HH:mm', { locale });
         }
     }
+    
 
     return (
         <>
+            <style type="text/css">
+                {`
+                @media (max-width: 1000px) {
+                    body {
+                        padding-bottom: 4.5rem;
+                    }
+                }
+                `}
+            </style>
             <Col key={index}>
                 <Card
                     hoverable
                     actions={[
-                        <EditOutlined key="edit" />,
+                        <a href={`/edit/${advertisment.id}`}>
+                            <EditOutlined key="edit" />
+                        </a>,
                         <Dropdown
                             overlay={
                                 <Menu>
                                     <Menu.Item key="1">
                                         <Popconfirm
-                                            title="Вы уверены, что хотите опубликовать?"
+                                            title={t('move_to_archive_question')}
                                             onConfirm={() => handleArchive(advertisment.id)}
-                                            okText="Да"
-                                            cancelText="Нет"
+                                            okText={t('yes')}
+                                            cancelText={t('no')}
                                         >
-                                            <a href="#">Переместить в архив</a>
+                                            <a href="#">{t('move_on_archiv')}</a>
                                         </Popconfirm>
                                     </Menu.Item>
 
@@ -85,8 +101,10 @@ const CardAdvertisementProfileMobile = ({ advertisment, index }) => {
                             <EllipsisOutlined onClick={() => setDropdownVisible(!dropdownVisible)} />
                         </Dropdown>,
                     ]}
-                    style={{ width: '100%', height: '57vh', display: 'flex',
-                    flexDirection: 'column', justifyContent: 'space-between'}}
+                    style={{
+                        width: '100%', height: '57vh', display: 'flex',
+                        flexDirection: 'column', justifyContent: 'space-between'
+                    }}
                     bodyStyle={{ padding: 0, margin: '1vh' }}
                     cover={
                         <Link key={advertisment.id} to={`/advertisment/${advertisment.id}`} style={{ textDecoration: "none", color: 'black' }}>
@@ -122,7 +140,7 @@ const CardAdvertisementProfileMobile = ({ advertisment, index }) => {
                             overflow: 'hidden',
                             textOverflow: 'ellipsis'
                         }}>
-                            {advertisment.location}
+                            {t(advertisment.country)}, {t(advertisment.region)}
                         </p>
                         <p>{formatDate(advertisment.time_creation)}</p>
                     </Link>

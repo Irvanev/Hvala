@@ -4,15 +4,19 @@ import { Container, Row, Col, Carousel } from 'react-bootstrap';
 import CharactersForCard from './CharactersForCard';
 import ModalForNumberPhone from './ModalForNumberPhone';
 import { Link, useHistory } from 'react-router-dom';
-import Logo from "../../assets/logo.png"
-import { collection, query, where, getDocs, addDoc, serverTimestamp } from "firebase/firestore";
+import Logo from "../../assets/logo_def.png"
+import person from "../../assets/person2.jpg"
+import { collection, query, where, getDocs, addDoc, serverTimestamp, updateDoc } from "firebase/firestore";
 import { useEffect, useState } from 'react';
 import { db, auth } from '../../config/firebase'
 import { Modal, Input, Button, message, Breadcrumb, Rate, Image } from "antd";
+import { HomeOutlined } from '@ant-design/icons';
+
+import { getConversionRate } from '../../services/AdvertismentsHome/AdvertismentsService';
 
 
 
-const CardInPc = ({ adData, t, index, handleSelect, handleCallClick, showModal, handleCloseModal, userData, fromUid }) => {
+const CardInPc = ({ adData, t, index, handleSelect, handleCallClick, showModal, handleCloseModal, userData }) => {
 
   const [feedbacks, setFeedbacks] = useState([]);
   const rat = userData?.rating || userData?.raiting;
@@ -20,6 +24,7 @@ const CardInPc = ({ adData, t, index, handleSelect, handleCallClick, showModal, 
   const from_uid = auth.currentUser ? auth.currentUser.uid : null;
   const history = useHistory();
   const [userMe, setUserMe] = useState(null);
+  const [convertedPrice, setConvertedPrice] = useState(null);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const showModalFee = () => {
@@ -46,13 +51,13 @@ const CardInPc = ({ adData, t, index, handleSelect, handleCallClick, showModal, 
     setRating(value);
   };
 
-  const fetchUserMe = async () => { 
+  const fetchUserMe = async () => {
     const userQuery = query(
       collection(db, 'users'),
       where('id', '==', from_uid)
     );
     const userSnapshot = await getDocs(userQuery);
-    
+
     if (!userSnapshot.empty) {
       userSnapshot.forEach((doc) => {
         setUserMe(doc.data());
@@ -83,7 +88,7 @@ const CardInPc = ({ adData, t, index, handleSelect, handleCallClick, showModal, 
         to_name: userData?.name,
         to_uid: userId,
       });
-      
+
 
       chatId = chatDoc.id;
     } else {
@@ -94,8 +99,14 @@ const CardInPc = ({ adData, t, index, handleSelect, handleCallClick, showModal, 
   }
 
   const handleButtonWrite = async () => {
-    const chatId = await createChat();
-    history.push(`/message/${chatId}`);
+    if (from_uid === null) {
+      history.push('/sign_in');
+    } else if (from_uid === userId) {
+      console.log('You cannot write to yourself!');
+    } else {
+      const chatId = await createChat();
+      history.push(`/message/${chatId}`);
+    }
   }
 
 
@@ -121,16 +132,36 @@ const CardInPc = ({ adData, t, index, handleSelect, handleCallClick, showModal, 
     fetchFeedbacks();
   }, [userId]);
 
+  useEffect(() => {
+    const fetchConversionRate = async () => {
+      if (adData?.currency && adData?.price) {
+        let rate;
+        if (adData.currency === 'eur') {
+          rate = await getConversionRate('eur');
+          if (rate) {
+            setConvertedPrice(adData.price * rate);
+          }
+        } else if (adData.currency === 'rsd') {
+          rate = await getConversionRate('eur');
+          if (rate) {
+            setConvertedPrice(adData.price / rate);
+          }
+        }
+      }
+    };
+
+    fetchConversionRate();
+  }, [adData]);
+
   const submitReview = async () => {
     try {
       const me = auth.currentUser ? auth.currentUser.uid : null;
 
-      // Проверьте, существует ли уже отзыв от этого пользователя
       const q = query(collection(db, "feedback"), where("from_uid", "==", me), where("to_uid", "==", userId));
       const querySnapshot = await getDocs(q);
 
       if (!querySnapshot.empty) {
-        message.error("Вы уже оставили отзыв этому пользователю");
+        message.error(t('error_set_feedback'));
         return;
       }
 
@@ -142,10 +173,35 @@ const CardInPc = ({ adData, t, index, handleSelect, handleCallClick, showModal, 
         from_uid: me
       });
 
+      // Получить все отзывы для продавца
+      const feedbackQuery = query(collection(db, "feedback"), where("to_uid", "==", userId));
+      const feedbackSnapshot = await getDocs(feedbackQuery);
+
+      // Вычислить средний рейтинг
+      let totalRating = 0;
+      feedbackSnapshot.forEach((doc) => {
+        totalRating += doc.data().rating;
+      });
+      const averageRating = totalRating / feedbackSnapshot.size;
+
+      // Обновить рейтинг продавца
+      const sellerCollectionRef = collection(db, "users");
+      const queryUser = query(sellerCollectionRef, where("id", "==", userId));
+
+      const querySnapshotUser = await getDocs(queryUser);
+      querySnapshotUser.forEach(async (doc) => {
+        await updateDoc(doc.ref, {
+          rating: averageRating
+        });
+      });
+
       setReviewText("");
       setRating(1);
       setIsReviewFormVisible(false);
-      message.success("Отзыв добавлен");
+      message.success(t('success_set_feedback'));
+      setTimeout(() => {
+        window.location.reload();
+      }, 500);
     } catch (e) {
       console.error("Error adding document: ", e);
     }
@@ -158,22 +214,22 @@ const CardInPc = ({ adData, t, index, handleSelect, handleCallClick, showModal, 
   };
 
   const productPhone = {
-    backgroundColor: "orange",
+    backgroundColor: "#FFBF34",
     color: "white",
     border: "none",
   };
 
   return (
-    <Container className="mt-3 d-none d-lg-block">
+    <Container className="mt-3 d-none d-lg-block" style={{ paddingTop: '0.75rem' }}>
       <Row>
         <Col xs={6}>
-          <Breadcrumb
+          <Breadcrumb className='mt-2'
             items={[
               {
-                title: <a href="/advertisment">{t('home_navbar')}</a>,
+                title: <a style={{ textDecoration: 'none' }} href="/advertisment"><HomeOutlined /> {t('home_navbar')}</a>,
               },
               {
-                title: <a href={`/advertisments/${adData?.category}`}>{t(adData?.category)}</a>,
+                title: <a style={{ textDecoration: 'none' }} href={`/advertisments/${adData?.category}`}>{t(adData?.category)}</a>,
               },
               {
                 title: t(adData?.subcategory),
@@ -182,8 +238,28 @@ const CardInPc = ({ adData, t, index, handleSelect, handleCallClick, showModal, 
           />
           <h2 id="product-title">{adData?.title}</h2>
           <Carousel activeIndex={index} onSelect={handleSelect}>
-            {adData?.photoUrls.map((url, index) => (
-              <Carousel.Item key={index}>
+            {adData?.photoUrls.length > 0 ? (
+              adData.photoUrls.map((url, index) => (
+                <Carousel.Item key={index}>
+                  <div
+                    style={{
+                      backgroundColor: "#dcdcdc",
+                      display: "flex",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Image
+                      className="d-block"
+                      style={{ objectFit: 'contain', maxWidth: "100%", height: '400px' }}
+                      onClick={() => handleSelect(index)}
+                      src={url}
+                      alt={`Slide ${index + 1}`}
+                    />
+                  </div>
+                </Carousel.Item>
+              ))
+            ) : (
+              <Carousel.Item>
                 <div
                   style={{
                     backgroundColor: "#dcdcdc",
@@ -194,13 +270,12 @@ const CardInPc = ({ adData, t, index, handleSelect, handleCallClick, showModal, 
                   <Image
                     className="d-block"
                     style={{ objectFit: 'contain', maxWidth: "100%", height: '400px' }}
-                    onClick={() => handleSelect(index)}
-                    src={url}
-                    alt={`Slide ${index + 1}`}
+                    src={Logo}
+                    alt="Logo"
                   />
                 </div>
               </Carousel.Item>
-            ))}
+            )}
           </Carousel>
           <Row className="mt-3">
             {adData?.photoUrls.map((url, index) => (
@@ -218,79 +293,103 @@ const CardInPc = ({ adData, t, index, handleSelect, handleCallClick, showModal, 
             ))}
           </Row>
         </Col>
-        <div className="col-3" style={{ paddingTop: "40px" }}>
-          <h2 id="product-price">{adData?.price + "€"}</h2>
-          <a
-            id="product-phone"
-            onClick={handleCallClick}
-            className="btn d-block mb-3"
-            style={productPhone}
-          >
-            {t('call')}
-          </a>
-          <a
-            id="product-phone"
-            className="btn d-block mb-3"
-            style={productPhone}
-            onClick={handleButtonWrite}
-          >
-            {t('to_write')}
-          </a>
-          <div
-            className="d-flex justify-content-between mt-3"
-            id="seller-info"
-          ></div>
-          <div className="d-flex justify-content-between mt-3">
-            <div>
-              <Link to={`/seller/${userData?.id}`} style={{ textDecoration: 'none' }}>
-                <h5 className="mb-0">{userData?.name || 'User'}</h5>
-              </Link>
-              <div className="d-flex align-items-center">
-                <span className="me-2">{userData?.rating || userData?.raiting}</span>
-                <Rate disabled defaultValue={rat} />
-              </div>
-              <p onClick={showModalFee}>посмотреть отзывы</p>
-
-              <Modal title={t('reviewsForProfile')} open={isModalVisible} onCancel={handleCancel} footer={null}>
-                {feedbacks.map((feedback, index) => (
-                  <div key={index}>
-                    <h5 className='mt-3'>{new Date(feedback.time_creation?.seconds * 1000).toLocaleDateString()}</h5>
-                    <h5>Комментарий от {feedback.userName}</h5>
-                    <p>{feedback.description} <Rate disabled defaultValue={feedback.rating} /></p>
-                  </div>
-                ))}
-
-                {!isReviewFormVisible && (
-                  <Button className='mt-3'
-                    type="primary" onClick={toggleReviewForm}>Оставить отзыв</Button>
-                )}
-
-                {isReviewFormVisible && (
-                  <>
-                    <Input.TextArea
-                      className='mt-3'
-                      rows={4}
-                      value={reviewText}
-                      onChange={handleReviewChange}
-                      placeholder="Введите ваш отзыв здесь..."
-                    />
-                    <Rate className='mt-3' value={rating} onChange={handleRatingChange} />
-                    <Button type="primary" onClick={submitReview}>Отправить отзыв</Button>
-                  </>
-                )}
-              </Modal>
-
+        <Col xs={2}></Col>
+        <Col style={{ justifyContent: 'end' }} xs={3}>
+          <div style={{ paddingTop: "80px" }}>
+            <a
+              id="product-phone"
+              onClick={handleCallClick}
+              className="btn d-block mb-3"
+              style={productPhone}
+            >
+              {t('call')}
+            </a>
+            <a
+              id="product-phone"
+              className={`btn d-block mb-3 ${from_uid === userId ? 'disabled' : ''}`}
+              style={from_uid === userId ? { ...productPhone, cursor: 'not-allowed', opacity: 0.5 } : productPhone}
+              onClick={from_uid === userId ? null : handleButtonWrite}
+            >
+              {t('to_write')}
+            </a>
+            <div className="d-flex justify-content-center mt-3">
+              <span style={{ fontSize: '24px' }}>{t('cost')}:</span>
             </div>
-            <Link to={`/seller/${userData?.id}`} style={{ textDecoration: 'none' }}>
-              <img
-                src={userData?.photoUrl || Logo}
-                alt="Seller Image"
-                className="rounded-circle"
-                style={profileImage}
-              />
-            </Link>
+            <div className="d-flex justify-content-center">
+              <h2 id="product-price">
+                {adData?.price + (adData.currency === 'eur' ? "€" : " RSD")}
+                {convertedPrice && (
+                  <span style={{ color: 'gray', fontSize: '24px' }}>
+                    ~{Math.round(convertedPrice)} {adData.currency === 'eur' ? "RSD" : "€"}
+                  </span>
+                )}
+              </h2>
+            </div>
+            <div
+              className="d-flex justify-content-between mt-3"
+              id="seller-info"
+            ></div>
+            <div className="d-flex justify-content-between mt-3">
+              <div>
+                <Link to={`/seller/${userData.link}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                  <h5 style={{ color: '#00B2BB' }} className="mb-0">{userData?.name || 'User'}</h5>
+                  <span style={{ textDecoration: 'underline', color: '#03989F' }}>{t('go_to_seller_page')}</span>
+                </Link>
+                <div className="d-flex align-items-center">
+                  {(userData?.rating ?? userData?.raiting) > 0 && (
+                    <span>{userData?.rating ?? userData?.raiting}</span>
+                  )}
+                  <Rate allowHalf disabled defaultValue={userData?.rating ?? userData?.raiting} />
+                </div>
+                <p style={{ color: '#03989F', cursor: 'pointer' }} onClick={showModalFee}>{t('show_feedbacks')}</p>
+
+                <Modal title={t('reviewsForProfile')} open={isModalVisible} onCancel={handleCancel} footer={null}>
+                  {feedbacks.map((feedback, index) => (
+                    <div key={index}>
+                      <h5 className='mt-3'>{new Date(feedback.time_creation?.seconds * 1000).toLocaleDateString()}</h5>
+                      <h5>{t('comment_from')} {feedback.userName}</h5>
+                      <p>{feedback.description} <Rate disabled defaultValue={feedback.rating} /></p>
+                    </div>
+                  ))}
+
+                  {!isReviewFormVisible && (
+                    <div className='d-flex justify-content-center'>
+                      <Button className='mt-3'
+                        style={{ backgroundColor: '#FFBF34', border: 'none', color: 'white' }} onClick={toggleReviewForm}>{t('set_feedback')}</Button>
+                    </div>
+                  )}
+
+                  {isReviewFormVisible && (
+                    <>
+                      <Input.TextArea
+                        className='mt-3'
+                        rows={4}
+                        value={reviewText}
+                        onChange={handleReviewChange}
+                        placeholder={t('input_feedback')}
+                      />
+                      <Rate className='mt-3' value={rating} onChange={handleRatingChange} />
+                      <div className='d-flex justify-content-center'>
+                        <Button className='mt-3'
+                          style={{ backgroundColor: '#FFBF34', border: 'none', color: 'white' }} onClick={submitReview}>{t('send_feedback')}</Button>
+                      </div>
+                    </>
+                  )}
+                </Modal>
+
+              </div>
+              <Link to={`/seller/${userData?.id}`} style={{ textDecoration: 'none' }}>
+                <img
+                  src={userData?.photoUrl || person}
+                  alt="Seller Image"
+                  className="rounded-circle"
+                  style={profileImage}
+                />
+              </Link>
+            </div>
           </div>
-        </div>
+        </Col>
+        <Col xs={1}></Col>
         <ModalForNumberPhone adData={adData} showModal={showModal} handleCloseModal={handleCloseModal} />
       </Row>
       <CharactersForCard adData={adData} t={t} />

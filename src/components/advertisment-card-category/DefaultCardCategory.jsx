@@ -1,12 +1,12 @@
 import React from "react";
 import { Card, Col, Placeholder } from "react-bootstrap";
-import Logo from "../../assets/logo.png";
+import Logo from "../../assets/logo_def.png";
 
 const DefaultCardCategory = () => {
     return (
         <Col>
-            <Card className="shadow-sm">
-                <Card.Img variant="top" src={Logo}
+            <Card className="shadow-sm" style={{height: '400px'}}>
+                <Card.Img variant="top" src={Logo} style={{height: '250px', objectFit: 'cover'}}
                     alt="imageAdvertisment" className="imageAdvertisment" />
                 <Card.Body>
                     <Card.Text>

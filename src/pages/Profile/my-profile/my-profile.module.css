@@ -1,0 +1,90 @@
+.container {
+    display: grid;
+    grid-template-columns: 1fr 4fr;
+    gap: 20px;
+    padding: 20px;
+    width: 100%;
+    max-width: 1280px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.profileInfo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.ratingContainer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ratingValue {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.reviews {
+    text-decoration: none;
+    color: #03989F;
+    transition: 0.3s;
+    margin-bottom: 0.75rem
+}
+
+.inactive {
+    cursor: default;
+    color: gray;
+    text-decoration: none;
+}
+
+.profileImage {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    object-fit: cover;
+}
+
+.profileName {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.profileCards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+@media (max-width: 768px) {
+    .container {
+        grid-template-columns: 1fr;
+    }
+    .profileCards {
+        grid-template-columns: repeat(1, minmax(150px, 1fr));
+    }
+}
+
+@media (min-width: 1024px) {
+    .profileCards {
+        grid-template-columns: repeat(3, minmax(300px, 1fr));
+    }
+}
+
+/* Для экранов шириной до 1024px (например, iPad) */
+@media (max-width: 1024px) {
+    .profileCards {
+        grid-template-columns: repeat(2, minmax(150px, 1fr));
+    }
+}

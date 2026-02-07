@@ -2,10 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Container, Carousel, Row, Col, Button } from 'react-bootstrap';
 import { Link, useHistory } from 'react-router-dom';
 import CharactersForCard from './CharactersForCard';
-import Logo from '../../assets/logo.png'
+import Logo from '../../assets/logo_def.png'
+import person from "../../assets/person2.jpg"
 import { Rate, Breadcrumb, message, Modal, Input, Image } from "antd";
-import { collection, query, where, getDocs, addDoc, serverTimestamp } from "firebase/firestore";
+import { collection, query, where, getDocs, addDoc, serverTimestamp, updateDoc } from "firebase/firestore";
 import { db, auth } from '../../config/firebase'
+import { HomeOutlined } from '@ant-design/icons';
+
+import { getConversionRate } from '../../services/AdvertismentsHome/AdvertismentsService';
 
 const CardInMobile = ({ adData, t, index, handleSelect, handleCallClick, userData }) => {
 
@@ -15,6 +19,7 @@ const CardInMobile = ({ adData, t, index, handleSelect, handleCallClick, userDat
     const userId = userData?.id
     const from_uid = auth.currentUser ? auth.currentUser.uid : null;
     const [userMe, setUserMe] = useState(null);
+    const [convertedPrice, setConvertedPrice] = useState(null);
 
     const [isModalVisible, setIsModalVisible] = useState(false);
     const showModalFee = () => {
@@ -64,16 +69,36 @@ const CardInMobile = ({ adData, t, index, handleSelect, handleCallClick, userDat
         fetchFeedbacks();
     }, [userId]);
 
+    useEffect(() => {
+        const fetchConversionRate = async () => {
+            if (adData?.currency && adData?.price) {
+                let rate;
+                if (adData.currency === 'eur') {
+                    rate = await getConversionRate('eur');
+                    if (rate) {
+                        setConvertedPrice(adData.price * rate);
+                    }
+                } else if (adData.currency === 'rsd') {
+                    rate = await getConversionRate('eur');
+                    if (rate) {
+                        setConvertedPrice(adData.price / rate);
+                    }
+                }
+            }
+        };
+
+        fetchConversionRate();
+    }, [adData]);
+
     const submitReview = async () => {
         try {
             const me = auth.currentUser ? auth.currentUser.uid : null;
 
-            // Проверьте, существует ли уже отзыв от этого пользователя
             const q = query(collection(db, "feedback"), where("from_uid", "==", me), where("to_uid", "==", userId));
             const querySnapshot = await getDocs(q);
 
             if (!querySnapshot.empty) {
-                message.error("Вы уже оставили отзыв этому пользователю");
+                message.error(t('error_set_feedback'));
                 return;
             }
 
@@ -85,72 +110,105 @@ const CardInMobile = ({ adData, t, index, handleSelect, handleCallClick, userDat
                 from_uid: me
             });
 
+            // Получить все отзывы для продавца
+            const feedbackQuery = query(collection(db, "feedback"), where("to_uid", "==", userId));
+            const feedbackSnapshot = await getDocs(feedbackQuery);
+
+            // Вычислить средний рейтинг
+            let totalRating = 0;
+            feedbackSnapshot.forEach((doc) => {
+                totalRating += doc.data().rating;
+            });
+            const averageRating = totalRating / feedbackSnapshot.size;
+
+            // Обновить рейтинг продавца
+            const sellerCollectionRef = collection(db, "users");
+            const queryUser = query(sellerCollectionRef, where("id", "==", userId));
+
+            const querySnapshotUser = await getDocs(queryUser);
+            querySnapshotUser.forEach(async (doc) => {
+                await updateDoc(doc.ref, {
+                    rating: averageRating
+                });
+            });
+
             setReviewText("");
             setRating(1);
             setIsReviewFormVisible(false);
-            message.success("Отзыв добавлен");
+            message.success(t('success_set_feedback'));
+            setTimeout(() => {
+                window.location.reload();
+            }, 500);
         } catch (e) {
             console.error("Error adding document: ", e);
         }
     };
 
-    const fetchUserMe = async () => { 
+    const fetchUserMe = async () => {
         const userQuery = query(
-          collection(db, 'users'),
-          where('id', '==', from_uid)
+            collection(db, 'users'),
+            where('id', '==', from_uid)
         );
         const userSnapshot = await getDocs(userQuery);
-        
+
         if (!userSnapshot.empty) {
-          userSnapshot.forEach((doc) => {
-            setUserMe(doc.data());
-          });
+            userSnapshot.forEach((doc) => {
+                setUserMe(doc.data());
+            });
         } else {
-          console.log('No such user!');
+            console.log('No such user!');
         }
-      }
+    }
 
     const createChat = async () => {
         const chatsQuery = query(
-          collection(db, 'message'),
-          where('from_uid', '==', from_uid),
-          where('to_uid', '==', userId)
+            collection(db, 'message'),
+            where('from_uid', '==', from_uid),
+            where('to_uid', '==', userId)
         );
         const chatsSnapshot = await getDocs(chatsQuery);
-    
+
         let chatId;
         if (chatsSnapshot.empty) {
-          const chatDoc = await addDoc(collection(db, 'message'), {
-            from_name: userMe?.name,
-            from_uid: from_uid,
-            from_avatar: userMe?.photoUrl,
-            last_msg: '',
-            last_time: serverTimestamp(),
-            to_avatar: userData?.photoUrl,
-            to_name: userData?.name,
-            to_uid: userId,
-          });
-          
-    
-          chatId = chatDoc.id;
+            const chatDoc = await addDoc(collection(db, 'message'), {
+                from_name: userMe?.name,
+                from_uid: from_uid,
+                from_avatar: userMe?.photoUrl,
+                last_msg: '',
+                last_time: serverTimestamp(),
+                to_avatar: userData?.photoUrl,
+                to_name: userData?.name,
+                to_uid: userId,
+            });
+
+
+            chatId = chatDoc.id;
         } else {
-          chatId = chatsSnapshot.docs[0].id;
+            chatId = chatsSnapshot.docs[0].id;
         }
-    
+
         return chatId;
-      }
-    
-      const handleButtonWrite = async () => {
-        const chatId = await createChat();
-        history.push(`/message/${chatId}`);
-      }
+    }
+
+    const handleButtonWrite = async () => {
+        if (from_uid === null) {
+            history.push('/sign_in');
+        } else if (from_uid === userId) {
+            console.log('You cannot write to yourself!');
+        } else {
+            const chatId = await createChat();
+            history.push(`/message/${chatId}`);
+        }
+    }
+
+    console.log('link', userData.link);
 
     return (
-        <Container className="d-lg-none">
+        <Container className="d-lg-none" style={{ paddingTop: '1rem', marginTop: '0.5rem' }}>
             <Breadcrumb
                 items={[
                     {
-                        title: <a href="/advertisment">{t('home_navbar')}</a>,
+                        title: <a style={{ textDecoration: 'none' }} href="/advertisment"><HomeOutlined /> {t('home_navbar')}</a>,
                     },
                     {
                         title: <a href={`/advertisments/${adData?.category}`}>{t(adData?.category)}</a>,
@@ -162,8 +220,28 @@ const CardInMobile = ({ adData, t, index, handleSelect, handleCallClick, userDat
             />
             <div className="product-card">
                 <Carousel activeIndex={index} onSelect={handleSelect}>
-                    {adData?.photoUrls.map((url, index) => (
-                        <Carousel.Item key={index}>
+                    {adData?.photoUrls.length > 0 ? (
+                        adData.photoUrls.map((url, index) => (
+                            <Carousel.Item key={index}>
+                                <div
+                                    style={{
+                                        backgroundColor: "#dcdcdc",
+                                        display: "flex",
+                                        justifyContent: "center",
+                                    }}
+                                >
+                                    <Image
+                                        className="d-block"
+                                        style={{ objectFit: 'contain', maxWidth: "100%", height: '400px' }}
+                                        onClick={() => handleSelect(index)}
+                                        src={url}
+                                        alt={`Slide ${index + 1}`}
+                                    />
+                                </div>
+                            </Carousel.Item>
+                        ))
+                    ) : (
+                        <Carousel.Item>
                             <div
                                 style={{
                                     backgroundColor: "#dcdcdc",
@@ -173,13 +251,13 @@ const CardInMobile = ({ adData, t, index, handleSelect, handleCallClick, userDat
                             >
                                 <Image
                                     className="d-block"
-                                    src={url}
-                                    alt={`Slide ${index + 1}`}
-                                    style={{ maxWidth: "100%", objectFit: "contain", maxHeight: "400px" }}
+                                    style={{ objectFit: 'contain', maxWidth: "100%", height: '400px' }}
+                                    src={Logo}
+                                    alt="Logo"
                                 />
                             </div>
                         </Carousel.Item>
-                    ))}
+                    )}
                 </Carousel>
                 <Row className="mt-3">
                     {adData?.photoUrls.map((url, index) => (
@@ -194,7 +272,14 @@ const CardInMobile = ({ adData, t, index, handleSelect, handleCallClick, userDat
                         </Col>
                     ))}
                 </Row>
-                <h2 className="product-title mt-3"><strong>{adData?.price + "€"}</strong></h2>
+                <h2 id="product-price">
+                    {adData?.price + (adData.currency === 'eur' ? "€" : " RSD")}
+                    {convertedPrice && (
+                        <span style={{ color: 'gray', fontSize: '24px' }}>
+                            ~{Math.round(convertedPrice)} {adData.currency === 'eur' ? "RSD" : "€"}
+                        </span>
+                    )}
+                </h2>
                 <h5 className="product-title" style={{ color: "grey" }}>{adData?.title}</h5>
                 <Container>
                     <Row className="d-flex justify-content-center align-items-center mt-3">
@@ -202,15 +287,15 @@ const CardInMobile = ({ adData, t, index, handleSelect, handleCallClick, userDat
                             id="product-phone"
                             onClick={handleCallClick}
                             className="btn d-block flex-grow-1 mb-3"
-                            style={{ backgroundColor: "orange", color: "white" }}
+                            style={{ backgroundColor: "#FFBF34", color: "white" }}
                         >
                             {t('call')}
                         </a>
                         <a
-                            id="product-write"
-                            className="btn d-block flex-grow-1 mb-3"
-                            style={{ backgroundColor: "orange", color: "white" }}
-                            onClick={handleButtonWrite}
+                            id="product-phone"
+                            className={`btn d-block mb-3 ${from_uid === userId ? 'disabled' : ''}`}
+                            style={from_uid === userId ? { backgroundColor: "#FFBF34", color: "white", cursor: 'not-allowed', opacity: 0.5 } : { backgroundColor: "#FFBF34", color: "white" }}
+                            onClick={from_uid === userId ? null : handleButtonWrite}
                         >
                             {t('to_write')}
                         </a>
@@ -219,27 +304,32 @@ const CardInMobile = ({ adData, t, index, handleSelect, handleCallClick, userDat
                 <CharactersForCard adData={adData} t={t} />
                 <Row className="d-flex justify-content-between align-items-center mt-3">
                     <Col>
-                        <Link to={`/seller/${userData?.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                            <h5 className="mb-0">{userData?.name || "User"}</h5>
+                        <Link to={`/seller/${userData.link}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                            <h5 style={{ color: 'black' }} className="mb-0">{userData?.name || "User"}</h5>
+                            <span style={{ color: '#03989F', textDecoration: 'underline' }}>{t('go_to_seller_page')}</span>
                             <div className="d-flex align-items-center">
-                                <span className="me-2">{userData?.rating || userData?.raiting}</span>
-                                <Rate disabled defaultValue={rat} />
+                                {(userData?.rating ?? userData?.raiting) > 0 && (
+                                    <span>{userData?.rating ?? userData?.raiting}</span>
+                                )}
+                                <Rate allowHalf disabled defaultValue={userData?.rating ?? userData?.raiting} />
                             </div>
                         </Link>
-                        <p onClick={showModalFee}>Посмотреть отзывы</p>
+                        <p style={{ color: '#03989F' }} onClick={showModalFee}>{t('show_feedbacks')}</p>
 
-                        <Modal title="Отзывы" open={isModalVisible} onCancel={handleCancel} footer={null}>
+                        <Modal title={t('reviewsForProfile')} open={isModalVisible} onCancel={handleCancel} footer={null}>
                             {feedbacks.map((feedback, index) => (
                                 <div key={index}>
                                     <h5 className='mt-3'>{new Date(feedback.time_creation?.seconds * 1000).toLocaleDateString()}</h5>
-                                    <h5>Комментарий от {feedback.userName}</h5>
+                                    <h5>{t('comment_from')} {feedback.userName}</h5>
                                     <p>{feedback.description} <Rate disabled defaultValue={feedback.rating} /></p>
                                 </div>
                             ))}
 
                             {!isReviewFormVisible && (
-                                <Button className='mt-3'
-                                    type="primary" onClick={toggleReviewForm}>Оставить отзыв</Button>
+                                <div className='d-flex justify-content-center'>
+                                    <Button className='mt-3'
+                                        style={{ backgroundColor: '#FFBF34', border: 'none', color: 'white' }} onClick={toggleReviewForm}>{t('set_feedback')}</Button>
+                                </div>
                             )}
 
                             {isReviewFormVisible && (
@@ -249,10 +339,13 @@ const CardInMobile = ({ adData, t, index, handleSelect, handleCallClick, userDat
                                         rows={4}
                                         value={reviewText}
                                         onChange={handleReviewChange}
-                                        placeholder="Введите ваш отзыв здесь..."
+                                        placeholder={t('input_feedback')}
                                     />
                                     <Rate className='mt-3' value={rating} onChange={handleRatingChange} />
-                                    <Button type="primary" onClick={submitReview}>Отправить отзыв</Button>
+                                    <div className='d-flex justify-content-center'>
+                                        <Button className='mt-3'
+                                            style={{ backgroundColor: '#FFBF34', border: 'none', color: 'white' }} onClick={submitReview}>{t('send_feedback')}</Button>
+                                    </div>
                                 </>
                             )}
                         </Modal>
@@ -260,7 +353,7 @@ const CardInMobile = ({ adData, t, index, handleSelect, handleCallClick, userDat
                     </Col>
                     <Col className="d-flex justify-content-end">
                         <Image
-                            src={userData?.photoUrl || Logo}
+                            src={userData?.photoUrl || person}
                             alt="Seller Image"
                             roundedCircle
                             style={{ width: "60px", height: "60px" }}

@@ -1,28 +1,15 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom';
-import { MenuOutlined, MoreOutlined } from '@ant-design/icons';
-import { Dropdown, Input, Button, Modal, Select, InputNumber, AutoComplete } from 'antd';
-import Logo from '../assets/hvala.png'
-import { t } from 'i18next';
+import { MenuOutlined } from '@ant-design/icons';
+import { Dropdown, Button, Select, Input } from 'antd';
+import Logo from '../assets/new_logo.png'
+import { useTranslation } from 'react-i18next';
 
-const Categories = ({ setSearchText, options }) => {
-  const { Search } = Input;
-  const { Option } = Select;
+import banner from "../assets/New_Hvala_2_0.png"
+import SearchAuto from './SearchAuto';
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const showModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleCancel = () => {
-    setIsModalOpen(false);
-  };
-
-  const [inputValue, setInputValue] = useState('');
-
-  const filteredOptions = options.filter(option =>
-    option.value.toLowerCase().includes(inputValue.toLowerCase())
-  );
+const Categories = () => {
+  const { t } = useTranslation();
 
   const items = [
     {
@@ -54,6 +41,24 @@ const Categories = ({ setSearchText, options }) => {
       label: (
         <Link to="/advertisments/clothes" style={{ fontSize: '16px', textDecoration: 'none' }}>
           {t('clothes')}
+        </Link>
+      ),
+    },
+    {
+      key: '4_shoes',
+      label: (
+        <Link to="/advertisments/shoes" style={{ fontSize: '16px', textDecoration: 'none' }}>
+          {t('shoes')}
+          <span style={{ marginLeft: '6px', background: '#03989F', color: '#fff', fontSize: '10px', fontWeight: 600, padding: '1px 5px', borderRadius: 3 }}>NEW</span>
+        </Link>
+      ),
+    },
+    {
+      key: '4_work',
+      label: (
+        <Link to="/advertisments/work" style={{ fontSize: '16px', textDecoration: 'none' }}>
+          {t('work')}
+          <span style={{ marginLeft: '6px', background: '#03989F', color: '#fff', fontSize: '10px', fontWeight: 600, padding: '1px 5px', borderRadius: 3 }}>NEW</span>
         </Link>
       ),
     },
@@ -150,43 +155,34 @@ const Categories = ({ setSearchText, options }) => {
   return (
     <>
       <div className='d-none d-lg-block' style={{ marginTop: '20px' }}>
-        <div className='container mb-3' style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <div className='container mb-3' style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div className='logo' style={{ marginRight: '20px' }}>
-            <img src={Logo} alt='logo' style={{ height: '40px', width: '160px' }}></img>
+            <a href='/'>
+              <img src={Logo} alt='logo' style={{ width: '100px', height: 'auto' }}></img>
+            </a>
           </div>
+          <SearchAuto
+                placeholder={t('search')}
+                width='100%'
+                height='40px'
+              />
           <Dropdown
             menu={{
               items,
             }}
           >
             <a onClick={(e) => e.preventDefault()}>
-              <Button style={{ marginRight: '20px', backgroundColor: 'orange', color: 'white', border: 'none' }} size='large' icon={<MenuOutlined />}>
-                Категории
+              <Button style={{ backgroundColor: '#FFBF34', color: 'white', border: 'none', marginLeft: '20px' }} size='large' icon={<MenuOutlined />}>
+                {t('category')}
               </Button>
             </a>
           </Dropdown>
-          <AutoComplete
-            options={filteredOptions}
-            style={{ width: 800 }}
-            size='large'
-            onSelect={value => setSearchText(value)}
-            onSearch={value => setInputValue(value)}
-            onKeyDown={event => {
-              if (event.key === 'Enter') {
-                setSearchText(inputValue);
-              }
-            }}
-            placeholder="input search text"
-          />
-          <Button onClick={showModal} style={{ marginLeft: '20px', backgroundColor: 'orange', color: 'white', border: 'none' }} size='large' icon={<MoreOutlined />}>
-            Фильтры
-          </Button>
         </div>
       </div>
 
-      <div className='d-lg-none mt-3'>
+      <div className='d-lg-none'>
         <div className='logo mb-3' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <img src={Logo} alt='logo' style={{ height: '50px', width: '160px' }}></img>
+          <img src={banner} alt="Advertisement" className="img-fluid" />
         </div>
         <div className='container mb-3' style={{ display: 'flex', justifyContent: 'space-between' }}>
           <Dropdown
@@ -195,56 +191,19 @@ const Categories = ({ setSearchText, options }) => {
             }}
           >
             <a onClick={(e) => e.preventDefault()}>
-              <Button style={{ marginRight: '20px', backgroundColor: 'orange', color: 'white', border: 'none' }} size='large' icon={<MenuOutlined />}>
+              <Button style={{ marginRight: '20px', backgroundColor: '#FFBF34', color: 'white', border: 'none' }} size='large' icon={<MenuOutlined />}>
               </Button>
             </a>
           </Dropdown>
-          <AutoComplete
-            options={filteredOptions}
-            style={{ width: 400}}
-            size='large'
-            onSelect={value => setSearchText(value)}
-            onSearch={value => setInputValue(value)}
-            onKeyDown={event => {
-              if (event.key === 'Enter') {
-                setSearchText(inputValue);
-              }
-            }}
-            placeholder="input search text"
-          />
-          <Button onClick={showModal} style={{ backgroundColor: 'orange', color: 'white', border: 'none' }} size='large' icon={<MoreOutlined />}>
-          </Button>
+          <SearchAuto
+                placeholder={t('search')}
+                width='100%'
+                height='40px'
+              />
         </div>
         <div className='container'>
         </div>
       </div>
-
-
-      <Modal title="Фильтры" open={isModalOpen} footer={null} onCancel={handleCancel}>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <p>Диапазон цен:</p>
-          <div>
-            <InputNumber
-              defaultValue={0}
-              formatter={(value) => `€ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-              parser={(value) => value?.replace(/\$\s?|(,*)/g, '')}
-              style={{ marginRight: '20px' }}
-            />
-            <InputNumber
-              defaultValue={0}
-              formatter={(value) => `€ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-              parser={(value) => value?.replace(/\$\s?|(,*)/g, '')}
-            />
-          </div>
-          <p>Выбор страны:</p>
-          <Select defaultValue="Россия" style={{ width: 240 }}>
-            <Option value="Россия">Россия</Option>
-            <Option value="США">США</Option>
-            <Option value="Китай">Китай</Option>
-          </Select>
-          <Button className='mt-3' type='primary' style={{ backgroundColor: 'orange', border: 'none' }}>Применить</Button>
-        </div>
-      </Modal>
     </>
 
   );

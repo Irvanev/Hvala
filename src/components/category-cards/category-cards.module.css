@@ -1,17 +1,37 @@
 .lenta {
-    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
     border-radius: 10px;
     transition: transform 0.3s ease-in-out;
     margin-top: 10px;
 }
+
 .lenta:hover {
     transform: scale(1.05) rotateY(10deg);
-    box-shadow: 0px 10px 20px rgba(0,0,0,0.25);
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.25);
 }
+
 .link {
     text-decoration: none;
     color: black;
 }
+
 .link {
     color: #ffa600;
+}
+
+.card {
+    position: relative;
+}
+
+.title {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.image {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 100px;
 }

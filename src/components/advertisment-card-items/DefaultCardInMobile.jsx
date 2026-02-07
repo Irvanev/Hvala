@@ -1,5 +1,5 @@
 import React from "react";
-import Logo from "../../assets/logo.png";
+import Logo from "../../assets/logo_def.png";
 import { Container, Row, Col, Image, Button } from "react-bootstrap";
 
 const DefaultCardInMobile = () => {
@@ -45,16 +45,16 @@ const DefaultCardInMobile = () => {
                     <Container>
                         <Row className="d-flex justify-content-between">
                             <Button variant="primary" className="btn flex-grow-1 mb-3">
-                                Написать
+                                
                             </Button>
                             <Button variant="secondary" className="btn flex-grow-1 mb-3">
-                                Позвонить
+                                
                             </Button>
                         </Row>
                     </Container>
                     <Row className="d-flex justify-content-between mt-3">
                         <Col>
-                            <h5 className="mb-0">Vitaly</h5>
+                            <h5 className="mb-0"></h5>
                             <Row className="d-flex align-items-center">
                                 <Col>
                                     <span className="bi bi-star-fill text-warning"></span>
@@ -67,7 +67,7 @@ const DefaultCardInMobile = () => {
                                     href="reviews.html"
                                     className="text-decoration-none ms-3"
                                 >
-                                    5 отзывов
+                                    
                                 </a>
                             </Row>
                         </Col>

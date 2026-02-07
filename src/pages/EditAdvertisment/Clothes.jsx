@@ -1,12 +1,21 @@
 import React from 'react'
+import { Select } from 'antd';
 
-export default function Clothes({t}) {
+const { Option } = Select;
+
+export default function Clothes({ handleSubCategoryChange, subcategory, t }) {
     return (
         <>
-            <option>{t('choce_subcategory')}</option>
-            <option value="mens_clothing">{t('mens_clothing')}</option>
-            <option value="womens_clothing">{t('womens_clothing')}</option>
-            <option value="childrens_clothing">{t('childrens_clothing')}</option>
+            <Select
+                aria-label="Default select example"
+                onChange={handleSubCategoryChange}
+                value={subcategory}
+                style={{ width: '100%' }}
+            >
+                <Option value="mens_clothing">{t('mens_clothing')}</Option>
+                <Option value="womens_clothing">{t('womens_clothing')}</Option>
+                <Option value="childrens_clothing">{t('childrens_clothing')}</Option>
+            </Select>
         </>
     )
 }

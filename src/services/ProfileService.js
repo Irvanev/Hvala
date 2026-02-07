@@ -2,16 +2,13 @@ import { collection, query, where, getDocs, doc, updateDoc, deleteDoc } from "fi
 import { db } from "../config/firebase";
 
 export const fetchUser = async (userId) => {
-    let user = JSON.parse(localStorage.getItem('user'));
-    if (!user) {
-        const usersRef = collection(db, 'users');
-        const q = query(usersRef, where('id', '==', userId));
-        const querySnapshot = await getDocs(q);
-        querySnapshot.forEach((doc) => {
-            user = doc.data();
-            localStorage.setItem('user', JSON.stringify(user));
-        });
-    }
+    const usersRef = collection(db, 'users');
+    const q = query(usersRef, where('id', '==', userId));
+    const querySnapshot = await getDocs(q);
+    let user = null;
+    querySnapshot.forEach((doc) => {
+        user = doc.data();
+    });
     return user;
 }
 
@@ -29,11 +26,15 @@ export const fetchReviews = async (userId) => {
 
 export const fetchAdvertisements = async (userId) => {
     const advertisementRef = collection(db, 'advertisment');
-    const advertisementQuery = query(advertisementRef, where('from_uid', '==', userId), where('in_archive', '==', false));
-    const advertisementSnapshot = await getDocs(advertisementQuery);
-    const advertisements = advertisementSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
+    const initialQuery = query(advertisementRef, where('from_uid', '==', userId));
+    const initialSnapshot = await getDocs(initialQuery);
+
+    const advertisements = initialSnapshot.docs
+        .map(doc => ({ id: doc.id, ...doc.data() }))
+        .filter(ad => !ad.hasOwnProperty('in_archive') || ad.in_archive === false);
+
     return advertisements;
-}
+};
 
 export const fetchAdvertismentsArchive = async (userId) => {
     const advertisementRef = collection(db, 'advertisment');
