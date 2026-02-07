@@ -40,3 +40,20 @@ code {
   display: inline-flex;
   align-items: center;
 }
+
+/* Сетка объявлений: чтобы карточки шли в несколько колонок, а не друг под другом */
+#cardAds {
+  display: flex !important;
+  flex-wrap: wrap !important;
+}
+
+/* Карта недвижимости: убираем обрезку контента в InfoWindow. Класс .estate-map-page вешается на body только на странице недвижимости, т.к. InfoWindow рендерится вне нашего контейнера */
+body.estate-map-page .gm-style-iw,
+body.estate-map-page .gm-style-iw-c,
+body.estate-map-page .gm-style-iw-d {
+  max-height: none !important;
+  overflow: visible !important;
+}
+body.estate-map-page .gm-style-iw-c {
+  padding: 0 !important;
+}

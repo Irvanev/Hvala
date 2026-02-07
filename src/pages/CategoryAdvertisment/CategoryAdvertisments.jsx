@@ -27,14 +27,25 @@ import CustomCard from "../../components/card/CustomCard";
 import { Helmet } from "react-helmet";
 import InputSearch from "../../components/input-search/InputSearch";
 import CategoriesAds from "../../components/categoryAds";
+import { EstateMap } from "../../components/estate-map/EstateMap";
 import { getShoeTypesBySubcategory, SHOE_BRANDS } from "../../types/shoeTypes.js";
 import { WORK_SPHERES } from "../../types/workTypes.js";
+
+const BODY_CLASS_ESTATE_MAP = "estate-map-page";
 
 export const CategoryAdvertisments = () => {
   const { category } = useParams();
   const [advertisments, setAdvertisments] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const { Option } = Select;
+
+  // Класс на body нужен, чтобы стили InfoWindow карты применялись (окно рендерится вне .estate-map-container)
+  useEffect(() => {
+    if (category === "estate") {
+      document.body.classList.add(BODY_CLASS_ESTATE_MAP);
+      return () => document.body.classList.remove(BODY_CLASS_ESTATE_MAP);
+    }
+  }, [category]);
 
   const [subcategory, setSubCategory] = useState("");
   const [condition, setCondition] = useState("");
@@ -1230,6 +1241,13 @@ export const CategoryAdvertisments = () => {
       </Helmet>
 
       <CategoriesAds handleSearchChange={handleSearchChange} searchText={searchText}/>
+
+      {/* Карта недвижимости: отступы по краям — paddingLeft/paddingRight (px) */}
+      {category === "estate" && (
+        <div style={{ paddingLeft: 48, paddingRight: 48 }}>
+          <EstateMap advertisements={filteredAdvertisements} />
+        </div>
+      )}
 
       <Container>
         <Row>
