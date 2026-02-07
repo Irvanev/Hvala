@@ -28,3 +28,15 @@ code {
       padding-bottom: 3.5rem;
   }
 }
+
+/* Header: vertical centering of nav buttons and links */
+.navbar .navbar-collapse {
+  align-items: center;
+}
+.navbar .navbar-nav {
+  align-items: center;
+}
+.navbar .nav-link {
+  display: inline-flex;
+  align-items: center;
+}

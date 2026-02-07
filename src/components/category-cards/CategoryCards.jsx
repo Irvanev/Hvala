@@ -6,7 +6,7 @@ import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-import { CaretLeftOutlined, CaretRightOutlined } from '@ant-design/icons';
+import { CaretLeftOutlined, CaretRightOutlined, PictureOutlined } from '@ant-design/icons';
 
 import image1 from '../../assets/01_estate.png';
 import image2 from '../../assets/02_transport.png';
@@ -63,6 +63,8 @@ const CategoryCards = () => {
             { title: t('transport'), image: image2, link: '/advertisments/transport' },
             { title: t('electronics'), image: image3, link: '/advertisments/electronics' },
             { title: t('clothes'), image: image4, link: '/advertisments/clothes' },
+            { title: t('shoes'), image: null, link: '/advertisments/shoes', placeholder: true, isNew: true },
+            { title: t('work'), image: null, link: '/advertisments/work', placeholder: true, isNew: true },
             { title: t('house_goods'), image: image5, link: '/advertisments/house_goods' },
             { title: t('building_materials_and_tools'), image: image6, link: '/advertisments/building_materials_and_tools' },
             { title: t('transport_goods'), image: image7, link: '/advertisments/transport_goods' },
@@ -123,12 +125,21 @@ const CategoryCards = () => {
                         {loadedCategories.map((category, index) => (
                             <div key={index}>
                                 <Link to={category.link} style={{ textDecoration: 'none', color: 'black' }}>
-                                    <div className="image-container" style={{ padding: '0 10px' }}>
+                                    <div className="image-container" style={{ padding: '0 10px', position: 'relative' }}>
+                                        {category.isNew && (
+                                            <span style={{ position: 'absolute', top: 4, right: 14, background: '#03989F', color: '#fff', fontSize: '10px', fontWeight: 600, padding: '2px 6px', borderRadius: 4, zIndex: 1 }}>NEW</span>
+                                        )}
                                         <div className='cardImage'>
-                                            <img alt={loadedCategories.title} src={category.image} style={{ borderRadius: '10px' }} />
+                                            {category.placeholder ? (
+                                                <div style={{ width: '100%', aspectRatio: '1', borderRadius: '10px', background: '#f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '80px' }}>
+                                                    <PictureOutlined style={{ fontSize: '32px', color: '#bfbfbf' }} />
+                                                </div>
+                                            ) : (
+                                                <img alt={category.title} src={category.image} style={{ borderRadius: '10px' }} />
+                                            )}
                                         </div>
                                         <div className="image-text" style={{ textAlign: 'center' }}>
-                                            {t(category.title)}
+                                            {category.title}
                                         </div>
                                     </div>
                                 </Link>
@@ -143,12 +154,21 @@ const CategoryCards = () => {
                         {loadedCategories.map((category, index) => (
                             <div key={index}>
                                 <Link to={category.link} style={{ textDecoration: 'none', color: 'black' }}>
-                                    <div className="image-container" style={{ padding: '0 10px' }}>
+                                    <div className="image-container" style={{ padding: '0 10px', position: 'relative' }}>
+                                        {category.isNew && (
+                                            <span style={{ position: 'absolute', top: 4, right: 14, background: '#03989F', color: '#fff', fontSize: '10px', fontWeight: 600, padding: '2px 6px', borderRadius: 4, zIndex: 1 }}>NEW</span>
+                                        )}
                                         <div className='cardImage'>
-                                            <img alt={loadedCategories.title} src={category.image} style={{ borderRadius: '10px' }} />
+                                            {category.placeholder ? (
+                                                <div style={{ width: '100%', aspectRatio: '1', borderRadius: '10px', background: '#f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '80px' }}>
+                                                    <PictureOutlined style={{ fontSize: '32px', color: '#bfbfbf' }} />
+                                                </div>
+                                            ) : (
+                                                <img alt={category.title} src={category.image} style={{ borderRadius: '10px' }} />
+                                            )}
                                         </div>
                                         <div className="image-text" style={{ textAlign: 'center' }}>
-                                            {t(category.title)}
+                                            {category.title}
                                         </div>
                                     </div>
                                 </Link>

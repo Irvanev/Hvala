@@ -3,7 +3,7 @@ import { Card, Col, Carousel } from 'antd';
 import { Link } from 'react-router-dom';
 import Logo from '../../assets/logo_def.png';
 import { useTranslation } from 'react-i18next';
-import { getConversionRate } from '../../services/AdvertismentsHome/AdvertismentsService';
+import { getConversionRate } from '../../services/currencyCache';
 import { formatDistanceToNow, format } from 'date-fns';
 import { ru, enUS, sr } from 'date-fns/locale';
 
@@ -79,6 +79,8 @@ const CardAdvertisementHome = ({ advertisment, index }) => {
                                                 style={{ height: '30vh', width: '100%', objectFit: 'cover' }}
                                                 alt="example"
                                                 src={url || Logo}
+                                                loading={index === 0 ? "eager" : "lazy"}
+                                                decoding="async"
                                             />
                                         </div>
                                     ))

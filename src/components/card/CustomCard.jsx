@@ -9,7 +9,7 @@ import { formatDate, getConversionRate, archivedAdvertisement, deleteAdvertiseme
 
 import { auth } from "../../config/firebase";
 
-const CustomCard = ({ images, price, title, location, date, currency, showButtons, id, status, user }) => {
+const CustomCard = ({ images, price, title, location, date, currency, showButtons, id, status, user, _resizing }) => {
 
     const [menuOpen, setMenuOpen] = useState(false);
     const [stateCurrency, setStateCurrency] = useState('');
@@ -108,13 +108,16 @@ const CustomCard = ({ images, price, title, location, date, currency, showButton
 
     useEffect(() => {
         setStateCurrency(currency);
+        // Используем кэшированную версию getConversionRate
         const fetchConversionRate = async () => {
-            const rate = await getConversionRate(stateCurrency);
-            setConversionRate(rate);
+            if (currency) {
+                const rate = await getConversionRate(currency);
+                setConversionRate(rate);
+            }
         }
 
         fetchConversionRate();
-    }, [stateCurrency]);
+    }, [currency]);
 
     const convertedPrice = Math.round(price * conversionRate);
 
@@ -137,13 +140,39 @@ const CustomCard = ({ images, price, title, location, date, currency, showButton
             <Carousel>
                 {images.length > 0 ? (
                     images.map((image, index) => (
-                        <div key={index}>
-                            <img src={image ? image : logo} alt={title} className={styles.image} onClick={handleCardClick}/>
+                        <div key={index} style={{ position: 'relative' }}>
+                            <img 
+                                src={image ? image : logo} 
+                                alt={title} 
+                                className={styles.image} 
+                                onClick={handleCardClick}
+                                loading={index === 0 ? "eager" : "lazy"}
+                                decoding="async"
+                                style={{
+                                    opacity: _resizing && index === 0 ? 0.7 : 1,
+                                    transition: 'opacity 0.3s ease'
+                                }}
+                            />
+                            {_resizing && index === 0 && (
+                                <div style={{
+                                    position: 'absolute',
+                                    top: '50%',
+                                    left: '50%',
+                                    transform: 'translate(-50%, -50%)',
+                                    fontSize: '12px',
+                                    color: '#666',
+                                    background: 'rgba(255,255,255,0.9)',
+                                    padding: '4px 8px',
+                                    borderRadius: '4px'
+                                }}>
+                                    Оптимизация...
+                                </div>
+                            )}
                         </div>
                     ))
                 ) : (
                     <div>
-                        <img src={logo} alt={title} className={styles.image} />
+                        <img src={logo} alt={title} className={styles.image} loading="eager" />
                     </div>
                 )}
             </Carousel>

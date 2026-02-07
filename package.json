@@ -5,7 +5,6 @@
   "dependencies": {
     "@ant-design/icons": "^5.3.7",
     "@capacitor-firebase/app": "^7.3.0",
-    "@capacitor-firebase/authentication": "^7.3.0",
     "@capacitor-firebase/firestore": "^7.3.0",
     "@capacitor-firebase/storage": "^7.3.0",
     "@capacitor/android": "^7.4.2",
@@ -34,7 +33,7 @@
     "bootstrap": "^5.3.2",
     "browser-image-compression": "^2.0.2",
     "date-fns": "^3.6.0",
-    "firebase": "^10.12.2",
+    "firebase": "^11.10.0",
     "framer-motion": "^11.0.28",
     "i18next": "^23.8.3",
     "mdb-react-ui-kit": "^8.0.0",
@@ -89,7 +88,8 @@
     ]
   },
   "devDependencies": {
+    "@capacitor/assets": "^3.0.5",
     "tailwindcss": "^3.4.7",
-    "typescript": "^5.9.2"
+    "typescript": "^4.9.5"
   }
 }

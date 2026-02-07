@@ -45,6 +45,24 @@ const CategoriesAds = ({handleSearchChange, searchText}) => {
       ),
     },
     {
+      key: '4_shoes',
+      label: (
+        <Link to="/advertisments/shoes" style={{ fontSize: '16px', textDecoration: 'none' }}>
+          {t('shoes')}
+          <span style={{ marginLeft: '6px', background: '#03989F', color: '#fff', fontSize: '10px', fontWeight: 600, padding: '1px 5px', borderRadius: 3 }}>NEW</span>
+        </Link>
+      ),
+    },
+    {
+      key: '4_work',
+      label: (
+        <Link to="/advertisments/work" style={{ fontSize: '16px', textDecoration: 'none' }}>
+          {t('work')}
+          <span style={{ marginLeft: '6px', background: '#03989F', color: '#fff', fontSize: '10px', fontWeight: 600, padding: '1px 5px', borderRadius: 3 }}>NEW</span>
+        </Link>
+      ),
+    },
+    {
       key: '5',
       label: (
         <Link to="/advertisments/house_goods" style={{ fontSize: '16px', textDecoration: 'none' }}>

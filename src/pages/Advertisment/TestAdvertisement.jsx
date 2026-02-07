@@ -19,11 +19,10 @@ import { GlobalOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 
 import {
   fetchAdvertisments,
-  resizeImageFromUrl,
   getUserByAuth
 } from "../../services/AdvertismentsHome/test";
+import { resizeFirstImage } from "../../services/imageResizer";
 import { Helmet } from "react-helmet";
-import FirebaseDebug from "../../services/FirebaseDebug";
 import CustomCard from "../../components/card/CustomCard";
 
 const TestAdvertisment = () => {
@@ -193,6 +192,8 @@ const TestAdvertisment = () => {
     { value: "estate", label: t("estate") },
     { value: "transport", label: t("transport") },
     { value: "clothes", label: t("clothes") },
+    { value: "shoes", label: t("shoes") },
+    { value: "work", label: t("work") },
     { value: "electronics", label: t("electronics") },
     { value: "house_goods", label: t("house_goods") },
     {
@@ -222,6 +223,15 @@ const TestAdvertisment = () => {
       { value: "mens_clothing", label: t("mens_clothing") },
       { value: "womens_clothing", label: t("womens_clothing") },
       { value: "childrens_clothing", label: t("childrens_clothing") },
+    ],
+    shoes: [
+      { value: "mens_shoes", label: t("mens_shoes") },
+      { value: "womens_shoes", label: t("womens_shoes") },
+      { value: "childrens_shoes", label: t("childrens_shoes") },
+    ],
+    work: [
+      { value: "vacancies", label: t("vacancies") },
+      { value: "resumes", label: t("resumes") },
     ],
     estate: [
       { value: "sale_estate", label: t("sale_estate") },
@@ -403,22 +413,71 @@ const TestAdvertisment = () => {
       currency
     );
 
-    const resizedData = await Promise.all(
-      newAds.map(async (ad) => {
-        if (!ad.photoUrls || ad.photoUrls.length === 0) {
-          return ad;
+    // Сначала показываем объявления с оригинальными изображениями
+    const adsWithOriginalImages = newAds.map(ad => ({
+      ...ad,
+      photoUrls: ad.photoUrls || [],
+      _resizing: true
+    }));
+    
+    setAdvertisments(adsWithOriginalImages);
+    setLastVisible(lastDoc);
+    setLoading(false);
+    setIsModalVisibleFilter(false);
+    
+    // Параллельно обрабатываем изображения батчами для предотвращения лагов
+    const processBatch = async (adsBatch, startIndex) => {
+      const promises = adsBatch.map(async (ad, batchIndex) => {
+        if (ad.photoUrls && ad.photoUrls.length > 0) {
+          try {
+            const resizedUrls = await resizeFirstImage(ad.photoUrls, 400, 400);
+            const adIndex = startIndex + batchIndex;
+            
+            setAdvertisments((prev) => {
+              const updated = [...prev];
+              if (updated[adIndex] && updated[adIndex].id === ad.id) {
+                updated[adIndex] = {
+                  ...updated[adIndex],
+                  photoUrls: resizedUrls,
+                  _resizing: false
+                };
+              }
+              return updated;
+            });
+          } catch (error) {
+            const adIndex = startIndex + batchIndex;
+            setAdvertisments((prev) => {
+              const updated = [...prev];
+              if (updated[adIndex] && updated[adIndex].id === ad.id) {
+                updated[adIndex] = {
+                  ...updated[adIndex],
+                  _resizing: false
+                };
+              }
+              return updated;
+            });
+          }
         }
-        const resizedPhotoUrls = await Promise.all(
-          ad.photoUrls.map(async (url) => {
-            const resizedUrl = await resizeImageFromUrl(url);
-            return resizedUrl;
-          })
-        );
-        return { ...ad, photoUrls: resizedPhotoUrls };
-      })
-    );
-
-    setAdvertisments(resizedData);
+      });
+      
+      await Promise.all(promises);
+    };
+    
+    // Обрабатываем батчами по 3 объявления за раз
+    const batchSize = 3;
+    for (let i = 0; i < newAds.length; i += batchSize) {
+      const batch = newAds.slice(i, i + batchSize);
+      
+      if (window.requestIdleCallback) {
+        window.requestIdleCallback(() => {
+          processBatch(batch, i);
+        }, { timeout: 1000 });
+      } else {
+        setTimeout(() => {
+          processBatch(batch, i);
+        }, i * 50);
+      }
+    }
     setLastVisible(lastDoc);
     setLoading(false);
     setIsModalVisibleFilter(false);
@@ -474,15 +533,7 @@ const TestAdvertisment = () => {
       if (fetching && hasMore) {
         setLoading(true);
         
-        // Firebase Debug - тестируем подключение
-        console.log("🔧 STARTING FIREBASE DEBUG TEST...");
-        const debugResult = await FirebaseDebug.testConnection();
-        console.log("🔧 DEBUG RESULT:", debugResult);
-        
-        const authResult = await FirebaseDebug.testAuth();
-        console.log("🔧 AUTH RESULT:", authResult);
-        console.log("Fetching data...");
-        console.log("📥 CALLING fetchAdvertisments...");
+        // Убрали Firebase Debug вызовы для production
         const { advertisments: newAds, lastDoc } = await fetchAdvertisments(
           lastVisible,
           category,
@@ -505,29 +556,77 @@ const TestAdvertisment = () => {
           maxPrice,
           currency
         );
-        console.log("📦 RECEIVED ADVERTISEMENTS:", newAds);
-        console.log("📏 ADVERTISEMENTS COUNT:", newAds ? newAds.length : 0);
-        console.log("📄 LAST DOC:", lastDoc);
         
-        const resizedData = await Promise.all(
-          newAds.map(async (ad) => {
-            if (!ad.photoUrls || ad.photoUrls.length === 0) {
-              return ad;
-            }
-            const resizedPhotoUrls = await Promise.all(
-              ad.photoUrls.map(async (url) => {
-                const resizedUrl = await resizeImageFromUrl(url);
-                return resizedUrl;
-              })
-            );
-            return { ...ad, photoUrls: resizedPhotoUrls };
-          })
-        );
-        setAdvertisments((prev) => [...prev, ...resizedData]);
+        // Сначала показываем объявления с оригинальными изображениями для быстрого рендера
+        const adsWithOriginalImages = newAds.map(ad => ({
+          ...ad,
+          photoUrls: ad.photoUrls || [],
+          _resizing: true // Флаг для отслеживания процесса ресайза
+        }));
+        
+        setAdvertisments((prev) => [...prev, ...adsWithOriginalImages]);
         setLastVisible(lastDoc);
         setCurrentPage((prev) => prev + 1);
         setLoading(false);
         setFetching(false);
+        
+        // Параллельно обрабатываем изображения батчами для предотвращения лагов
+        const processBatch = async (adsBatch, startIndex) => {
+          const promises = adsBatch.map(async (ad, batchIndex) => {
+            if (ad.photoUrls && ad.photoUrls.length > 0) {
+              try {
+                const resizedUrls = await resizeFirstImage(ad.photoUrls, 400, 400);
+                const adIndex = startIndex + batchIndex;
+                
+                setAdvertisments((prev) => {
+                  const updated = [...prev];
+                  if (updated[adIndex] && updated[adIndex].id === ad.id) {
+                    updated[adIndex] = {
+                      ...updated[adIndex],
+                      photoUrls: resizedUrls,
+                      _resizing: false
+                    };
+                  }
+                  return updated;
+                });
+              } catch (error) {
+                const adIndex = startIndex + batchIndex;
+                setAdvertisments((prev) => {
+                  const updated = [...prev];
+                  if (updated[adIndex] && updated[adIndex].id === ad.id) {
+                    updated[adIndex] = {
+                      ...updated[adIndex],
+                      _resizing: false
+                    };
+                  }
+                  return updated;
+                });
+              }
+            }
+          });
+          
+          await Promise.all(promises);
+        };
+        
+        // Обрабатываем батчами по 3 объявления за раз для предотвращения лагов
+        const batchSize = 3;
+        for (let i = 0; i < newAds.length; i += batchSize) {
+          const batch = newAds.slice(i, i + batchSize);
+          const startIndex = advertisments.length + i;
+          
+          // Используем requestIdleCallback для обработки в свободное время
+          if (window.requestIdleCallback) {
+            window.requestIdleCallback(() => {
+              processBatch(batch, startIndex);
+            }, { timeout: 1000 });
+          } else {
+            // Fallback для браузеров без requestIdleCallback
+            setTimeout(() => {
+              processBatch(batch, startIndex);
+            }, i * 50);
+          }
+        }
+        
         if (!lastDoc) {
           setHasMore(false);
         }
@@ -715,9 +814,9 @@ const TestAdvertisment = () => {
           {advertisments.map((advertisment, index) => (
             <CustomCard
               id={advertisment.id}
-              key={index}
+              key={advertisment.id || index}
               user={user}
-              images={advertisment.photoUrls}
+              images={advertisment.photoUrls || []}
               price={advertisment.price}
               currency={advertisment.currency}
               title={advertisment.title}
@@ -725,6 +824,7 @@ const TestAdvertisment = () => {
               date={advertisment.time_creation}
               showButtons={user?.role === 'admin'}
               status="active"
+              _resizing={advertisment._resizing}
             />
           ))}
         </div>

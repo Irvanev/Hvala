@@ -14,6 +14,15 @@ export const subcategories = {
         { value: 'womens_clothing', label: t('womens_clothing') },
         { value: 'childrens_clothing', label: t('childrens_clothing') }
     ],
+    shoes: [
+        { value: 'mens_shoes', label: t('mens_shoes') },
+        { value: 'womens_shoes', label: t('womens_shoes') },
+        { value: 'childrens_shoes', label: t('childrens_shoes') }
+    ],
+    work: [
+        { value: 'vacancies', label: t('vacancies') },
+        { value: 'resumes', label: t('resumes') }
+    ],
     estate: [
         { value: 'sale_estate', label: t('sale_estate') },
         { value: 'rent_estate', label: t('rent_estate') }

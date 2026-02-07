@@ -220,10 +220,10 @@ const CardInPc = ({ adData, t, index, handleSelect, handleCallClick, showModal, 
   };
 
   return (
-    <Container className="mt-3 d-none d-lg-block">
+    <Container className="mt-3 d-none d-lg-block" style={{ paddingTop: '0.75rem' }}>
       <Row>
         <Col xs={6}>
-          <Breadcrumb className='mt-3'
+          <Breadcrumb className='mt-2'
             items={[
               {
                 title: <a style={{ textDecoration: 'none' }} href="/advertisment"><HomeOutlined /> {t('home_navbar')}</a>,

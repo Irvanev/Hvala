@@ -4,6 +4,8 @@ export const categories = [
     { value: 'estate', label: t('estate') },
     { value: 'transport', label: t('transport') },
     { value: 'clothes', label: t('clothes') },
+    { value: 'shoes', label: t('shoes') },
+    { value: 'work', label: t('work') },
     { value: 'electronics', label: t('electronics') },
     { value: 'house_goods', label: t('house_goods') },
     { value: 'building_materials_and_tools', label: t('building_materials_and_tools') },

@@ -27,6 +27,8 @@ import CustomCard from "../../components/card/CustomCard";
 import { Helmet } from "react-helmet";
 import InputSearch from "../../components/input-search/InputSearch";
 import CategoriesAds from "../../components/categoryAds";
+import { getShoeTypesBySubcategory, SHOE_BRANDS } from "../../types/shoeTypes.js";
+import { WORK_SPHERES } from "../../types/workTypes.js";
 
 export const CategoryAdvertisments = () => {
   const { category } = useParams();
@@ -47,6 +49,13 @@ export const CategoryAdvertisments = () => {
 
   const [size, setSize] = useState("");
   const [type, setType] = useState("");
+  const [seasonality, setSeasonality] = useState("");
+  const [shoe_type, setShoeType] = useState("");
+  const [size_eu, setSizeEu] = useState("");
+  const [size_us, setSizeUs] = useState("");
+  const [employment_type, setEmploymentType] = useState("");
+  const [work_sphere, setWorkSphere] = useState("");
+  const [experience_min, setExperienceMin] = useState("");
 
   const [owner, setOwner] = useState("");
   const [area, setArea] = useState("");
@@ -85,6 +94,15 @@ export const CategoryAdvertisments = () => {
       { value: "mens_clothing", label: t("mens_clothing") },
       { value: "womens_clothing", label: t("womens_clothing") },
       { value: "childrens_clothing", label: t("childrens_clothing") },
+    ],
+    shoes: [
+      { value: "mens_shoes", label: t("mens_shoes") },
+      { value: "womens_shoes", label: t("womens_shoes") },
+      { value: "childrens_shoes", label: t("childrens_shoes") },
+    ],
+    work: [
+      { value: "vacancies", label: t("vacancies") },
+      { value: "resumes", label: t("resumes") },
     ],
     estate: [
       { value: "sale_estate", label: t("sale_estate") },
@@ -369,6 +387,13 @@ export const CategoryAdvertisments = () => {
       condition,
       size,
       type,
+      seasonality,
+      shoe_type,
+      size_eu,
+      size_us,
+      employment_type,
+      work_sphere,
+      experience_min,
       wheel,
       mileage,
       body,
@@ -394,6 +419,13 @@ export const CategoryAdvertisments = () => {
     setRegion("");
     setMemory("");
     setScreenSize("");
+    setSeasonality("");
+    setShoeType("");
+    setSizeEu("");
+    setSizeUs("");
+    setEmploymentType("");
+    setWorkSphere("");
+    setExperienceMin("");
     fetchAdvertismentsByCategory(category, setAdvertisments, setIsLoading);
   };
 
@@ -447,6 +479,90 @@ export const CategoryAdvertisments = () => {
         <Option value="4XL">4XL</Option>
         <Option value="5XL">5XL</Option>
       </Select>
+    </>
+  );
+
+  const FormShoes = () => (
+    <>
+      <label className="mt-3">{t("condition")}</label>
+      <Select style={{ width: "100%" }} onChange={setCondition} value={condition}>
+        <Option value="">{t("choice_condition")}</Option>
+        <Option value="new_cond">{t("new_cond")}</Option>
+        <Option value="bu_cond">{t("bu_cond")}</Option>
+      </Select>
+      <label className="mt-3">{t("seasonality")}</label>
+      <Select style={{ width: "100%" }} onChange={setSeasonality} value={seasonality}>
+        <Option value="">{t("choice_seasonality")}</Option>
+        <Option value="summer">{t("season_summer")}</Option>
+        <Option value="winter">{t("season_winter")}</Option>
+        <Option value="demi">{t("season_demi")}</Option>
+        <Option value="all_season">{t("season_all")}</Option>
+      </Select>
+      <label className="mt-3">{t("shoe_type")}</label>
+      <Select style={{ width: "100%" }} onChange={setShoeType} value={shoe_type}>
+        <Option value="">{t("choice_shoe_type")}</Option>
+        {getShoeTypesBySubcategory(subcategory).map((opt) => (
+          <Option key={opt.value} value={opt.value}>{t(opt.labelKey)}</Option>
+        ))}
+      </Select>
+      <label className="mt-3">{t("size_eu")}</label>
+      <Select style={{ width: "100%" }} onChange={setSizeEu} value={size_eu}>
+        <Option value="">{t("choice_size")}</Option>
+        {[35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50].map((s) => (
+          <Option key={s} value={String(s)}>{s}</Option>
+        ))}
+      </Select>
+      <label className="mt-3">{t("size_us")}</label>
+      <Select style={{ width: "100%" }} onChange={setSizeUs} value={size_us} allowClear>
+        <Option value="">{t("choice_size")}</Option>
+        {["4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15"].map((s) => (
+          <Option key={s} value={s}>{s}</Option>
+        ))}
+      </Select>
+      <label className="mt-3">{t("brand")}</label>
+      <Select
+        style={{ width: "100%" }}
+        value={brand || undefined}
+        onChange={setBrand}
+        placeholder={t("choice_brand")}
+        showSearch
+        allowClear
+        filterOption={(input, option) =>
+          (option?.children ?? '').toString().toLowerCase().includes((input || '').toLowerCase())
+        }
+      >
+        <Option value="">{t("choice_brand")}</Option>
+        {SHOE_BRANDS.map((b) => (
+          <Option key={b} value={b}>{b}</Option>
+        ))}
+      </Select>
+    </>
+  );
+
+  const FormWork = () => (
+    <>
+      <label className="mt-3">{t("work_sphere")}</label>
+      <Select style={{ width: "100%" }} onChange={setWorkSphere} value={work_sphere}>
+        <Option value="">{t("choice_work_sphere")}</Option>
+        {WORK_SPHERES.map((s) => (
+          <Option key={s.value} value={s.value}>{t(s.labelKey)}</Option>
+        ))}
+      </Select>
+      <label className="mt-3">{t("employment_type")}</label>
+      <Select style={{ width: "100%" }} onChange={setEmploymentType} value={employment_type}>
+        <Option value="">{t("choice_employment_type")}</Option>
+        <Option value="full_time">{t("employment_full_time")}</Option>
+        <Option value="part_time">{t("employment_part_time")}</Option>
+        <Option value="remote">{t("employment_remote")}</Option>
+        <Option value="freelance">{t("employment_freelance")}</Option>
+        <Option value="internship">{t("employment_internship")}</Option>
+        <Option value="seasonal">{t("employment_seasonal")}</Option>
+      </Select>
+      <label className="mt-3">{t("experience_years")}</label>
+      <InputNumber style={{ width: "100%" }} min={0} max={50} value={experience_min} onChange={(v) => setExperienceMin(v != null ? v : "")} placeholder={t("experience_years")} />
+      <label className="mt-3">{t("salary")}</label>
+      <InputNumber style={{ width: "100%" }} placeholder={t("minPricePlaceholder")} value={minPrice} onChange={handleMinPriceChange} />
+      <InputNumber style={{ width: "100%", marginTop: "8px" }} placeholder={t("maxPricePlaceholder")} value={maxPrice} onChange={handleMaxPriceChange} />
     </>
   );
 
@@ -807,6 +923,13 @@ export const CategoryAdvertisments = () => {
       case "womens_clothing":
       case "childrens_clothing":
         return <FormClothes />;
+      case "mens_shoes":
+      case "womens_shoes":
+      case "childrens_shoes":
+        return <FormShoes />;
+      case "vacancies":
+      case "resumes":
+        return <FormWork />;
       case "phones_and_tablets":
         return <FormSmartphonesAndTablets />;
       case "tv":
@@ -924,6 +1047,10 @@ export const CategoryAdvertisments = () => {
         return "Otkrijte najbolje oglase za elektroniku, uključujući telefone, računare, televizore i još mnogo toga. Pronađite sjajne ponude i popuste na Hvala.";
       case "clothes":
         return "Otkrijte najbolje oglase za odeću, uključujući mušku, žensku i dečiju odeću. Pronađite sjajne ponude i popuste na Hvala.";
+      case "shoes":
+        return "Otkrijte najbolje oglase za obuću, uključujući mušku, žensku i dečiju obuću. Pronađite sjajne ponude i popuste na Hvala.";
+      case "work":
+        return "Otkrijte najbolje oglase za posao, vakansije i rezime. Pronađite posao ili kandidata na Hvala.";
       case "house_goods":
         return "Otkrijte najbolje oglase za kućne proizvode, uključujući nameštaj, dekoracije i još mnogo toga. Pronađite sjajne ponude i popuste na Hvala.";
       case "building_materials_and_tools":
@@ -961,6 +1088,10 @@ export const CategoryAdvertisments = () => {
         return "https://hvala.app/advertisments/electronics";
       case "clothes":
         return "https://hvala.app/advertisments/clothes";
+      case "shoes":
+        return "https://hvala.app/advertisments/shoes";
+      case "work":
+        return "https://hvala.app/advertisments/work";
       case "house_goods":
         return "https://hvala.app/advertisments/house_goods";
       case "building_materials_and_tools":
@@ -998,6 +1129,10 @@ export const CategoryAdvertisments = () => {
         return "oglasi, elektronika, telefoni, računari, televizori";
       case "clothes":
         return "oglasi, odeća, muška odeća, ženska odeća, dečija odeća";
+      case "shoes":
+        return "oglasi, obuća, muška obuća, ženska obuća, dečija obuća";
+      case "work":
+        return "oglasi, posao, vakansije, rad, zaposlenje";
       case "house_goods":
         return "oglasi, kućni proizvodi, nameštaj, dekoracije";
       case "building_materials_and_tools":

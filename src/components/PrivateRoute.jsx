@@ -4,20 +4,13 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../config/firebase'; // Путь к вашему файлу firebase config
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
-    const [loading, setLoading] = useState(JSON.parse(localStorage.getItem('loading')) || true);
-    const [isAuthenticated, setIsAuthenticated] = useState(JSON.parse(localStorage.getItem('isAuthenticated')) || false);
+    const [loading, setLoading] = useState(() => auth.currentUser == null);
+    const [isAuthenticated, setIsAuthenticated] = useState(() => !!auth.currentUser);
 
     useEffect(() => {
         return onAuthStateChanged(auth, user => {
-            if (user) {
-                setIsAuthenticated(true);
-                localStorage.setItem('isAuthenticated', true);
-            } else {
-                setIsAuthenticated(false);
-                localStorage.setItem('isAuthenticated', false);
-            }
+            setIsAuthenticated(!!user);
             setLoading(false);
-            localStorage.setItem('loading', false);
         });
     }, []);
 

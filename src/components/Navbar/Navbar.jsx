@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory, useLocation, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Capacitor } from '@capacitor/core';
 import { auth } from '../../config/firebase';
 import { signOut } from 'firebase/auth';
 import { db } from '../../config/firebase';
@@ -97,11 +98,11 @@ export const MyNavbar = () => {
     return (
         <div>
 
-            <Navbar collapseOnSelect expand="lg" className="d-none d-lg-block" style={{ position: 'fixed', width: '100%', zIndex: '999', top: 0, backgroundColor: '#03989F' }}>
-                <Container>
+            <Navbar collapseOnSelect expand="lg" className="d-none d-lg-block" style={{ position: 'fixed', width: '100%', zIndex: '999', top: 0, backgroundColor: '#03989F', alignItems: 'center' }}>
+                <Container className="d-flex align-items-center">
                     <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-                    <Navbar.Collapse id="responsive-navbar-nav">
-                        <Nav className="me-auto">
+                    <Navbar.Collapse id="responsive-navbar-nav" className="align-items-center">
+                        <Nav className="me-auto" style={{ alignItems: 'center' }}>
                             <Link to="" style={{ textDecoration: 'none' }} onClick={showModal}>
                                 <Nav.Link href="" style={{ fontSize: '18px', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                     <GlobalOutlined style={{ fontSize: '24px', color: '#FFBF34', marginRight: '8px' }} />
@@ -123,7 +124,7 @@ export const MyNavbar = () => {
                                 <Nav.Link href="/contacts" style={{ fontSize: '18px', color: '#ffffff' }}>{t("contact_navbar")}</Nav.Link>
                             </Link>
                         </Nav>
-                        <Nav>
+                        <Nav style={{ alignItems: 'center' }}>
                             <Link to="/message" style={{ textDecoration: 'none' }}>
                                 <Nav.Link href="/message" style={{ fontSize: '18px', padding: '12px', color: '#ffffff' }}><MessageOutlined style={{ fontSize: '25px', padding: '3px' }} /></Nav.Link>
                             </Link>
@@ -152,7 +153,14 @@ export const MyNavbar = () => {
             <div className='app d-lg-none'>
 
 
-                <div className="fixed bottom-0 left-0 z-50 w-full h-20 pb-2 bg-customColor1 border-t rounded-t-2xl border-gray-200">
+                <div
+                    className="fixed bottom-0 left-0 z-50 w-full h-20 bg-customColor1 border-t rounded-t-2xl border-gray-200"
+                    style={{
+                        paddingBottom: Capacitor.getPlatform() === 'android'
+                            ? 'max(env(safe-area-inset-bottom, 0px), 28px)'
+                            : 'max(0.5rem, env(safe-area-inset-bottom, 0px))',
+                    }}
+                >
                     <div className="grid h-full max-w-lg grid-cols-5 mx-auto font-medium">
                         <button onClick={handleHomeClick} type="button" className="inline-flex flex-col items-center justify-center px-4 group е">
                             <svg className={`w-6 h-6 ${getButtonStyle('/advertisment')}`} aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">

@@ -71,7 +71,10 @@ export const Registration = () => {
     if (password !== confPassword) {
       return;
     }
-    const isUsernameTaken = await checkUsername(username);
+    if (!username || !username.trim()) {
+      return;
+    }
+    const isUsernameTaken = await checkUsername(username.trim());
     if (isUsernameTaken) {
       setLoginError(t("username_is_taken"));
       return;
@@ -247,7 +250,10 @@ export const Registration = () => {
                 { required: true, message: t("input_username") },
                 () => ({
                   validator(_, value) {
-                    return checkUsername(value).then((isUsernameTaken) => {
+                    if (!value || !String(value).trim()) {
+                      return Promise.resolve();
+                    }
+                    return checkUsername(value.trim()).then((isUsernameTaken) => {
                       if (isUsernameTaken) {
                         return Promise.reject(t("username_busy"));
                       }

@@ -204,7 +204,7 @@ const CardInMobile = ({ adData, t, index, handleSelect, handleCallClick, userDat
     console.log('link', userData.link);
 
     return (
-        <Container className="d-lg-none">
+        <Container className="d-lg-none" style={{ paddingTop: '1rem', marginTop: '0.5rem' }}>
             <Breadcrumb
                 items={[
                     {

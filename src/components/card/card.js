@@ -25,21 +25,8 @@ export function formatDate(timestamp) {
     }
 }
 
-export const getConversionRate = async (currency) => {
-    let conversionRate = null;
-
-    if (currency === 'eur') {
-        await fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/eur.json')
-            .then(response => response.json())
-            .then(data => conversionRate = data.eur.rsd);
-    } else if (currency === 'rsd') {
-        await fetch('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/rsd.json')
-            .then(response => response.json())
-            .then(data => conversionRate = data.rsd.eur);
-    }
-
-    return conversionRate;
-}
+// Импортируем оптимизированную версию с кэшем
+export { getConversionRate } from '../../services/currencyCache';
 
 export async function archivedAdvertisement(id) {
     const docRef = doc(db, "advertisment", id);

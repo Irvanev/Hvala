@@ -8,12 +8,9 @@ export const fetchAdvertisments = async (
     condition, size, type, wheel, mileage, body, drive,
     year, transmission, memory, screen_size, brand, minPrice, maxPrice, currency
 ) => {
-    console.log("🔍 FETCH ADVERTISEMENTS CALLED");
-    console.log("📊 DB OBJECT:", db);
-    
+    // Убрали console.log для production
     try {
         const advertismentsCollection = collection(db, "advertisment");
-        console.log("📂 COLLECTION REF:", advertismentsCollection);
         
         let conditions = [];
 
@@ -39,6 +36,9 @@ export const fetchAdvertisments = async (
 
     let q;
 
+    // Уменьшили лимит для первой загрузки для ускорения
+    const pageLimit = lastVisible ? 24 : 16;
+    
     if (lastVisible) {
         q = query(
             advertismentsCollection,
@@ -46,7 +46,7 @@ export const fetchAdvertisments = async (
             where("in_archive", "==", false),
             ...conditions,
             startAfter(lastVisible),
-            limit(24)
+            limit(pageLimit)
         );
     } else {
         q = query(
@@ -54,23 +54,14 @@ export const fetchAdvertisments = async (
             orderBy("time_creation", "desc"),
             where("in_archive", "==", false),
             ...conditions,
-            limit(24)
+            limit(pageLimit)
         );
     }
 
-    console.log("📋 QUERY OBJECT:", q);
-    console.log("⏳ EXECUTING QUERY...");
-    
     const querySnapshot = await getDocs(q);
-    console.log("📊 QUERY SNAPSHOT:", querySnapshot);
-    console.log("📏 SNAPSHOT SIZE:", querySnapshot.size);
-    console.log("📦 DOCS:", querySnapshot.docs);
     
     const advertisments = querySnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
-    console.log("📄 MAPPED ADVERTISEMENTS:", advertisments);
-    
     const lastDoc = querySnapshot.docs[querySnapshot.docs.length - 1];
-    console.log("📄 LAST DOC:", lastDoc);
 
     return { advertisments, lastDoc };
     

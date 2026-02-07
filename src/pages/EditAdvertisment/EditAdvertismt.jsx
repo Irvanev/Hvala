@@ -7,6 +7,8 @@ import { MyNavbar } from "../../components/Navbar/Navbar";
 import CategorySelect from '../../pages/EditAdvertisment/CategorySelect';
 import BuildingMaterial from './BuildingMaterial';
 import Clothes from './Clothes';
+import Shoes from './Shoes';
+import Work from './Work';
 import Electronics from './Electronics';
 import HouseGoods from './HouseGoods';
 import TransportGoods from './TransportGoods';
@@ -30,6 +32,8 @@ import SelectTypesForClothes from "../../components/select-types/select-types-cl
 import PhotoUpload from "./PhotoUpload";
 import SaveButton from "./SaveButton";
 import LocationService from '../../services/LocationService.js';
+import { getShoeTypesBySubcategory, SHOE_BRANDS } from '../../types/shoeTypes.js';
+import { WORK_SPHERES } from '../../types/workTypes.js';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -258,6 +262,18 @@ function EditItem() {
     const [roomsAmout, setRoomsAmount] = useState('');
 
     const [size, setSize] = useState('');
+    const [seasonality, setSeasonality] = useState('');
+    const [shoe_type, setShoeType] = useState('');
+    const [size_eu, setSizeEu] = useState('');
+    const [size_us, setSizeUs] = useState('');
+    const [employment_type, setEmploymentType] = useState('');
+    const [work_sphere, setWorkSphere] = useState('');
+    const [experience_required, setExperienceRequired] = useState('');
+    const [experience_years, setExperienceYears] = useState('');
+    const [company_name, setCompanyName] = useState('');
+    const [full_name, setFullName] = useState('');
+    const [citizenship, setCitizenship] = useState('');
+    const [age, setAge] = useState('');
 
     const [mileage, setMileage] = useState('');
     const [drive, setDrive] = useState(''); // привод
@@ -422,6 +438,18 @@ const fetchGeocodingData = async (lat, lng) => {
             drive: drive,
             mileage: mileage,
             size: size,
+            seasonality: seasonality,
+            shoe_type: shoe_type,
+            size_eu: size_eu,
+            size_us: size_us,
+            employment_type: employment_type,
+            work_sphere: work_sphere,
+            experience_required: experience_required,
+            experience_years: experience_years,
+            company_name: company_name,
+            full_name: full_name,
+            citizenship: citizenship,
+            age: age,
             roomsAmout: roomsAmout,
             type: type,
             area: area,
@@ -669,6 +697,56 @@ const fetchGeocodingData = async (lat, lng) => {
                     memory: deleteField(),
                 });
             }
+            if (subcategory === 'mens_shoes' || subcategory === 'womens_shoes' || subcategory === 'childrens_shoes') {
+                await updateDoc(docRef, {
+                    ...updatedData,
+                    owner: deleteField(),
+                    area: deleteField(),
+                    rooms_amount: deleteField(),
+                    model: deleteField(),
+                    mileage: deleteField(),
+                    year: deleteField(),
+                    body: deleteField(),
+                    color: deleteField(),
+                    transmission: deleteField(),
+                    drive: deleteField(),
+                    wheel: deleteField(),
+                    owners: deleteField(),
+                    customs: deleteField(),
+                    screen_size: deleteField(),
+                    memory: deleteField(),
+                });
+                setLoading(false);
+            }
+            if (subcategory === 'vacancies' || subcategory === 'resumes') {
+                await updateDoc(docRef, {
+                    ...updatedData,
+                    size: deleteField(),
+                    type: deleteField(),
+                    condition: deleteField(),
+                    seasonality: deleteField(),
+                    shoe_type: deleteField(),
+                    size_eu: deleteField(),
+                    size_us: deleteField(),
+                    brand: deleteField(),
+                    owner: deleteField(),
+                    area: deleteField(),
+                    rooms_amount: deleteField(),
+                    model: deleteField(),
+                    mileage: deleteField(),
+                    year: deleteField(),
+                    body: deleteField(),
+                    color: deleteField(),
+                    transmission: deleteField(),
+                    drive: deleteField(),
+                    wheel: deleteField(),
+                    owners: deleteField(),
+                    customs: deleteField(),
+                    screen_size: deleteField(),
+                    memory: deleteField(),
+                });
+                setLoading(false);
+            }
             if (subcategory === 'refrigerators' || subcategory === 'washing_machines' || subcategory === 'vacuum_cleaners' ||
                 subcategory === 'stoves_and_ovens' || subcategory === 'sewing_equipment' || subcategory === 'food_preparation' ||
                 subcategory === 'dishwasher') {
@@ -741,6 +819,18 @@ const fetchGeocodingData = async (lat, lng) => {
                         setColor(data?.color || "");
                         setOwners(data?.owners || "");
                         setSize(data?.size || "");
+                        setSeasonality(data?.seasonality || "");
+                        setShoeType(data?.shoe_type || "");
+                        setSizeEu(data?.size_eu || "");
+                        setSizeUs(data?.size_us || "");
+                        setEmploymentType(data?.employment_type || "");
+                        setWorkSphere(data?.work_sphere || "");
+                        setExperienceRequired(data?.experience_required ?? "");
+                        setExperienceYears(data?.experience_years ?? "");
+                        setCompanyName(data?.company_name || "");
+                        setFullName(data?.full_name || "");
+                        setCitizenship(data?.citizenship || "");
+                        setAge(data?.age ?? "");
                         setLocation(data?.location || "");
                         setCoordinates(data?.coordinates || "");
                         setCountry(data?.country || "montenegro");
@@ -777,6 +867,10 @@ const fetchGeocodingData = async (lat, lng) => {
                 return (<BuildingMaterial t={t} subcategory={subcategory} handleSubCategoryChange={handleSubcategoryChange} />);
             case 'clothes':
                 return (<Clothes t={t} subcategory={subcategory} handleSubCategoryChange={handleSubcategoryChange} />);
+            case 'shoes':
+                return (<Shoes t={t} subcategory={subcategory} handleSubCategoryChange={handleSubcategoryChange} />);
+            case 'work':
+                return (<Work t={t} subcategory={subcategory} handleSubCategoryChange={handleSubcategoryChange} />);
             case 'electronics':
                 return (<Electronics t={t} subcategory={subcategory} handleSubCategoryChange={handleSubcategoryChange} />);
             case 'house_goods':
@@ -894,6 +988,176 @@ const fetchGeocodingData = async (lat, lng) => {
                                 className="mb-3"
                                 label={t('photos')}
                             >
+                                <PhotoUpload data={{ photoUrls }} onPhotoUrlsChange={handlePhotoUrlsChange} />
+                            </Form.Item>
+                        </LoadScript>
+                    </>
+                )
+            case 'mens_shoes':
+            case 'womens_shoes':
+            case 'childrens_shoes':
+                return (
+                    <>
+                        <LoadScript googleMapsApiKey="AIzaSyD7K42WP5zjV99GP3xll40eFr_5DaAk3ZU">
+                            <Form.Item className="mb-3">
+                                <label>{t('title')}</label>
+                                <Input type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
+                            </Form.Item>
+                            <Form.Item label={t('price')} name='price' rules={[{ required: true }]}>
+                                <InputNumber style={{ width: '100%' }} value={price} addonBefore={selectAfter} onChange={(v) => setPrice(parseInt(v, 10))} />
+                            </Form.Item>
+                            <Form.Item label={t('seasonality')}>
+                                <Select value={seasonality} onChange={setSeasonality} style={{ width: '100%' }}>
+                                    <Option value="summer">{t('season_summer')}</Option>
+                                    <Option value="winter">{t('season_winter')}</Option>
+                                    <Option value="demi">{t('season_demi')}</Option>
+                                    <Option value="all_season">{t('season_all')}</Option>
+                                </Select>
+                            </Form.Item>
+                            <Form.Item label={t('shoe_type')}>
+                                <Select value={shoe_type} onChange={setShoeType} style={{ width: '100%' }}>
+                                    {getShoeTypesBySubcategory(subcategory).map((opt) => (
+                                        <Option key={opt.value} value={opt.value}>{t(opt.labelKey)}</Option>
+                                    ))}
+                                </Select>
+                            </Form.Item>
+                            <Form.Item label={t('size_eu')}>
+                                <Select value={size_eu} onChange={setSizeEu} style={{ width: '100%' }}>
+                                    {[35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50].map((s) => (
+                                        <Option key={s} value={String(s)}>{s}</Option>
+                                    ))}
+                                </Select>
+                            </Form.Item>
+                            <Form.Item label={t('size_us')}>
+                                <Select value={size_us} onChange={setSizeUs} style={{ width: '100%' }} allowClear>
+                                    {['4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15'].map((s) => (
+                                        <Option key={s} value={s}>{s}</Option>
+                                    ))}
+                                </Select>
+                            </Form.Item>
+                            <Form.Item label={t('brand')}>
+                                <Select
+                                    value={brand || undefined}
+                                    onChange={setBrand}
+                                    placeholder={t('choice_brand')}
+                                    showSearch
+                                    allowClear
+                                    style={{ width: '100%' }}
+                                    filterOption={(input, option) =>
+                                        (option?.label ?? '').toLowerCase().includes((input || '').toLowerCase())
+                                    }
+                                    options={SHOE_BRANDS.map((b) => ({ value: b, label: b }))}
+                                />
+                            </Form.Item>
+                            <Form.Item label={t('condition')}>
+                                <Select value={condition} onChange={(value) => setCondition(value)}>
+                                    <Option value="new_cond">{t('new_cond')}</Option>
+                                    <Option value="bu_cond">{t('bu_cond')}</Option>
+                                </Select>
+                            </Form.Item>
+                            <Form.Item label={t('phone_number')}>
+                                <Input type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
+                            </Form.Item>
+                            <Form.Item label={t('description')}>
+                                <TextArea rows={3} value={description} onChange={(e) => setDescription(e.target.value)} />
+                            </Form.Item>
+                            <Form.Item label={t('photos')}>
+                                <PhotoUpload data={{ photoUrls }} onPhotoUrlsChange={handlePhotoUrlsChange} />
+                            </Form.Item>
+                        </LoadScript>
+                    </>
+                )
+            case 'vacancies':
+                return (
+                    <>
+                        <LoadScript googleMapsApiKey="AIzaSyD7K42WP5zjV99GP3xll40eFr_5DaAk3ZU">
+                            <Form.Item className="mb-3"><label>{t('title')}</label>
+                                <Input type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
+                            </Form.Item>
+                            <Form.Item label={t('company_name')}>
+                                <Input value={company_name} onChange={(e) => setCompanyName(e.target.value)} />
+                            </Form.Item>
+                            <Form.Item label={t('work_sphere')}>
+                                <Select value={work_sphere} onChange={setWorkSphere} style={{ width: '100%' }}>
+                                    {WORK_SPHERES.map((s) => (
+                                        <Option key={s.value} value={s.value}>{t(s.labelKey)}</Option>
+                                    ))}
+                                </Select>
+                            </Form.Item>
+                            <Form.Item label={t('experience_required')}>
+                                <InputNumber style={{ width: '100%' }} min={0} max={50} value={experience_required} onChange={(v) => setExperienceRequired(v != null ? (typeof v === 'number' ? v : parseInt(v, 10)) : '')} placeholder={t('experience_required')} />
+                            </Form.Item>
+                            <Form.Item label={t('employment_type')}>
+                                <Select value={employment_type} onChange={setEmploymentType} style={{ width: '100%' }}>
+                                    <Option value="full_time">{t('employment_full_time')}</Option>
+                                    <Option value="part_time">{t('employment_part_time')}</Option>
+                                    <Option value="remote">{t('employment_remote')}</Option>
+                                    <Option value="freelance">{t('employment_freelance')}</Option>
+                                    <Option value="internship">{t('employment_internship')}</Option>
+                                    <Option value="seasonal">{t('employment_seasonal')}</Option>
+                                </Select>
+                            </Form.Item>
+                            <Form.Item label={t('salary')} name='price' rules={[{ required: true }]}>
+                                <InputNumber style={{ width: '100%' }} value={price} addonBefore={selectAfter} onChange={(v) => setPrice(parseInt(v, 10))} />
+                            </Form.Item>
+                            <Form.Item label={t('phone_number')}>
+                                <Input type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
+                            </Form.Item>
+                            <Form.Item label={t('description')}>
+                                <TextArea rows={3} value={description} onChange={(e) => setDescription(e.target.value)} />
+                            </Form.Item>
+                            <Form.Item label={t('photos')}>
+                                <PhotoUpload data={{ photoUrls }} onPhotoUrlsChange={handlePhotoUrlsChange} />
+                            </Form.Item>
+                        </LoadScript>
+                    </>
+                )
+            case 'resumes':
+                return (
+                    <>
+                        <LoadScript googleMapsApiKey="AIzaSyD7K42WP5zjV99GP3xll40eFr_5DaAk3ZU">
+                            <Form.Item label={t('full_name')}>
+                                <Input value={full_name} onChange={(e) => setFullName(e.target.value)} />
+                            </Form.Item>
+                            <Form.Item label={t('citizenship')}>
+                                <Input value={citizenship} onChange={(e) => setCitizenship(e.target.value)} />
+                            </Form.Item>
+                            <Form.Item label={t('age')}>
+                                <InputNumber style={{ width: '100%' }} min={14} max={99} value={age} onChange={(v) => setAge(v ? parseInt(v, 10) : '')} />
+                            </Form.Item>
+                            <Form.Item><label>{t('title')}</label>
+                                <Input type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder={t('title')} />
+                            </Form.Item>
+                            <Form.Item label={t('work_sphere')}>
+                                <Select value={work_sphere} onChange={setWorkSphere} style={{ width: '100%' }}>
+                                    {WORK_SPHERES.map((s) => (
+                                        <Option key={s.value} value={s.value}>{t(s.labelKey)}</Option>
+                                    ))}
+                                </Select>
+                            </Form.Item>
+                            <Form.Item label={t('experience_years')}>
+                                <InputNumber style={{ width: '100%' }} min={0} max={50} value={experience_years} onChange={(v) => setExperienceYears(v != null ? (typeof v === 'number' ? v : parseInt(v, 10)) : '')} placeholder={t('experience_years')} />
+                            </Form.Item>
+                            <Form.Item label={t('employment_type')}>
+                                <Select value={employment_type} onChange={setEmploymentType} style={{ width: '100%' }}>
+                                    <Option value="full_time">{t('employment_full_time')}</Option>
+                                    <Option value="part_time">{t('employment_part_time')}</Option>
+                                    <Option value="remote">{t('employment_remote')}</Option>
+                                    <Option value="freelance">{t('employment_freelance')}</Option>
+                                    <Option value="internship">{t('employment_internship')}</Option>
+                                    <Option value="seasonal">{t('employment_seasonal')}</Option>
+                                </Select>
+                            </Form.Item>
+                            <Form.Item label={t('salary')} name='price' rules={[{ required: true }]}>
+                                <InputNumber style={{ width: '100%' }} value={price} addonBefore={selectAfter} onChange={(v) => setPrice(parseInt(v, 10))} />
+                            </Form.Item>
+                            <Form.Item label={t('phone_number')}>
+                                <Input type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
+                            </Form.Item>
+                            <Form.Item label={t('description')}>
+                                <TextArea rows={3} value={description} onChange={(e) => setDescription(e.target.value)} />
+                            </Form.Item>
+                            <Form.Item label={t('photos')}>
                                 <PhotoUpload data={{ photoUrls }} onPhotoUrlsChange={handlePhotoUrlsChange} />
                             </Form.Item>
                         </LoadScript>

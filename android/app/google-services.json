@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:937525121099:android:7ce4e7072e33be4bb7fdce",
         "android_client_info": {
-          "package_name": "com.example.monteNegro"
+          "package_name": "app.hvala.release"
         }
       },
       "oauth_client": [
@@ -37,7 +37,7 @@
               "client_id": "937525121099-43h8m7t6v54kik0du8jgh55j49fkc76q.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.monteNegro"
+                "bundle_id": "app.hvala.release"
               }
             }
           ]
@@ -108,7 +108,7 @@
               "client_id": "937525121099-43h8m7t6v54kik0du8jgh55j49fkc76q.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.monteNegro"
+                "bundle_id": "app.hvala.release"
               }
             }
           ]

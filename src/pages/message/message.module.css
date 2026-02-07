@@ -1,20 +1,81 @@
 @media (max-width: 1000px) {
     .bodyStyle {
-        padding-top: 3.5rem;
-        padding-bottom: 4.5rem;
+        padding-top: 8px;
+        padding-bottom: 8px;
     }
 }
 
 @media (min-width: 1000px) {
     .bodyStyle {
-        padding-bottom: 3.5rem;
-        padding-top: 4.5rem;
+        padding-top: 8px;
+        padding-bottom: 8px;
     }
 }
 
 
+/* Кастомный хедер чата — без лишних отступов */
+.chatHeader {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    margin: 0;
+    border-bottom: 1px solid #e5e5e5;
+    background: #fff;
+    min-height: 48px;
+    box-sizing: border-box;
+}
+
+.chatHeaderBack {
+    font-size: 22px;
+    color: #333;
+    margin-right: 12px;
+    cursor: pointer;
+}
+
+.chatHeaderLink {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
+    flex: 1;
+    min-width: 0;
+}
+
+.chatHeaderName {
+    margin-left: 10px;
+    font-size: 16px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Область сообщений — без зазора под хедером, снизу отступ под фикс. инпут */
+.chatScrollArea {
+    padding: 0 !important;
+    margin: 0 !important;
+    padding-bottom: 80px !important; /* чтобы последнее сообщение не скрывалось под инпутом */
+}
+
+.chatScrollArea .messageHistory {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}
+
 .messageHistory {
-    margin-bottom: 70px;
+    margin-bottom: 0;
+    padding-top: 8px;
+    padding-bottom: 16px;
+}
+
+.messageHistory > div:first-child {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}
+
+.messageHistory > div:first-child .messageToBlock,
+.messageHistory > div:first-child .messageFromBlock {
+    margin-top: 0 !important;
 }
 
 .userPhoto {

@@ -13,7 +13,7 @@ const LanguageModal = ({ show, handleClose }) => {
     };
 
     const languages = [
-        { key: 'sr', name: t('Srbski'), countryCode: 'RS' },
+        { key: 'sr', name: t('Srpski'), countryCode: 'RS' },
         { key: 'sr', name: t('Crnogorski'), countryCode: 'ME' },
         { key: 'sr', name: t('Hrvatski'), countryCode: 'HR' },
         { key: 'sr', name: t('Bosanski'), countryCode: 'BA' },

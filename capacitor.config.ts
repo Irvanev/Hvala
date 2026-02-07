@@ -1,16 +1,31 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
+// Режим WebView по URL: приложение грузится с сервера, обновления без нового APK.
+// По умолчанию используется https://hvala.app
+// Чтобы переопределить, задай CAPACITOR_SERVER_URL=другой_url и собери: npx cap sync.
+// Чтобы отключить WebView (использовать локальный фронт из APK), задай CAPACITOR_SERVER_URL=""
+const serverUrl = process.env.CAPACITOR_SERVER_URL;
+const defaultServerUrl = 'https://hvala.app';
+
 const config: CapacitorConfig = {
-  appId: 'com.example.monteNegro',
+  appId: 'app.hvala.release',
   appName: 'Hvala',
   webDir: 'build',
   server: {
+    // Используем переданный URL, или дефолтный, или пусто (локальный режим)
+    ...(serverUrl !== undefined 
+      ? (serverUrl === '' ? {} : { url: serverUrl })
+      : { url: defaultServerUrl }
+    ),
     allowNavigation: [
       "*.google.com",
       "*.googleapis.com",
       "*.gstatic.com",
       "*.firebaseapp.com",
-      "*.firebase.com"
+      "*.firebase.com",
+      "*.web.app",
+      "hvala.app",
+      "*.hvala.app"
     ]
   },
   plugins: {
@@ -31,6 +46,9 @@ const config: CapacitorConfig = {
   },
   android: {
     path: "android"
+  },
+  ios: {
+    path: "ios"
   }
 };
 

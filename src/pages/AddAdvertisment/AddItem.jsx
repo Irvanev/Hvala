@@ -8,12 +8,15 @@ import { MyNavbar } from "../../components/Navbar/Navbar";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { NavBarBack } from "../../components/Navbar/NavBarBack"
 import ClothesForm from "../../components/formsForAddingAdvertisements/ClothesForm";
+import ShoesForm from "../../components/formsForAddingAdvertisements/ShoesForm";
 import PhoneAndTabletsForm from "../../components/formsForAddingAdvertisements/electronics-forms/PhoneAndTabletsForm";
 import TarnsportForm from "../../components/formsForAddingAdvertisements/TransportForm";
 import SelectCategory from "../../components/select-category-form/SelectCategory";
 import SelectSubCategoryEstate from "../../components/select-category-form/SelectSubCategoryEstate";
 import SelectSubCategoryTransport from "../../components/select-category-form/SelectSubCategoryTransport";
 import SelectSubCategoryClothes from "../../components/select-category-form/SelectSubCategoryClothes";
+import SelectSubCategoryShoes from "../../components/select-category-form/SelectSubCategoryShoes";
+import SelectSubCategoryWork from "../../components/select-category-form/SelectSubCategoryWork";
 import SelectSubCategoryElectronics from "../../components/select-category-form/SelectSubCategoryElectronics";
 import SelectSubCategoryHouseGoods from "../../components/select-category-form/SelectSubCategoryHouseGoods";
 import SelectSubCategoryBuilding from "../../components/select-category-form/SelectSubCategoryBulding";
@@ -32,6 +35,7 @@ import ComputersAccsForm from "../../components/formsForAddingAdvertisements/ele
 import DefaultForm from "../../components/formsForAddingAdvertisements/DefaultForm"
 import DefaultFormWithoutCondition from "../../components/formsForAddingAdvertisements/DefaultFormWithoutCondition";
 import HomeApplianceForm from "../../components/formsForAddingAdvertisements/HomeApplianceForm";
+import WorkForm from "../../components/formsForAddingAdvertisements/WorkForm";
 
 import imageCompression from 'browser-image-compression';
 
@@ -71,7 +75,21 @@ export const AddItem = () => {
 
     // Для одежды
     const [size, setSize] = useState('');
+    // Для обуви
+    const [seasonality, setSeasonality] = useState('');
+    const [shoe_type, setShoeType] = useState('');
+    const [size_eu, setSizeEu] = useState('');
+    const [size_us, setSizeUs] = useState('');
 
+    // Для работы
+    const [employment_type, setEmploymentType] = useState('');
+    const [work_sphere, setWorkSphere] = useState('');
+    const [experience_required, setExperienceRequired] = useState('');
+    const [experience_years, setExperienceYears] = useState('');
+    const [company_name, setCompanyName] = useState('');
+    const [full_name, setFullName] = useState('');
+    const [citizenship, setCitizenship] = useState('');
+    const [age, setAge] = useState('');
 
     // Для телеофонов и планшетов, телевизоры
     const [screen_size, setScreenSize] = useState('');
@@ -395,6 +413,89 @@ export const AddItem = () => {
                 }
                 break;
 
+            case 'mens_shoes':
+            case 'womens_shoes':
+            case 'childrens_shoes':
+                formData = {
+                    from_uid: userId,
+                    name: "",
+                    category: selectedCategory,
+                    subcategory: selectedSubcategory,
+                    phone: phoneNumber,
+                    title,
+                    price,
+                    currency,
+                    seasonality,
+                    shoe_type,
+                    size_eu,
+                    size_us: size_us || "",
+                    brand,
+                    condition,
+                    description,
+                    availability: "available",
+                    region: region??"municipality_podgorica",
+                    location: location,
+                    country: country??"montenegro",
+                    coordinates: new GeoPoint(coordinates.lat, coordinates.lng),
+                    time_creation: serverTimestamp(),
+                    photoUrls: fileUrls,
+                    in_archive: false,
+                }
+                break;
+
+            case 'vacancies':
+                formData = {
+                    from_uid: userId,
+                    name: "",
+                    category: selectedCategory,
+                    subcategory: selectedSubcategory,
+                    phone: phoneNumber,
+                    title,
+                    price,
+                    currency,
+                    employment_type: employment_type || "",
+                    work_sphere: work_sphere || "",
+                    experience_required: experience_required !== "" ? experience_required : "",
+                    company_name: company_name || "",
+                    description,
+                    availability: "available",
+                    region: region??"municipality_podgorica",
+                    location: location,
+                    country: country??"montenegro",
+                    coordinates: new GeoPoint(coordinates.lat, coordinates.lng),
+                    time_creation: serverTimestamp(),
+                    photoUrls: fileUrls,
+                    in_archive: false,
+                }
+                break;
+            case 'resumes':
+                formData = {
+                    from_uid: userId,
+                    name: "",
+                    category: selectedCategory,
+                    subcategory: selectedSubcategory,
+                    phone: phoneNumber,
+                    title,
+                    price,
+                    currency,
+                    employment_type: employment_type || "",
+                    work_sphere: work_sphere || "",
+                    experience_years: experience_years !== "" ? experience_years : "",
+                    full_name: full_name || "",
+                    citizenship: citizenship || "",
+                    age: age !== "" ? age : "",
+                    description,
+                    availability: "available",
+                    region: region??"municipality_podgorica",
+                    location: location,
+                    country: country??"montenegro",
+                    coordinates: new GeoPoint(coordinates.lat, coordinates.lng),
+                    time_creation: serverTimestamp(),
+                    photoUrls: fileUrls,
+                    in_archive: false,
+                }
+                break;
+
             case 'refrigerators':
             case 'washing_machines':
             case 'vacuum_cleaners':
@@ -601,6 +702,12 @@ export const AddItem = () => {
                     {selectedCategory === 'clothes' && (
                         <SelectSubCategoryClothes handleSubcategoryChange={handleSubcategoryChange} t={t} />
                     )}
+                    {selectedCategory === 'shoes' && (
+                        <SelectSubCategoryShoes handleSubcategoryChange={handleSubcategoryChange} t={t} />
+                    )}
+                    {selectedCategory === 'work' && (
+                        <SelectSubCategoryWork handleSubcategoryChange={handleSubcategoryChange} t={t} />
+                    )}
                     {selectedCategory === 'electronics' && (
                         <SelectSubCategoryElectronics handleSubcategoryChange={handleSubcategoryChange} t={t} />
                     )}
@@ -691,6 +798,52 @@ export const AddItem = () => {
                             coordinates={coordinates} location={location}
                             setCoordinates={setCoordinates} setLocation={setLocation}
                             setRegion={setRegion} setCountry={setCountry}
+                        />
+                    )}
+
+                    {(selectedSubcategory === 'mens_shoes' || selectedSubcategory === 'womens_shoes' || selectedSubcategory === 'childrens_shoes') && (
+                        <ShoesForm title={title} setTitle={setTitle}
+                            loading={loading}
+                            currency={currency} setCurrency={setCurrency}
+                            price={price} setPrice={setPrice}
+                            seasonality={seasonality} setSeasonality={setSeasonality}
+                            shoe_type={shoe_type} setShoeType={setShoeType}
+                            size_eu={size_eu} setSizeEu={setSizeEu}
+                            size_us={size_us} setSizeUs={setSizeUs}
+                            brand={brand} setBrand={setBrand}
+                            condition={condition} setCondition={setCondition}
+                            phoneNumber={phoneNumber} setPhoneNumber={setPhoneNumber}
+                            description={description} setDescription={setDescription}
+                            handleFileChange={handleFileChange} photoUrls={photoUrls}
+                            handleSubmit={handleSubmit}
+                            coordinates={coordinates} location={location}
+                            setCoordinates={setCoordinates} setLocation={setLocation}
+                            setRegion={setRegion} setCountry={setCountry}
+                            selectedSubcategory={selectedSubcategory}
+                        />
+                    )}
+
+                    {(selectedSubcategory === 'vacancies' || selectedSubcategory === 'resumes') && (
+                        <WorkForm title={title} setTitle={setTitle}
+                            loading={loading}
+                            currency={currency} setCurrency={setCurrency}
+                            price={price} setPrice={setPrice}
+                            phoneNumber={phoneNumber} setPhoneNumber={setPhoneNumber}
+                            description={description} setDescription={setDescription}
+                            handleFileChange={handleFileChange} photoUrls={photoUrls}
+                            handleSubmit={handleSubmit}
+                            coordinates={coordinates} location={location}
+                            setCoordinates={setCoordinates} setLocation={setLocation}
+                            setRegion={setRegion} setCountry={setCountry}
+                            employment_type={employment_type} setEmploymentType={setEmploymentType}
+                            work_sphere={work_sphere} setWorkSphere={setWorkSphere}
+                            experience_required={experience_required} setExperienceRequired={setExperienceRequired}
+                            experience_years={experience_years} setExperienceYears={setExperienceYears}
+                            company_name={company_name} setCompanyName={setCompanyName}
+                            full_name={full_name} setFullName={setFullName}
+                            citizenship={citizenship} setCitizenship={setCitizenship}
+                            age={age} setAge={setAge}
+                            selectedSubcategory={selectedSubcategory}
                         />
                     )}
 
