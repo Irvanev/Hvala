@@ -4,12 +4,13 @@ import { useTranslation } from "react-i18next";
 import styles from "./custom-card.module.css";
 import logo from "../../assets/logo_def.png";
 import { Menu, Dropdown, Carousel, message, Popconfirm } from 'antd';
+import { HeartOutlined, HeartFilled } from '@ant-design/icons';
 import { FaEdit, FaEllipsisV, FaUpload, FaTrash, FaArchive, FaArrowUp } from "react-icons/fa";
 import { formatDate, getConversionRate, archivedAdvertisement, deleteAdvertisement, unarchivedAdvertisement, upAdvertisment } from './card';
 
 import { auth } from "../../config/firebase";
 
-const CustomCard = ({ images, price, title, location, date, currency, showButtons, id, status, user, _resizing }) => {
+const CustomCard = ({ images, price, title, location, date, currency, showButtons, id, status, user, _resizing, isFavorite = false, onFavoriteClick, showFavorite = true, isSelected = false, onCardSelect }) => {
 
     const [menuOpen, setMenuOpen] = useState(false);
     const [stateCurrency, setStateCurrency] = useState('');
@@ -18,7 +19,11 @@ const CustomCard = ({ images, price, title, location, date, currency, showButton
     const { t } = useTranslation();
 
     const handleCardClick = () => {
-        history.push(`/advertisment/${id}`);
+        if (onCardSelect) {
+            onCardSelect();
+        } else {
+            history.push(`/advertisment/${id}`);
+        }
     };
 
     const handlePublish = async () => {
@@ -135,8 +140,28 @@ const CustomCard = ({ images, price, title, location, date, currency, showButton
         history.push("/edit/" + id);
     }
 
+    const handleFavoriteClick = (e) => {
+        e?.stopPropagation?.();
+        e?.preventDefault?.();
+        if (onFavoriteClick) onFavoriteClick();
+    };
+
     return (
-        <div className={styles.card}>
+        <div className={`${styles.card} ${isSelected ? styles.cardSelected : ""}`}>
+            {showFavorite && (
+                <button
+                    type="button"
+                    className={styles.favoriteBtn}
+                    onClick={handleFavoriteClick}
+                    aria-label={isFavorite ? "Удалить из избранного" : "Добавить в избранное"}
+                >
+                    {isFavorite ? (
+                        <HeartFilled style={{ color: "#FFBF34", fontSize: 20 }} />
+                    ) : (
+                        <HeartOutlined style={{ color: "#03989F", fontSize: 20 }} />
+                    )}
+                </button>
+            )}
             <Carousel>
                 {images.length > 0 ? (
                     images.map((image, index) => (
@@ -165,7 +190,7 @@ const CustomCard = ({ images, price, title, location, date, currency, showButton
                                     padding: '4px 8px',
                                     borderRadius: '4px'
                                 }}>
-                                    Оптимизация...
+                                    {t('optimization')}
                                 </div>
                             )}
                         </div>
@@ -188,6 +213,19 @@ const CustomCard = ({ images, price, title, location, date, currency, showButton
                     </p>
                     <p className={styles.location}>{location}</p>
                     <p className={styles.date}>{formatDate(date)}</p>
+                    {onCardSelect && (
+                        <a
+                            href={`/advertisment/${id}`}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                e.preventDefault();
+                                history.push(`/advertisment/${id}`);
+                            }}
+                            style={{ fontSize: "0.9em", marginTop: 8, display: "inline-block" }}
+                        >
+                            {t("open_ad")}
+                        </a>
+                    )}
                 </div>
                 {showButtons && (
                     <div className={styles.buttons}>

@@ -1,4 +1,4 @@
-import { doc, getDoc, updateDoc, deleteField } from "firebase/firestore";
+import { doc, getDoc, getDocs, query, collection, where, updateDoc, deleteField } from "firebase/firestore";
 import { db, auth } from '../../config/firebase';
 import { useParams } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
@@ -416,6 +416,7 @@ const fetchGeocodingData = async (lat, lng) => {
 
         const updatedData = {
             title: title,
+            title_normalized: title ? title.toLowerCase().trim() : "",
             price: price,
             currency: currency,
             phone: phoneNumber,
@@ -792,7 +793,14 @@ const fetchGeocodingData = async (lat, lng) => {
 
                 if (docSnap.exists()) {
                     const data = docSnap.data();
-                    if (auth.currentUser && auth.currentUser.uid === data.from_uid) {
+                    const isOwner = auth.currentUser && auth.currentUser.uid === data.from_uid;
+                    let isAdmin = false;
+                    if (auth.currentUser && !isOwner) {
+                        const userQ = query(collection(db, "users"), where("id", "==", auth.currentUser.uid));
+                        const userSnap = await getDocs(userQ);
+                        isAdmin = !userSnap.empty && userSnap.docs[0].data().role === 'admin';
+                    }
+                    if (auth.currentUser && (isOwner || isAdmin)) {
                         setData(data);
                         setPhotoUrls(data?.photoUrls || []);
                         setCategory(data?.category || "");
@@ -837,7 +845,7 @@ const fetchGeocodingData = async (lat, lng) => {
                         setRegion(data?.region || "municipality_budva");
                     } else {
                         setData(null);
-                        message.error('Объявление принадлежит не этому пользователю');
+                        message.error(t('ad_not_owned_by_user'));
                     }
                 } else {
                     console.log("No such document!");
@@ -988,7 +996,7 @@ const fetchGeocodingData = async (lat, lng) => {
                                 className="mb-3"
                                 label={t('photos')}
                             >
-                                <PhotoUpload data={{ photoUrls }} onPhotoUrlsChange={handlePhotoUrlsChange} />
+                                <PhotoUpload data={{ photoUrls }} onPhotoUrlsChange={handlePhotoUrlsChange} adId={id} />
                             </Form.Item>
                         </LoadScript>
                     </>
@@ -1062,7 +1070,7 @@ const fetchGeocodingData = async (lat, lng) => {
                                 <TextArea rows={3} value={description} onChange={(e) => setDescription(e.target.value)} />
                             </Form.Item>
                             <Form.Item label={t('photos')}>
-                                <PhotoUpload data={{ photoUrls }} onPhotoUrlsChange={handlePhotoUrlsChange} />
+                                <PhotoUpload data={{ photoUrls }} onPhotoUrlsChange={handlePhotoUrlsChange} adId={id} />
                             </Form.Item>
                         </LoadScript>
                     </>
@@ -1107,7 +1115,7 @@ const fetchGeocodingData = async (lat, lng) => {
                                 <TextArea rows={3} value={description} onChange={(e) => setDescription(e.target.value)} />
                             </Form.Item>
                             <Form.Item label={t('photos')}>
-                                <PhotoUpload data={{ photoUrls }} onPhotoUrlsChange={handlePhotoUrlsChange} />
+                                <PhotoUpload data={{ photoUrls }} onPhotoUrlsChange={handlePhotoUrlsChange} adId={id} />
                             </Form.Item>
                         </LoadScript>
                     </>
@@ -1158,7 +1166,7 @@ const fetchGeocodingData = async (lat, lng) => {
                                 <TextArea rows={3} value={description} onChange={(e) => setDescription(e.target.value)} />
                             </Form.Item>
                             <Form.Item label={t('photos')}>
-                                <PhotoUpload data={{ photoUrls }} onPhotoUrlsChange={handlePhotoUrlsChange} />
+                                <PhotoUpload data={{ photoUrls }} onPhotoUrlsChange={handlePhotoUrlsChange} adId={id} />
                             </Form.Item>
                         </LoadScript>
                     </>
@@ -1296,7 +1304,7 @@ const fetchGeocodingData = async (lat, lng) => {
                             className="mb-3"
                             label={t('photos')}
                         >
-                            <PhotoUpload data={{ photoUrls }} onPhotoUrlsChange={handlePhotoUrlsChange} />
+                            <PhotoUpload data={{ photoUrls }} onPhotoUrlsChange={handlePhotoUrlsChange} adId={id} />
                         </Form.Item>
 
                     </Form>
@@ -1391,7 +1399,7 @@ const fetchGeocodingData = async (lat, lng) => {
                             className="mb-3"
                             label={t('photos')}
                         >
-                            <PhotoUpload data={{ photoUrls }} onPhotoUrlsChange={handlePhotoUrlsChange} />
+                            <PhotoUpload data={{ photoUrls }} onPhotoUrlsChange={handlePhotoUrlsChange} adId={id} />
                         </Form.Item>
                     </Form>
                 )
@@ -1470,7 +1478,7 @@ const fetchGeocodingData = async (lat, lng) => {
                             className="mb-3"
                             label={t('photos')}
                         >
-                            <PhotoUpload data={{ photoUrls }} onPhotoUrlsChange={handlePhotoUrlsChange} />
+                            <PhotoUpload data={{ photoUrls }} onPhotoUrlsChange={handlePhotoUrlsChange} adId={id} />
                         </Form.Item>
                     </Form>
                 )
@@ -1553,7 +1561,7 @@ const fetchGeocodingData = async (lat, lng) => {
                             className="mb-3"
                             label={t('photos')}
                         >
-                            <PhotoUpload data={{ photoUrls }} onPhotoUrlsChange={handlePhotoUrlsChange} />
+                            <PhotoUpload data={{ photoUrls }} onPhotoUrlsChange={handlePhotoUrlsChange} adId={id} />
                         </Form.Item>
                     </Form>
                 )
@@ -1632,7 +1640,7 @@ const fetchGeocodingData = async (lat, lng) => {
                             className="mb-3"
                             label={t('photos')}
                         >
-                            <PhotoUpload data={{ photoUrls }} onPhotoUrlsChange={handlePhotoUrlsChange} />
+                            <PhotoUpload data={{ photoUrls }} onPhotoUrlsChange={handlePhotoUrlsChange} adId={id} />
                         </Form.Item>
                     </Form>
                 )
@@ -1722,7 +1730,7 @@ const fetchGeocodingData = async (lat, lng) => {
                             className="mb-3"
                             label={t('photos')}
                         >
-                            <PhotoUpload data={{ photoUrls }} onPhotoUrlsChange={handlePhotoUrlsChange} />
+                            <PhotoUpload data={{ photoUrls }} onPhotoUrlsChange={handlePhotoUrlsChange} adId={id} />
                         </Form.Item>
                     </Form>
                 )
@@ -1817,7 +1825,7 @@ const fetchGeocodingData = async (lat, lng) => {
                             className="mb-3"
                             label={t('photos')}
                         >
-                            <PhotoUpload data={{ photoUrls }} onPhotoUrlsChange={handlePhotoUrlsChange} />
+                            <PhotoUpload data={{ photoUrls }} onPhotoUrlsChange={handlePhotoUrlsChange} adId={id} />
                         </Form.Item>
                     </Form>
                 )
@@ -1891,7 +1899,7 @@ const fetchGeocodingData = async (lat, lng) => {
                             className="mb-3"
                             label={t('photos')}
                         >
-                            <PhotoUpload data={{ photoUrls }} onPhotoUrlsChange={handlePhotoUrlsChange} />
+                            <PhotoUpload data={{ photoUrls }} onPhotoUrlsChange={handlePhotoUrlsChange} adId={id} />
                         </Form.Item>
                     </Form>
                 )
@@ -1956,7 +1964,7 @@ const fetchGeocodingData = async (lat, lng) => {
                             className="mb-3"
                             label={t('photos')}
                         >
-                            <PhotoUpload data={{ photoUrls }} onPhotoUrlsChange={handlePhotoUrlsChange} />
+                            <PhotoUpload data={{ photoUrls }} onPhotoUrlsChange={handlePhotoUrlsChange} adId={id} />
                         </Form.Item>
                     </Form>
                 )
@@ -2049,7 +2057,7 @@ const fetchGeocodingData = async (lat, lng) => {
                             className="mb-3"
                             label={t('photos')}
                         >
-                            <PhotoUpload data={{ photoUrls }} onPhotoUrlsChange={handlePhotoUrlsChange} />
+                            <PhotoUpload data={{ photoUrls }} onPhotoUrlsChange={handlePhotoUrlsChange} adId={id} />
                         </Form.Item>
                     </Form>
                 )
@@ -2130,7 +2138,7 @@ const fetchGeocodingData = async (lat, lng) => {
                             className="mb-3"
                             label={t('photos')}
                         >
-                            <PhotoUpload data={{ photoUrls }} onPhotoUrlsChange={handlePhotoUrlsChange} />
+                            <PhotoUpload data={{ photoUrls }} onPhotoUrlsChange={handlePhotoUrlsChange} adId={id} />
                         </Form.Item>
                     </Form>
                 )

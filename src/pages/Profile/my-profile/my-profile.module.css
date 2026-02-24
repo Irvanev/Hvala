@@ -54,6 +54,143 @@
     font-weight: bold;
 }
 
+.coinWidget {
+    width: 100%;
+    margin: 0 0 0.75rem 0;
+    padding: 10px 12px;
+    border: 1px solid #ececec;
+    border-radius: 10px;
+    background: #fff;
+    text-align: left;
+}
+
+.coinTitle {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 2px;
+}
+
+.coinBalance {
+    font-size: 20px;
+    font-weight: 700;
+    color: #03989F;
+    margin-bottom: 8px;
+}
+
+.referralTitle {
+    font-size: 12px;
+    color: #666;
+    margin: 4px 0 2px;
+}
+
+.referralCode {
+    font-size: 14px;
+    font-weight: 700;
+    color: #2f2f2f;
+    margin-bottom: 4px;
+}
+
+.referralLink {
+    font-size: 11px;
+    color: #767676;
+    margin-bottom: 6px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.referralActions {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 8px;
+}
+
+.referralBtn {
+    border: 1px solid #d9d9d9;
+    background: #fff;
+    border-radius: 8px;
+    font-size: 12px;
+    line-height: 1;
+    padding: 6px 8px;
+    cursor: pointer;
+}
+
+.referralBtn:hover {
+    border-color: #bfbfbf;
+}
+
+.coinHistoryTitle {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 6px;
+}
+
+.coinHistoryList {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.coinHistoryItem {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 12px;
+}
+
+.coinHistoryReason {
+    color: #4b4b4b;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.coinCredit {
+    color: #1f8a4c;
+    font-weight: 600;
+}
+
+.coinDebit {
+    color: #c92a2a;
+    font-weight: 600;
+}
+
+.coinHistoryEmpty {
+    font-size: 12px;
+    color: #9a9a9a;
+}
+
+.refDebugWidget {
+    width: 100%;
+    margin: 0 0 0.75rem 0;
+    padding: 10px 12px;
+    border: 1px solid #ffe0b3;
+    border-radius: 10px;
+    background: #fffaf2;
+    text-align: left;
+}
+
+.refDebugTitle {
+    font-size: 13px;
+    font-weight: 700;
+    color: #8f5a00;
+    margin-bottom: 8px;
+}
+
+.refDebugControls {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.refDebugResult {
+    font-size: 12px;
+    color: #3a3a3a;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
 .profileCards {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));

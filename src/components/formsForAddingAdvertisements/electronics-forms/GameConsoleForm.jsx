@@ -349,7 +349,7 @@ const GameConsoleForm = ({
     condition, setCondition,
     phoneNumber, setPhoneNumber,
     description, setDescription,
-    handleSubmit, handleFileChange,
+    handleSubmit, handleFileListChange,
     currency, setCurrency,
     loading
 }) => {
@@ -571,10 +571,7 @@ const fetchGeocodingData = async (lat, lng) => {
                             fileList={fileList}
                             onPreview={handlePreview}
                             onChange={handleChange}
-                            beforeUpload={file => {
-                                handleFileChange(file);
-                                return false;
-                            }}
+                            beforeUpload={() => false}
                         >
                             {fileList.length >= 8 ? null :
                                 <button

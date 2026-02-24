@@ -1,28 +1,9 @@
 import { doc, updateDoc, deleteDoc, getDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "../../config/firebase";
-import { format, formatDistanceToNow } from 'date-fns';
-import { ru, enUS, sr } from 'date-fns/locale';
-import i18n from 'i18next';
+import { formatAdCardDate } from '../../utils/dateFormat';
 
 export function formatDate(timestamp) {
-    const locales = { ru, en: enUS, sr };
-    const locale = locales[i18n.language] || enUS;
-
-    const date = new Date(timestamp.seconds * 1000);
-    const formattedDate = formatDistanceToNow(date, { addSuffix: true, locale });
-
-    const today = new Date();
-    const isToday = date.getDate() === today.getDate() &&
-        date.getMonth() === today.getMonth() &&
-        date.getFullYear() === today.getFullYear();
-
-    if (isToday) {
-        return format(date, 'HH:mm', { locale });
-    } else if (formattedDate.includes('день')) {
-        return `вчера ${format(date, 'HH:mm', { locale })}`;
-    } else {
-        return format(date, 'd MMMM HH:mm', { locale });
-    }
+    return formatAdCardDate(timestamp);
 }
 
 // Импортируем оптимизированную версию с кэшем

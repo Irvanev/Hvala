@@ -3,10 +3,10 @@ import { Card, Col, Carousel } from 'antd';
 import { Link } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 import Logo from "../../assets/logo.png";
+import { formatAdCardDate } from '../../utils/dateFormat';
 
 const CardCategory = ({ advertisment }) => {
-    const { i18n } = useTranslation();
-
+    const { t } = useTranslation();
     return (
         <Col>
             <Link key={advertisment.id} to={`/advertisment/${advertisment.id}`} style={{ textDecoration: "none" }}>
@@ -18,12 +18,12 @@ const CardCategory = ({ advertisment }) => {
                             {advertisment.photoUrls && advertisment.photoUrls.length > 0 ? (
                                 advertisment.photoUrls.map((url, index) => (
                                     <div key={index} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '30vh' }}>
-                                        <img style={{ height: '30vh', width: '100%', objectFit: 'cover' }} alt="example" src={url || Logo} />
+                                        <img style={{ height: '30vh', width: '100%', objectFit: 'cover' }} alt="example" src={url || Logo} loading="lazy" decoding="async" />
                                     </div>
                                 ))
                             ) : (
                                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '30vh' }}>
-                                    <img style={{ height: '30vh', width: '100%', objectFit: 'cover' }} alt="example" src={Logo} />
+                                    <img style={{ height: '30vh', width: '100%', objectFit: 'cover' }} alt="example" src={Logo} loading="lazy" />
                                 </div>
                             )}
                         </Carousel>
@@ -41,14 +41,7 @@ const CardCategory = ({ advertisment }) => {
                         {advertisment.location}
                     </p>
                     <p>
-                        {advertisment.time_creation && advertisment.time_creation.seconds ?
-                            new Date(advertisment.time_creation.seconds * 1000).toLocaleString(i18n.language, {
-                                day: 'numeric',
-                                month: 'long',
-                                hour: '2-digit',
-                                minute: '2-digit'
-                            }) : 'Не указано время создания'
-                        }
+                        {formatAdCardDate(advertisment.time_creation) || '—'}
                     </p>
                 </Card>
             </Link>

@@ -23,6 +23,8 @@ import image12 from '../../assets/12_health_beauty_goods.png';
 import image13 from '../../assets/13_sport.png';
 import image14 from '../../assets/14_hobby_and_relax.png';
 import image15 from '../../assets/15_rest.png';
+import image16 from '../../assets/16_Shoes.png';
+import image17 from '../../assets/17_Work.png';
 import { arrayUnion } from 'firebase/firestore';
 
 const CustomPrevArrow = (props) => {
@@ -63,8 +65,8 @@ const CategoryCards = () => {
             { title: t('transport'), image: image2, link: '/advertisments/transport' },
             { title: t('electronics'), image: image3, link: '/advertisments/electronics' },
             { title: t('clothes'), image: image4, link: '/advertisments/clothes' },
-            { title: t('shoes'), image: null, link: '/advertisments/shoes', placeholder: true, isNew: true },
-            { title: t('work'), image: null, link: '/advertisments/work', placeholder: true, isNew: true },
+            { title: t('shoes'), image: image16, link: '/advertisments/shoes', isNew: true },
+            { title: t('work'), image: image17, link: '/advertisments/work', isNew: true },
             { title: t('house_goods'), image: image5, link: '/advertisments/house_goods' },
             { title: t('building_materials_and_tools'), image: image6, link: '/advertisments/building_materials_and_tools' },
             { title: t('transport_goods'), image: image7, link: '/advertisments/transport_goods' },

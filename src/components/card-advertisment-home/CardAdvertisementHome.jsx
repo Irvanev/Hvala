@@ -4,11 +4,9 @@ import { Link } from 'react-router-dom';
 import Logo from '../../assets/logo_def.png';
 import { useTranslation } from 'react-i18next';
 import { getConversionRate } from '../../services/currencyCache';
-import { formatDistanceToNow, format } from 'date-fns';
-import { ru, enUS, sr } from 'date-fns/locale';
+import { formatAdCardDate } from '../../utils/dateFormat';
 
 const CardAdvertisementHome = ({ advertisment, index }) => {
-    const { i18n } = useTranslation();
     const { t } = useTranslation();
     const [conversionRate, setConversionRate] = useState(null);
     const [currency, setCurrency] = useState('');
@@ -38,27 +36,6 @@ const CardAdvertisementHome = ({ advertisment, index }) => {
             return '€';
         } else {
             return currency;
-        }
-    }
-
-    function formatDate(timestamp) {
-        const locales = { ru, en: enUS, sr };
-        const locale = locales[i18n.language] || enUS;
-
-        const date = new Date(timestamp.seconds * 1000);
-        const formattedDate = formatDistanceToNow(date, { addSuffix: true, locale });
-
-        const today = new Date();
-        const isToday = date.getDate() === today.getDate() &&
-            date.getMonth() === today.getMonth() &&
-            date.getFullYear() === today.getFullYear();
-
-        if (isToday) {
-            return format(date, 'HH:mm', { locale });
-        } else if (formattedDate.includes('день')) {
-            return `вчера ${format(date, 'HH:mm', { locale })}`;
-        } else {
-            return format(date, 'd MMMM HH:mm', { locale });
         }
     }
 
@@ -113,7 +90,7 @@ const CardAdvertisementHome = ({ advertisment, index }) => {
                         }}>
                             {t(advertisment.country)}, {t(advertisment.region)}
                         </p>
-                        <p>{formatDate(advertisment.time_creation)}</p>
+                        <p>{formatAdCardDate(advertisment.time_creation)}</p>
 
                     </Card>
                 </Link>
@@ -130,12 +107,12 @@ const CardAdvertisementHome = ({ advertisment, index }) => {
                                 {advertisment.photoUrls && advertisment.photoUrls.length > 0 ? (
                                     advertisment.photoUrls.map((url, index) => (
                                         <div key={index} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '30vh' }}>
-                                            <img style={{ height: '25vh', width: '100%', objectFit: 'cover' }} alt="example" src={url || Logo} />
+                                            <img style={{ height: '25vh', width: '100%', objectFit: 'cover' }} alt="example" src={url || Logo} loading="lazy" decoding="async" />
                                         </div>
                                     ))
                                 ) : (
                                     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '30vh' }}>
-                                        <img style={{ height: '25vh', width: '100%', objectFit: 'cover' }} alt="example" src={Logo} />
+                                        <img style={{ height: '25vh', width: '100%', objectFit: 'cover' }} alt="example" src={Logo} loading="lazy" />
                                     </div>
                                 )}
                             </Carousel>
@@ -158,7 +135,7 @@ const CardAdvertisementHome = ({ advertisment, index }) => {
                         }}>
                             {advertisment.location}
                         </p>
-                        <p>{formatDate(advertisment.time_creation)}</p>
+                        <p>{formatAdCardDate(advertisment.time_creation)}</p>
 
                     </Card>
                 </Link>

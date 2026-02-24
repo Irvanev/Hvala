@@ -7,11 +7,12 @@ import { signOut } from 'firebase/auth';
 import { db } from '../../config/firebase';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 
-import { Avatar, Button, Dropdown, Menu } from 'antd';
+import { Avatar, Button, Dropdown, Menu, Badge } from 'antd';
 import { DownOutlined, GlobalOutlined } from '@ant-design/icons';
 import { Nav, Navbar, Container } from 'react-bootstrap'
 import { MessageOutlined } from '@ant-design/icons';
 import LanguageModal from '../../LanguageModal';
+import { useUnreadMessagesCount } from '../../hooks/useUnreadMessagesCount';
 
 import personLogo from "../../assets/person2.jpg"
 
@@ -21,6 +22,7 @@ export const MyNavbar = () => {
     const location = useLocation();
     const { pathname } = location;
     const user = auth.currentUser;
+    const unreadCount = useUnreadMessagesCount();
 
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [userData, setUserData] = useState(null);
@@ -126,7 +128,11 @@ export const MyNavbar = () => {
                         </Nav>
                         <Nav style={{ alignItems: 'center' }}>
                             <Link to="/message" style={{ textDecoration: 'none' }}>
-                                <Nav.Link href="/message" style={{ fontSize: '18px', padding: '12px', color: '#ffffff' }}><MessageOutlined style={{ fontSize: '25px', padding: '3px' }} /></Nav.Link>
+                                <Nav.Link href="/message" style={{ fontSize: '18px', padding: '12px', color: '#ffffff' }}>
+                                    <Badge count={unreadCount} overflowCount={99} size="small" offset={[-2, 2]} style={{ backgroundColor: '#FFBF34' }}>
+                                        <MessageOutlined style={{ fontSize: '25px', padding: '3px' }} />
+                                    </Badge>
+                                </Nav.Link>
                             </Link>
                             {userData ? (
                                 <Dropdown overlay={menu}>
@@ -150,15 +156,18 @@ export const MyNavbar = () => {
                 </Container>
             </Navbar>
 
+            {/* Мобильная навигация: панель у нижнего края.
+                Для Android используем "опытный" отступ (сейчас 56px), который можно менять в одном месте ниже. */}
             <div className='app d-lg-none'>
-
-
                 <div
-                    className="fixed bottom-0 left-0 z-50 w-full h-20 bg-customColor1 border-t rounded-t-2xl border-gray-200"
+                    className="fixed left-0 z-50 w-full h-20 bg-customColor1 border-t rounded-t-2xl border-gray-200"
                     style={{
-                        paddingBottom: Capacitor.getPlatform() === 'android'
-                            ? 'max(env(safe-area-inset-bottom, 0px), 28px)'
-                            : 'max(0.5rem, env(safe-area-inset-bottom, 0px))',
+                        bottom: 0,
+                        paddingBottom:
+                            Capacitor.getPlatform() === 'android'
+                                // здесь настраиваем "опытный пиксель" для Android (было 28px, сейчас 56px)
+                                ? 'max(env(safe-area-inset-bottom, 0px), 90px)'
+                                : 'max(0.5rem, env(safe-area-inset-bottom, 0px))',
                     }}
                 >
                     <div className="grid h-full max-w-lg grid-cols-5 mx-auto font-medium">
@@ -184,11 +193,13 @@ export const MyNavbar = () => {
                         </button>
 
 
-                        <button onClick={handleMessageClick} type="button" className="inline-flex flex-col items-center justify-center px-4 group">
-                            <svg className={`w-6 h-6 ${getButtonStyle('/message')}`} aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                                <path fillRule="evenodd" d="M4 3a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h1v2a1 1 0 0 0 1.707.707L9.414 13H15a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H4Z" clipRule="evenodd" />
-                                <path fillRule="evenodd" d="M8.023 17.215c.033-.03.066-.062.098-.094L10.243 15H15a3 3 0 0 0 3-3V8h2a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1h-1v2a1 1 0 0 1-1.707.707L14.586 18H9a1 1 0 0 1-.977-.785Z" clipRule="evenodd" />
-                            </svg>
+                        <button onClick={handleMessageClick} type="button" className="inline-flex flex-col items-center justify-center px-4 group" style={{ position: 'relative' }}>
+                            <Badge count={unreadCount} overflowCount={99} size="small" offset={[-4, 4]} style={{ backgroundColor: '#FFBF34' }}>
+                                <svg className={`w-6 h-6 ${getButtonStyle('/message')}`} aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                    <path fillRule="evenodd" d="M4 3a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h1v2a1 1 0 0 0 1.707.707L9.414 13H15a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H4Z" clipRule="evenodd" />
+                                    <path fillRule="evenodd" d="M8.023 17.215c.033-.03.066-.062.098-.094L10.243 15H15a3 3 0 0 0 3-3V8h2a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1h-1v2a1 1 0 0 1-1.707.707L14.586 18H9a1 1 0 0 1-.977-.785Z" clipRule="evenodd" />
+                                </svg>
+                            </Badge>
                             <span className={`text-xs text-customColor3  group-hover:text-customColor2 ${getButtonStyle('/message')}`}>{t("message_navbar")}</span>
                         </button>
 

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Image } from "react-bootstrap";
+import { Helmet } from "react-helmet";
 import Logo from "../../assets/person2.jpg";
 import { MyNavbar } from "../../components/Navbar/Navbar";
 import CustomCard from "../../components/card/CustomCard";
@@ -37,19 +38,24 @@ const SellerProfile = () => {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const qUser = query(collection(db, "users"), where("link", "==", id));
-      const userSnapshot = await getDocs(qUser);
+      const qByLink = query(collection(db, "users"), where("link", "==", id));
+      const linkSnapshot = await getDocs(qByLink);
 
-      if (!userSnapshot.empty) {
-        const userData = userSnapshot.docs[0].data();
+      if (!linkSnapshot.empty) {
+        const userData = linkSnapshot.docs[0].data();
         setSellerId(userData.id);
-      } else {
-        console.log("No such user!");
+        return;
+      }
+
+      const qById = query(collection(db, "users"), where("id", "==", id));
+      const idSnapshot = await getDocs(qById);
+      if (!idSnapshot.empty) {
+        setSellerId(id);
       }
     };
 
     fetchUser();
-  }, []);
+  }, [id]);
 
   useEffect(() => {
     const fetchUserAndAds = async () => {
@@ -153,7 +159,7 @@ const SellerProfile = () => {
 
   useEffect(() => {
     fetchUserMe();
-  }, [sellerId]);
+  }, [sellerId, from_uid]);
 
   const fetchUserData = async (sellerId) => {
     const userQuery = query(
@@ -237,6 +243,10 @@ const SellerProfile = () => {
   const submitReview = async () => {
     try {
       const me = auth.currentUser ? auth.currentUser.uid : null;
+      if (!me) {
+        history.push('/sign_in');
+        return;
+      }
 
       const q = query(collection(db, "feedback"), where("from_uid", "==", me), where("to_uid", "==", sellerId));
       const querySnapshot = await getDocs(q);
@@ -309,8 +319,21 @@ const SellerProfile = () => {
     advertisment.title.toLowerCase().includes(searchText.toLowerCase())
   );
 
+  const sellerName = user?.name || t('profile_navbar');
+  const sellerTitle = `${sellerName} - ${t('reviewsForProfile')} | Hvala`;
+
   return (
     <div>
+      <Helmet>
+        <title>{sellerTitle}</title>
+        <meta name="description" content={`Posetite profil prodavca ${sellerName} na Hvala. Pogledajte oglase, recenzije i kontaktirajte direktno.`} />
+        <link rel="canonical" href={`https://hvala.app/seller/${id}`} />
+        <meta property="og:title" content={sellerTitle} />
+        <meta property="og:description" content={`Profil prodavca ${sellerName} - oglasi i recenzije na Hvala`} />
+        <meta property="og:type" content="profile" />
+        <meta property="og:url" content={`https://hvala.app/seller/${id}`} />
+        <meta property="og:image" content={user?.photoUrl || "https://hvala.app/android-chrome-512x512.png"} />
+      </Helmet>
       <style type="text/css">
         {`
                 .profile-sections a {
@@ -517,7 +540,7 @@ const SellerProfile = () => {
                     title={advertisment.title}
                     location={advertisment.location}
                     date={advertisment.time_creation}
-                    showButtons={user?.role === 'admin'}
+                    showButtons={!!from_uid && (from_uid === sellerId || userMe?.role === 'admin')}
                     status="active"
                   />
                 </Col>
@@ -582,14 +605,14 @@ const SellerProfile = () => {
                     </div>
                   ))}
 
-                  {!isReviewFormVisible && (
+                  {from_uid && !isReviewFormVisible && (
                     <div className='d-flex justify-content-center'>
                       <Button className='mt-3'
                         style={{ backgroundColor: '#FFBF34', border: 'none', color: 'white' }} onClick={toggleReviewForm}>{t('set_feedback')}</Button>
                     </div>
                   )}
 
-                  {isReviewFormVisible && (
+                  {from_uid && isReviewFormVisible && (
                     <>
                       <Input.TextArea
                         className='mt-3'
@@ -682,7 +705,7 @@ const SellerProfile = () => {
                       title={advertisment.title}
                       location={advertisment.location}
                       date={advertisment.time_creation}
-                      showButtons={user?.role === 'admin'}
+                      showButtons={!!from_uid && (from_uid === sellerId || userMe?.role === 'admin')}
                       status="active"
                     />
                   </Col>

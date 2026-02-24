@@ -1,35 +1,30 @@
 {
+  "functions": {
+    "source": "functions"
+  },
   "hosting": {
     "site": "hvala-2c8a4",
     "public": "build",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ],
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "headers": [
       {
         "source": "/index.html",
         "headers": [
-          { "key": "Cache-Control", "value": "no-store, no-cache, must-revalidate, max-age=0" },
-          { "key": "Pragma", "value": "no-cache" },
-          { "key": "Expires", "value": "0" }
+          {"key": "Cache-Control", "value": "no-store, no-cache, must-revalidate, max-age=0"},
+          {"key": "Pragma", "value": "no-cache"},
+          {"key": "Expires", "value": "0"}
         ]
       },
       {
         "source": "/",
         "headers": [
-          { "key": "Cache-Control", "value": "no-store, no-cache, must-revalidate, max-age=0" },
-          { "key": "Pragma", "value": "no-cache" },
-          { "key": "Expires", "value": "0" }
+          {"key": "Cache-Control", "value": "no-store, no-cache, must-revalidate, max-age=0"},
+          {"key": "Pragma", "value": "no-cache"},
+          {"key": "Expires", "value": "0"}
         ]
       }
     ],
-    "rewrites": [
-      {
-        "source": "**",
-        "destination": "/index.html"
-      }
-    ]
+    "redirects": [{"source": "/guest_main", "destination": "/", "type": 301}],
+    "rewrites": [{"source": "**", "destination": "/index.html"}]
   }
 }

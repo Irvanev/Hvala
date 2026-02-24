@@ -24,7 +24,7 @@ const Contact = () => {
         />
         <meta
           name="keywords"
-          content="kontakt, podrška, korisnička služba, Hvala, e-pošta"
+          content="kontakt, podrška, korisnička služba, Hvala, e-pošta, contact Hvala, support Montenegro, контакт Hvala, поддержка"
         />
         <meta
           property="og:title"
@@ -37,8 +37,9 @@ const Contact = () => {
         <meta property="og:type" content="website" />
         <meta
           property="og:url"
-          content="https://hvala.app/contact"
+          content="https://hvala.app/contacts"
         />
+        <link rel="canonical" href="https://hvala.app/contacts" />
         <meta
           property="og:image"
           content="https://firebasestorage.googleapis.com/v0/b/hvala-2c8a4.appspot.com/o/9.jpg?alt=media&token=653bbaef-3d39-410e-93fe-3adaec37f56c"

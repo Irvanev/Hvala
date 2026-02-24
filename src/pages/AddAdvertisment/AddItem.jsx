@@ -3,14 +3,10 @@ import { useHistory } from "react-router-dom";
 import { Container, Form } from "react-bootstrap";
 import { db, auth, storage } from "../../config/firebase"
 import { collection, addDoc, serverTimestamp, GeoPoint } from "firebase/firestore";
-import { useState } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { MyNavbar } from "../../components/Navbar/Navbar";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { NavBarBack } from "../../components/Navbar/NavBarBack"
-import ClothesForm from "../../components/formsForAddingAdvertisements/ClothesForm";
-import ShoesForm from "../../components/formsForAddingAdvertisements/ShoesForm";
-import PhoneAndTabletsForm from "../../components/formsForAddingAdvertisements/electronics-forms/PhoneAndTabletsForm";
-import TarnsportForm from "../../components/formsForAddingAdvertisements/TransportForm";
 import SelectCategory from "../../components/select-category-form/SelectCategory";
 import SelectSubCategoryEstate from "../../components/select-category-form/SelectSubCategoryEstate";
 import SelectSubCategoryTransport from "../../components/select-category-form/SelectSubCategoryTransport";
@@ -27,19 +23,25 @@ import SelectSubCategoryChildGoods from "../../components/select-category-form/S
 import SelectSubCategoryHealth from "../../components/select-category-form/SelectSubCategoryHealth";
 import SelectSubCategorySport from "../../components/select-category-form/SelectSubCategorySport";
 import SelectSubCategoryHobby from "../../components/select-category-form/SelectSubCategoryHobby";
-import EstateForm from "../../components/formsForAddingAdvertisements/EstateForm";
-import TvForm from "../../components/formsForAddingAdvertisements/electronics-forms/TvForm";
-import GameConsoleForm from "../../components/formsForAddingAdvertisements/electronics-forms/GameConsoleForm";
-import ComputerForm from "../../components/formsForAddingAdvertisements/electronics-forms/ComputerForm";
-import ComputersAccsForm from "../../components/formsForAddingAdvertisements/electronics-forms/ComputersAccsForm";
-import DefaultForm from "../../components/formsForAddingAdvertisements/DefaultForm"
-import DefaultFormWithoutCondition from "../../components/formsForAddingAdvertisements/DefaultFormWithoutCondition";
-import HomeApplianceForm from "../../components/formsForAddingAdvertisements/HomeApplianceForm";
-import WorkForm from "../../components/formsForAddingAdvertisements/WorkForm";
 
 import imageCompression from 'browser-image-compression';
 
 import { Spin } from 'antd';
+
+// Отложенная загрузка форм с Google Maps — загружаются только при выборе категории
+const ClothesForm = lazy(() => import("../../components/formsForAddingAdvertisements/ClothesForm"));
+const ShoesForm = lazy(() => import("../../components/formsForAddingAdvertisements/ShoesForm"));
+const PhoneAndTabletsForm = lazy(() => import("../../components/formsForAddingAdvertisements/electronics-forms/PhoneAndTabletsForm"));
+const TarnsportForm = lazy(() => import("../../components/formsForAddingAdvertisements/TransportForm"));
+const EstateForm = lazy(() => import("../../components/formsForAddingAdvertisements/EstateForm"));
+const TvForm = lazy(() => import("../../components/formsForAddingAdvertisements/electronics-forms/TvForm"));
+const GameConsoleForm = lazy(() => import("../../components/formsForAddingAdvertisements/electronics-forms/GameConsoleForm"));
+const ComputerForm = lazy(() => import("../../components/formsForAddingAdvertisements/electronics-forms/ComputerForm"));
+const ComputersAccsForm = lazy(() => import("../../components/formsForAddingAdvertisements/electronics-forms/ComputersAccsForm"));
+const DefaultForm = lazy(() => import("../../components/formsForAddingAdvertisements/DefaultForm"));
+const DefaultFormWithoutCondition = lazy(() => import("../../components/formsForAddingAdvertisements/DefaultFormWithoutCondition"));
+const HomeApplianceForm = lazy(() => import("../../components/formsForAddingAdvertisements/HomeApplianceForm"));
+const WorkForm = lazy(() => import("../../components/formsForAddingAdvertisements/WorkForm"));
 
 export const AddItem = () => {
     const { t } = useTranslation();
@@ -111,18 +113,23 @@ export const AddItem = () => {
         setSelectedSubcategory(value);
     }
 
-    const handleFileChange = (file) => {
-        setSelectedFiles((prev) => [...prev, file]);
-    }
     const [photoUrls, setSelectedFiles] = useState([]);
+
+    const handleFileListChange = (files) => {
+        setSelectedFiles(files);
+    };
+
+    useEffect(() => {
+        setSelectedFiles([]);
+    }, [selectedCategory, selectedSubcategory]);
     const handleSubmit = async () => {
         setLoading(true);
 
         const compressImage = async (file) => {
             const options = {
-                maxSizeMB: 1, // Максимальный размер файла в мегабайтах
-                maxWidthOrHeight: 1920, // Максимальная ширина или высота
-                useWebWorker: true // Использовать Web Worker для сжатия
+                maxSizeMB: 0.5, // Максимальный размер файла в мегабайтах
+                maxWidthOrHeight: 1200, // Максимальная ширина или высота
+                useWebWorker: true
             };
             try {
                 const compressedFile = await imageCompression(file, options);
@@ -136,7 +143,8 @@ export const AddItem = () => {
         const fileUrls = await Promise.all(
             photoUrls.map(async (file) => {
                 const compressedFile = await compressImage(file);
-                const storageRef = ref(storage, 'advertisment/' + compressedFile.name);
+                const uniqueName = `${userId}_${Date.now()}_${Math.random().toString(36).slice(2)}_${compressedFile.name}`;
+                const storageRef = ref(storage, 'advertisment/' + uniqueName);
                 const uploadTask = uploadBytesResumable(storageRef, compressedFile);
         
                 return new Promise((resolve, reject) => {
@@ -649,7 +657,7 @@ export const AddItem = () => {
 
         const advertismentRef = collection(db, 'advertisment');
         console.log(new GeoPoint(coordinates.lat, coordinates.lng));
-        addDoc(advertismentRef, formData)
+        addDoc(advertismentRef, { ...formData, views_count: 0 })
             .then((docRef) => {
                 console.log("Document written with ID: ", docRef.id);
                 history.push('/profile');
@@ -738,6 +746,7 @@ export const AddItem = () => {
                     {selectedCategory === 'hobby_n_Relax' && (
                         <SelectSubCategoryHobby handleSubcategoryChange={handleSubcategoryChange} t={t} />
                     )}
+                    <Suspense fallback={<div className="d-flex justify-content-center p-4"><Spin /></div>}>
                     {selectedCategory === 'rest' && (
                         <DefaultForm
                             loading={loading}
@@ -751,7 +760,7 @@ export const AddItem = () => {
                             phoneNumber={phoneNumber} setPhoneNumber={setPhoneNumber}
                             description={description} setDescription={setDescription}
                             condition={condition} setCondition={setCondition}
-                            handleFileChange={handleFileChange} photoUrls={photoUrls}
+                            handleFileListChange={handleFileListChange}
                             handleSubmit={handleSubmit}
                         />
                     )}
@@ -774,7 +783,7 @@ export const AddItem = () => {
                             owners={owners} setOwners={setOwners}
                             phoneNumber={phoneNumber} setPhoneNumber={setPhoneNumber}
                             description={description} setDescription={setDescription}
-                            handleFileChange={handleFileChange} photoUrls={photoUrls}
+                            handleFileListChange={handleFileListChange}
                             handleSubmit={handleSubmit}
                             coordinates={coordinates} location={location}
                             setCoordinates={setCoordinates} setLocation={setLocation}
@@ -793,7 +802,7 @@ export const AddItem = () => {
                             condition={condition} setCondition={setCondition}
                             phoneNumber={phoneNumber} setPhoneNumber={setPhoneNumber}
                             description={description} setDescription={setDescription}
-                            handleFileChange={handleFileChange} photoUrls={photoUrls}
+                            handleFileListChange={handleFileListChange}
                             handleSubmit={handleSubmit}
                             coordinates={coordinates} location={location}
                             setCoordinates={setCoordinates} setLocation={setLocation}
@@ -814,7 +823,7 @@ export const AddItem = () => {
                             condition={condition} setCondition={setCondition}
                             phoneNumber={phoneNumber} setPhoneNumber={setPhoneNumber}
                             description={description} setDescription={setDescription}
-                            handleFileChange={handleFileChange} photoUrls={photoUrls}
+                            handleFileListChange={handleFileListChange}
                             handleSubmit={handleSubmit}
                             coordinates={coordinates} location={location}
                             setCoordinates={setCoordinates} setLocation={setLocation}
@@ -830,7 +839,7 @@ export const AddItem = () => {
                             price={price} setPrice={setPrice}
                             phoneNumber={phoneNumber} setPhoneNumber={setPhoneNumber}
                             description={description} setDescription={setDescription}
-                            handleFileChange={handleFileChange} photoUrls={photoUrls}
+                            handleFileListChange={handleFileListChange}
                             handleSubmit={handleSubmit}
                             coordinates={coordinates} location={location}
                             setCoordinates={setCoordinates} setLocation={setLocation}
@@ -859,7 +868,7 @@ export const AddItem = () => {
                             condition={condition} setCondition={setCondition}
                             phoneNumber={phoneNumber} setPhoneNumber={setPhoneNumber}
                             description={description} setDescription={setDescription}
-                            handleFileChange={handleFileChange} photoUrls={photoUrls}
+                            handleFileListChange={handleFileListChange}
                             handleSubmit={handleSubmit}
                             coordinates={coordinates} location={location}
                             setCoordinates={setCoordinates} setLocation={setLocation}
@@ -878,7 +887,7 @@ export const AddItem = () => {
                             condition={condition} setCondition={setCondition}
                             phoneNumber={phoneNumber} setPhoneNumber={setPhoneNumber}
                             description={description} setDescription={setDescription}
-                            handleFileChange={handleFileChange} photoUrls={photoUrls}
+                            handleFileListChange={handleFileListChange}
                             handleSubmit={handleSubmit}
                             coordinates={coordinates} location={location}
                             setCoordinates={setCoordinates} setLocation={setLocation}
@@ -897,7 +906,7 @@ export const AddItem = () => {
                             condition={condition} setCondition={setCondition}
                             phoneNumber={phoneNumber} setPhoneNumber={setPhoneNumber}
                             description={description} setDescription={setDescription}
-                            handleFileChange={handleFileChange} photoUrls={photoUrls}
+                            handleFileListChange={handleFileListChange}
                             handleSubmit={handleSubmit}
                             coordinates={coordinates} location={location}
                             setCoordinates={setCoordinates} setLocation={setLocation}
@@ -920,7 +929,7 @@ export const AddItem = () => {
                             condition={condition} setCondition={setCondition}
                             phoneNumber={phoneNumber} setPhoneNumber={setPhoneNumber}
                             description={description} setDescription={setDescription}
-                            handleFileChange={handleFileChange} photoUrls={photoUrls}
+                            handleFileListChange={handleFileListChange}
                             handleSubmit={handleSubmit}
                             setCoordinates={setCoordinates}
                             coordinates={coordinates}
@@ -941,7 +950,7 @@ export const AddItem = () => {
                             condition={condition} setCondition={setCondition}
                             phoneNumber={phoneNumber} setPhoneNumber={setPhoneNumber}
                             description={description} setDescription={setDescription}
-                            handleFileChange={handleFileChange} photoUrls={photoUrls}
+                            handleFileListChange={handleFileListChange}
                             handleSubmit={handleSubmit}
                             setCoordinates={setCoordinates} setLocation={setLocation}
                             coordinates={coordinates} location={location}
@@ -959,7 +968,7 @@ export const AddItem = () => {
                             owner={owner} setOwner={setOwner}
                             phoneNumber={phoneNumber} setPhoneNumber={setPhoneNumber}
                             description={description} setDescription={setDescription}
-                            handleFileChange={handleFileChange} photoUrls={photoUrls}
+                            handleFileListChange={handleFileListChange}
                             handleSubmit={handleSubmit}
                             setCoordinates={setCoordinates} setLocation={setLocation}
                             setRegion={setRegion} setCountry={setCountry}
@@ -980,7 +989,7 @@ export const AddItem = () => {
                                 condition={condition} setCondition={setCondition}
                                 phoneNumber={phoneNumber} setPhoneNumber={setPhoneNumber}
                                 description={description} setDescription={setDescription}
-                                handleFileChange={handleFileChange} photoUrls={photoUrls}
+                                handleFileListChange={handleFileListChange}
                                 handleSubmit={handleSubmit}
                                 setCoordinates={setCoordinates} setLocation={setLocation}
                                 setRegion={setRegion} setCountry={setCountry}
@@ -1016,7 +1025,7 @@ export const AddItem = () => {
                                 condition={condition} setCondition={setCondition}
                                 phoneNumber={phoneNumber} setPhoneNumber={setPhoneNumber}
                                 description={description} setDescription={setDescription}
-                                handleFileChange={handleFileChange} photoUrls={photoUrls}
+                                handleFileListChange={handleFileListChange}
                                 handleSubmit={handleSubmit}
                                 setCoordinates={setCoordinates} setLocation={setLocation}
                                 setRegion={setRegion} setCountry={setCountry}
@@ -1048,7 +1057,7 @@ export const AddItem = () => {
                                 price={price} setPrice={setPrice}
                                 phoneNumber={phoneNumber} setPhoneNumber={setPhoneNumber}
                                 description={description} setDescription={setDescription}
-                                handleFileChange={handleFileChange} photoUrls={photoUrls}
+                                handleFileListChange={handleFileListChange}
                                 handleSubmit={handleSubmit}
                                 setCoordinates={setCoordinates} setLocation={setLocation}
                                 setRegion={setRegion} setCountry={setCountry}
@@ -1056,6 +1065,7 @@ export const AddItem = () => {
                             />
                         )}
 
+                    </Suspense>
                 </Form>
             </Container>
 

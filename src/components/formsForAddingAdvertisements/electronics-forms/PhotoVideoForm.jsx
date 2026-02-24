@@ -11,7 +11,8 @@ const PhotoVideoForm = ({
     condition, setCondition,
     phoneNumber, setPhoneNumber,
     description, setDescription,
-    handleSubmit
+    handleSubmit,
+    handleFileListChange,
 }) => {
     const { t } = useTranslation();
     const { Option } = Select;
@@ -36,7 +37,11 @@ const PhotoVideoForm = ({
         setPreviewOpen(true);
     };
 
-    const handleChange = ({ fileList }) => setFileList(fileList);
+    const handleChange = ({ fileList: fl }) => {
+        setFileList(fl);
+        const files = (fl || []).map((f) => f.originFileObj).filter(Boolean);
+        handleFileListChange?.(files);
+    };
 
     return (
         <div>
@@ -113,10 +118,7 @@ const PhotoVideoForm = ({
                         fileList={fileList}
                         onPreview={handlePreview}
                         onChange={handleChange}
-                        beforeUpload={file => {
-                            handleFileChange(file);
-                            return false;
-                        }}
+                        beforeUpload={() => false}
                     >
                         {fileList.length >= 8 ? null :
                             <button

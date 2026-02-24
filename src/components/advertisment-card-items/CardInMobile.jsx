@@ -5,13 +5,13 @@ import CharactersForCard from './CharactersForCard';
 import Logo from '../../assets/logo_def.png'
 import person from "../../assets/person2.jpg"
 import { Rate, Breadcrumb, message, Modal, Input, Image } from "antd";
-import { collection, query, where, getDocs, addDoc, serverTimestamp, updateDoc } from "firebase/firestore";
+import { collection, query, where, getDocs, addDoc, doc, serverTimestamp, updateDoc } from "firebase/firestore";
 import { db, auth } from '../../config/firebase'
 import { HomeOutlined } from '@ant-design/icons';
 
 import { getConversionRate } from '../../services/AdvertismentsHome/AdvertismentsService';
 
-const CardInMobile = ({ adData, t, index, handleSelect, handleCallClick, userData }) => {
+const CardInMobile = ({ adData, adId = null, t, index, handleSelect, handleCallClick, userData }) => {
 
     const history = useHistory();
     const [feedbacks, setFeedbacks] = useState([]);
@@ -32,7 +32,11 @@ const CardInMobile = ({ adData, t, index, handleSelect, handleCallClick, userDat
     const [isReviewFormVisible, setIsReviewFormVisible] = useState(false);
 
     const toggleReviewForm = () => {
-        setIsReviewFormVisible(!isReviewFormVisible);
+        if (from_uid === null) {
+            history.push('/sign_in');
+        } else {
+            setIsReviewFormVisible(!isReviewFormVisible);
+        }
     };
 
     const [reviewText, setReviewText] = useState("");
@@ -93,6 +97,10 @@ const CardInMobile = ({ adData, t, index, handleSelect, handleCallClick, userDat
     const submitReview = async () => {
         try {
             const me = auth.currentUser ? auth.currentUser.uid : null;
+            if (!me) {
+                history.push('/sign_in');
+                return;
+            }
 
             const q = query(collection(db, "feedback"), where("from_uid", "==", me), where("to_uid", "==", userId));
             const querySnapshot = await getDocs(q);
@@ -168,6 +176,13 @@ const CardInMobile = ({ adData, t, index, handleSelect, handleCallClick, userDat
         );
         const chatsSnapshot = await getDocs(chatsQuery);
 
+        const adInfo = adData ? {
+            ad_id: adId || adData?.id,
+            ad_title: adData.title || '',
+            ad_image: adData.photoUrls?.[0] || '',
+            ad_price: adData.price ? `${adData.price}${adData.currency === 'eur' ? '€' : ' RSD'}` : ''
+        } : {};
+
         let chatId;
         if (chatsSnapshot.empty) {
             const chatDoc = await addDoc(collection(db, 'message'), {
@@ -179,12 +194,14 @@ const CardInMobile = ({ adData, t, index, handleSelect, handleCallClick, userDat
                 to_avatar: userData?.photoUrl,
                 to_name: userData?.name,
                 to_uid: userId,
+                ...adInfo
             });
-
-
             chatId = chatDoc.id;
         } else {
             chatId = chatsSnapshot.docs[0].id;
+            if (Object.keys(adInfo).length > 0) {
+                await updateDoc(doc(db, 'message', chatId), adInfo);
+            }
         }
 
         return chatId;
@@ -208,10 +225,10 @@ const CardInMobile = ({ adData, t, index, handleSelect, handleCallClick, userDat
             <Breadcrumb
                 items={[
                     {
-                        title: <a style={{ textDecoration: 'none' }} href="/advertisment"><HomeOutlined /> {t('home_navbar')}</a>,
+                        title: <Link to="/" style={{ textDecoration: 'none' }}><HomeOutlined /> {t('home_navbar')}</Link>,
                     },
                     {
-                        title: <a href={`/advertisments/${adData?.category}`}>{t(adData?.category)}</a>,
+                        title: <Link to={`/advertisments/${adData?.category}`} style={{ textDecoration: 'none' }}>{t(adData?.category)}</Link>,
                     },
                     {
                         title: t(adData?.subcategory),
@@ -267,7 +284,7 @@ const CardInMobile = ({ adData, t, index, handleSelect, handleCallClick, userDat
                                 src={url}
                                 alt={`Slide ${index + 1}`}
                                 onClick={() => handleSelect(index)}
-                                thumbnail
+                                loading="lazy"
                             />
                         </Col>
                     ))}
@@ -325,14 +342,14 @@ const CardInMobile = ({ adData, t, index, handleSelect, handleCallClick, userDat
                                 </div>
                             ))}
 
-                            {!isReviewFormVisible && (
+                            {from_uid && !isReviewFormVisible && (
                                 <div className='d-flex justify-content-center'>
                                     <Button className='mt-3'
                                         style={{ backgroundColor: '#FFBF34', border: 'none', color: 'white' }} onClick={toggleReviewForm}>{t('set_feedback')}</Button>
                                 </div>
                             )}
 
-                            {isReviewFormVisible && (
+                            {from_uid && isReviewFormVisible && (
                                 <>
                                     <Input.TextArea
                                         className='mt-3'

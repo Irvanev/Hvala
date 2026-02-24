@@ -1,5 +1,5 @@
 import { db } from '../config/firebase';
-import { collection, query, where, onSnapshot } from 'firebase/firestore';
+import { collection, query, where, onSnapshot, getDocs, limit } from 'firebase/firestore';
 
 export const fetchAdvertismentsByCategory = (category, setAdvertisments, setIsLoading) => {
     const q = query(
@@ -8,15 +8,22 @@ export const fetchAdvertismentsByCategory = (category, setAdvertisments, setIsLo
         where('in_archive', '==', false)
     );
 
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-        const newAdvertisments = snapshot.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data()
-        }));
-
-        setAdvertisments(newAdvertisments);
-        setIsLoading(false);
-    });
+    const unsubscribe = onSnapshot(
+        q,
+        (snapshot) => {
+            const newAdvertisments = snapshot.docs.map((doc) => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+            setAdvertisments(newAdvertisments);
+            setIsLoading(false);
+        },
+        (err) => {
+            console.error("fetchAdvertismentsByCategory error:", err);
+            setAdvertisments([]);
+            setIsLoading(false);
+        }
+    );
 
     return unsubscribe;
 };
@@ -62,8 +69,21 @@ function buildBaseQuery(
 export const fetchAdvertismentsByFilters = (
     category, subcategory, country, region,
     condition, size, type, seasonality, shoe_type, size_eu, size_us, employment_type, work_sphere, experience_min, wheel, mileage, body, drive,
-    year, transmission, memory, screen_size, brand, minPrice, maxPrice, currency, setAdvertisments
+    year, transmission, memory, screen_size, brand, minPrice, maxPrice, currency, setAdvertisments, setIsLoading
 ) => {
+    const onData = (snapshot) => {
+        const newAdvertisments = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data()
+        }));
+        setAdvertisments(newAdvertisments);
+        setIsLoading?.(false);
+    };
+    const onError = (err) => {
+        console.error("fetchAdvertismentsByFilters error:", err);
+        setAdvertisments([]);
+        setIsLoading?.(false);
+    };
     const hasSizeEu = !!size_eu;
     const hasSizeUs = !!size_us;
     const sizeOrMode = hasSizeEu && hasSizeUs;
@@ -85,13 +105,15 @@ export const fetchAdvertismentsByFilters = (
                 byId.set(doc.id, { id: doc.id, ...doc.data() });
             });
             flush();
-        });
+            setIsLoading?.(false);
+        }, onError);
         const unsubUs = onSnapshot(qUs, (snapshot) => {
             snapshot.docs.forEach((doc) => {
                 byId.set(doc.id, { id: doc.id, ...doc.data() });
             });
             flush();
-        });
+            setIsLoading?.(false);
+        }, onError);
         return () => {
             unsubEu();
             unsubUs();
@@ -106,12 +128,43 @@ export const fetchAdvertismentsByFilters = (
     if (hasSizeEu) q = query(q, where('size_eu', '==', size_eu));
     if (hasSizeUs) q = query(q, where('size_us', '==', size_us));
 
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-        const newAdvertisments = snapshot.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data()
-        }));
-        setAdvertisments(newAdvertisments);
-    });
+    const unsubscribe = onSnapshot(q, onData, onError);
     return unsubscribe;
+};
+
+/**
+ * Похожие объявления: та же категория (и подкатегория), исключая текущее.
+ * Без orderBy — используем существующие индексы (category + in_archive).
+ * @param {string} category - категория
+ * @param {string} [subcategory] - подкатегория (опционально)
+ * @param {string} excludeId - ID объявления для исключения
+ * @param {number} [maxCount=8] - макс. количество
+ * @returns {Promise<Array>}
+ */
+export const fetchSimilarAdvertisements = async (category, subcategory, excludeId, maxCount = 8) => {
+    if (!category) return [];
+    let q;
+    if (subcategory) {
+        q = query(
+            collection(db, 'advertisment'),
+            where('category', '==', category),
+            where('subcategory', '==', subcategory),
+            where('in_archive', '==', false),
+            limit(30)
+        );
+    } else {
+        q = query(
+            collection(db, 'advertisment'),
+            where('category', '==', category),
+            where('in_archive', '==', false),
+            limit(30)
+        );
+    }
+    const snapshot = await getDocs(q);
+    const ads = snapshot.docs
+        .filter((doc) => doc.id !== excludeId)
+        .sort((a, b) => (b.data().time_creation?.seconds || 0) - (a.data().time_creation?.seconds || 0))
+        .slice(0, maxCount)
+        .map((doc) => ({ id: doc.id, ...doc.data() }));
+    return ads;
 };

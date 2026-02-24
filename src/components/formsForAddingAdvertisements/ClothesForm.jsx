@@ -701,7 +701,7 @@ const ClothesForm = ({
     condition, setCondition,
     phoneNumber, setPhoneNumber,
     description, setDescription,
-    handleSubmit, handleFileChange,
+    handleSubmit, handleFileListChange,
     setCoordinates, coordinates,
     setLocation, location,
     setCountry, setRegion,
@@ -735,7 +735,11 @@ const ClothesForm = ({
         setPreviewOpen(true);
     };
 
-    const handleChange = ({ fileList }) => setFileList(fileList);
+    const handleChange = ({ fileList: fl }) => {
+        setFileList(fl);
+        const files = (fl || []).map((f) => f.originFileObj).filter(Boolean);
+        handleFileListChange?.(files);
+    };
 
     const suggestionCache = {}; // Initialize a cache object
 
@@ -1112,10 +1116,7 @@ const extractCountryAndRegion = (geocodeResult) => {
                             fileList={fileList}
                             onPreview={handlePreview}
                             onChange={handleChange}
-                            beforeUpload={file => {
-                                handleFileChange(file);
-                                return false;
-                            }}
+                            beforeUpload={() => false}
                         >
                             {fileList.length >= 8 ? null :
                                 <button

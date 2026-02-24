@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Typography, Anchor } from 'antd';
+import { Helmet } from 'react-helmet';
 import logo from "../../assets/new_logo.png"
 import { Link } from 'react-router-dom';
 
@@ -9,6 +10,20 @@ const { Title, Paragraph, Text } = Typography;
 export const PrivacyPolicy = () => {
     return (
         <>
+            <Helmet>
+                <title>Politika Privatnosti - Hvala | Pravila i Uslovi Korišćenja</title>
+                <meta name="description" content="Politika privatnosti i pravila korišćenja Hvala platforme. Saznajte kako zaštitimo vaše podatke i koja su vaša prava." />
+                <meta name="keywords" content="politika privatnosti, Hvala, pravila korišćenja, zaštita podataka, privacy policy, Hvala terms, политика конфиденциальности" />
+                <link rel="canonical" href="https://hvala.app/privacy_policy" />
+                <meta property="og:title" content="Politika Privatnosti - Hvala | Pravila i Uslovi Korišćenja" />
+                <meta property="og:description" content="Politika privatnosti i pravila korišćenja Hvala platforme. Saznajte kako zaštitimo vaše podatke." />
+                <meta property="og:type" content="website" />
+                <meta property="og:url" content="https://hvala.app/privacy_policy" />
+                <meta property="og:image" content="https://hvala.app/android-chrome-512x512.png" />
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:title" content="Politika Privatnosti - Hvala" />
+                <meta name="twitter:description" content="Politika privatnosti i pravila korišćenja Hvala platforme." />
+            </Helmet>
             <style type="text/css">
                 {`
                 .content-container {

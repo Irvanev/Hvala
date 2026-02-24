@@ -24,6 +24,49 @@
     background-color: #FFCB5B;
 }
 
+.googleButtonWrapper {
+    position: relative;
+    width: 100%;
+}
+
+.newBadge {
+    position: absolute;
+    top: -6px;
+    right: 8px;
+    background: linear-gradient(135deg, #FFBF34, #ff9500);
+    color: white;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+
+.googleButton {
+    font-size: 16px;
+    width: 100%;
+    height: 40px;
+    background-color: #fff;
+    color: #3c4043;
+    border: 1px solid #dadce0;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.googleButton:hover {
+    background-color: #f8f9fa;
+}
+
+.googleButton:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
 .customLink {
     text-decoration: none;
     color: #03989F;

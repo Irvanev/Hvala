@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, lazy, Suspense } from "react";
 import { MyNavbar } from "../../components/Navbar/Navbar";
 import { NavBarBack } from "../../components/Navbar/NavBarBack";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import { Container, Row, Col } from "react-bootstrap";
 import {
   Button,
@@ -11,6 +11,7 @@ import {
   Space,
   Dropdown,
   InputNumber,
+  message,
 } from "antd";
 import DefaultCardCategory from "../../components/advertisment-card-category/DefaultCardCategory";
 import CardAdvertisementHome from "../../components/card-advertisment-home/CardAdvertisementHome";
@@ -19,7 +20,7 @@ import {
   fetchAdvertismentsByFilters,
 } from "../../services/AdvertismentsCardCategory";
 import { DownOutlined, SmileOutlined, FilterOutlined } from "@ant-design/icons";
-import { t } from "i18next";
+import { useTranslation } from "react-i18next";
 import Categories from "../../components/category";
 
 import styles from "./Container.module.css";
@@ -27,25 +28,24 @@ import CustomCard from "../../components/card/CustomCard";
 import { Helmet } from "react-helmet";
 import InputSearch from "../../components/input-search/InputSearch";
 import CategoriesAds from "../../components/categoryAds";
-import { EstateMap } from "../../components/estate-map/EstateMap";
+import { PopularSearchBlock } from "../../components/SEO/PopularSearchBlock";
 import { getShoeTypesBySubcategory, SHOE_BRANDS } from "../../types/shoeTypes.js";
 import { WORK_SPHERES } from "../../types/workTypes.js";
+import { getUserByAuth } from "../../services/AdvertismentsHome/test";
+import { fetchFavoriteIds, addToFavorites, removeFromFavorites } from "../../services/favorites/FavoritesService";
 
-const BODY_CLASS_ESTATE_MAP = "estate-map-page";
+const EstateMap = lazy(() => import("../../components/estate-map/EstateMap").then(m => ({ default: m.EstateMap })));
 
 export const CategoryAdvertisments = () => {
+  const { t, i18n } = useTranslation();
   const { category } = useParams();
+  const location = useLocation();
   const [advertisments, setAdvertisments] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [user, setUser] = useState(null);
+  const [favoriteIds, setFavoriteIds] = useState(new Set());
+  const [selectedAdId, setSelectedAdId] = useState(null);
   const { Option } = Select;
-
-  // Класс на body нужен, чтобы стили InfoWindow карты применялись (окно рендерится вне .estate-map-container)
-  useEffect(() => {
-    if (category === "estate") {
-      document.body.classList.add(BODY_CLASS_ESTATE_MAP);
-      return () => document.body.classList.remove(BODY_CLASS_ESTATE_MAP);
-    }
-  }, [category]);
 
   const [subcategory, setSubCategory] = useState("");
   const [condition, setCondition] = useState("");
@@ -364,15 +364,49 @@ export const CategoryAdvertisments = () => {
   );
 
   useEffect(() => {
-    let unsubscribe;
-
-    unsubscribe = fetchAdvertismentsByCategory(
-      category,
-      setAdvertisments,
-      setIsLoading
+    setSelectedAdId((prev) =>
+      filteredAdvertisements.some((ad) => ad.id === prev) ? prev : null
     );
-    return () => unsubscribe();
-  }, [category]);
+  }, [filteredAdvertisements]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const subFromUrl = params.get("subcategory");
+    const currentSubs = subcategories[category] || [];
+    const hasValidSubInUrl = subFromUrl && currentSubs.some((s) => s.value === subFromUrl);
+
+    if (hasValidSubInUrl) {
+      setSubCategory(subFromUrl);
+      const unsub = fetchAdvertismentsByFilters(
+        category,
+        subFromUrl,
+        "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
+        setAdvertisments,
+        setIsLoading
+      );
+      return () => (typeof unsub === "function" ? unsub() : unsub?.());
+    } else {
+      setSubCategory("");
+      setCondition("");
+      setCountry("");
+      setRegion("");
+      setMemory("");
+      setScreenSize("");
+      setSeasonality("");
+      setShoeType("");
+      setSizeEu("");
+      setSizeUs("");
+      setEmploymentType("");
+      setWorkSphere("");
+      setExperienceMin("");
+      const unsubscribe = fetchAdvertismentsByCategory(
+        category,
+        setAdvertisments,
+        setIsLoading
+      );
+      return () => unsubscribe?.();
+    }
+  }, [category, location.search]);
 
   const applyFilters = () => {
     console.log("Фильтры:", {
@@ -423,6 +457,47 @@ export const CategoryAdvertisments = () => {
     setIsModalOpen(false);
   };
 
+  useEffect(() => {
+    getUserByAuth(setUser);
+  }, []);
+
+  useEffect(() => {
+    const loadFavorites = async () => {
+      if (!user?.id) return;
+      try {
+        const ids = await fetchFavoriteIds();
+        setFavoriteIds(new Set(ids));
+      } catch {
+        setFavoriteIds(new Set());
+      }
+    };
+    loadFavorites();
+  }, [user?.id]);
+
+  const handleFavoriteToggle = async (ad) => {
+    if (!user?.id) {
+      message.info(t("login_to_add_favorites") || "Войдите, чтобы добавить в избранное");
+      return;
+    }
+    const isFav = favoriteIds.has(ad.id);
+    try {
+      if (isFav) {
+        await removeFromFavorites(ad.id);
+        setFavoriteIds((prev) => {
+          const next = new Set(prev);
+          next.delete(ad.id);
+          return next;
+        });
+      } else {
+        await addToFavorites(ad);
+        setFavoriteIds((prev) => new Set([...prev, ad.id]));
+      }
+    } catch (e) {
+      if (e.message === "AUTH_REQUIRED") return;
+      console.error("Favorite toggle error:", e);
+    }
+  };
+
   const resetFilters = () => {
     setSubCategory("");
     setCondition("");
@@ -439,10 +514,6 @@ export const CategoryAdvertisments = () => {
     setExperienceMin("");
     fetchAdvertismentsByCategory(category, setAdvertisments, setIsLoading);
   };
-
-  useEffect(() => {
-    resetFilters();
-  }, [category]);
 
   const FormClothes = () => (
     <>
@@ -1048,47 +1119,6 @@ export const CategoryAdvertisments = () => {
     }
   };
 
-  const getDescription = (category) => {
-    switch (category) {
-      case "estate":
-        return "Otkrijte najbolje oglase za nekretnine, uključujući stanove, kuće, zemljišta i još mnogo toga. Pronađite sjajne ponude i popuste na Hvala.";
-      case "transport":
-        return "Otkrijte najbolje oglase za transport, uključujući automobile, motocikle, bicikle i još mnogo toga. Pronađite sjajne ponude i popuste na Hvala.";
-      case "electronics":
-        return "Otkrijte najbolje oglase za elektroniku, uključujući telefone, računare, televizore i još mnogo toga. Pronađite sjajne ponude i popuste na Hvala.";
-      case "clothes":
-        return "Otkrijte najbolje oglase za odeću, uključujući mušku, žensku i dečiju odeću. Pronađite sjajne ponude i popuste na Hvala.";
-      case "shoes":
-        return "Otkrijte najbolje oglase za obuću, uključujući mušku, žensku i dečiju obuću. Pronađite sjajne ponude i popuste na Hvala.";
-      case "work":
-        return "Otkrijte najbolje oglase za posao, vakansije i rezime. Pronađite posao ili kandidata na Hvala.";
-      case "house_goods":
-        return "Otkrijte najbolje oglase za kućne proizvode, uključujući nameštaj, dekoracije i još mnogo toga. Pronađite sjajne ponude i popuste na Hvala.";
-      case "building_materials_and_tools":
-        return "Otkrijte najbolje oglase za građevinske materijale i alate, uključujući cement, cigle, alatke i još mnogo toga. Pronađite sjajne ponude i popuste na Hvala.";
-      case "transport_goods":
-        return "Otkrijte najbolje oglase za transport robe, uključujući kamione, prikolice i još mnogo toga. Pronađite sjajne ponude i popuste na Hvala.";
-      case "petSupplies":
-        return "Otkrijte najbolje oglase za opremu za kućne ljubimce, uključujući hranu, igračke i još mnogo toga. Pronađite sjajne ponude i popuste na Hvala.";
-      case "home_appliance":
-        return "Otkrijte najbolje oglase za kućne aparate, uključujući frižidere, veš mašine i još mnogo toga. Pronađite sjajne ponude i popuste na Hvala.";
-      case "service":
-        return "Otkrijte najbolje oglase za usluge, uključujući popravke, čišćenje i još mnogo toga. Pronađite sjajne ponude i popuste na Hvala.";
-      case "child_goods":
-        return "Otkrijte najbolje oglase za dečiju robu, uključujući igračke, odeću i još mnogo toga. Pronađite sjajne ponude i popuste na Hvala.";
-      case "health_and_beauty":
-        return "Otkrijte najbolje oglase za zdravlje i lepotu, uključujući kozmetiku, suplemente i još mnogo toga. Pronađite sjajne ponude i popuste na Hvala.";
-      case "sport":
-        return "Otkrijte najbolje oglase za sport, uključujući opremu, odeću i još mnogo toga. Pronađite sjajne ponude i popuste na Hvala.";
-      case "hobby_n_Relax":
-        return "Otkrijte najbolje oglase za hobije i opuštanje, uključujući knjige, muziku i još mnogo toga. Pronađite sjajne ponude i popuste na Hvala.";
-      case "rest":
-        return "Otkrijte najbolje oglase za odmor, uključujući putovanja, smeštaj i još mnogo toga. Pronađite sjajne ponude i popuste na Hvala.";
-      default:
-        return "Otkrijte najbolje oglase za razne kategorije, uključujući nekretnine, transport, odeću, elektroniku i još mnogo toga. Pronađite sjajne ponude i popuste na Hvala.";
-    }
-  };
-
   const getUrl = (category) => {
     switch (category) {
       case "estate":
@@ -1131,47 +1161,38 @@ export const CategoryAdvertisments = () => {
   };
 
   const getKeywords = (category) => {
-    switch (category) {
-      case "estate":
-        return "oglasi, nekretnine, stanovi, kuće, zemljišta";
-      case "transport":
-        return "oglasi, transport, automobili, motocikli, bicikle";
-      case "electronics":
-        return "oglasi, elektronika, telefoni, računari, televizori";
-      case "clothes":
-        return "oglasi, odeća, muška odeća, ženska odeća, dečija odeća";
-      case "shoes":
-        return "oglasi, obuća, muška obuća, ženska obuća, dečija obuća";
-      case "work":
-        return "oglasi, posao, vakansije, rad, zaposlenje";
-      case "house_goods":
-        return "oglasi, kućni proizvodi, nameštaj, dekoracije";
-      case "building_materials_and_tools":
-        return "oglasi, građevinski materijali, alatke, cement, cigle";
-      case "transport_goods":
-        return "oglasi, transport robe, kamioni, prikolice";
-      case "petSupplies":
-        return "oglasi, oprema za kućne ljubimce, hrana za ljubimce, igračke za ljubimce";
-      case "home_appliance":
-        return "oglasi, kućni aparati, frižideri, veš mašine";
-      case "service":
-        return "oglasi, usluge, popravke, čišćenje";
-      case "child_goods":
-        return "oglasi, dečija roba, igračke, dečija odeća";
-      case "health_and_beauty":
-        return "oglasi, zdravlje i lepota, kozmetika, suplementi";
-      case "sport":
-        return "oglasi, sport, sportska oprema, sportska odeća";
-      case "hobby_n_Relax":
-        return "oglasi, hobiji, opuštanje, knjige, muzika";
-      case "rest":
-        return "oglasi, odmor, putovanja, smeštaj";
-      default:
-        return "oglasi, nekretnine, transport, odeća, elektronika, kućni proizvodi, građevinski materijali, alati, transport robe, kućni aparati, usluge, dečija roba, zdravlje i lepota, sport, hobi, opuštanje, odmor";
-    }
+    const lang = i18n.language || "me";
+    const kw = {
+      estate: { me: "oglasi, nekretnine, stanovi, kuće, zemljišta, kupiti stan, prodati stan, iznajmiti", en: "classifieds, real estate, apartments, houses, land, buy sell Montenegro", ru: "объявления, недвижимость, квартиры, дома, земля, купить продать Черногория" },
+      transport: { me: "oglasi, transport, automobili, motocikli, bicikle, kupiti auto, prodati auto", en: "classifieds, cars, motorcycles, bicycles, buy sell car Montenegro", ru: "объявления, автомобили, мотоциклы, велосипеды, купить продать авто" },
+      electronics: { me: "oglasi, elektronika, telefoni, računari, televizori, kupiti mobilni", en: "classifieds, electronics, phones, computers, TVs, Montenegro", ru: "объявления, электроника, телефоны, компьютеры, телевизоры" },
+      clothes: { me: "oglasi, odeća, muška odeća, ženska odeća, dečija odeća", en: "classifieds, clothes, fashion, Montenegro", ru: "объявления, одежда, мужская женская детская" },
+      shoes: { me: "oglasi, obuća, muška obuća, ženska obuća, dečija obuća", en: "classifieds, shoes, footwear, Montenegro", ru: "объявления, обувь" },
+      work: { me: "oglasi, posao, vakansije, rad, zaposlenje, poslovi Crna Gora", en: "classifieds, jobs, vacancies, employment, Montenegro", ru: "объявления, работа, вакансии, Черногория" },
+      house_goods: { me: "oglasi, kućni proizvodi, nameštaj, dekoracije", en: "classifieds, furniture, home goods, Montenegro", ru: "объявления, мебель, товары для дома" },
+      building_materials_and_tools: { me: "oglasi, građevinski materijali, alatke, cement, cigle", en: "classifieds, building materials, tools, Montenegro", ru: "объявления, стройматериалы, инструменты" },
+      transport_goods: { me: "oglasi, transport robe, kamioni, prikolice", en: "classifieds, trucks, trailers, Montenegro", ru: "объявления, грузовики, прицепы" },
+      petSupplies: { me: "oglasi, oprema za kućne ljubimce, hrana za ljubimce, igračke za ljubimce", en: "classifieds, pet supplies, pet food, Montenegro", ru: "объявления, товары для животных" },
+      home_appliance: { me: "oglasi, kućni aparati, frižideri, veš mašine", en: "classifieds, home appliances, Montenegro", ru: "объявления, бытовая техника" },
+      service: { me: "oglasi, usluge, popravke, čišćenje", en: "classifieds, services, Montenegro", ru: "объявления, услуги" },
+      child_goods: { me: "oglasi, dečija roba, igračke, dečija odeća", en: "classifieds, kids goods, toys, Montenegro", ru: "объявления, детские товары, игрушки" },
+      health_and_beauty: { me: "oglasi, zdravlje i lepota, kozmetika, suplementi", en: "classifieds, health, beauty, cosmetics, Montenegro", ru: "объявления, здоровье, красота, косметика" },
+      sport: { me: "oglasi, sport, sportska oprema, sportska odeća", en: "classifieds, sports equipment, Montenegro", ru: "объявления, спорт, спортивное оборудование" },
+      hobby_n_Relax: { me: "oglasi, hobiji, opuštanje, knjige, muzika", en: "classifieds, hobbies, books, music, Montenegro", ru: "объявления, хобби, книги, музыка" },
+      rest: { me: "oglasi, odmor, putovanja, smeštaj, Crna Gora", en: "classifieds, travel, accommodation, Montenegro", ru: "объявления, отдых, путешествия, жилье" },
+    };
+    const catKw = kw[category];
+    const langKey = lang === "sr" ? "me" : lang;
+    if (catKw && catKw[langKey]) return catKw[langKey];
+    if (catKw) return catKw.me;
+    return lang === "en" ? "classifieds, real estate, transport, Montenegro" : lang === "ru" ? "объявления, недвижимость, транспорт, Черногория" : "oglasi, nekretnine, transport, odeća, elektronika, kućni proizvodi, građevinski materijali, alati, transport robe, kućni aparati, usluge, dečija roba, zdravlje i lepota, sport, hobi, opuštanje, odmor";
   };
 
-  const description = getDescription(category);
+  const description = (() => {
+    const key = `category_desc_${category}`;
+    const desc = t(key);
+    return desc !== key ? desc : t('category_desc_default');
+  })();
   const keywords = getKeywords(category);
   const url = getUrl(category);
   
@@ -1207,47 +1228,60 @@ export const CategoryAdvertisments = () => {
       <NavBarBack />
 
       <Helmet>
-        <title>{`Oglasna Stranica - ${
-          category ? t(category) : "Pronađite Najbolje Ponude"
-        } | Hvala`}</title>
+        <title>{`${category ? t(category) : "Oglasi"} | Hvala`}</title>
         <meta name="description" content={description} />
         <meta name="keywords" content={keywords} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta
           property="og:title"
-          content={`Oglasna Stranica - ${
-            category ? t(category) : "Pronađite Najbolje Ponude"
-          } | Hvala`}
+          content={`${category ? t(category) : "Oglasi"} | Hvala`}
         />
         <meta property="og:description" content={description} />
         <meta property="og:type" content="website" />
         <meta property="og:url" content={url} />
+        <link rel="canonical" href={url} />
         <meta
           property="og:image"
-          content="https://firebasestorage.googleapis.com/v0/b/hvala-2c8a4.appspot.com/o/oglasna-stranica.jpg?alt=media&token=primer-token"
+          content="https://hvala.app/android-chrome-512x512.png"
         />
         <meta name="twitter:card" content="summary_large_image" />
         <meta
           name="twitter:title"
-          content={`Oglasna Stranica - ${
-            category ? t(category) : "Pronađite Najbolje Ponude"
-          } | Hvala`}
+          content={`${category ? t(category) : "Oglasi"} | Hvala`}
         />
         <meta name="twitter:description" content={description} />
         <meta
           name="twitter:image"
-          content="https://firebasestorage.googleapis.com/v0/b/hvala-2c8a4.appspot.com/o/oglasna-stranica.jpg?alt=media&token=primer-token"
+          content="https://hvala.app/android-chrome-512x512.png"
         />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "Hvala", item: "https://hvala.app" },
+              { "@type": "ListItem", position: 2, name: category ? t(category) : "Oglasi", item: url }
+            ]
+          })}
+        </script>
       </Helmet>
 
+      <h1 className="visually-hidden">{category ? `${t(category)} | Hvala` : 'Oglasi | Hvala'}</h1>
       <CategoriesAds handleSearchChange={handleSearchChange} searchText={searchText}/>
 
-      {/* Карта недвижимости: отступы по краям — paddingLeft/paddingRight (px) */}
-      {category === "estate" && (
-        <div style={{ paddingLeft: 48, paddingRight: 48 }}>
-          <EstateMap advertisements={filteredAdvertisements} />
-        </div>
-      )}
+      <Container>
+        <PopularSearchBlock category={category} />
+      </Container>
+
+      <div style={{ paddingLeft: 48, paddingRight: 48 }}>
+        <Suspense fallback={<div style={{ height: 200, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><div className="spinner-border text-primary" role="status" /></div>}>
+          <EstateMap
+            advertisements={filteredAdvertisements}
+            selectedAdId={selectedAdId}
+            onSelectedAdChange={setSelectedAdId}
+          />
+        </Suspense>
+      </div>
 
       <Container>
         <Row>
@@ -1331,7 +1365,7 @@ export const CategoryAdvertisments = () => {
                 className="mt-3"
                 type="primary"
                 onClick={applyFilters}
-                style={{ backgroundColor: "orange", border: "none" }}
+                style={{ backgroundColor: "#FFBF34", border: "none", color: "white" }}
               >
                 {t("apply")}
               </Button>
@@ -1463,8 +1497,9 @@ export const CategoryAdvertisments = () => {
                             type="primary"
                             onClick={applyFilters}
                             style={{
-                              backgroundColor: "orange",
+                              backgroundColor: "#FFBF34",
                               border: "none",
+                              color: "white",
                             }}
                           >
                             {t("apply")}
@@ -1493,10 +1528,11 @@ export const CategoryAdvertisments = () => {
                 >
                   {filteredAdvertisements.length > 0 ? (
                     filteredAdvertisements.map((advertisment, index) => (
-                      <Col>
+                      <Col key={advertisment.id} id={`ad-card-${advertisment.id}`}>
                         <CustomCard
                           id={advertisment.id}
-                          key={index}
+                          key={advertisment.id}
+                          user={user}
                           images={advertisment.photoUrls}
                           price={advertisment.price}
                           currency={advertisment.currency}
@@ -1505,6 +1541,11 @@ export const CategoryAdvertisments = () => {
                           date={advertisment.time_creation}
                           showButtons={false}
                           status="active"
+                          isFavorite={favoriteIds.has(advertisment.id)}
+                          onFavoriteClick={() => handleFavoriteToggle(advertisment)}
+                          showFavorite={true}
+                          isSelected={selectedAdId === advertisment.id}
+                          onCardSelect={() => setSelectedAdId(advertisment.id)}
                         />
                       </Col>
                     ))

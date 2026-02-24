@@ -152,7 +152,7 @@ const DefaultForm = ({
     condition, setCondition,
     phoneNumber, setPhoneNumber,
     description, setDescription,
-    handleSubmit, handleFileChange,
+    handleSubmit, handleFileListChange,
     currency, setCurrency,
     loading
 }) => {
@@ -185,7 +185,11 @@ const DefaultForm = ({
         setPreviewOpen(true);
     };
 
-    const handleChange = ({ fileList }) => setFileList(fileList);
+    const handleChange = ({ fileList: fl }) => {
+        setFileList(fl);
+        const files = (fl || []).map((f) => f.originFileObj).filter(Boolean);
+        handleFileListChange?.(files);
+    };
 
     const fetchSuggestions = async (value) => {
         try {
@@ -471,10 +475,7 @@ const fetchGeocodingData = async (lat, lng) => {
                             fileList={fileList}
                             onPreview={handlePreview}
                             onChange={handleChange}
-                            beforeUpload={file => {
-                                handleFileChange(file);
-                                return false;
-                            }}
+                            beforeUpload={() => false}
                         >
                             {fileList.length >= 8 ? null :
                                 <button

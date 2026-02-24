@@ -8,7 +8,10 @@ import { useTranslation } from 'react-i18next';
 import banner from "../assets/New_Hvala_2_0.png"
 import SearchAuto from './SearchAuto';
 
-const Categories = () => {
+// Опционально принимает props поиска (используются на главной странице):
+//   searchText: текущее значение строки поиска
+//   onSearchChange: (value: string) => void
+const Categories = ({ searchText, onSearchChange }) => {
   const { t } = useTranslation();
 
   const items = [
@@ -162,10 +165,9 @@ const Categories = () => {
             </a>
           </div>
           <SearchAuto
-                placeholder={t('search')}
-                width='100%'
-                height='40px'
-              />
+            value={searchText}
+            onSearch={onSearchChange}
+          />
           <Dropdown
             menu={{
               items,
@@ -196,10 +198,9 @@ const Categories = () => {
             </a>
           </Dropdown>
           <SearchAuto
-                placeholder={t('search')}
-                width='100%'
-                height='40px'
-              />
+            value={searchText}
+            onSearch={onSearchChange}
+          />
         </div>
         <div className='container'>
         </div>

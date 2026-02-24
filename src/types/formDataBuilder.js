@@ -546,5 +546,11 @@ export const buildFormData = ({
       break;
   }
 
+  // Нормализация заголовка для поиска по префиксу (title_normalized)
+  if (formData) {
+    const rawTitle = (formData.title ?? "").toString();
+    formData.title_normalized = rawTitle.toLowerCase().trim();
+  }
+
   return formData;
 };

@@ -182,9 +182,8 @@ export const Advertisement = () => {
     }
   }, []);
 
-  const filteredAdvertisements = advertismentAl.filter((ad) =>
-    ad.title.toLowerCase().includes(searchText.toLowerCase())
-  );
+  // Теперь поиск делается на бэке по полю title_normalized, поэтому здесь просто берём уже отфильтрованный список
+  const filteredAdvertisements = advertismentAl;
 
   const loadMoreAdvertisements = async () => {
     const additionalAdvertisements = await fetchAdditionalAdvertisements(
@@ -205,22 +204,41 @@ export const Advertisement = () => {
 
   const [isTimeout, setIsTimeout] = useState(false);
 
+  // Загрузка объявлений + поиск по заголовку на стороне Firestore
   useEffect(() => {
     let timer;
+
     const fetchData = async () => {
       setIsLoading(true);
       timer = setTimeout(() => {
         setIsTimeout(true);
       }, 10000);
-      setAdvertisement(await fetchAdvertisments(loadedAdvertisements));
-      setAdvertisementAll(await fetchAdvertismentsSearch());
-      setIsLoading(false);
-      clearTimeout(timer);
-      setIsTimeout(false);
+
+      try {
+        // список для основного фида (для кнопки "Показать ещё")
+        const baseAds = await fetchAdvertisments(loadedAdvertisements);
+        setAdvertisement(baseAds);
+
+        // список для поиска: если есть текст — запрос по title_normalized, иначе просто последние объявления
+        const searchAds = await fetchAdvertismentsSearch(searchText);
+        setAdvertisementAll(searchAds);
+
+        setIsTimeout(false);
+      } catch (e) {
+        console.error("Error loading advertisments:", e);
+        setIsTimeout(true);
+      } finally {
+        clearTimeout(timer);
+        setIsLoading(false);
+      }
     };
+
     fetchData();
-    return () => clearTimeout(timer);
-  }, []);
+
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
+  }, [loadedAdvertisements, searchText]);
 
   const handleClickHelp = () => {
     history.push("/help");
@@ -252,9 +270,10 @@ export const Advertisement = () => {
           property="og:url"
           content="https://hvala.app"
         />
+        <link rel="canonical" href="https://hvala.app/" />
         <meta
           property="og:image"
-          content="https://firebasestorage.googleapis.com/v0/b/hvala-2c8a4.appspot.com/o/oglasna-stranica.jpg?alt=media&token=primer-token"
+          content="https://hvala.app/android-chrome-512x512.png"
         />
         <meta name="twitter:card" content="summary_large_image" />
         <meta
@@ -267,7 +286,7 @@ export const Advertisement = () => {
         />
         <meta
           name="twitter:image"
-          content="https://firebasestorage.googleapis.com/v0/b/hvala-2c8a4.appspot.com/o/oglasna-stranica.jpg?alt=media&token=primer-token"
+          content="https://hvala.app/android-chrome-512x512.png"
         />
       </Helmet>
       <main>
@@ -286,7 +305,7 @@ export const Advertisement = () => {
           <div className="app d-lg-none">
             <button
               onClick={showModal}
-              className="fixed right-6 bottom-20 h-12 w-24 text-white bg-customColor2 rounded-lg flex items-center justify-center z-50"
+              className="fixed right-6 bottom-24 h-12 w-24 text-white bg-customColor2 rounded-lg flex items-center justify-center z-50"
             >
               <GlobalOutlined className="text-xl" />
               <span className="ml-2">{t("language")}</span>
@@ -295,14 +314,17 @@ export const Advertisement = () => {
           <div className="app d-lg-none">
             <button
               onClick={handleClickHelp}
-              className="fixed left-6 bottom-20 h-12 w-24 text-white bg-customColor2 rounded-lg flex items-center justify-center z-50"
+              className="fixed left-6 bottom-24 h-12 w-24 text-white bg-customColor2 rounded-lg flex items-center justify-center z-50"
             >
               <QuestionCircleOutlined className="text-xl" />
               <span className="ml-2">{t("help_navbar")}</span>
             </button>
           </div>
           <LanguageModal show={isModalVisible} handleClose={handleModalClose} />
-          <Categories />
+          <Categories
+            searchText={searchText}
+            onSearchChange={(value) => setSearchText(value)}
+          />
           <CategoryCards />
           <div className="container d-none d-lg-block">
             <img

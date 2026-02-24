@@ -1,8 +1,10 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 export const NavBarShare = () => {
   const history = useHistory();
+  const { t } = useTranslation();
 
   const goBack = () => {
     history.goBack();
@@ -22,11 +24,11 @@ export const NavBarShare = () => {
     } else {
       navigator.clipboard.writeText(window.location.href)
         .then(() => {
-          console.log('Ссылка скопирована в буфер обмена');
-          alert('Ссылка скопирована в буфер обмена');
+          console.log(t('copied_to_clipboard'));
+          alert(t('copied_to_clipboard'));
         })
         .catch((err) => {
-          console.log('Ошибка при копировании ссылки в буфер обмена', err);
+          console.log(t('copy_to_clipboard_error'), err);
         });
     }
   };

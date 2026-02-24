@@ -5,13 +5,11 @@ import { Link } from 'react-router-dom';
 import Logo from '../../assets/logo_def.png';
 import { useTranslation } from 'react-i18next';
 import { getConversionRate } from '../../services/AdvertismentsHome/AdvertismentsService';
-import { formatDistanceToNow, format } from 'date-fns';
-import { ru, enUS, sr } from 'date-fns/locale';
+import { formatAdCardDate } from '../../utils/dateFormat';
 
 import { unarchivedAdvertisement, deleteAdvertisement } from '../../services/profile/Profile';
 
 const CardAdvertisementProfileArchive = ({ advertismentArchive, index }) => {
-    const { i18n } = useTranslation();
     const { t } = useTranslation();
     const [conversionRate, setConversionRate] = useState(null);
     const [currency, setCurrency] = useState('');
@@ -43,27 +41,6 @@ const CardAdvertisementProfileArchive = ({ advertismentArchive, index }) => {
     }, [currency, isUnarchived, deleteAdvertisment]);
 
     const convertedPrice = Math.round(advertismentArchive.price * conversionRate);
-
-    function formatDate(timestamp) {
-        const locales = { ru, en: enUS, sr };
-        const locale = locales[i18n.language] || enUS;
-
-        const date = new Date(timestamp.seconds * 1000);
-        const formattedDate = formatDistanceToNow(date, { addSuffix: true, locale });
-
-        const today = new Date();
-        const isToday = date.getDate() === today.getDate() &&
-            date.getMonth() === today.getMonth() &&
-            date.getFullYear() === today.getFullYear();
-
-        if (isToday) {
-            return format(date, 'HH:mm', { locale });
-        } else if (formattedDate.includes('день')) {
-            return `вчера ${format(date, 'HH:mm', { locale })}`;
-        } else {
-            return format(date, 'd MMMM HH:mm', { locale });
-        }
-    }
 
     return (
         <>
@@ -114,12 +91,12 @@ const CardAdvertisementProfileArchive = ({ advertismentArchive, index }) => {
                                 {advertismentArchive.photoUrls && advertismentArchive.photoUrls.length > 0 ? (
                                     advertismentArchive.photoUrls.map((url, index) => (
                                         <div key={index} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '12rem' }}>
-                                            <img style={{ height: '12rem', width: '100%', objectFit: 'cover' }} alt="example" src={url || Logo} />
+                                            <img style={{ height: '12rem', width: '100%', objectFit: 'cover' }} alt="example" src={url || Logo} loading="lazy" decoding="async" />
                                         </div>
                                     ))
                                 ) : (
                                     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '12rem' }}>
-                                        <img style={{ height: '12rem', width: '100%', objectFit: 'cover' }} alt="example" src={Logo} />
+                                        <img style={{ height: '12rem', width: '100%', objectFit: 'cover' }} alt="example" src={Logo} loading="lazy" />
                                     </div>
                                 )}
                             </Carousel>
@@ -144,7 +121,7 @@ const CardAdvertisementProfileArchive = ({ advertismentArchive, index }) => {
                         }}>
                             {t(advertismentArchive.country)}, {t(advertismentArchive.region)}
                         </p>
-                        <p>{formatDate(advertismentArchive.time_creation)}</p>
+                        <p>{formatAdCardDate(advertismentArchive.time_creation)}</p>
                     </Link>
 
                 </Card>

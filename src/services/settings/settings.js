@@ -99,8 +99,8 @@ export const updateUserProfile = async (profileData) => {
             }
         }
 
-        if (profileData.link && profileData.link !== currentUserData.link) {
-            const linkQuery = query(usersCollection, where("link", "==", profileData.link));
+        if (profileData.link && profileData.link.trim() !== '' && profileData.link !== currentUserData.link) {
+            const linkQuery = query(usersCollection, where("link", "==", profileData.link.trim()));
             const linkSnapshot = await getDocs(linkQuery);
             if (!linkSnapshot.empty) {
                 throw new Error("Link is already taken.");
@@ -110,7 +110,7 @@ export const updateUserProfile = async (profileData) => {
         const updatedData = {};
         updatedData.name = profileData.name ? profileData.name : deleteField();
         updatedData.description = profileData.description ? profileData.description : deleteField();
-        updatedData.link = profileData.link ? profileData.link : deleteField();
+        updatedData.link = (profileData.link && profileData.link.trim() !== '') ? profileData.link.trim() : (currentUserData.id || user.uid);
         updatedData.phone = profileData.phone ? profileData.phone : deleteField();
         updatedData.emailProfile = profileData.emailProfile ? profileData.emailProfile : deleteField();
         updatedData.instagram = profileData.instagram ? profileData.instagram : deleteField();

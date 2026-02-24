@@ -1,5 +1,5 @@
 import React from "react";
-
+import { formatAdCardDate } from "../../utils/dateFormat";
 
 const CharactersForCard = ({ adData, t }) => {
     return (
@@ -170,6 +170,10 @@ const CharactersForCard = ({ adData, t }) => {
                         />
                     </div>
                 )}
+                <div className="d-flex justify-content-between mt-3" style={{ color: '#666', fontSize: '14px' }}>
+                    <span>{formatAdCardDate(adData?.time_creation)}</span>
+                    <span>{(adData?.views_count ?? 0)} {t('views')}</span>
+                </div>
             </div>
         </div>
     );

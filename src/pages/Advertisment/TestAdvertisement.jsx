@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 
 import { MyNavbar } from "../../components/Navbar/Navbar";
 import CardAdvertisementHome from "../../components/card-advertisment-home/CardAdvertisementHome";
@@ -14,23 +14,30 @@ import OrangeButton from "../../components/buttons/orange-button/OrangeButton";
 
 import banner from "../../assets/New_Hvala_2_0.png";
 
-import { Spin } from "antd";
-import { GlobalOutlined, QuestionCircleOutlined } from "@ant-design/icons";
+import { Spin, message } from "antd";
+import { GlobalOutlined, QuestionCircleOutlined, CloseOutlined } from "@ant-design/icons";
 
 import {
   fetchAdvertisments,
   getUserByAuth
 } from "../../services/AdvertismentsHome/test";
+import { fetchAdvertismentsSearch } from "../../services/AdvertismentsHome/AdvertismentsService";
+import { fetchFavoriteIds, addToFavorites, removeFromFavorites } from "../../services/favorites/FavoritesService";
 import { resizeFirstImage } from "../../services/imageResizer";
 import { Helmet } from "react-helmet";
 import CustomCard from "../../components/card/CustomCard";
+import { PopularSearchBlock } from "../../components/SEO/PopularSearchBlock";
+import SearchAuto from "../../components/SearchAuto";
 
 const TestAdvertisment = () => {
   const history = useHistory();
+  const location = useLocation();
   const { t } = useTranslation();
   const [user, setUser] = useState(null);
+  const [favoriteIds, setFavoriteIds] = useState(new Set());
   const [advertisments, setAdvertisments] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [showLoadingIndicator, setShowLoadingIndicator] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [fetching, setFetching] = useState(true);
   const [lastVisible, setLastVisible] = useState(null);
@@ -38,6 +45,12 @@ const TestAdvertisment = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isModalVisibleFilter, setIsModalVisibleFilter] = useState(false);
 
+  const [searchText, setSearchText] = useState(() => {
+    const params = new URLSearchParams(location.search);
+    return params.get("q") || params.get("search") || "";
+  });
+  const [isSearchSticky, setIsSearchSticky] = useState(false);
+  const searchSectionRef = useRef(null);
   const [category, setCategory] = useState("");
   const [subcategory, setSubCategory] = useState("");
   const [country, setCountry] = useState("");
@@ -363,7 +376,11 @@ const TestAdvertisment = () => {
 
   const applyFilters = async () => {
     setLoading(true);
-    console.log("Фильтры:", {
+    setAdvertisments([]);
+    setLastVisible(null);
+    setCurrentPage(1);
+
+    const filters = {
       category,
       subcategory,
       country,
@@ -383,104 +400,90 @@ const TestAdvertisment = () => {
       minPrice,
       maxPrice,
       currency,
-    });
+    };
 
-    setAdvertisments([]);
-    setLastVisible(null);
-    setCurrentPage(1);
-    setHasMore(true);
+    let adsToProcess = [];
+    if (searchText.trim()) {
+      setHasMore(false);
+      adsToProcess = await fetchAdvertismentsSearch(searchText.trim(), filters);
+      const adsWithOriginal = adsToProcess.map(ad => ({
+        ...ad,
+        photoUrls: ad.photoUrls || [],
+        _resizing: true
+      }));
+      setAdvertisments(adsWithOriginal);
+    } else {
+      setHasMore(true);
+      const { advertisments: newAds, lastDoc } = await fetchAdvertisments(
+        null,
+        category,
+        subcategory,
+        country,
+        region,
+        condition,
+        size,
+        type,
+        wheel,
+        mileage,
+        body,
+        drive,
+        year,
+        transmission,
+        memory,
+        screen_size,
+        brand,
+        minPrice,
+        maxPrice,
+        currency
+      );
+      adsToProcess = newAds;
+      const adsWithOriginalImages = newAds.map(ad => ({
+        ...ad,
+        photoUrls: ad.photoUrls || [],
+        _resizing: true
+      }));
+      setAdvertisments(adsWithOriginalImages);
+      setLastVisible(lastDoc);
+    }
 
-    const { advertisments: newAds, lastDoc } = await fetchAdvertisments(
-      null,
-      category,
-      subcategory,
-      country,
-      region,
-      condition,
-      size,
-      type,
-      wheel,
-      mileage,
-      body,
-      drive,
-      year,
-      transmission,
-      memory,
-      screen_size,
-      brand,
-      minPrice,
-      maxPrice,
-      currency
-    );
-
-    // Сначала показываем объявления с оригинальными изображениями
-    const adsWithOriginalImages = newAds.map(ad => ({
-      ...ad,
-      photoUrls: ad.photoUrls || [],
-      _resizing: true
-    }));
-    
-    setAdvertisments(adsWithOriginalImages);
-    setLastVisible(lastDoc);
     setLoading(false);
     setIsModalVisibleFilter(false);
-    
-    // Параллельно обрабатываем изображения батчами для предотвращения лагов
-    const processBatch = async (adsBatch, startIndex) => {
-      const promises = adsBatch.map(async (ad, batchIndex) => {
+
+    const processBatch = async (adsBatch) => {
+      const promises = adsBatch.map(async (ad) => {
         if (ad.photoUrls && ad.photoUrls.length > 0) {
           try {
             const resizedUrls = await resizeFirstImage(ad.photoUrls, 400, 400);
-            const adIndex = startIndex + batchIndex;
-            
-            setAdvertisments((prev) => {
-              const updated = [...prev];
-              if (updated[adIndex] && updated[adIndex].id === ad.id) {
-                updated[adIndex] = {
-                  ...updated[adIndex],
-                  photoUrls: resizedUrls,
-                  _resizing: false
-                };
-              }
-              return updated;
-            });
+            const adId = ad.id;
+            setAdvertisments((prev) =>
+              prev.map((item) =>
+                item.id === adId
+                  ? { ...item, photoUrls: resizedUrls, _resizing: false }
+                  : item
+              )
+            );
           } catch (error) {
-            const adIndex = startIndex + batchIndex;
-            setAdvertisments((prev) => {
-              const updated = [...prev];
-              if (updated[adIndex] && updated[adIndex].id === ad.id) {
-                updated[adIndex] = {
-                  ...updated[adIndex],
-                  _resizing: false
-                };
-              }
-              return updated;
-            });
+            const adId = ad.id;
+            setAdvertisments((prev) =>
+              prev.map((item) =>
+                item.id === adId ? { ...item, _resizing: false } : item
+              )
+            );
           }
         }
       });
-      
       await Promise.all(promises);
     };
-    
-    // Обрабатываем батчами по 3 объявления за раз
+
     const batchSize = 3;
-    for (let i = 0; i < newAds.length; i += batchSize) {
-      const batch = newAds.slice(i, i + batchSize);
-      
+    for (let i = 0; i < adsToProcess.length; i += batchSize) {
+      const batch = adsToProcess.slice(i, i + batchSize);
       if (window.requestIdleCallback) {
-        window.requestIdleCallback(() => {
-          processBatch(batch, i);
-        }, { timeout: 1000 });
+        window.requestIdleCallback(() => processBatch(batch), { timeout: 1000 });
       } else {
-        setTimeout(() => {
-          processBatch(batch, i);
-        }, i * 50);
+        setTimeout(() => processBatch(batch), i * 50);
       }
     }
-    setLastVisible(lastDoc);
-    setLoading(false);
-    setIsModalVisibleFilter(false);
   };
 
   const resetFilters = () => {
@@ -490,6 +493,35 @@ const TestAdvertisment = () => {
     setRegion("");
     setMemory("");
     setScreenSize("");
+  };
+
+  const hasActiveFilters = !!(category || subcategory || country || region || minPrice || maxPrice || currency || condition || size || type || wheel || mileage || body || drive || year || transmission || memory || screen_size || brand);
+
+  const handleClearFilters = (e) => {
+    e?.stopPropagation?.();
+    setCategory("");
+    setSubCategory("");
+    setCountry("");
+    setRegion("");
+    setMinPrice("");
+    setMaxPrice("");
+    setCurrency("");
+    setCondition("");
+    setSize("");
+    setType("");
+    setWheel("");
+    setMileage("");
+    setBody("");
+    setDrive("");
+    setYear("");
+    setTransmission("");
+    setMemory("");
+    setScreenSize("");
+    setBrand("");
+    setAdvertisments([]);
+    setLastVisible(null);
+    setHasMore(true);
+    setFetching(true);
   };
 
   const scrollHandler = (e) => {
@@ -571,40 +603,31 @@ const TestAdvertisment = () => {
         setFetching(false);
         
         // Параллельно обрабатываем изображения батчами для предотвращения лагов
-        const processBatch = async (adsBatch, startIndex) => {
-          const promises = adsBatch.map(async (ad, batchIndex) => {
+        // Обновляем по id объявления, а не по индексу — иначе при race condition
+        // (новый поиск, пагинация) фото одного объявления могут попасть в другое
+        const processBatch = async (adsBatch) => {
+          const promises = adsBatch.map(async (ad) => {
             if (ad.photoUrls && ad.photoUrls.length > 0) {
               try {
                 const resizedUrls = await resizeFirstImage(ad.photoUrls, 400, 400);
-                const adIndex = startIndex + batchIndex;
-                
-                setAdvertisments((prev) => {
-                  const updated = [...prev];
-                  if (updated[adIndex] && updated[adIndex].id === ad.id) {
-                    updated[adIndex] = {
-                      ...updated[adIndex],
-                      photoUrls: resizedUrls,
-                      _resizing: false
-                    };
-                  }
-                  return updated;
-                });
+                const adId = ad.id;
+                setAdvertisments((prev) =>
+                  prev.map((item) =>
+                    item.id === adId
+                      ? { ...item, photoUrls: resizedUrls, _resizing: false }
+                      : item
+                  )
+                );
               } catch (error) {
-                const adIndex = startIndex + batchIndex;
-                setAdvertisments((prev) => {
-                  const updated = [...prev];
-                  if (updated[adIndex] && updated[adIndex].id === ad.id) {
-                    updated[adIndex] = {
-                      ...updated[adIndex],
-                      _resizing: false
-                    };
-                  }
-                  return updated;
-                });
+                const adId = ad.id;
+                setAdvertisments((prev) =>
+                  prev.map((item) =>
+                    item.id === adId ? { ...item, _resizing: false } : item
+                  )
+                );
               }
             }
           });
-          
           await Promise.all(promises);
         };
         
@@ -612,18 +635,10 @@ const TestAdvertisment = () => {
         const batchSize = 3;
         for (let i = 0; i < newAds.length; i += batchSize) {
           const batch = newAds.slice(i, i + batchSize);
-          const startIndex = advertisments.length + i;
-          
-          // Используем requestIdleCallback для обработки в свободное время
           if (window.requestIdleCallback) {
-            window.requestIdleCallback(() => {
-              processBatch(batch, startIndex);
-            }, { timeout: 1000 });
+            window.requestIdleCallback(() => processBatch(batch), { timeout: 1000 });
           } else {
-            // Fallback для браузеров без requestIdleCallback
-            setTimeout(() => {
-              processBatch(batch, startIndex);
-            }, i * 50);
+            setTimeout(() => processBatch(batch), i * 50);
           }
         }
         
@@ -636,6 +651,47 @@ const TestAdvertisment = () => {
   }, [fetching, hasMore]);
 
   useEffect(() => {
+    const trimmed = searchText.trim();
+    if (trimmed) {
+      setLoading(true);
+      setHasMore(false);
+      const filters = {
+        category,
+        subcategory,
+        country,
+        region,
+        condition,
+        size,
+        type,
+        wheel,
+        mileage,
+        body,
+        drive,
+        year,
+        transmission,
+        memory,
+        screen_size,
+        brand,
+        minPrice,
+        maxPrice,
+        currency,
+      };
+      fetchAdvertismentsSearch(trimmed, filters)
+        .then((searchAds) => {
+          setAdvertisments(searchAds);
+          setLastVisible(null);
+        })
+        .catch(() => {})
+        .finally(() => setLoading(false));
+    } else {
+      setAdvertisments([]);
+      setLastVisible(null);
+      setHasMore(true);
+      setFetching(true);
+    }
+  }, [searchText, category, subcategory, country, region, condition, size, type, wheel, mileage, body, drive, year, transmission, memory, screen_size, brand, minPrice, maxPrice, currency]);
+
+  useEffect(() => {
     if (hasMore) {
       setFetching(true);
     }
@@ -645,11 +701,43 @@ const TestAdvertisment = () => {
     setFetching(true);
   }, []);
 
+  // Синхронизация поиска из URL (для SearchAction / переходов из Google)
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const q = params.get("q") || params.get("search") || "";
+    if (q && q !== searchText) {
+      setSearchText(q);
+    }
+  }, [location.search]);
+
+  // Показываем индикатор загрузки только если запрос длится дольше 300ms (без мигания при быстром ответе)
+  useEffect(() => {
+    if (!loading) {
+      setShowLoadingIndicator(false);
+      return;
+    }
+    const timer = setTimeout(() => setShowLoadingIndicator(true), 300);
+    return () => clearTimeout(timer);
+  }, [loading]);
+
   useEffect(() => {
     window.addEventListener("scroll", scrollHandler);
     return () => {
       window.removeEventListener("scroll", scrollHandler);
     };
+  }, []);
+
+  useEffect(() => {
+    const el = searchSectionRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsSearchSticky(!entry.isIntersecting);
+      },
+      { threshold: 0, rootMargin: "-56px 0px 0px 0px" }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
@@ -661,47 +749,82 @@ const TestAdvertisment = () => {
   }, []);
 
   useEffect(() => {
-  }, [user]);
+    const loadFavorites = async () => {
+      if (!user?.id) return;
+      try {
+        const ids = await fetchFavoriteIds();
+        setFavoriteIds(new Set(ids));
+      } catch {
+        setFavoriteIds(new Set());
+      }
+    };
+    loadFavorites();
+  }, [user?.id]);
+
+  const handleFavoriteToggle = async (ad) => {
+    if (!user?.id) {
+      message.info(t("login_to_add_favorites") || "Войдите, чтобы добавить в избранное");
+      return;
+    }
+    const isFav = favoriteIds.has(ad.id);
+    try {
+      if (isFav) {
+        await removeFromFavorites(ad.id);
+        setFavoriteIds((prev) => {
+          const next = new Set(prev);
+          next.delete(ad.id);
+          return next;
+        });
+      } else {
+        await addToFavorites(ad);
+        setFavoriteIds((prev) => new Set([...prev, ad.id]));
+      }
+    } catch (e) {
+      if (e.message === "AUTH_REQUIRED") return;
+      console.error("Favorite toggle error:", e);
+    }
+  };
 
   return (
     <>
       <Helmet>
-        <title>Oglasna Stranica - Pronađite Najbolje Ponude | Hvala</title>
+        <title>Hvala - Oglasna Stranica Crna Gora | Oglasi Nekretnine, Transport</title>
         <meta
           name="description"
-          content="Otkrijte najbolje oglase za razne kategorije, uključujući nekretnine, transport, odeću, elektroniku i još mnogo toga. Pronađite sjajne ponude i popuste na Hvala."
+          content="Hvala - besplatna oglasna stranica za Crnu Goru. Oglasi za nekretnine, transport, odeću, elektroniku. Preuzmite Hvala app."
         />
         <meta
           name="keywords"
-          content="oglasi, nekretnine, transport, odeća, elektronika, kućni proizvodi, građevinski materijali, alati, transport robe, kućni aparati, usluge, dečija roba, zdravlje i lepota, sport, hobi, opuštanje, odmor"
+          content="Hvala, hvala app, hvala oglasi, hvala crna gora, oglasna stranica, oglasi Crna Gora, besplatni oglasi, kupiti prodati, nekretnine, transport, odeća, elektronika, Montenegro classifieds, free ads Montenegro, buy sell Montenegro, объявления Черногория, бесплатные объявления, купить продать"
         />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta
           property="og:title"
-          content="Oglasna Stranica - Pronađite Najbolje Ponude | Hvala"
+          content="Hvala - Oglasna Stranica Crna Gora | Oglasi"
         />
         <meta
           property="og:description"
-          content="Otkrijte najbolje oglase za razne kategorije, uključujući nekretnine, transport, odeću, elektroniku i još mnogo toga. Pronađite sjajne ponude i popuste na Hvala."
+          content="Hvala - besplatna oglasna stranica za Crnu Goru. Oglasi za nekretnine, transport, odeću, elektroniku."
         />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://hvala.app" />
+        <link rel="canonical" href="https://hvala.app/" />
         <meta
           property="og:image"
-          content="https://firebasestorage.googleapis.com/v0/b/hvala-2c8a4.appspot.com/o/oglasna-stranica.jpg?alt=media&token=primer-token"
+          content="https://hvala.app/android-chrome-512x512.png"
         />
         <meta name="twitter:card" content="summary_large_image" />
         <meta
           name="twitter:title"
-          content="Oglasna Stranica - Pronađite Najbolje Ponude | Hvala"
+          content="Hvala - Oglasna Stranica Crna Gora | Oglasi"
         />
         <meta
           name="twitter:description"
-          content="Otkrijte najbolje oglase za razne kategorije, uključujući nekretnine, transport, odeću, elektroniku i još mnogo toga. Pronađite sjajne ponude i popuste na Hvala."
+          content="Hvala - besplatna oglasna stranica za Crnu Goru. Oglasi za nekretnine, transport, odeću, elektroniku."
         />
         <meta
           name="twitter:image"
-          content="https://firebasestorage.googleapis.com/v0/b/hvala-2c8a4.appspot.com/o/oglasna-stranica.jpg?alt=media&token=primer-token"
+          content="https://hvala.app/android-chrome-512x512.png"
         />
       </Helmet>
       <style>
@@ -711,11 +834,127 @@ const TestAdvertisment = () => {
                     padding-top: 0;
                     }
                 }
+                @media (min-width: 1000px) {
+                    .sticky-search-bar { top: 5.5rem !important; }
+                }
+                .sticky-search-bar {
+                    animation: stickySearchSlide 0.25s ease-out;
+                }
+                @keyframes stickySearchSlide {
+                    from { opacity: 0; transform: translateY(-8px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+                .home-update-ticker {
+                    position: relative;
+                    overflow: hidden;
+                    white-space: nowrap;
+                }
+                .home-update-ticker-track {
+                    display: inline-block;
+                    padding-left: 100%;
+                    animation: homeTickerMove 14s linear infinite;
+                }
+                @keyframes homeTickerMove {
+                    0% { transform: translateX(0); }
+                    100% { transform: translateX(-100%); }
+                }
+                .sticky-search-bar input.ant-input,
+                .sticky-search-bar .ant-select-selector {
+                    border-radius: 10px !important;
+                    border-color: #03989F !important;
+                }
+                .sticky-search-bar input.ant-input:focus,
+                .sticky-search-bar .ant-select-focused .ant-select-selector {
+                    border-color: #00B2BB !important;
+                    box-shadow: 0 0 0 2px rgba(3, 152, 159, 0.15) !important;
+                }
                 `}
       </style>
       <MyNavbar />
-      <Categories />
+      {isSearchSticky && (
+        <div
+          className="container sticky-search-bar"
+          style={{
+            position: "fixed",
+            top: "3.5rem",
+            left: 0,
+            right: 0,
+            zIndex: 998,
+            backgroundColor: "rgba(255, 255, 255, 0.98)",
+            backdropFilter: "blur(10px)",
+            WebkitBackdropFilter: "blur(10px)",
+            boxShadow: "0 4px 20px rgba(3, 152, 159, 0.12)",
+            borderBottom: "2px solid #03989F",
+            padding: "14px 16px",
+            borderRadius: "0 0 12px 12px",
+          }}
+        >
+          <div className="d-flex align-items-center gap-3" style={{ maxWidth: 640, margin: "0 auto" }}>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <SearchAuto value={searchText} onSearch={(v) => setSearchText(v)} />
+            </div>
+            <OrangeButton onClick={showModalFilter} width="90px" height="40px" title={t("filter")} />
+            {hasActiveFilters && (
+              <button
+                type="button"
+                onClick={handleClearFilters}
+                className="d-flex align-items-center justify-content-center border-0 rounded-circle text-white"
+                style={{
+                  width: 28,
+                  height: 28,
+                  cursor: "pointer",
+                  flexShrink: 0,
+                  backgroundColor: "#dc3545",
+                  transition: "transform 0.2s, background-color 0.2s",
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.transform = "scale(1.1)";
+                  e.currentTarget.style.backgroundColor = "#c82333";
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.transform = "scale(1)";
+                  e.currentTarget.style.backgroundColor = "#dc3545";
+                }}
+                title={t("reset_filters")}
+                aria-label={t("reset_filters")}
+              >
+                <CloseOutlined style={{ fontSize: 12 }} />
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+      <h1 className="visually-hidden">Hvala - Oglasna stranica Crna Gora. Besplatni oglasi za nekretnine, transport, odeću, elektroniku.</h1>
+      <div ref={searchSectionRef}>
+        <Categories
+          searchText={searchText}
+          onSearchChange={(value) => setSearchText(value)}
+        />
+      </div>
       <CategoryCards />
+      <div className="container" style={{ marginTop: 8 }}>
+        <div
+          className="home-update-ticker"
+          style={{
+            border: "1px solid #E3A725",
+            borderRadius: 10,
+            background: "linear-gradient(90deg, #FFBF34 0%, #FFA726 100%)",
+            color: "#fff",
+            fontSize: 13,
+            padding: "8px 0",
+            textAlign: "left",
+            lineHeight: 1.35,
+            fontWeight: 600,
+          }}
+        >
+          <span className="home-update-ticker-track">
+            {t("home_map_update_banner")} &nbsp;•&nbsp; {t("home_map_update_banner")}
+          </span>
+        </div>
+      </div>
+      <div className="container">
+        <PopularSearchBlock />
+      </div>
       <LanguageModal show={isModalVisible} handleClose={handleModalClose} />
       <ModalFilter
         t={t}
@@ -778,7 +1017,7 @@ const TestAdvertisment = () => {
       <div className="app d-lg-none">
         <button
           onClick={showModal}
-          className="fixed right-6 bottom-20 h-12 w-24 text-white bg-customColor2 rounded-lg flex items-center justify-center z-50"
+          className="fixed right-6 bottom-24 h-12 w-24 text-white bg-customColor2 rounded-lg flex items-center justify-center z-50"
         >
           <GlobalOutlined className="text-xl" />
           <span className="ml-2">{t("language")}</span>
@@ -787,7 +1026,7 @@ const TestAdvertisment = () => {
       <div className="app d-lg-none">
         <button
           onClick={handleClickHelp}
-          className="fixed left-6 bottom-20 h-12 w-24 text-white bg-customColor2 rounded-lg flex items-center justify-center z-50"
+          className="fixed left-6 bottom-24 h-12 w-24 text-white bg-customColor2 rounded-lg flex items-center justify-center z-50"
         >
           <QuestionCircleOutlined className="text-xl" />
           <span className="ml-2">{t("help_navbar")}</span>
@@ -801,13 +1040,27 @@ const TestAdvertisment = () => {
           style={{ borderRadius: "10px" }}
         />
       </div>
-      <div className="container d-flex justify-end mt-3 mb-3">
-        <OrangeButton
-          onClick={showModalFilter}
-          width="100px"
-          heigth="50px"
-          title={t("filter")}
-        />
+      <div className="container d-flex justify-end align-items-center mt-3 mb-3 gap-2">
+        <div className="d-flex align-items-center gap-2" style={{ position: "relative" }}>
+          <OrangeButton
+            onClick={showModalFilter}
+            width="100px"
+            heigth="50px"
+            title={t("filter")}
+          />
+          {hasActiveFilters && (
+            <button
+              type="button"
+              onClick={handleClearFilters}
+              className="d-flex align-items-center justify-content-center border-0 rounded-circle bg-danger text-white"
+              style={{ width: 24, height: 24, cursor: "pointer", flexShrink: 0 }}
+              title={t("reset_filters")}
+              aria-label={t("reset_filters")}
+            >
+              <CloseOutlined style={{ fontSize: 12 }} />
+            </button>
+          )}
+        </div>
       </div>
       <div className="container">
         <div className="mt-6 grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
@@ -825,12 +1078,25 @@ const TestAdvertisment = () => {
               showButtons={user?.role === 'admin'}
               status="active"
               _resizing={advertisment._resizing}
+              isFavorite={favoriteIds.has(advertisment.id)}
+              onFavoriteClick={() => handleFavoriteToggle(advertisment)}
+              showFavorite={true}
             />
           ))}
         </div>
       </div>
       <div className="container d-flex justify-content-center mt-3 mb-3">
-        {loading && <Spin />}
+        {showLoadingIndicator && (
+          <div
+            className="d-flex flex-column align-items-center justify-content-center py-4"
+            style={{ minHeight: 80 }}
+          >
+            <Spin size="large" style={{ color: "#03989F" }} />
+            <span className="mt-2 text-muted" style={{ fontSize: "0.9rem" }}>
+              {t("search")}…
+            </span>
+          </div>
+        )}
       </div>
       <CustomFooter />
     </>

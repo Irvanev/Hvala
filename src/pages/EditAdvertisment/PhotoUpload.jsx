@@ -12,7 +12,7 @@ const getBase64 = (file) =>
     reader.onerror = (error) => reject(error);
   });
 
-export default function PhotoUpload({ data, onPhotoUrlsChange }) {
+export default function PhotoUpload({ data, onPhotoUrlsChange, adId }) {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
   const [fileList, setFileList] = useState([]);
@@ -44,7 +44,10 @@ export default function PhotoUpload({ data, onPhotoUrlsChange }) {
   };
 
   const handleUpload = async ({ file, onSuccess, onError }) => {
-    const storageRef = ref(storage, `images/${file.name}`);
+    const uniqueName = adId
+      ? `advertisment/${adId}/${Date.now()}_${file.name}`
+      : `images/${Date.now()}_${Math.random().toString(36).slice(2)}_${file.name}`;
+    const storageRef = ref(storage, uniqueName);
     const uploadTask = uploadBytesResumable(storageRef, file);
 
     uploadTask.on(

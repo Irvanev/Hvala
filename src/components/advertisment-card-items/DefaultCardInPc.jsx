@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import Logo from "../../assets/logo_def.png";
 import { Container, Row, Col, Breadcrumb, Image, Placeholder } from "react-bootstrap";
 import {useTranslation} from 'react-i18next';
@@ -27,7 +28,7 @@ const DefaultCardInPc = () => {
             <Row>
                 <Col>
                     <Breadcrumb>
-                        <Breadcrumb.Item href="/advertisment">{t('home_navbar')}</Breadcrumb.Item>
+                        <Breadcrumb.Item><Link to="/">{t('home_navbar')}</Link></Breadcrumb.Item>
                         <Breadcrumb.Item href="#">{t('category')}</Breadcrumb.Item>
                         <Breadcrumb.Item active>{t('subCategory')}</Breadcrumb.Item>
                     </Breadcrumb>

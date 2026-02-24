@@ -3,8 +3,47 @@ import { useTranslation } from "react-i18next";
 import { Helmet } from "react-helmet";
 import { MyNavbar } from "../components/Navbar/Navbar";
 
+const GUIDE_ITEMS = [
+  { title: 'guide_home_title', body: 'guide_home' },
+  { title: 'guide_categories_title', body: 'guide_categories' },
+  { title: 'guide_ad_page_title', body: 'guide_ad_page' },
+  { title: 'guide_profile_title', body: 'guide_profile' },
+  { title: 'guide_add_ad_title', body: 'guide_add_ad' },
+  { title: 'guide_messages_title', body: 'guide_messages' },
+  { title: 'guide_seller_title', body: 'guide_seller' },
+  { title: 'guide_settings_title', body: 'guide_settings' },
+];
+
+const FAQ_ITEMS = [
+  { q: 'send_advert_question', a: 'send_advert' },
+  { q: 'delete_advert_question', a: 'delete_advert' },
+  { q: 'change_password_question', a: 'forgot_pass' },
+  { q: 'change_email_question', a: 'change_language' },
+  { q: 'share_advert_question', a: 'share_advert' },
+  { q: 'send_seller_question', a: 'send_seller' },
+  { q: 'chat_helper_question', a: 'chat_helper' },
+  { q: 'do_filter_question', a: 'do_filter' },
+  { q: 'edit_data_question', a: 'edit_data' },
+  { q: 'rating_seller_question', a: 'rating_seller' },
+  { q: 'security_data_question', a: 'security_data' },
+];
+
 const Help = () => {
   const { t } = useTranslation();
+
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: FAQ_ITEMS.map(({ q, a }) => ({
+      '@type': 'Question',
+      name: t(q),
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: t(a),
+      },
+    })),
+  };
+
   return (
     <>
       <Helmet>
@@ -15,7 +54,7 @@ const Help = () => {
         />
         <meta
           name="keywords"
-          content="FAQ, pomoć, podrška, pitanja, odgovori, Hvala"
+          content="FAQ, pomoć, podrška, pitanja, odgovori, Hvala, help Hvala, FAQ Montenegro, помощь Hvala, часто задаваемые вопросы"
         />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta
@@ -31,9 +70,10 @@ const Help = () => {
           property="og:url"
           content="https://hvala.app/help"
         />
+        <link rel="canonical" href="https://hvala.app/help" />
         <meta
           property="og:image"
-          content="https://firebasestorage.googleapis.com/v0/b/hvala-2c8a4.appspot.com/o/faq.jpg?alt=media&token=example-token"
+          content="https://hvala.app/android-chrome-512x512.png"
         />
         <meta name="twitter:card" content="summary_large_image" />
         <meta
@@ -46,8 +86,11 @@ const Help = () => {
         />
         <meta
           name="twitter:image"
-          content="https://firebasestorage.googleapis.com/v0/b/hvala-2c8a4.appspot.com/o/faq.jpg?alt=media&token=example-token"
+          content="https://hvala.app/android-chrome-512x512.png"
         />
+        <script type="application/ld+json">
+          {JSON.stringify(faqSchema)}
+        </script>
       </Helmet>
       <main>
         <style type="text/css">
@@ -69,6 +112,22 @@ const Help = () => {
         <MyNavbar />
         <Container className="mt-3">
           <h1>{t("many_ask_questions")}</h1>
+
+          <section className="mb-4">
+            <h2 className="h4 mb-3" style={{ color: '#03989F', fontWeight: 600 }}>{t("guide_heading")}</h2>
+            <Accordion defaultActiveKey="guide-0">
+              {GUIDE_ITEMS.map((item, idx) => (
+                <Accordion.Item key={idx} eventKey={`guide-${idx}`}>
+                  <Accordion.Header>{t(item.title)}</Accordion.Header>
+                  <Accordion.Body>
+                    <p className="mb-0" style={{ whiteSpace: 'pre-line', lineHeight: 1.6 }}>{t(item.body)}</p>
+                  </Accordion.Body>
+                </Accordion.Item>
+              ))}
+            </Accordion>
+          </section>
+
+          <h2 className="h5 mt-4 mb-3" style={{ color: '#333', fontWeight: 600 }}>{t("many_ask_questions")}</h2>
           <Accordion alwaysOpen>
             <Accordion.Item eventKey="0">
               <Accordion.Header>{t("send_advert_question")}</Accordion.Header>

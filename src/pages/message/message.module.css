@@ -13,24 +13,32 @@
 }
 
 
-/* Кастомный хедер чата — без лишних отступов */
+/* Кастомный хедер чата — стиль Telegram */
 .chatHeader {
     flex-shrink: 0;
     display: flex;
     align-items: center;
-    padding: 8px 12px;
+    padding: 12px 16px;
     margin: 0;
-    border-bottom: 1px solid #e5e5e5;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
     background: #fff;
-    min-height: 48px;
+    min-height: 56px;
     box-sizing: border-box;
+    transition: background 0.2s ease;
 }
 
 .chatHeaderBack {
     font-size: 22px;
-    color: #333;
+    color: #2a2a2a;
     margin-right: 12px;
     cursor: pointer;
+    padding: 4px;
+    border-radius: 8px;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.chatHeaderBack:hover {
+    background: rgba(0, 0, 0, 0.04);
 }
 
 .chatHeaderLink {
@@ -43,18 +51,25 @@
 }
 
 .chatHeaderName {
-    margin-left: 10px;
+    margin-left: 12px;
     font-size: 16px;
+    font-weight: 500;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+/* Ad bar in mobile chat */
+.chatAdBar {
+    flex-shrink: 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 /* Область сообщений — без зазора под хедером, снизу отступ под фикс. инпут */
 .chatScrollArea {
     padding: 0 !important;
     margin: 0 !important;
-    padding-bottom: 80px !important; /* чтобы последнее сообщение не скрывалось под инпутом */
+    padding-bottom: 130px !important; /* чтобы последнее сообщение не скрывалось под инпутом и превью ответа */
 }
 
 .chatScrollArea .messageHistory {
@@ -64,7 +79,7 @@
 
 .messageHistory {
     margin-bottom: 0;
-    padding-top: 8px;
+    padding-top: 12px;
     padding-bottom: 16px;
 }
 
@@ -81,52 +96,69 @@
 .userPhoto {
     border-radius: 50%;
     object-fit: cover;
-    width: 50px;
-    height: 50px;
+    width: 48px;
+    height: 48px;
     margin-left: 10px;
 }
 
+/* Сообщения — плавные скругления в стиле Telegram */
 .messageFromBlock {
-    background-color: #03989F;
-    border-radius: 10px;
-    padding: 10px;
-    margin: 10px 0;
+    background: linear-gradient(135deg, #03989F 0%, #028a91 100%);
+    border-radius: 12px 12px 12px 4px;
+    padding: 10px 14px;
+    margin: 6px 12px 6px 0;
     max-width: 70%;
     display: flex;
     flex-direction: column;
-    color: #ffffff;
-
+    color: #fff;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+    transition: transform 0.15s ease;
 }
 
 .outgoingMessage {
     display: flex;
     justify-content: flex-end;
+    align-items: flex-start;
 }
 
 .incomingMessage {
     display: flex;
     justify-content: flex-start;
+    align-items: flex-start;
+}
 
+.replyZone {
+    flex: 1;
+    min-width: 40px;
+    min-height: 36px;
+    cursor: pointer;
+    align-self: stretch;
 }
 
 .messageToBlock {
-    background-color: orange;
-    color: white;
-    border-radius: 10px;
-    padding: 10px;
-    margin: 10px 10px;
+    background: linear-gradient(135deg, #54a9eb 0%, #3a8fd9 100%);
+    color: #fff;
+    border-radius: 12px 12px 4px 12px;
+    padding: 10px 14px;
+    margin: 6px 12px 6px 0;
     max-width: 70%;
     display: flex;
     flex-direction: column;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+    transition: transform 0.15s ease;
 }
 
 .messageText {
-    background-color: orange;
-    color: white;
+    background-color: transparent;
+    color: inherit;
 }
 
 .timeStamp {
-    font-size: 10px;
+    font-size: 11px;
+    opacity: 0.9;
+    margin-top: 6px;
+    flex-shrink: 0;
+    align-self: flex-end;
 }
 
 .messageText {
@@ -134,31 +166,200 @@
     align-items: center;
 }
 
+/* Обёртка поля ввода + превью ответа — фиксирована внизу */
+.inputWrapper {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 999;
+    background: #fff;
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+/* Панель ввода — стиль Telegram */
 .inputMessage {
     display: flex;
     align-items: center;
-    border-top: solid 1px #c4c4c4;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    z-index: 999;
-    background-color: white;
-    height: 70px;
+    gap: 8px;
+    padding: 12px 16px;
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+    box-sizing: border-box;
+    min-height: 64px;
 }
 
 .textInput {
-    margin-left: 5px;
-    border-radius: 20px;
+    flex: 1;
+    border-radius: 20px !important;
+    border: 1px solid rgba(0, 0, 0, 0.08) !important;
+    padding: 10px 16px !important;
+    font-size: 16px !important;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
+.textInput:focus {
+    border-color: #54a9eb !important;
+    box-shadow: 0 0 0 1px #54a9eb !important;
+}
+
+/* Иконка скрепки */
 .sendIcon {
-    font-size: 20px;
-    margin-left: 10px;
-    margin-right: 5px;
-    color: #FFBF34
+    font-size: 22px;
+    color: #54a9eb;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: background 0.2s ease, color 0.2s ease;
 }
 
+.sendIcon:hover {
+    background: rgba(84, 169, 235, 0.1);
+}
+
+/* Кнопка отправки — круг с центрированной иконкой */
 .sendButton {
-    font-size: 20px;
-    border: none;
+    width: 44px !important;
+    min-width: 44px !important;
+    height: 44px !important;
+    padding: 0 !important;
+    border: none !important;
+    border-radius: 50% !important;
+    background: #54a9eb !important;
+    color: #fff !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.sendButton:hover {
+    background: #3a8fd9 !important;
+}
+
+.sendButton:active {
+    transform: scale(0.96);
+}
+
+.sendButtonIcon {
+  font-size: 20px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 0 !important;
+  line-height: 1 !important;
+}
+
+/* Reply preview above input (mobile) */
+.replyPreview {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background: rgba(84, 169, 235, 0.08);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.replyPreviewContent {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.replyPreviewLabel {
+  font-size: 12px;
+  color: #54a9eb;
+  font-weight: 500;
+}
+
+.replyPreviewText {
+  font-size: 13px;
+  color: #2a2a2a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.replyPreviewClose {
+  background: none;
+  border: none;
+  font-size: 22px;
+  color: #999;
+  cursor: pointer;
+  padding: 4px 8px;
+  line-height: 1;
+}
+
+.replyPreviewClose:hover {
+  color: #333;
+}
+
+/* Reply quote in message bubble */
+.forwardedBadge {
+  font-size: 10px;
+  opacity: 0.9;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  margin-right: 8px;
+  padding-right: 8px;
+  border-right: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.forwardedIcon {
+  font-size: 10px;
+  opacity: 0.9;
+}
+
+.msgContentWrap {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.messageToBlock,
+.messageFromBlock {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+.replyQuote {
+  padding: 6px 10px;
+  margin-bottom: 6px;
+  border-left: 3px solid rgba(255, 255, 255, 0.7);
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+  max-width: 100%;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.replyQuoteName {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  opacity: 0.95;
+  margin-bottom: 2px;
+}
+
+.replyQuoteText {
+  font-size: 12px;
+  opacity: 0.9;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.messageToBlock,
+.messageFromBlock {
+  cursor: pointer;
+  user-select: none;
 }

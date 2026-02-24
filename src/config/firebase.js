@@ -3,6 +3,7 @@ import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 import { getMessaging } from "firebase/messaging";
+import { getAnalytics } from "firebase/analytics";
 import { Capacitor } from '@capacitor/core';
 
 const firebaseConfig = {
@@ -11,7 +12,8 @@ const firebaseConfig = {
     projectId: "hvala-2c8a4",
     storageBucket: "hvala-2c8a4.appspot.com",
     messagingSenderId: "937525121099",
-    appId: "1:937525121099:web:843e79493bbd6e49b7fdce"
+    appId: "1:937525121099:web:843e79493bbd6e49b7fdce",
+    measurementId: "G-Y1XH28MBTY"
 };
 
 console.log('🔥 Initializing Firebase app...');
@@ -32,6 +34,18 @@ export const db = getFirestore(app);
 
 console.log('📁 Initializing Firebase Storage...');
 export const storage = getStorage(app);
+
+// Firebase Analytics (web only)
+let analytics = null;
+if (typeof window !== 'undefined') {
+    try {
+        analytics = getAnalytics(app);
+        console.log('📊 Firebase Analytics initialized');
+    } catch (e) {
+        console.log('ℹ️ Analytics skipped:', e.message);
+    }
+}
+export { analytics };
 
 // Only initialize messaging for web platform
 let messaging = null;

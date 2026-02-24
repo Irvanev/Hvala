@@ -32,7 +32,7 @@ const Settings = () => {
     const [facebook, setFacebook] = useState('');
     const [site, setSite] = useState('');
     const [description, setDescription] = useState('');
-    const maxCharacters = user.role === 'seller' ? 200 : 80;
+    const maxCharacters = (user?.role === 'seller' || user?.role === 'vip') ? 200 : 80;
     const [error, setError] = useState('');
 
     const [photoUrl, setPhotoUrl] = useState(user?.photoUrl);
@@ -91,12 +91,27 @@ const Settings = () => {
         }
     };
 
+    const RESERVED_LINKS = ['hvala', 'admin', 'help', 'addItem', 'settings', 'message', 'sign_in', 'sign_up', 'profile', 'seller', 'advertisment', 'advertisments', 'edit', 'privacy_policy', 'contacts', 'rest', 'estate', 'transport', 'electronics', 'clothes', 'api'];
     const validateLink = () => {
-        const urlPattern = /^[a-zA-Z0-9-_]+$/;
-        if (!urlPattern.test(link)) {
-            setError(t('input_correct_link'));
+        if (!link || link.trim() === '') {
+            setError('');
+            return true;
+        }
+        const trimmed = link.trim();
+        const urlPattern = /^[a-zA-Z0-9][a-zA-Z0-9_-]{2,29}$/;
+        if (trimmed.length < 3) {
+            setError(t('store_link_min_length'));
             return false;
         }
+        if (!urlPattern.test(trimmed)) {
+            setError(t('store_link_format'));
+            return false;
+        }
+        if (RESERVED_LINKS.includes(trimmed.toLowerCase())) {
+            setError(t('store_link_reserved'));
+            return false;
+        }
+        setError('');
         return true;
     };
 
@@ -156,7 +171,7 @@ const Settings = () => {
         try {
             setLoading(true);
             if (!validateLink()) {
-                message.error(t('input_correct_link'));
+                message.error(error || t('input_correct_link'));
                 return;
             }
             await form.validateFields();
@@ -229,7 +244,7 @@ const Settings = () => {
                             onChange={handlePhoneChange}
                         />
                     </Form.Item>
-                    {(user?.role === 'admin' || user?.role === 'seller') && (
+                    {(user?.role === 'admin' || user?.role === 'seller' || user?.role === 'vip' || user?.role === 'user') && (
                         <>
                             <Form.Item label={t('email')}>
                                 <Input
@@ -283,19 +298,25 @@ const Settings = () => {
                             }}
                         />
                     </Form.Item>
-                    {(user?.role === 'admin' || user?.role === 'seller') && (
+                    {(user?.role === 'admin' || user?.role === 'seller' || user?.role === 'vip' || user?.role === 'user') && (
                         <>
                             <Form.Item
-                                label={t('link')}
+                                label={t('store_link')}
                                 validateStatus={error ? 'error' : ''}
-                                help={error}
+                                help={error || (user?.role === 'vip' ? t('store_link_help') : null)}
                             >
                                 <Input
                                     type="text"
+                                    placeholder="ivan_tech"
                                     value={link}
                                     onChange={handleLinkChange}
                                     onBlur={validateLink}
                                 />
+                                {link && link.length >= 3 && !error && (
+                                    <div style={{ marginTop: 8, fontSize: 12, color: '#666' }}>
+                                        https://hvala.app/seller/{link.trim()}
+                                    </div>
+                                )}
                             </Form.Item>
                             <Form.Item label={t('banner')}>
                                 {previewUrl || bannerUrl ? (
